@@ -503,6 +503,8 @@ fabric.properties
 # Poetry local configuration file - https://python-poetry.org/docs/configuration/#local-configuration
 poetry.toml
 
+*.idea
+
 # ruff
 .ruff_cache/
 
