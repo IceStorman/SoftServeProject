@@ -5,7 +5,7 @@
 Чи є обмеження по розміру текста я хз, максимум перевіряв на 3000 слів і воно працює
 Повертає значення ORG i PER
 '''
-
+#testing with my repa
 from model_scripts_v3 import nlp_teams_players_org_arr
 
 # Приклад роботи
