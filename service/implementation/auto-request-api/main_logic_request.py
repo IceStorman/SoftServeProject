@@ -858,27 +858,28 @@ apis = [
     },
     {
         "name": "basketball",
-        "index": "games?date=2019-11-23",
-        "url": "https://v1.basketball.api-sports.io/games?date=2019-11-23",
+        "index": "games",
+        "url": "https://v1.basketball.api-sports.io/games?date=DATE",
         "headers": {
             'x-rapidapi-host': "v1.basketball.api-sports.io",
             'x-rapidapi-key': api_key
         },
         "frequency": 1  # Інтервал у хвилинах
     },
+            #маю знати id команди
+            {
+                "name": "basketball",
+                "index": "basketball-games-statistics-teams",
+                "url": "https://v1.basketball.api-sports.io/basketball/games/statistics/teams?id=391053",
+                "headers": {
+                    'x-rapidapi-host': "v1.basketball.api-sports.io",
+                    'x-rapidapi-key': api_key
+                },
+                "frequency": 1  # Інтервал у хвилинах
+            },
     {
         "name": "basketball",
-        "index": "basketball-games-statistics-teams?id=391053",
-        "url": "https://v1.basketball.api-sports.io/basketball/games/statistics/teams?id=391053",
-        "headers": {
-            'x-rapidapi-host': "v1.basketball.api-sports.io",
-            'x-rapidapi-key': api_key
-        },
-        "frequency": 1  # Інтервал у хвилинах
-    },
-    {
-        "name": "basketball",
-        "index": "basketball-games-statistics-players?id=391053",
+        "index": "basketball-games-statistics-players",
         "url": "https://v1.basketball.api-sports.io/basketball/games/statistics/players?id=391053",
         "headers": {
             'x-rapidapi-host': "v1.basketball.api-sports.io",
@@ -1008,8 +1009,8 @@ apis = [
     },
     {
         "name": "formula-1",
-        "index": "races?competition=1&season=2019",
-        "url": "https://v1.formula-1.api-sports.io/races?competition=1&season=2019",
+        "index": "races",
+        "url": "https://v1.formula-1.api-sports.io/races?date=DATE",
         "headers": {
             'x-rapidapi-host': "v1.formula-1.api-sports.io",
             'x-rapidapi-key': api_key
@@ -1018,7 +1019,7 @@ apis = [
     },
     {
         "name": "formula-1",
-        "index": "rankings-teams?season=2019",
+        "index": "rankings-teams",
         "url": "https://v1.formula-1.api-sports.io/rankings/teams?season=2019",
         "headers": {
             'x-rapidapi-host': "v1.formula-1.api-sports.io",
@@ -1028,7 +1029,7 @@ apis = [
     },
     {
         "name": "formula-1",
-        "index": "rankings-drivers?season=2019",
+        "index": "rankings-drivers",
         "url": "https://v1.formula-1.api-sports.io/rankings/drivers?season=2019",
         "headers": {
             'x-rapidapi-host': "v1.formula-1.api-sports.io",
@@ -1038,7 +1039,7 @@ apis = [
     },
     {
         "name": "formula-1",
-        "index": "rankings-races?race=50",
+        "index": "rankings-races",
         "url": "https://v1.formula-1.api-sports.io/rankings/races?race=50",
         "headers": {
             'x-rapidapi-host': "v1.formula-1.api-sports.io",
@@ -1048,7 +1049,7 @@ apis = [
     },
     {
         "name": "formula-1",
-        "index": "rankings-fastestlaps?race=50",
+        "index": "rankings-fastestlaps",
         "url": "https://v1.formula-1.api-sports.io/rankings/fastestlaps?race=50",
         "headers": {
             'x-rapidapi-host': "v1.formula-1.api-sports.io",
@@ -1058,7 +1059,7 @@ apis = [
     },
     {
         "name": "formula-1",
-        "index": "rankings-startinggrid?race=50",
+        "index": "rankings-startinggrid",
         "url": "https://v1.formula-1.api-sports.io/rankings/startinggrid?race=50",
         "headers": {
             'x-rapidapi-host': "v1.formula-1.api-sports.io",
@@ -1068,7 +1069,7 @@ apis = [
     },
     {
         "name": "formula-1",
-        "index": "pitstops?race=50",
+        "index": "pitstops",
         "url": "https://v1.formula-1.api-sports.io/pitstops?race=50",
         "headers": {
             'x-rapidapi-host': "v1.formula-1.api-sports.io",
@@ -1118,74 +1119,74 @@ apis = [
     },
     {
         "name": "handball",
-        "index": "teams?id=119",
-        "url": "https://v1.handball.api-sports.io/teams?id=119",
+        "index": "teams",
+        "url": "https://v1.handball.api-sports.io/teams?country=Ukraine",
         "headers": {
             'x-rapidapi-host': "v1.handball.api-sports.io",
             'x-rapidapi-key': api_key
         },
         "frequency": 1  # Інтервал у хвилинах
     },
+            {
+                "name": "handball",
+                "index": "teams-statistics",
+                "url": "https://v1.handball.api-sports.io/teams/statistics?season=2024&team=4450&league=1",
+                "headers": {
+                    'x-rapidapi-host': "v1.handball.api-sports.io",
+                    'x-rapidapi-key': api_key
+                },
+                "frequency": 1  # Інтервал у хвилинах
+            },
+            {
+                "name": "handball",
+                "index": "standings",
+                "url": "https://v1.handball.api-sports.io/standings?league=1&season=2024",
+                "headers": {
+                    'x-rapidapi-host': "v1.handball.api-sports.io",
+                    'x-rapidapi-key': api_key
+                },
+                "frequency": 1  # Інтервал у хвилинах
+            },
+            {
+                "name": "handball",
+                "index": "standings-stages",
+                "url": "https://v1.handball.api-sports.io/standings/stages?league=1&season=2024",
+                "headers": {
+                    'x-rapidapi-host': "v1.handball.api-sports.io",
+                    'x-rapidapi-key': api_key
+                },
+                "frequency": 1  # Інтервал у хвилинах
+            },
+            {
+                "name": "handball",
+                "index": "standings-groups",
+                "url": "https://v1.handball.api-sports.io/standings/groups?league=1&season=2024",
+                "headers": {
+                    'x-rapidapi-host': "v1.handball.api-sports.io",
+                    'x-rapidapi-key': api_key
+                },
+                "frequency": 1  # Інтервал у хвилинах
+            },
     {
         "name": "handball",
-        "index": "teams-statistics?season=2018&team=1&league=1",
-        "url": "https://v1.handball.api-sports.io/teams/statistics?season=2018&team=1&league=1",
+        "index": "games",
+        "url": "https://v1.handball.api-sports.io/games?date=DATE",
         "headers": {
             'x-rapidapi-host': "v1.handball.api-sports.io",
             'x-rapidapi-key': api_key
         },
         "frequency": 1  # Інтервал у хвилинах
     },
-    {
-        "name": "handball",
-        "index": "standings?league=1&season=2021",
-        "url": "https://v1.handball.api-sports.io/standings?league=1&season=2021",
-        "headers": {
-            'x-rapidapi-host': "v1.handball.api-sports.io",
-            'x-rapidapi-key': api_key
-        },
-        "frequency": 1  # Інтервал у хвилинах
-    },
-    {
-        "name": "handball",
-        "index": "standings-stages",
-        "url": "https://v1.handball.api-sports.io/standings/stages",
-        "headers": {
-            'x-rapidapi-host': "v1.handball.api-sports.io",
-            'x-rapidapi-key': api_key
-        },
-        "frequency": 1  # Інтервал у хвилинах
-    },
-    {
-        "name": "handball",
-        "index": "standings-groups",
-        "url": "https://v1.handball.api-sports.io/standings/groups",
-        "headers": {
-            'x-rapidapi-host': "v1.handball.api-sports.io",
-            'x-rapidapi-key': api_key
-        },
-        "frequency": 1  # Інтервал у хвилинах
-    },
-    {
-        "name": "handball",
-        "index": "games?id=9866",
-        "url": "https://v1.handball.api-sports.io/games?id=9866",
-        "headers": {
-            'x-rapidapi-host': "v1.handball.api-sports.io",
-            'x-rapidapi-key': api_key
-        },
-        "frequency": 1  # Інтервал у хвилинах
-    },
-    {
-        "name": "handball",
-        "index": "games-h2h?h2h=872-876",
-        "url": "https://v1.handball.api-sports.io/games/h2h?h2h=872-876",
-        "headers": {
-            'x-rapidapi-host': "v1.handball.api-sports.io",
-            'x-rapidapi-key': api_key
-        },
-        "frequency": 1  # Інтервал у хвилинах
-    },
+            {
+                "name": "handball",
+                "index": "games-h2h",
+                "url": "https://v1.handball.api-sports.io/games/h2h?h2h=2662-2672",
+                "headers": {
+                    'x-rapidapi-host': "v1.handball.api-sports.io",
+                    'x-rapidapi-key': api_key
+                },
+                "frequency": 0.1  # Інтервал у хвилинах
+            },
     {
         "name": "handball",
         "index": "odds?game=4289",
@@ -1256,6 +1257,16 @@ apis = [
         },
         "frequency": 1  # Інтервал у хвилинах
     },
+
+
+
+
+
+
+
+
+
+
     {
         "name": "hockey",
         "index": "widgets-standings",
