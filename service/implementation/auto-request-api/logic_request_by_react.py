@@ -107,18 +107,72 @@ def football_coachs(api_data: Dict[str, str]) -> Dict[str, str]:
         # Повертаємо повідомлення про помилку
         return {"error": str(e)}
 
-def football_players_profiles(api_data: Dict[str, str]) -> Dict[str, str]:
+def football_players_profiles_sidelined(api_data: Dict[str, str]) -> Dict[str, str]:
     player_id = api_data.get("player_id")
     if not player_id:
         return {"error": "Missing or invalid parameter: 'player_id' required."}
+
     name = "football"
-    index = f"players/profiles?player={player_id}"
+    index1 = f"players/profiles?player={player_id}"
+    index2 = f"players/players?id={player_id}&season=2024"
+    index3 = f"players/sidelined?player={player_id}"
+
 
     def db_check_logic():
         pass
 
-    url = f"https://v3.football.api-sports.io/players/profiles?player=276{player_id}"
+    url1 = f"https://v3.football.api-sports.io/players/profiles?player=276{player_id}"
+    url2 = f"https://v3.football.api-sports.io/players?id={player_id}&season=2024"
+    url3 = f"https://v3.football.api-sports.io/sidelined?player={player_id}"
+
     host = "v3.football.api-sports.io"
+    try:
+        json_data1 = main_request(host, name, url1, index1)
+        json_data2 = main_request(host, name, url2, index2)
+        json_data3 = main_request(host, name, url3, index3)
+
+        return {
+            "profiles": json_data1,
+            "players": json_data2,
+            "sidelined": json_data3
+        }
+    except Exception as e:
+        # Повертаємо повідомлення про помилку
+        return {"error": str(e)}
+
+def afl_teams_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
+    team_id = api_data.get("team_id")
+    if not team_id:
+        return {"error": "Missing or invalid parameter: 'team_id' required."}
+
+    name = "afl"
+    index = f"teams/statistics?id={team_id}&season=2023"
+
+    def db_check_logic():
+        pass
+
+    url = f"https://v1.afl.api-sports.io/teams/statistics?id={team_id}&season=2023"
+    host = "v1.afl.api-sports.io"
+    try:
+        json_data = main_request(host, name, url, index)
+        return json_data
+    except Exception as e:
+        # Повертаємо повідомлення про помилку
+        return {"error": str(e)}
+
+def afl_players(api_data: Dict[str, str]) -> Dict[str, str]:
+    team_id = api_data.get("team_id")
+    if not team_id:
+        return {"error": "Missing or invalid parameter: 'team_id' required."}
+
+    name = "afl"
+    index = f"teams/players?season=2023&team={team_id}"
+
+    def db_check_logic():
+        pass
+
+    url = f"https://v1.afl.api-sports.io/players?season=2023&team={team_id}"
+    host = "v1.afl.api-sports.io"
     try:
         json_data = main_request(host, name, url, index)
         return json_data
@@ -127,20 +181,155 @@ def football_players_profiles(api_data: Dict[str, str]) -> Dict[str, str]:
         return {"error": str(e)}
 
 
+def afl_players_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
+    player_id = api_data.get("player_id")
+    if not player_id:
+        return {"error": "Missing or invalid parameter: 'team_id' required."}
+
+    name = "afl"
+    index = f"players/statistics?id={player_id}&season=2024"
+
+    def db_check_logic():
+        pass
+
+    url = f"https://v1.afl.api-sports.io/players/statistics?id={player_id}&season=2024"
+    host = "v1.afl.api-sports.io"
+    try:
+        json_data = main_request(host, name, url, index)
+        return json_data
+    except Exception as e:
+        # Повертаємо повідомлення про помилку
+        return {"error": str(e)}
+
+def baseball_teams_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
+    team_id = api_data.get("team_id")
+    league_id = api_data.get("league_id")
+
+    if not team_id or not league_id:
+        return {"error": "Missing or invalid parameter: 'team_id' and 'league_id' are required."}
+
+    name = "baseball"
+    index = f"teams/statistics?league={league_id}&season=2024&team={team_id}"
+
+    def db_check_logic():
+        pass
+
+    url = f"https://v1.baseball.api-sports.io/teams/statistics?league={league_id}&season=2024&team={team_id}"
+    host = "v1.baseball.api-sports.io"
+    try:
+        json_data = main_request(host, name, url, index)
+        return json_data
+    except Exception as e:
+        # Повертаємо повідомлення про помилку
+        return {"error": str(e)}
+
+def basketball_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
+    team_id = api_data.get("team_id")
+    league_id = api_data.get("league_id")
+
+    if not team_id or not league_id:
+        return {"error": "Missing or invalid parameter: 'team_id' and 'league_id' are required."}
+
+    name = "basketball"
+    index = f"teams/statistics?season=2024&team={team_id}&league={league_id}"
+
+    def db_check_logic():
+        pass
+
+    url = f"https://v1.basketball.api-sports.io/statistics?league={league_id}&season=2024&team={team_id}"
+    host = "v1.basketball.api-sports.io"
+    try:
+        json_data = main_request(host, name, url, index)
+        return json_data
+    except Exception as e:
+        # Повертаємо повідомлення про помилку
+        return {"error": str(e)}
+
+def basketball_players(api_data: Dict[str, str]) -> Dict[str, str]:
+    team_id = api_data.get("team_id")
+
+    if not team_id:
+        return {"error": "Missing or invalid parameter: 'team_id' required."}
+
+    name = "basketball"
+    index = f"players/basketball/players?team={team_id}&season=2024"
+
+    def db_check_logic():
+        pass
+
+    url = f"https://v1.basketball.api-sports.io/basketball/players?team={team_id}&season=2024"
+    host = "v1.basketball.api-sports.io"
+    try:
+        json_data = main_request(host, name, url, index)
+        return json_data
+    except Exception as e:
+        # Повертаємо повідомлення про помилку
+        return {"error": str(e)}
+
+
+def basketball_players_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
+    player_id = api_data.get("player_id")
+
+    if not player_id:
+        return {"error": "Missing or invalid parameter: 'player_id' required."}
+
+    name = "basketball"
+    index = f"players/basketball/games/statistics/players?id={player_id}"
+
+    def db_check_logic():
+        pass
+
+    url = f"https://v1.basketball.api-sports.io/basketball/games/statistics/players?id={player_id}"
+    host = "v1.basketball.api-sports.io"
+    try:
+        json_data = main_request(host, name, url, index)
+        return json_data
+    except Exception as e:
+        # Повертаємо повідомлення про помилку
+        return {"error": str(e)}
+
+def formula_one_rankings_races_and_fastestlaps(api_data: Dict[str, str]) -> Dict[str, str]:
+    race_id = api_data.get("race_id")
+
+    if not race_id:
+        return {"error": "Missing or invalid parameter: 'race_id' required."}
+
+    name = "formula-1"
+    index1 = f"rankings/races?race={race_id}"
+    index2 = f"rankings/fastestlaps?race={race_id}"
+
+    def db_check_logic():
+        pass
+
+    url1 = f"https://v1.formula-1.api-sports.io/rankings/races?race={race_id}"
+    url2 = f"https://v1.formula-1.api-sports.io/rankings/fastestlaps?race={race_id}"
+    host = "v1.formula-1.api-sports.io"
+    try:
+        json_data1 = main_request(host, name, url1, index1)
+        json_data2 = main_request(host, name, url2, index2)
+        return {
+            "races": json_data1,
+            "fastestlaps": json_data2,
+        }
+    except Exception as e:
+        # Повертаємо повідомлення про помилку
+        return {"error": str(e)}
+
 
 api_data = {"fixture_id": 1300109, "team_id": 231}
 api_data2 = {"team_id": 228}
 api_data3 = {"fixture_id": 1300109, "player_id": 1234}
 api_data4 = {"fixture_id": 1300109}
 
-result = football_fixtures_statistics(api_data3)
-result1 = football_fixtures_events_lineups_players(api_data3)
-result2 = football_coachs(api_data2)
-result3 = football_players_profiles(api_data3)
+#result = football_fixtures_statistics(api_data3)
+#result1 = football_fixtures_events_lineups_players(api_data3)
+#result2 = football_coachs(api_data2)
+#result3 = football_players_profiles_sidelined(api_data3)
+result4 = basketball_players(api_data2)
+#result5 = afl_players_statistics(api_data3)
 
-print(result)
-print(result1)
-print(result2)
-print(result3)
+
+print(result4)
+
 
 
