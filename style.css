@@ -169,7 +169,7 @@ header{
     display: flex;
     flex-direction: column;
     margin: 2rem auto;
-    background-color: var(--streams-bar-background-color);
+    background-color: var(--streams-bar-background-color);;
     border-top-left-radius: 40px;
     border-top-right-radius: 40px;
 
@@ -178,6 +178,7 @@ header{
         flex-direction: column;
         width: 95%;
         margin: auto;
+        cursor: pointer;
 
         .news-insight{
             display: flex;
@@ -229,12 +230,25 @@ header{
     .sport-box{
         display: flex;
         justify-content: center;
-        width: 50%;
         margin-bottom: 2.5rem;
+        width: 50%;
 
         i{
+            background-color: var(--streams-bar-background-color);
+            padding: 0.5rem;
+            border-radius: 10%;
             font-size: 10rem;
             cursor: pointer;
+        }
+        img{
+            background-color: var(--streams-bar-background-color);
+            background-color: white;
+            padding: 0.5rem;
+            border: 10px solid var(--header-background-color);
+            border-radius: 10%;
+            font-size: 10rem;
+            cursor: pointer;
+            width: 80%;
         }
     }
 }
