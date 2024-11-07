@@ -218,3 +218,23 @@ header{
         width: 100%;
     }
 }
+
+.nav-sports{
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    margin: 2rem 0 0;
+    width: 30%;
+
+    .sport-box{
+        display: flex;
+        justify-content: center;
+        width: 50%;
+        margin-bottom: 2.5rem;
+
+        i{
+            font-size: 10rem;
+            cursor: pointer;
+        }
+    }
+}
