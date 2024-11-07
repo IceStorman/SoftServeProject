@@ -1,18 +1,12 @@
-from azure.storage.blob import BlobClient
 from azure.storage.blob import BlobServiceClient
 import json
-import http.client
-import psycopg
 import os
 from dotenv import load_dotenv
 import requests
-import time
-from apscheduler.schedulers.background import BackgroundScheduler
-from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
+from typing import Dict
 
 load_dotenv()
-#api_key = os.getenv("APIKEY")
 api_key = [os.getenv("APIKEY"), "API_KEY_2", "API_KEY_3"]
 current_key_index = 0
 account_url = os.getenv("BLOBURL")
@@ -397,7 +391,6 @@ apis = [
         "frequency": 1  # Інтервал у хвилинах
     },
 ]
-
 sports_dict = {
     "football": os.getenv("SASFOOTBALL"),
     "basketball": os.getenv("SASBASKETBALL"),
@@ -427,7 +420,7 @@ token_usage = {
     "rugby": 0
 }
 
-def fetch_and_store(api):
+def auto_request_system(api: Dict[str, str]) -> None:
     try:
         global current_key_index
         print(f"Виконання запиту для {api['name']}, {api['index']}")
@@ -461,35 +454,6 @@ def fetch_and_store(api):
         print(f"Загальна помилка при збереженні даних для {api['name']}: {e}")
 
 
-
-# Ініціалізація планувальника та пулу потоків
-scheduler = BackgroundScheduler()
-executor = ThreadPoolExecutor(max_workers=3)
-
-# Додавання запланованих завдань для кожного API
-for api in apis:
-    print(f"Додаємо завдання для {api['name']}, |||  {api['index']} з частотою {api['frequency']} хвилин.")
-    scheduler.add_job(
-        fetch_and_store,
-        'interval',
-        minutes=api["frequency"],
-        misfire_grace_time=300,
-        args = [api]
-    )
-
-
-# Запуск планувальника
-if __name__ == "__main__":
-    scheduler.start()
-    print("Планувальник запущено. Натисніть Ctrl+C для зупинки.")
-
-    try:
-        while True:
-            time.sleep(1)
-    except (KeyboardInterrupt, SystemExit):
-        scheduler.shutdown()
-        executor.shutdown(wait=True)
-        print("Планувальник зупинено.")
 
 
 
