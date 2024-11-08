@@ -1,8 +1,7 @@
 import requests
-import json
-from azure.storage.blob import BlobServiceClient
 from datetime import datetime
-from logic_auto_request import current_key_index, token_usage, api_key, sports_dict, account_url
+from logic_auto_request import current_key_index, token_usage, api_key
+from database.azure_blob_storage.save_get_blob import blob_save_specific_api
 from typing import Dict
 
 def main_request(host, name, url, blob_name):
@@ -19,13 +18,7 @@ def main_request(host, name, url, blob_name):
     response = requests.get(url, headers=headers)
     response.raise_for_status()
     json_data = response.json()
-    selected_sport = name
-    key = sports_dict[selected_sport]
-    blob_service_client = BlobServiceClient(account_url=account_url, credential=key)
-    container_client = blob_service_client.get_container_client(name)
-    blob_name = f"{blob_name}.json"
-    blob_client = container_client.get_blob_client(blob_name)
-    blob_client.upload_blob(json.dumps(json_data), overwrite=True)
+    blob_save_specific_api(name, blob_name, json_data)
     return json_data
 
 def football_fixtures_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
@@ -410,7 +403,7 @@ def volleyball_teams_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
         return {"error": str(e)}
 
 
-'''
+
 api1 = {"fixture_id": 380012, "team_id": 123}
 result=football_fixtures_statistics(api1)
 print(result)
@@ -468,7 +461,7 @@ print(result)
 api19 = {"league_id": 3, "team_id": 123}
 result=volleyball_teams_statistics(api19)
 print(result)
-'''
+
 
 
 

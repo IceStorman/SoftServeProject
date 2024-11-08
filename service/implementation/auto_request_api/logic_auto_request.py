@@ -1,15 +1,13 @@
-from azure.storage.blob import BlobServiceClient
-import json
 import os
 from dotenv import load_dotenv
 import requests
 from datetime import datetime
 from typing import Dict
+from database.azure_blob_storage.save_get_blob import blob_autosave_api
 
 load_dotenv()
 api_key = [os.getenv("APIKEY"), "API_KEY_2", "API_KEY_3"]
 current_key_index = 0
-account_url = os.getenv("BLOBURL")
 
 apis = [
     {
@@ -391,20 +389,6 @@ apis = [
         "frequency": 1  # Інтервал у хвилинах
     },
 ]
-sports_dict = {
-    "football": os.getenv("SASFOOTBALL"),
-    "basketball": os.getenv("SASBASKETBALL"),
-    "volleyball": os.getenv("SASVOLLEYBALL"),
-    "afl": os.getenv("SASAFL"),
-    "baseball": os.getenv("SASBASEBALL"),
-    "formula-1": os.getenv("SASFORMULA1"),
-    "handball": os.getenv("SASHANDBALL"),
-    "hockey": os.getenv("SASHOCKEY"),
-    "mma": os.getenv("SASMMA"),
-    "nba":  os.getenv("SASNBA"),
-    "nfl": os.getenv("SASNFL"),
-    "rugby": os.getenv("SASRUGBY")
-}
 token_usage = {
     "football": 0,
     "basketball": 0,
@@ -437,17 +421,7 @@ def auto_request_system(api: Dict[str, str]) -> None:
         response = requests.get(url_with_date, headers=headers, timeout=10)
         response.raise_for_status()
         json_data = response.json()
-
-        # Збереження у Blob Storage
-        selected_sport = api["name"]
-        key = sports_dict[selected_sport]
-        blob_service_client = BlobServiceClient(account_url=account_url, credential=key)
-        container_client = blob_service_client.get_container_client(api["name"])
-        blob_name = f"{api['index'].replace(' ', '_').lower()}.json"
-        blob_client = container_client.get_blob_client(blob_name)
-        blob_client.upload_blob(json.dumps(json_data), overwrite=True)
-        print(f"JSON успішно збережено в Blob Storage як {blob_name}.")
-
+        blob_autosave_api(json_data, api)
     except requests.exceptions.RequestException as e:
         print(f"Помилка при запиті до {api['name']}: {e}")
     except Exception as e:
