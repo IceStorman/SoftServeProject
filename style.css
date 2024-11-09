@@ -1,7 +1,7 @@
 :root{
     --main-background-color: #D3D9E9;
-    --header-background-color: #31293F;
-    --streams-bar-background-color: #A6A9C8;
+    --special-dark-purple: #31293F;
+    --special-light-purple: #A6A9C8;
     --special-red: #B82426;
     --main-text-color: #D3D9E9;
     --purple-btn-color: #796EA8;
@@ -17,7 +17,7 @@ body{
 header{
     width: 100%;
     height: 6rem;
-    background-color: var(--header-background-color);
+    background-color: var(--special-dark-purple);
     margin: 0;
     padding: 0;
     display: flex;
@@ -63,14 +63,14 @@ header{
     justify-content: space-between;
     align-items: center;
     margin: auto;
-    background-color: var(--streams-bar-background-color);
+    background-color: var(--special-light-purple);
 
     button{
         width: 0;
         height: 0;
         all: unset;
-        border-top: 1.3rem solid var(--streams-bar-background-color);
-        border-bottom: 1.3rem solid var(--streams-bar-background-color);
+        border-top: 1.3rem solid var(--special-light-purple);
+        border-bottom: 1.3rem solid var(--special-light-purple);
         border-right: 1.3rem solid black;
         cursor: pointer;
         margin: auto 1rem auto 2rem;
@@ -169,7 +169,8 @@ header{
     display: flex;
     flex-direction: column;
     margin: 2rem auto;
-    background-color: var(--streams-bar-background-color);;
+    background-color: var(--special-light-purple);
+    background-color: white;
     border-top-left-radius: 40px;
     border-top-right-radius: 40px;
 
@@ -207,7 +208,7 @@ header{
         width: 100%;
         text-align: center;
         margin: 0;
-        background-color: var(--header-background-color);
+        background-color: var(--special-dark-purple);
         color: var(--main-text-color);
         border-top-left-radius: 40px;
         border-top-right-radius: 40px;
@@ -234,21 +235,29 @@ header{
         width: 50%;
 
         i{
-            background-color: var(--streams-bar-background-color);
+            background-color: var(--special-light-purple);
             padding: 0.5rem;
             border-radius: 10%;
             font-size: 10rem;
             cursor: pointer;
         }
         img{
-            background-color: var(--streams-bar-background-color);
+            background-color: var(--special-light-purple);
             background-color: white;
             padding: 0.5rem;
-            border: 10px solid var(--header-background-color);
+            border: 10px solid var(--special-dark-purple);
             border-radius: 10%;
             font-size: 10rem;
             cursor: pointer;
             width: 80%;
         }
     }
+}
+
+footer{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    background-color: var(--special-dark-purple);
+    color: var(--main-text-color);
 }
