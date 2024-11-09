@@ -67,6 +67,9 @@ def blob_save_news(json_data: Dict[str, Dict[str, str]]) -> None:
     blob_client = container_client.get_blob_client(blob_name)
     blob_client.upload_blob(json.dumps(json_data), overwrite=True)
 
+    #save_news_index_to_db(blob_name)
+
+
 def blob_get_data(blob_index: str, sport_index: str) -> dict:
     try:
         key = sastokens_dict[sport_index]
@@ -116,7 +119,6 @@ def save_blob_indexes_to_db(api: Dict[str, str], blob_name: str, session) -> Non
         print(f"Помилка при збереженні індексів в БД: {e}")
 
 def get_all_blob_indexes_from_db(session, pattern: str):
-    # Шукаємо всі записи в таблиці BlobIndex, що містять "games" в імені блоба
     blob_indexes = session.query(BlobIndex).filter(BlobIndex.blob_name.like(f"%{pattern}%")).all()
     return blob_indexes
 
@@ -144,4 +146,28 @@ def get_blob_data_for_all_sports(blob_indexes, session):
                 except Exception as e:
                     print(f"Помилка при отриманні блобу '{blob_index}': {e}")
     return all_results
+    
 '''
+
+
+def save_news_index_to_db(blob_name: str, session: Session) -> None:
+    try:
+        # Перевірка, чи існує новина з таким blob_name
+        existing_news = session.query(NewsIndex).filter_by(blob_name=blob_name).first()
+        news_index = NewsIndex(blob_name=blob_name, saved_at=datetime.utcnow())
+        session.add(news_index)
+        print(f"Новина '{blob_name}' збережена в БД.")
+        # Комітимо зміни до БД
+        session.commit()
+    except Exception as e:
+        session.rollback()
+        print(f"Помилка при збереженні індексу новини в БД: {e}")
+
+
+def get_news_by_index(blob_name: str, session: Session) -> Dict:
+    # Шукаємо новину в базі даних
+    news_record = session.query(NewsIndex).filter_by(blob_name=blob_name).first()
+
+    if not news_record:
+        print(f"Новина з blob_name '{blob_name}' не знайдена в БД.")
+        return {}
