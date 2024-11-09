@@ -40,12 +40,11 @@ def tokenize_and_align_labels(examples):
 tokenized_datasets = dataset.map(tokenize_and_align_labels, batched=True)
 small_train_dataset = tokenized_datasets["train"].select(range(13000))
 
-# Налаштування параметрів тренування
 training_args = TrainingArguments(
     output_dir="./result_model",
-    evaluation_strategy="epoch",
+    eval_strategy="epoch",  # змінено на eval_strategy
     per_device_train_batch_size=4,
-    num_train_epochs=5,
+    num_train_epochs=3,
     learning_rate=5e-5,
     weight_decay=0.01,
     logging_strategy="steps",
@@ -59,7 +58,7 @@ trainer = Trainer(
     args=training_args,
     train_dataset=small_train_dataset,
     eval_dataset=tokenized_datasets["validation"],
-    tokenizer=tokenizer,
+    processing_class=tokenizer,  # змінили на processing_class
     data_collator=data_collator,
 )
 
@@ -67,5 +66,5 @@ trainer = Trainer(
 trainer.train()
 
 # Збереження моделі
-model.save_pretrained("my_custom_model3")
-tokenizer.save_pretrained("my_custom_model3")
+model.save_pretrained("my_custom_model4")
+tokenizer.save_pretrained("my_custom_model4")

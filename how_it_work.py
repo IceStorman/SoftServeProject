@@ -7,7 +7,6 @@
 '''
 #testing with my repa
 from model_scripts_v3 import nlp_teams_players_org_arr
-
 # Приклад роботи
 test_sentences = '''
 World Series champs! How Dodgers validated their dominanceNEW YORK -- Two days before the Los Angeles Dodgers' postseason began, Freddie Freeman felt a twinge in his rib cage when he took a swing during a simulated game. 
