@@ -263,7 +263,7 @@ footer{
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: auto;
+    margin-top: auto;
     width: 100%;
     background-color: var(--special-dark-purple);
     color: var(--main-text-color);
