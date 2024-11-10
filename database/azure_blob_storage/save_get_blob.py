@@ -124,30 +124,42 @@ def get_all_blob_indexes_from_db(session, pattern: str):
 
 def get_blob_data_for_all_sports(blob_indexes, session):
     all_results = []
-    for blob_index in blob_indexes:
-        # Отримуємо відповідний SportIndex
-        sport_index = session.query(SportIndex).filter_by(id=blob_index.sport_index_id).first()
-        if sport_index:
-            # Отримуємо спортивний ID (наприклад, для футболу)
-            sport = session.query(Sport).filter_by(id=sport_index.sport_id).first()
-            if sport:
-                # Підключаємося до Blob Storage для відповідного контейнера
-                sport_index = sport.name.lower()  # Наприклад, "football"
-                blob_index = blob_index.blob_name
 
-                # Отримуємо дані з Blob Storage
-                try:
-                    data = blob_get_data(blob_index, sport_index)
-                    all_results.append({
-                        "sport": sport.name,
-                        "blob_name": blob_index,
-                        "data": data
-                    })
-                except Exception as e:
-                    print(f"Помилка при отриманні блобу '{blob_index}': {e}")
-    return all_results
+    for blob_index in blob_indexes:
+        # Шукаємо відповідний SportIndex по blob_index
+        sport_index = session.query(SportIndex).filter_by(id=blob_index.sport_index_id).first()
+        if not sport_index:
+            print(f"SportIndex для блобу {blob_index} не знайдений.")
+            continue
+        
+        # Шукаємо Sport по sport_index.sport_id
+        sport = session.query(Sport).filter_by(id=sport_index.sport_id).first()
+        if not sport:
+            print(f"Sport для SportIndex {sport_index.id} не знайдений.")
+            continue
+
+        # Формуємо ім'я контейнера для блобу
+        sport_name = sport.name.lower()  # Наприклад, "football"
+        
+        # Шукаємо всі індекси для даного блобу з однаковим ім'ям, але для різних видів спорту
+        related_sports = session.query(Sport).filter_by(name=sport.name).all()
+
+        # Якщо є кілька видів спорту з однаковим ім'ям, обробляємо їх окремо
+        for related_sport in related_sports:
+            try:
+                # Отримуємо дані для кожного виду спорту окремо
+                data = blob_get_data(blob_index.blob_name, related_sport.name.lower())
+                all_results.append({
+                    "sport": related_sport.name,
+                    "blob_name": blob_index.blob_name,
+                    "data": data
+                })
+            except Exception as e:
+                print(f"Помилка при отриманні блобу '{blob_index.blob_name}' для виду спорту '{related_sport.name}': {e}")
+                
+    return all_results if all_results else False
+
     
-'''
 
 
 def save_news_index_to_db(blob_name: str, session: Session) -> None:
@@ -171,3 +183,5 @@ def get_news_by_index(blob_name: str, session: Session) -> Dict:
     if not news_record:
         print(f"Новина з blob_name '{blob_name}' не знайдена в БД.")
         return {}
+'''
+
