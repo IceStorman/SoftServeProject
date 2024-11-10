@@ -18,6 +18,7 @@ body{
     background-color: var(--main-background-color);
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
 }
 
 header{
@@ -178,6 +179,7 @@ header{
     background-color: white;
     border-top-left-radius: 3vh;
     border-top-right-radius: 3vh;
+    overflow: hidden;
 
     .news-box{
         display: flex;
