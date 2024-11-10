@@ -8,6 +8,12 @@
     --special-grey: #818398;
 }
 
+#root{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
 body{
     background-color: var(--main-background-color);
     margin: 0;
@@ -16,7 +22,7 @@ body{
 
 header{
     width: 100%;
-    height: 6rem;
+    height: 5rem;
     background-color: var(--special-dark-purple);
     margin: 0;
     padding: 0;
@@ -28,7 +34,7 @@ header{
     }
 
     .title{
-        margin: auto 2rem auto;
+        margin: auto 4vh auto;
         text-decoration: none;
         font-size: 4rem;
         color: var(--main-text-color);
@@ -39,16 +45,16 @@ header{
         justify-content: space-between;
         flex-direction: row;
         margin: auto 0;
-        font-size: 2rem;
+        font-size: 2.5rem;
 
         a{
             text-decoration: none;
             color: var(--main-text-color);
-            margin: 0 2rem;
+            margin: 0 4vh;
             padding: 0.5rem 1.6rem;
         }
 
-        .sing{
+        .sign{
             background-color: var(--purple-btn-color);
             border-radius: 0.6rem;
         }
@@ -62,7 +68,6 @@ header{
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    margin: auto;
     background-color: var(--special-light-purple);
 
     button{
@@ -73,12 +78,12 @@ header{
         border-bottom: 1.3rem solid var(--special-light-purple);
         border-right: 1.3rem solid black;
         cursor: pointer;
-        margin: auto 1rem auto 2rem;
+        margin: auto 2vh auto 4vh;
     }
 
     #right-btn{
         rotate: 180deg;
-        margin: auto 2rem auto 1rem;
+        margin: auto 4vh auto 2vh;
     }
 
     .streams-bar{
@@ -94,7 +99,7 @@ header{
             background-color: var(--main-background-color);
             padding: 0.5rem 1rem;
             margin: auto 1rem;
-            border-radius: 0.6rem;
+            border-radius: 0.5rem;
             font-size: 1.4rem;
         }
 
@@ -111,7 +116,7 @@ header{
 
 
             .online, .preview, .score, .match-league{
-                margin: auto 1rem;
+                margin: auto 2vh;
             }
 
             .online{
@@ -168,18 +173,18 @@ header{
     width: 30%;
     flex-wrap: wrap;
     align-content: flex-start;
-    margin: 2rem auto auto;
+    margin: 4vh auto auto;
     background-color: var(--special-light-purple);
     background-color: white;
-    border-top-left-radius: 40px;
-    border-top-right-radius: 40px;
+    border-top-left-radius: 3vh;
+    border-top-right-radius: 3vh;
 
     .news-box{
         display: flex;
         flex-direction: column;
         justify-content: start;
         width: 95%;
-        margin: auto auto 1rem;
+        margin: auto auto 0.1vh;
         cursor: pointer;
 
         .news-insight{
@@ -211,13 +216,18 @@ header{
         margin: 0;
         background-color: var(--special-dark-purple);
         color: var(--main-text-color);
-        border-top-left-radius: 40px;
-        border-top-right-radius: 40px;
-        font-size: 2rem;
+        border-top-left-radius: 3vh;
+        border-top-right-radius: 3vh;
+        font-size: 2.5rem;
     }
 
+    h1{
+        font-size: 1.5rem;
+    }
+
+
     hr{
-        border: 1px solid var(--special-grey);
+        border: 0.2vh solid var(--special-grey);
         width: 100%;
     }
 }
@@ -226,31 +236,25 @@ header{
     display: flex;
     flex-wrap: wrap;
     align-content: flex-start;
-    margin: 2rem 0 0;
+    margin: 4vh 0 0;
     width: 30%;
 
     .sport-box{
         display: flex;
         justify-content: center;
-        margin-bottom: 2.5rem;
-        width: 50%;
+        margin: 0 auto 5vh;
+        width: 25vh;
+        cursor: pointer;
 
-        i{
-            background-color: var(--special-light-purple);
-            padding: 0.5rem;
-            border-radius: 10%;
-            font-size: 10rem;
-            cursor: pointer;
-        }
         img{
             background-color: var(--special-light-purple);
             background-color: white;
-            padding: 0.5rem;
-            border: 10px solid var(--special-dark-purple);
-            border-radius: 10%;
-            font-size: 10rem;
-            cursor: pointer;
-            width: 80%;
+            padding: 1vh;
+            border: 1.5vh solid var(--special-dark-purple);
+            border-radius: 2vh;
+            width: 15vh;
+            height: 15vh;
+            object-fit: contain;
         }
     }
 }
@@ -258,8 +262,9 @@ header{
 footer{
     display: flex;
     justify-content: center;
+    margin-top: auto;
     width: 100%;
     background-color: var(--special-dark-purple);
     color: var(--main-text-color);
-    margin-top: 1rem;
+    font-size: 1rem;
 }

@@ -1,214 +1,61 @@
-import {useEffect, useState} from "react";
+import {
+    useEffect,
+    useState
+} from "react";
+import {
+    BrowserRouter as Router,
+    Routes,
+    Route,
+    Navigate,
+    Link
+} from "react-router-dom";
+
+// import Home component
+import homePage from "../pages/mainPage";
+// import About component
+import SignUpPage from "../pages/signUpPage";
+import MainPage from "../pages/mainPage";
 
 function App(){
-
+    const [tab, setTab] = useState('about');
 
     return (
         <>
 
-            <header>
-                <a href="#" className="title"><span className="red">КУЙ</span>Sport</a>
-                <div className="nav-menu">
-                    <a href="#">Трансляції</a>
-                    <a href="#">Розклад подій</a>
-                    <a className="sing" href="#">Вхід</a>
-                </div>
-            </header>
+            <Router>
 
-            <section className="streams">
+                <header>
+                    <Link className="title" to={"/"}>
+                        <span className="red">КУЙ</span>Sport
+                    </Link>
 
-                <button></button>
+                    <div className="nav-menu">
 
-                <div className="streams-bar">
-
-                    <div className="active-streams">
-
-                        <h2 id="live-streams">Активні</h2>
-
-                        <div className="stream-box">
-
-                            <i className="fa fa-user-o" aria-hidden="true"></i>
-
-                            <div className="stream-info">
-
-                                <h4 className="online">етер</h4>
-
-                                <h1 className="score">0:0</h1>
-
-                                <h4 className="match-league">ліга</h4>
-
-                            </div>
-
-                            <i className="fa fa-user-o" aria-hidden="true"></i>
-
-                        </div>
+                        <Link to={"/"}>Трансляції</Link>
+                        <Link to={"/"}>Розклад подій</Link>
+                        <Link className="sign" to={"/sign-up"}>Вхід</Link>
 
                     </div>
 
-                    <div className="scheduled-stream">
+                </header>
 
-                        <div id="planned-streams">
-                            <h2>MNS</h2>
-                            <h2>00</h2>
-                        </div>
+                <Routes>
 
-                        <div className="stream-box">
+                    <Route exact path="/" element={<MainPage />} />
 
-                            <i className="fa fa-user-o" aria-hidden="true"></i>
+                    <Route path="/sign-up" element={<SignUpPage />} />
 
-                            <div className="stream-info">
+                    <Route path="*" element={<Navigate to="/" />} />
 
-                                <h4 className="preview">скоро</h4>
+                </Routes>
 
-                                <h1 className="score">VS</h1>
+                <footer>
 
-                                <h4 className="match-league">ліга</h4>
+                    <h1>Some silly text to style the footer</h1>
 
-                            </div>
+                </footer>
 
-                            <i className="fa fa-user-o" aria-hidden="true"></i>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <button id="right-btn"></button>
-
-            </section>
-
-            <section className="container">
-
-                <section className="news">
-
-                    <h1 className="news-title">НОВИНИ</h1>
-
-                    <div className="news-box">
-
-                        <img src="/img/team.jpg" alt="news picture"/>
-
-                        <div className="news-insight">
-
-                            <h1>TITLE BLA BLA BLA BLA</h1>
-
-                            <h4 className="date">02.04.2024</h4>
-
-                        </div>
-
-                        <hr/>
-
-                    </div>
-
-                </section>
-
-                <section className="news">
-
-                    <h1 className="news-title">РЕКОМЕНДАЦІЇ</h1>
-
-                    <div className="news-box">
-
-                        <img src="/img/team.jpg" alt="news picture"/>
-
-                        <div className="news-insight">
-
-                            <h1>TITLE BLA BLA BLA BLA</h1>
-
-                            <h4 className="date">02.04.2024</h4>
-
-                        </div>
-
-                        <hr/>
-
-                    </div>
-
-                </section>
-
-                <section className="nav-sports">
-
-                    <div className="sport-box">
-
-                        <img src="/img/hero-banner.png" alt="ball"/>
-
-                    </div>
-
-                    <div className="sport-box">
-
-                        <img src="/img/basket-player.png" alt="ball"/>
-
-                    </div>
-
-                    <div className="sport-box">
-
-                        <img src="/img/min-nba.png" alt="ball"/>
-
-                    </div>
-
-                    <div className="sport-box">
-
-                        <img src="/img/mma-logo.png" alt="ball"/>
-
-                    </div>
-
-                    <div className="sport-box">
-
-                        <img src="/img/handball-logo.png" alt="ball"/>
-
-                    </div>
-
-                    <div className="sport-box">
-
-                        <img src="/img/hockey-logo.png" alt="ball"/>
-
-                    </div>
-
-                    <div className="sport-box">
-
-                        <img src="/img/afl-logo.png" alt="ball"/>
-
-                    </div>
-
-                    <div className="sport-box">
-
-                        <img src="/img/baseball-logo.png" alt="ball"/>
-
-                    </div>
-
-                    <div className="sport-box">
-
-                        <img src="/img/rugby-logo.png" alt="ball"/>
-
-                    </div>
-
-                    <div className="sport-box">
-
-                        <img src="/img/volleyball-logo.png" alt="ball"/>
-
-                    </div>
-
-                    <div className="sport-box">
-
-                        <img src="/img/nfl-logo.png" alt="ball"/>
-
-                    </div>
-
-                    <div className="sport-box">
-
-                        <img src="/img/f1-mini.png" alt="ball"/>
-
-                    </div>
-
-
-                </section>
-
-            </section>
-
-            <footer>
-
-                <h1>Some silly text to style the footer</h1>
-
-            </footer>
+            </Router>
 
         </>
     );
