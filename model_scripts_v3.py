@@ -4,8 +4,8 @@ nlp = None
 def load_model():
     global nlp
     if nlp is None:
-        model = AutoModelForTokenClassification.from_pretrained("my_custom_model4")
-        tokenizer = AutoTokenizer.from_pretrained("my_custom_model4")
+        model = AutoModelForTokenClassification.from_pretrained("ai_models/my_custom_model4")
+        tokenizer = AutoTokenizer.from_pretrained("ai_models/my_custom_model4")
         nlp = pipeline("ner", model=model, tokenizer=tokenizer)
 
 def nlp_teams_players_org_arr(text):
