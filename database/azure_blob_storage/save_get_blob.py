@@ -94,24 +94,25 @@ def blob_get_news(news_index: str) -> dict:
     except Exception as e:
         return {"error": str(e)}
 
-'''
+
 def save_blob_indexes_to_db(api: Dict[str, str], blob_name: str, session) -> None:
     try:
         # Перевірка, чи існує спорт у БД
         sport = session.query(Sport).filter_by(name=api['name']).first()
         if not sport:
-            # Якщо спорту немає, створюємо новий
-            sport = Sport(name=api['name'])
+            sport = Sport(sport_name=api['name'])
             session.add(sport)
             session.commit()
-        # Збереження індексу виду спорту
-        sport_index = SportIndex(sport_id=sport.id, sport_index=api['index'])
-        session.add(sport_index)
-        session.commit()
-        # Збереження індексу блобу
-        blob_index = BlobIndex(sport_index_id=sport_index.id, blob_name=blob_name)
-        session.add(blob_index)
-        session.commit()
+        sport_index = session.query(SportIndex).filter_by(sport_id=sport.sport_id, index=api['index']).first()
+        if not sport_index:
+            sport_index = SportIndex(sport_id=sport.sport_id, sport_index=api['index'])
+            session.add(sport_index)
+            session.commit()
+        blob_index = session.query(BlobIndex).filter_by(sport_index_id=sport_index.index_id,filename=blob_name).first()
+        if not blob_index:
+            blob_index = BlobIndex(sport_index_id=sport_index.index_id, filename=blob_name)
+            session.add(blob_index)
+            session.commit()
 
         print(f"Інформація успішно збережена в БД для блобу: {blob_name}")
     except Exception as e:
@@ -119,69 +120,60 @@ def save_blob_indexes_to_db(api: Dict[str, str], blob_name: str, session) -> Non
         print(f"Помилка при збереженні індексів в БД: {e}")
 
 def get_all_blob_indexes_from_db(session, pattern: str):
-    blob_indexes = session.query(BlobIndex).filter(BlobIndex.blob_name.like(f"%{pattern}%")).all()
+    blob_indexes = session.query(BlobIndex).filter(BlobIndex.filename.like(f"%{pattern}%")).all()
     return blob_indexes
 
 def get_blob_data_for_all_sports(blob_indexes, session):
     all_results = []
-
     for blob_index in blob_indexes:
-        # Шукаємо відповідний SportIndex по blob_index
-        sport_index = session.query(SportIndex).filter_by(id=blob_index.sport_index_id).first()
+        sport_index = session.query(SportIndex).filter_by(index_id=blob_index.sport_index_id).first()
         if not sport_index:
-            print(f"SportIndex для блобу {blob_index} не знайдений.")
+            print(f"SportIndex для блобу {blob_index.blob_id} не знайдений.")
             continue
-        
-        # Шукаємо Sport по sport_index.sport_id
-        sport = session.query(Sport).filter_by(id=sport_index.sport_id).first()
+        sport = session.query(Sport).filter_by(sport_id=sport_index.sport_id).first()
         if not sport:
-            print(f"Sport для SportIndex {sport_index.id} не знайдений.")
+            print(f"Sport для SportIndex {sport_index.index_id} не знайдений.")
             continue
-
-        # Формуємо ім'я контейнера для блобу
         sport_name = sport.name.lower()  # Наприклад, "football"
-        
-        # Шукаємо всі індекси для даного блобу з однаковим ім'ям, але для різних видів спорту
-        related_sports = session.query(Sport).filter_by(name=sport.name).all()
-
-        # Якщо є кілька видів спорту з однаковим ім'ям, обробляємо їх окремо
+        related_sports = session.query(Sport).filter_by(sport_name=sport.sport_name).all()
         for related_sport in related_sports:
             try:
-                # Отримуємо дані для кожного виду спорту окремо
-                data = blob_get_data(blob_index.blob_name, related_sport.name.lower())
+                data = blob_get_data(blob_index.filename, related_sport.sport_name.lower())
                 all_results.append({
-                    "sport": related_sport.name,
-                    "blob_name": blob_index.blob_name,
+                    "sport": related_sport.sport_name,
+                    "blob_name": blob_index.filename,
                     "data": data
                 })
             except Exception as e:
-                print(f"Помилка при отриманні блобу '{blob_index.blob_name}' для виду спорту '{related_sport.name}': {e}")
+                print(f"Помилка при отриманні блобу '{blob_index.filename}' для виду спорту '{related_sport.sport_name}': {e}")
                 
     return all_results if all_results else False
-
-    
-
 
 def save_news_index_to_db(blob_name: str, session: Session) -> None:
     try:
         # Перевірка, чи існує новина з таким blob_name
         existing_news = session.query(NewsIndex).filter_by(blob_name=blob_name).first()
-        news_index = NewsIndex(blob_name=blob_name, saved_at=datetime.utcnow())
+        if existing_news:
+            print(f"Новина '{blob_name}' вже існує в БД.")
+            return
+        news_index = News(blob_name=blob_name)
         session.add(news_index)
         print(f"Новина '{blob_name}' збережена в БД.")
-        # Комітимо зміни до БД
         session.commit()
     except Exception as e:
         session.rollback()
         print(f"Помилка при збереженні індексу новини в БД: {e}")
 
-
 def get_news_by_index(blob_name: str, session: Session) -> Dict:
-    # Шукаємо новину в базі даних
-    news_record = session.query(NewsIndex).filter_by(blob_name=blob_name).first()
-
+    news_record = session.query(News).filter_by(blob_name=blob_name).first()
     if not news_record:
         print(f"Новина з blob_name '{blob_name}' не знайдена в БД.")
         return {}
-'''
+    try:
+        data = blob_get_news(news_record)
+        return data
+    except Exception as e:
+        print(f"Помилка при отриманні блобу '{news_record}': {e}")
+
+
 
