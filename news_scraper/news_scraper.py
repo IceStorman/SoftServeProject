@@ -1,7 +1,6 @@
-import requests
-from bs4 import BeautifulSoup
-import time
-import json
+from basic_parser import Main_page_sport_parser, Article_Scraper
+
+
 sport_urls = {
    ' main_football_url' : 'https://www.espn.com/soccer/',
    ' main_afl_url' : '',
