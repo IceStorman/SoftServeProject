@@ -5,6 +5,7 @@ function MainPage() {
 
 
     return(
+
         <>
 
             <section className="streams">
