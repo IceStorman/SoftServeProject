@@ -8,4 +8,4 @@ class User(Base):
     password_hash = Column(String)
     sport_pref_key = Column(Integer)
     club_pref_key = Column(Integer)
-    theme = Column(String)
+    #theme = Column(String)
