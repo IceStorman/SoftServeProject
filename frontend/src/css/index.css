@@ -15,10 +15,10 @@
 }
 
 body{
+    width: 100%;
     background-color: var(--main-background-color);
     margin: 0;
     padding: 0;
-    overflow-x: hidden;
 }
 
 header{
@@ -29,6 +29,7 @@ header{
     padding: 0;
     display: flex;
     justify-content: space-between;
+    overflow: hidden;
 
     .red{
         color: var(--special-red);
