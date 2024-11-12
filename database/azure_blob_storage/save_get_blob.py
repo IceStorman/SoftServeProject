@@ -3,6 +3,7 @@ import json
 from typing import Dict
 import os
 from dotenv import load_dotenv
+import datetime
 load_dotenv()
 account_url = os.getenv("BLOBURL")
 sastokens_dict = {
@@ -134,7 +135,6 @@ def get_blob_data_for_all_sports(blob_indexes, session):
         if not sport:
             print(f"Sport для SportIndex {sport_index.index_id} не знайдений.")
             continue
-        sport_name = sport.name.lower()  # Наприклад, "football"
         related_sports = session.query(Sport).filter_by(sport_name=sport.sport_name).all()
         for related_sport in related_sports:
             try:
@@ -147,7 +147,7 @@ def get_blob_data_for_all_sports(blob_indexes, session):
             except Exception as e:
                 print(f"Помилка при отриманні блобу '{blob_index.filename}' для виду спорту '{related_sport.sport_name}': {e}")
                 
-    return all_results if all_results else False
+    return json.dumps(all_results, ensure_ascii=False) if all_results else json.dumps({"error": "No data found"})
 
 def save_news_index_to_db(blob_name: str, session: Session) -> None:
     try:
@@ -156,7 +156,7 @@ def save_news_index_to_db(blob_name: str, session: Session) -> None:
         if existing_news:
             print(f"Новина '{blob_name}' вже існує в БД.")
             return
-        news_index = News(blob_name=blob_name)
+        news_index = News(blob_name=blob_name, saved_at=datetime.utcnow())
         session.add(news_index)
         print(f"Новина '{blob_name}' збережена в БД.")
         session.commit()
@@ -174,6 +174,24 @@ def get_news_by_index(blob_name: str, session: Session) -> Dict:
         return data
     except Exception as e:
         print(f"Помилка при отриманні блобу '{news_record}': {e}")
+
+
+def get_news_by_count(count: int, session: Session) -> str:
+    news_records = session.query(News).order_by(News.saved_at.desc()).limit(count).all()
+    if not news_records:
+        print(f"Новини в БД не знайдені.")
+        return json.dumps([])
+    all_results = []
+    for news_record in news_records:
+        try:
+            data = blob_get_news(news_record.blob_id)
+            all_results.append({
+                "blob_id": news_record.blob_id,
+                "data": data
+            })
+        except Exception as e:
+            print(f"Помилка при отриманні блобу '{news_record.blob_id}': {e}")
+    return json.dumps(all_results, ensure_ascii=False)
 
 
 
