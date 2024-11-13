@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+import time
 
 
 
@@ -28,20 +29,41 @@ class Article_Scraper(Main_page_sport_parser):
     def get_article_content(self, article_url):
         response = requests.get(article_url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        sections = []
-        elements = soup.find_all(['h2','p','ul'])
-        current_section = None 
-        for element in elements:
-            if element.name == 'h2':
-                if current_section:
-                    sections.append(current_section)
-                current_section = {'title': element.get_text(), 'content':[]}
 
-            elif element.name in ['p', 'ul']:
-                if current_section:
-                    current_section['content'].append(element.get_text())
+        
+        
+        timestamp = soup.select_one('.timestamp')
 
-        if current_section:
-            sections.append(current_section) 
+        article_data = {
+            
+            'timestamp': timestamp.get_text(strip=True) if timestamp else None,
+            'sections': []
+        }
+
+        
+        content_div = soup.select_one('.article-body')
+        if content_div:
+            paragraphs = content_div.find_all(['p', 'h2'])
+
+            current_section = None
+            for element in paragraphs:
+                if element.name == 'h2':
+                    if current_section:
+                        article_data['sections'].append(current_section)
+                    current_section = {
+                        'title': element.get_text(strip=True),
+                        'content': []
+                    }
+                elif element.name == 'p':
+                    if current_section is None:
+                        
+                        current_section = {'title': '', 'content': []}
+                    current_section['content'].append(element.get_text(strip=True))
+
+            
+            if current_section:
+                article_data['sections'].append(current_section)
+
+        return article_data
 
         
