@@ -3,10 +3,8 @@ import json
 from typing import Dict
 import os
 from dotenv import load_dotenv
-import datetime
-from requests import session
+from datetime import datetime, timezone
 from database.models import BlobIndex, News, Sport, SportIndex
-from sqlalchemy.orm import Session
 from database.session import SessionLocal
 load_dotenv()
 account_url = os.getenv("BLOBURL")
@@ -164,20 +162,30 @@ def get_blob_data_for_all_sports(blob_indexes, session):
 def save_news_index_to_db(blob_name: str, session) -> None:
     try:
         # Перевірка, чи існує новина з таким blob_name
-        existing_news = session.query(News).filter_by(blob_name=blob_name).first()
+        existing_news = session.query(News).filter_by(blob_id=blob_name).first()
         if existing_news:
             print(f"Новина '{blob_name}' вже існує в БД.")
             return
-        news_index = News(blob_id=blob_name, save_at=datetime.utcnow())
+        news_index = News(blob_id=blob_name, save_at=datetime.now(timezone.utc))
         session.add(news_index)
         print(f"Новина '{blob_name}' збережена в БД.")
         session.commit()
     except Exception as e:
         session.rollback()
         print(f"Помилка при збереженні індексу новини в БД: {e}")
+a = {
+    "header": {
+        "title": "test 12345"
+    },
+    "body": {
+        "text": " ggugig g. ffiuf jct ccx. yguygu. y. yu g ig "
+    },
+    "sport": "football"
+}
+blob_save_news(a)
 
 def get_news_by_index(blob_name: str, session) -> Dict:
-    news_record = session.query(News).filter_by(blob_name=blob_name).first()
+    news_record = session.query(News).filter_by(blob_id=blob_name).first()
     if not news_record:
         print(f"Новина з blob_name '{blob_name}' не знайдена в БД.")
         return {}
@@ -205,6 +213,11 @@ def get_news_by_count(count: int, session) -> str:
             print(f"Помилка при отриманні блобу '{news_record.blob_id}': {e}")
     return json.dumps(all_results, ensure_ascii=False)
 
+
+
+with SessionLocal() as session:
+    result = get_news_by_count(2, session)
+    print(result)
 '''
 with SessionLocal() as session:
     # Отримуємо всі індекси блобів
