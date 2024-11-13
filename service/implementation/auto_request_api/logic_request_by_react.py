@@ -402,9 +402,8 @@ def volleyball_teams_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
     except Exception as e:
         return {"error": str(e)}
 
-
-
-api1 = {"fixture_id": 380012, "team_id": 123}
+'''
+api1 = {"fixture_id": 380516, "team_id": 103}
 result=football_fixtures_statistics(api1)
 print(result)
 api2 = {"fixture_id": 123456}
@@ -428,7 +427,7 @@ print(result)
 api8 = {"league_id": 3, "team_id": 123}
 result=baseball_teams_statistics(api8)
 print(result)
-api9 = {"team_id": 234}
+api9 = {"team_id": 333}
 result=basketball_players(api9)
 print(result)
 api10 = {"player_id": 234}
@@ -461,6 +460,7 @@ print(result)
 api19 = {"league_id": 3, "team_id": 123}
 result=volleyball_teams_statistics(api19)
 print(result)
+'''
 
 
 
