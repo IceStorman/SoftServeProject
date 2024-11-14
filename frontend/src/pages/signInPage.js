@@ -15,8 +15,8 @@ function SignUpPage(){
                         <h1>Вхід</h1>
 
                         <div className={"input-box"}>
-                            <input id={"email-input-sign-up"} className={"email-input"} type={"email text"} placeholder={"Email / Нік нейм"}/>
-                            <input id={"password-input-sign-up"} className={"password-input"} placeholder={"Пароль"} type={"password"}/>
+                            <input id={"email-input-sign-in"} className={"email-input"} type={"email text"} placeholder={"Email / Нік нейм"}/>
+                            <input id={"password-input-sign-in"} className={"password-input"} placeholder={"Пароль"} type={"password"}/>
                         </div>
 
                         <Link to={""}>Забули пароль?</Link>
