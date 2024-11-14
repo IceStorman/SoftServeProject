@@ -10,11 +10,11 @@ function header(){
                 <span className="red">КУЙ</span>Sport
             </Link>
 
-            <div className="nav-menu">
+            <div className="navMenu">
 
                 <Link to={""}>Трансляції</Link>
                 <Link to={""}>Розклад подій</Link>
-                <Link className="sign-link" to={"/sign-in"}>Вхід</Link>
+                <Link className="signLink" to={"/sign-in"}>Вхід</Link>
 
             </div>
 

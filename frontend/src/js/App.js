@@ -18,6 +18,7 @@ import homePage from "../pages/mainPage";
 import SignUpPage from "../pages/signUpPage";
 import SignInPage from "../pages/signInPage";
 import MainPage from "../pages/mainPage";
+import ForgotPasswordPage from "../pages/forgotPasswordPage";
 
 function App(){
 
@@ -41,6 +42,8 @@ function App(){
                     <Route path="/sign-in" element={<SignInPage />} />
 
                     <Route path="/sign-up" element={<SignUpPage />} />
+
+                    <Route path="/recover-password" element={<ForgotPasswordPage />} />
 
                     <Route path="*" element={<Navigate to="/" />} />
 

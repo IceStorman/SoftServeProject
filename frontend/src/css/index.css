@@ -21,6 +21,10 @@ body{
     padding: 0;
 }
 
+.hidden{
+    display: none;
+}
+
 header{
     width: 100%;
     height: 5rem;
@@ -42,7 +46,7 @@ header{
         color: var(--main-text-color);
     }
 
-    .nav-menu{
+    .navMenu{
         display: flex;
         justify-content: space-between;
         flex-direction: row;
@@ -56,7 +60,7 @@ header{
             padding: 0.5rem 1.6rem;
         }
 
-        .sign-link{
+        .signLink{
             background-color: var(--purple-btn-color);
             border-radius: 0.6rem;
         }
@@ -88,13 +92,13 @@ header{
         margin: auto 4vh auto 2vh;
     }
 
-    .streams-bar{
+    .streamsBar{
         display: flex;
         flex-direction: row;
         width: 90%;
         overflow: hidden;
 
-        .stream-box{
+        .streamBox{
             display: flex;
             justify-content: center;
             flex-direction: row;
@@ -111,13 +115,13 @@ header{
             margin: auto 0.7rem;
         }
 
-        .stream-info{
+        .streamInfo{
             display: flex;
             align-items: center;
             flex-direction: column;
 
 
-            .online, .preview, .score, .match-league{
+            .online, .preview, .score, .matchLeague{
                 margin: auto 2vh;
             }
 
@@ -125,13 +129,13 @@ header{
                 color: red;
             }
 
-            .match-league{
+            .matchLeague{
                 color: var(--special-grey);
             }
 
         }
 
-        .active-streams{
+        .activeStreams{
             display: flex;
             flex-direction: row;
 
@@ -146,7 +150,7 @@ header{
 
         }
 
-        .scheduled-stream{
+        .scheduledStream{
             display: flex;
             flex-direction: row;
             align-items: center;
@@ -183,7 +187,7 @@ header{
     border-top-right-radius: 3vh;
     overflow: hidden;
 
-    .news-box{
+    .newsBox{
         display: flex;
         flex-direction: column;
         justify-content: start;
@@ -191,7 +195,7 @@ header{
         margin: auto auto 0.1vh;
         cursor: pointer;
 
-        .news-insight{
+        .newsInsight{
             display: flex;
             justify-content: space-between;
         }
@@ -214,7 +218,7 @@ header{
         }
     }
 
-    .news-title{
+    .newsTitle{
         width: 100%;
         text-align: center;
         margin: 0;
@@ -236,14 +240,14 @@ header{
     }
 }
 
-.nav-sports{
+.navSports{
     display: flex;
     flex-wrap: wrap;
     align-content: flex-start;
     margin: 4vh 0 0;
     width: 30%;
 
-    .sport-box{
+    .sportBox{
         display: flex;
         justify-content: center;
         margin: 0 auto 5vh;
@@ -281,7 +285,7 @@ footer{
         padding: 0 0.8vh;
     }
 
-    .footer-info{
+    .footerInfo{
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -289,13 +293,13 @@ footer{
     }
 }
 
-.sign-page{
+.signPage{
     display: flex;
     flex-direction: column;
     align-items: center;
     margin: 2rem 0;
 
-    .sign-container{
+    .signContainer{
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -305,16 +309,16 @@ footer{
         border-radius: 1rem;
         font-weight: bold;
 
-        .sign-box{
+        .signBox{
             width: 70%;
             display: flex;
             flex-direction: column;
 
-            .input-box{
+            .inputBox{
                 margin: 0;
                 box-sizing: border-box;
 
-                .name-input, .email-input, .password-input{
+                .name-input, .emailInput, .passwordInput, .codeInput{
                     box-sizing: inherit;
                     width: 100%;
                     height: 2rem;
@@ -331,6 +335,11 @@ footer{
                 margin: 1vh auto;
             }
 
+            .signError{
+                margin: 0;
+                color: red;
+            }
+
             a{
                 margin: 0 0 2vh;
                 align-self: end;
@@ -339,9 +348,9 @@ footer{
                 cursor: pointer;
             }
 
-            #sign-btn{
+            .signBtn{
                 all: unset;
-                margin: auto;
+                margin: 1rem auto 0;
                 font-size: 1.5rem;
                 background-color: var(--special-dark-purple);
                 border-radius: 0.5rem;
@@ -352,7 +361,7 @@ footer{
         }
     }
 
-    .sign-redirect{
+    .signRedirect{
         display: flex;
         flex-direction: row;
         align-items: center;

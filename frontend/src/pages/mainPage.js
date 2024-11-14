@@ -12,23 +12,23 @@ function MainPage() {
 
                 <button></button>
 
-                <div className="streams-bar">
+                <div className="streamsBar">
 
-                    <div className="active-streams">
+                    <div className="activeStreams">
 
-                        <h2 id="live-streams">Активні</h2>
+                        <h2 id="liveStreams">Активні</h2>
 
-                        <div className="stream-box">
+                        <div className="streamBox">
 
                             <i className="fa fa-user-o" aria-hidden="true"></i>
 
-                            <div className="stream-info">
+                            <div className="streamInfo">
 
                                 <h4 className="online">етер</h4>
 
                                 <h1 className="score">0:0</h1>
 
-                                <h4 className="match-league">ліга</h4>
+                                <h4 className="matchLeague">ліга</h4>
 
                             </div>
 
@@ -38,24 +38,24 @@ function MainPage() {
 
                     </div>
 
-                    <div className="scheduled-stream">
+                    <div className="scheduledStream">
 
                         <div id="planned-streams">
                             <h2>MNS</h2>
                             <h2>00</h2>
                         </div>
 
-                        <div className="stream-box">
+                        <div className="streamBox">
 
                             <i className="fa fa-user-o" aria-hidden="true"></i>
 
-                            <div className="stream-info">
+                            <div className="streamInfo">
 
                                 <h4 className="preview">скоро</h4>
 
                                 <h1 className="score">VS</h1>
 
-                                <h4 className="match-league">ліга</h4>
+                                <h4 className="matchLeague">ліга</h4>
 
                             </div>
 
@@ -68,7 +68,7 @@ function MainPage() {
                 </div>
 
 
-                <button id="right-btn"></button>
+                <button id="rightBtn"></button>
 
             </section>
 
@@ -76,13 +76,13 @@ function MainPage() {
 
                 <section className="news">
 
-                    <h1 className="news-title">НОВИНИ</h1>
+                    <h1 className="newsTitle">НОВИНИ</h1>
 
-                    <div className="news-box">
+                    <div className="newsBox">
 
                         <img src="/img/team.jpg" alt="news picture"/>
 
-                        <div className="news-insight">
+                        <div className="newsInsight">
 
                             <h1>TITLE BLA BLA BLA BLA</h1>
 
@@ -98,13 +98,13 @@ function MainPage() {
 
                 <section className="news">
 
-                    <h1 className="news-title">РЕКОМЕНДАЦІЇ</h1>
+                    <h1 className="newsTitle">РЕКОМЕНДАЦІЇ</h1>
 
-                    <div className="news-box">
+                    <div className="newsBox">
 
                         <img src="/img/team.jpg" alt="news picture"/>
 
-                        <div className="news-insight">
+                        <div className="newsInsight">
 
                             <h1>TITLE BLA BLA BLA BLA</h1>
 
@@ -118,9 +118,9 @@ function MainPage() {
 
                 </section>
 
-                <section className="nav-sports">
+                <section className="navSports">
 
-                    <div className="sport-box">
+                    <div className="sportBox">
 
                         <Link to={"/"}>
                             <img src="/img/hero-banner.png" alt="footbal player"/>
@@ -128,7 +128,7 @@ function MainPage() {
 
                     </div>
 
-                    <div className="sport-box">
+                    <div className="sportBox">
 
                         <Link to={"/"}>
                             <img src="/img/basket-player.png" alt="basket player"/>
@@ -136,7 +136,7 @@ function MainPage() {
 
                     </div>
 
-                    <div className="sport-box">
+                    <div className="sportBox">
 
                         <Link to={"/"}>
                             <img src="/img/min-nba.png" alt="nba player"/>
@@ -145,7 +145,7 @@ function MainPage() {
 
                     </div>
 
-                    <div className="sport-box">
+                    <div className="sportBox">
 
                         <Link to={"/"}>
                             <img src="/img/mma-logo.png" alt="mma player"/>
@@ -153,7 +153,7 @@ function MainPage() {
 
                     </div>
 
-                    <div className="sport-box">
+                    <div className="sportBox">
 
                         <Link to={"/"}>
                             <img src="/img/handball-logo.png" alt="handball player"/>
@@ -161,7 +161,7 @@ function MainPage() {
 
                     </div>
 
-                    <div className="sport-box">
+                    <div className="sportBox">
 
                         <Link to={"/"}>
                             <img src="/img/hockey-logo.png" alt="hockey player"/>
@@ -169,7 +169,7 @@ function MainPage() {
 
                     </div>
 
-                    <div className="sport-box">
+                    <div className="sportBox">
 
                         <Link to={"/"}>
                             <img src="/img/afl-logo.png" alt="afl player"/>
@@ -177,7 +177,7 @@ function MainPage() {
 
                     </div>
 
-                    <div className="sport-box">
+                    <div className="sportBox">
 
                         <Link to={"/"}>
                             <img src="/img/baseball-logo.png" alt="baseball player"/>
@@ -185,7 +185,7 @@ function MainPage() {
 
                     </div>
 
-                    <div className="sport-box">
+                    <div className="sportBox">
 
                         <Link to={"/"}>
                             <img src="/img/rugby-logo.png" alt="rugby player"/>
@@ -193,7 +193,7 @@ function MainPage() {
 
                     </div>
 
-                    <div className="sport-box">
+                    <div className="sportBox">
 
                         <Link to={"/"}>
                             <img src="/img/volleyball-logo.png" alt="balleyball player"/>
@@ -201,7 +201,7 @@ function MainPage() {
 
                     </div>
 
-                    <div className="sport-box">
+                    <div className="sportBox">
 
                         <Link to={"/"}>
                             <img src="/img/nfl-logo.png" alt="nfl player"/>
@@ -209,7 +209,7 @@ function MainPage() {
 
                     </div>
 
-                    <div className="sport-box">
+                    <div className="sportBox">
 
                         <Link to={"/"}>
                             <img src="/img/f1-mini.png" alt="formula player"/>

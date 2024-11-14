@@ -6,28 +6,29 @@ function SignUpPage(){
     return(
         <>
 
-            <section className={"sign-page"}>
+            <section className={"signPage"}>
 
-                <section className={"sign-container"}>
+                <section className={"signContainer"}>
 
-                    <div className={"sign-box"}>
+                    <div className={"signBox"}>
 
                         <h1>Вхід</h1>
 
-                        <div className={"input-box"}>
-                            <input id={"email-input-sign-in"} className={"email-input"} type={"email text"} placeholder={"Email / Нік нейм"}/>
-                            <input id={"password-input-sign-in"} className={"password-input"} placeholder={"Пароль"} type={"password"}/>
+                        <div className={"inputBox"}>
+                            <input id={"emailInputSignIn"} className={"emailInput"} type={"email text"} placeholder={"Email / Нік нейм"}/>
+                            <input id={"passwordInputSignIn"} className={"passwordInput"} placeholder={"Пароль"} type={"password"}/>
+                            <input id={"passwordConfirmSignIn"} className={"passwordInput hidden"} placeholder={"Повторіть новий пароль"} type={"password"}/>
                         </div>
 
-                        <Link to={""}>Забули пароль?</Link>
+                        <Link to={"/recover-password"}>Забули пароль?</Link>
 
-                        <button id={"sign-btn"}>Ввійти</button>
+                        <button id={"sign-in-btn"} className={"signBtn"}>Ввійти</button>
 
                     </div>
 
                 </section>
 
-                <div className={"sign-redirect"}>
+                <div className={"signRedirect"}>
 
                     Ще немає акаунта?
                     <Link to={"/sign-up"}>Створити</Link>
