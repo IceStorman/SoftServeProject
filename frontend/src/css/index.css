@@ -278,7 +278,7 @@ footer{
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: auto;
+    margin: 2rem 0;
 
     .sign-container{
         display: flex;
@@ -299,7 +299,7 @@ footer{
                 margin: 0;
                 box-sizing: border-box;
 
-                #name-input, #email-input, #password-input{
+                .name-input, .email-input, .password-input{
                     box-sizing: inherit;
                     width: 100%;
                     height: 2rem;
