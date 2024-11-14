@@ -15,10 +15,10 @@ class Main_page_sport_parser:
 
         articles = []
         for link in soup.find_all('a', class_="contentItem__padding contentItem__padding--border"):
-            article_url = link['href']
+            article_url_suffix = link['href']
             title = link.find('h2', class_='contentItem__title contentItem__title--story').get_text()
             articles.append({'title':title,
-                             'url':article_url
+                             'url':f'{self.main_url}+{article_url_suffix}'
                              })
         return articles
 
@@ -35,7 +35,6 @@ class Article_Scraper(Main_page_sport_parser):
         timestamp = soup.select_one('.timestamp')
 
         article_data = {
-            
             'timestamp': timestamp.get_text(strip=True) if timestamp else None,
             'sections': []
         }
