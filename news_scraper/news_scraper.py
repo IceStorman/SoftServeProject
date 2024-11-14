@@ -18,5 +18,5 @@ sport_urls = {
 
 
 
-print(sport_urls[' main_football_url'])
+print(sport_urls['main_football_url'])
 #for key, value in d.items():
