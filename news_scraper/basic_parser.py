@@ -64,6 +64,8 @@ class Article_Scraper(Main_page_sport_parser):
             if current_section:
                 article_data['sections'].append(current_section)
 
+        time.sleep(1)
+
         return article_data
 
         
