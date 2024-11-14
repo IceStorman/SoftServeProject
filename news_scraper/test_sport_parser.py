@@ -4,8 +4,6 @@ from bs4 import BeautifulSoup
 import requests
 from basic_parser import Main_page_sport_parser, Article_Scraper
 
-# Assuming Main_page_sport_parser and Article_Scraper are already defined above
-# Replace 'contentItem__padding' with the specific class from the webpage in your real use
 
 class TestSportParser(unittest.TestCase):
     def setUp(self):
@@ -14,7 +12,7 @@ class TestSportParser(unittest.TestCase):
 
     @patch('requests.get')
     def test_get_article_links(self, mock_get):
-        # Mock HTML content for the main page
+        
         html_content = '''
         <html>
         <body>
@@ -24,7 +22,7 @@ class TestSportParser(unittest.TestCase):
         </body>
         </html>
         '''
-        # Mock response for requests.get
+        
         mock_response = MagicMock()
         mock_response.text = html_content
         mock_get.return_value = mock_response
@@ -36,7 +34,7 @@ class TestSportParser(unittest.TestCase):
 
     @patch('requests.get')
     def test_get_article_content(self, mock_get):
-        # Mock HTML content for an article page
+        
         html_content = '''
         <html>
         <body>
@@ -51,7 +49,7 @@ class TestSportParser(unittest.TestCase):
         </body>
         </html>
         '''
-        # Mock response for requests.get
+        
         mock_response = MagicMock()
         mock_response.text = html_content
         mock_get.return_value = mock_response
