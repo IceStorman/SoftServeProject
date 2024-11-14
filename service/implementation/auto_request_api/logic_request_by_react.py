@@ -5,6 +5,7 @@ from database.azure_blob_storage.save_get_blob import blob_save_specific_api, ge
 from database.session import SessionLocal
 from typing import Dict
 
+
 def main_request(host, name, url, blob_name):
     global current_key_index, account_url
     today = datetime.now().strftime('%Y-%m-%d')
@@ -22,6 +23,7 @@ def main_request(host, name, url, blob_name):
     blob_save_specific_api(name, blob_name, json_data)
     return json_data
 
+
 def football_fixtures_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
     fixture_id = api_data.get("fixture_id")
     team_id = api_data.get("team_id")
@@ -33,9 +35,9 @@ def football_fixtures_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
         check = get_all_blob_indexes_from_db(session, index)
         if check:
             result = get_blob_data_for_all_sports(session, check)
-            print("xui")
+            print("\033[32mxui\033[0m")
             return result
-    print("xuiiiiiii")
+    print("\033[31mxui tam plaval\033[0m")
     url = f"https://v3.football.api-sports.io/fixtures/statistics?fixture={fixture_id}&team={team_id}"
     host = "v3.football.api-sports.io"
     try:
@@ -43,6 +45,7 @@ def football_fixtures_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
         return json_data
     except Exception as e:
         return {"error": str(e)}
+
 
 def football_fixtures_events_lineups_players(api_data: Dict[str, str]) -> Dict[str, Dict[str, str]]:
     fixture_id = api_data.get("fixture_id")
@@ -60,13 +63,13 @@ def football_fixtures_events_lineups_players(api_data: Dict[str, str]) -> Dict[s
             result1 = get_blob_data_for_all_sports(session, check1)
             result2 = get_blob_data_for_all_sports(session, check2)
             result3 = get_blob_data_for_all_sports(session, check3)
-            print("xui")
+            print("\033[32mxui\033[0m")
             return {
                 "events": result1,
                 "lineups": result2,
                 "players": result3
             }
-    print("xuiiiiiii")
+    print("\033[31mxui tam plaval\033[0m")
     url1 = f"https://v3.football.api-sports.io/fixtures/events?fixture={fixture_id}"
     url2 = f"https://v3.football.api-sports.io/fixtures/lineups?fixture={fixture_id}"
     url3 = f"https://v3.football.api-sports.io/fixtures/players?fixture={fixture_id}"
@@ -83,6 +86,7 @@ def football_fixtures_events_lineups_players(api_data: Dict[str, str]) -> Dict[s
     except Exception as e:
         return {"error": {"message": str(e)}}
 
+
 def football_coachs(api_data: Dict[str, str]) -> Dict[str, str]:
     team_id = api_data.get("team_id")
     if not team_id:
@@ -93,8 +97,9 @@ def football_coachs(api_data: Dict[str, str]) -> Dict[str, str]:
         check = get_all_blob_indexes_from_db(session, index)
         if check:
             result = get_blob_data_for_all_sports(session, check)
-            print("xui")
+            print("\033[32mxui\033[0m")
             return result
+    print("\033[31mxui tam plaval\033[0m")
     url = f"https://v3.football.api-sports.io/coachs?team={team_id}"
     host = "v3.football.api-sports.io"
     try:
@@ -102,6 +107,7 @@ def football_coachs(api_data: Dict[str, str]) -> Dict[str, str]:
         return json_data
     except Exception as e:
         return {"error": str(e)}
+
 
 def football_players_profiles_sidelined(api_data: Dict[str, str]) -> Dict[str, str]:
     player_id = api_data.get("player_id")
@@ -119,12 +125,13 @@ def football_players_profiles_sidelined(api_data: Dict[str, str]) -> Dict[str, s
             result1 = get_blob_data_for_all_sports(session, check1)
             result2 = get_blob_data_for_all_sports(session, check2)
             result3 = get_blob_data_for_all_sports(session, check3)
-            print("xui")
+            print("\033[32mxui\033[0m")
             return {
                 "profiles": result1,
                 "players": result2,
                 "sidelined": result3
             }
+    print("\033[31mxui tam plaval\033[0m")
     url1 = f"https://v3.football.api-sports.io/players/profiles?player=276{player_id}"
     url2 = f"https://v3.football.api-sports.io/players?id={player_id}&season=2024"
     url3 = f"https://v3.football.api-sports.io/sidelined?player={player_id}"
@@ -141,6 +148,7 @@ def football_players_profiles_sidelined(api_data: Dict[str, str]) -> Dict[str, s
     except Exception as e:
         return {"error": str(e)}
 
+
 def afl_teams_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
     team_id = api_data.get("team_id")
     if not team_id:
@@ -151,8 +159,9 @@ def afl_teams_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
         check = get_all_blob_indexes_from_db(session, index)
         if check:
             result = get_blob_data_for_all_sports(session, check)
-            print("xui")
+            print("\033[32mxui\033[0m")
             return result
+    print("\033[31mxui tam plaval\033[0m")
     url = f"https://v1.afl.api-sports.io/teams/statistics?id={team_id}&season=2023"
     host = "v1.afl.api-sports.io"
     try:
@@ -160,6 +169,7 @@ def afl_teams_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
         return json_data
     except Exception as e:
         return {"error": str(e)}
+
 
 def afl_players(api_data: Dict[str, str]) -> Dict[str, str]:
     team_id = api_data.get("team_id")
@@ -171,8 +181,9 @@ def afl_players(api_data: Dict[str, str]) -> Dict[str, str]:
         check = get_all_blob_indexes_from_db(session, index)
         if check:
             result = get_blob_data_for_all_sports(session, check)
-            print("xui")
+            print("\033[32mxui\033[0m")
             return result
+    print("\033[31mxui tam plaval\033[0m")
     url = f"https://v1.afl.api-sports.io/players?season=2023&team={team_id}"
     host = "v1.afl.api-sports.io"
     try:
@@ -180,6 +191,7 @@ def afl_players(api_data: Dict[str, str]) -> Dict[str, str]:
         return json_data
     except Exception as e:
         return {"error": str(e)}
+
 
 def afl_players_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
     player_id = api_data.get("player_id")
@@ -191,8 +203,9 @@ def afl_players_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
         check = get_all_blob_indexes_from_db(session, index)
         if check:
             result = get_blob_data_for_all_sports(session, check)
-            print("xui")
+            print("\033[32mxui\033[0m")
             return result
+    print("\033[31mxui tam plaval\033[0m")
     url = f"https://v1.afl.api-sports.io/players/statistics?id={player_id}&season=2024"
     host = "v1.afl.api-sports.io"
     try:
@@ -200,6 +213,7 @@ def afl_players_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
         return json_data
     except Exception as e:
         return {"error": str(e)}
+
 
 def baseball_teams_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
     team_id = api_data.get("team_id")
@@ -212,8 +226,9 @@ def baseball_teams_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
         check = get_all_blob_indexes_from_db(session, index)
         if check:
             result = get_blob_data_for_all_sports(session, check)
-            print("xui")
+            print("\033[32mxui\033[0m")
             return result
+    print("\033[31mxui tam plaval\033[0m")
     url = f"https://v1.baseball.api-sports.io/teams/statistics?league={league_id}&season=2024&team={team_id}"
     host = "v1.baseball.api-sports.io"
     try:
@@ -221,6 +236,7 @@ def baseball_teams_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
         return json_data
     except Exception as e:
         return {"error": str(e)}
+
 
 def basketball_players(api_data: Dict[str, str]) -> Dict[str, str]:
     team_id = api_data.get("team_id")
@@ -232,8 +248,9 @@ def basketball_players(api_data: Dict[str, str]) -> Dict[str, str]:
         check = get_all_blob_indexes_from_db(session, index)
         if check:
             result = get_blob_data_for_all_sports(session, check)
-            print("xui")
+            print("\033[32mxui\033[0m")
             return result
+    print("\033[31mxui tam plaval\033[0m")
     url = f"https://v1.basketball.api-sports.io/players?team={team_id}&season=2024"
     host = "v1.basketball.api-sports.io"
     try:
@@ -241,6 +258,7 @@ def basketball_players(api_data: Dict[str, str]) -> Dict[str, str]:
         return json_data
     except Exception as e:
         return {"error": str(e)}
+
 
 def basketball_players_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
     player_id = api_data.get("player_id")
@@ -252,8 +270,9 @@ def basketball_players_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
         check = get_all_blob_indexes_from_db(session, index)
         if check:
             result = get_blob_data_for_all_sports(session, check)
-            print("xui")
+            print("\033[32mxui\033[0m")
             return result
+    print("\033[31mxui tam plaval\033[0m")
     url = f"https://v1.basketball.api-sports.io/games/statistics/players?id={player_id}"
     host = "v1.basketball.api-sports.io"
     try:
@@ -261,6 +280,7 @@ def basketball_players_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
         return json_data
     except Exception as e:
         return {"error": str(e)}
+
 
 def formula_one_rankings_races_and_fastestlaps(api_data: Dict[str, str]) -> Dict[str, str]:
     race_id = api_data.get("race_id")
@@ -275,11 +295,12 @@ def formula_one_rankings_races_and_fastestlaps(api_data: Dict[str, str]) -> Dict
         if check1 and check2:
             result1 = get_blob_data_for_all_sports(session, check1)
             result2 = get_blob_data_for_all_sports(session, check2)
-            print("xui")
+            print("\033[32mxui\033[0m")
             return {
                 "races": result1,
                 "fastestlaps": result2,
             }
+    print("\033[31mxui tam plaval\033[0m")
     url1 = f"https://v1.formula-1.api-sports.io/rankings/races?race={race_id}"
     url2 = f"https://v1.formula-1.api-sports.io/rankings/fastestlaps?race={race_id}"
     host = "v1.formula-1.api-sports.io"
@@ -293,6 +314,7 @@ def formula_one_rankings_races_and_fastestlaps(api_data: Dict[str, str]) -> Dict
     except Exception as e:
         return {"error": str(e)}
 
+
 def handball_teams_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
     team_id = api_data.get("team_id")
     league_id = api_data.get("league_id")
@@ -304,8 +326,9 @@ def handball_teams_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
         check = get_all_blob_indexes_from_db(session, index)
         if check:
             result = get_blob_data_for_all_sports(session, check)
-            print("xui")
+            print("\033[32mxui\033[0m")
             return result
+    print("\033[31mxui tam plaval\033[0m")
     url = f"https://v1.handball.api-sports.io/teams/statistics?season=2024&team={team_id}&league={league_id}"
     host = "v1.handball.api-sports.io"
     try:
@@ -313,6 +336,7 @@ def handball_teams_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
         return json_data
     except Exception as e:
         return {"error": str(e)}
+
 
 def hockey_teams_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
     team_id = api_data.get("team_id")
@@ -325,8 +349,9 @@ def hockey_teams_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
         check = get_all_blob_indexes_from_db(session, index)
         if check:
             result = get_blob_data_for_all_sports(session, check)
-            print("xui")
+            print("\033[32mxui\033[0m")
             return result
+    print("\033[31mxui tam plaval\033[0m")
     url = f"https://v1.hockey.api-sports.io/teams/statistics?season=2024&team={team_id}&league={league_id}"
     host = "v1.hockey.api-sports.io"
     try:
@@ -334,6 +359,7 @@ def hockey_teams_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
         return json_data
     except Exception as e:
         return {"error": str(e)}
+
 
 def hockey_games_events(api_data: Dict[str, str]) -> Dict[str, str]:
     game_id = api_data.get("game_id")
@@ -345,8 +371,9 @@ def hockey_games_events(api_data: Dict[str, str]) -> Dict[str, str]:
         check = get_all_blob_indexes_from_db(session, index)
         if check:
             result = get_blob_data_for_all_sports(session, check)
-            print("xui")
+            print("\033[32mxui\033[0m")
             return result
+    print("\033[31mxui tam plaval\033[0m")
     url = f"https://v1.hockey.api-sports.io/games/events?game={game_id}"
     host = "v1.hockey.api-sports.io"
     try:
@@ -354,6 +381,7 @@ def hockey_games_events(api_data: Dict[str, str]) -> Dict[str, str]:
         return json_data
     except Exception as e:
         return {"error": str(e)}
+
 
 def mma_fighters_records(api_data: Dict[str, str]) -> Dict[str, str]:
     player_id = api_data.get("player_id")
@@ -365,8 +393,9 @@ def mma_fighters_records(api_data: Dict[str, str]) -> Dict[str, str]:
         check = get_all_blob_indexes_from_db(session, index)
         if check:
             result = get_blob_data_for_all_sports(session, check)
-            print("xui")
+            print("\033[32mxui\033[0m")
             return result
+    print("\033[31mxui tam plaval\033[0m")
     url = f"https://v1.mma.api-sports.io/fighters/records?id={player_id}"
     host = "v1.mma.api-sports.io"
     try:
@@ -374,6 +403,7 @@ def mma_fighters_records(api_data: Dict[str, str]) -> Dict[str, str]:
         return json_data
     except Exception as e:
         return {"error": str(e)}
+
 
 def nba_games_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
     game_id = api_data.get("game_id")
@@ -385,8 +415,9 @@ def nba_games_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
         check = get_all_blob_indexes_from_db(session, index)
         if check:
             result = get_blob_data_for_all_sports(session, check)
-            print("xui")
+            print("\033[32mxui\033[0m")
             return result
+    print("\033[31mxui tam plaval\033[0m")
     url = f"https://v2.nba.api-sports.io/games/statistics?id={game_id}"
     host = "v2.nba.api-sports.io"
     try:
@@ -394,6 +425,7 @@ def nba_games_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
         return json_data
     except Exception as e:
         return {"error": str(e)}
+
 
 def nfl_injuries_players(api_data: Dict[str, str]) -> Dict[str, str]:
     team_id = api_data.get("team_id")
@@ -408,11 +440,12 @@ def nfl_injuries_players(api_data: Dict[str, str]) -> Dict[str, str]:
         if check1 and check2:
             result1 = get_blob_data_for_all_sports(session, check1)
             result2 = get_blob_data_for_all_sports(session, check2)
-            print("xui")
+            print("\033[32mxui\033[0m")
             return {
                 "injuries": result1,
                 "players": result2,
             }
+    print("\033[31mxui tam plaval\033[0m")
     url1 = f"https://v1.american-football.api-sports.io/injuries?team={team_id}"
     url2 = f"https://v1.american-football.api-sports.io/players?team={team_id}"
     host = "v1.american-football.api-sports.io"
@@ -426,6 +459,7 @@ def nfl_injuries_players(api_data: Dict[str, str]) -> Dict[str, str]:
     except Exception as e:
         return {"error": str(e)}
 
+
 def rugby_teams_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
     team_id = api_data.get("team_id")
     league_id = api_data.get("league_id")
@@ -437,8 +471,9 @@ def rugby_teams_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
         check = get_all_blob_indexes_from_db(session, index)
         if check:
             result = get_blob_data_for_all_sports(session, check)
-            print("xui")
+            print("\033[32mxui\033[0m")
             return result
+    print("\033[31mxui tam plaval\033[0m")
     url = f"https://v1.rugby.api-sports.io/teams/statistics?season=2024&team={team_id}&league={league_id}"
     host = "v1.rugby.api-sports.io"
     try:
@@ -446,6 +481,7 @@ def rugby_teams_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
         return json_data
     except Exception as e:
         return {"error": str(e)}
+
 
 def volleyball_teams_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
     team_id = api_data.get("team_id")
@@ -458,8 +494,9 @@ def volleyball_teams_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
         check = get_all_blob_indexes_from_db(session, index)
         if check:
             result = get_blob_data_for_all_sports(session, check)
-            print("xui")
+            print("\033[32mxui\033[0m")
             return result
+    print("\033[31mxui tam plaval\033[0m")
     url = f"https://v1.volleyball.api-sports.io/teams/statistics?season=2024&team={team_id}&league={league_id}"
     host = "v1.volleyball.api-sports.io"
     try:
@@ -478,13 +515,13 @@ print(result)
 api3 = {"team_id": 234}
 result=football_coachs(api3)
 print(result)
-api4 = {"player_id": 234}
+api4 = {"player_id": 235}
 result=football_players_profiles_sidelined(api4)
 print(result)
 api5 = {"team_id": 123}
 result=afl_teams_statistics(api5)
 print(result)
-api6 = {"team_id": 123}
+api6 = {"team_id": 125}
 result=afl_players(api6)
 print(result)
 api7 = {"player_id": 234}
@@ -496,16 +533,16 @@ print(result)
 api9 = {"team_id": 333}
 result=basketball_players(api9)
 print(result)
-api10 = {"player_id": 234}
+api10 = {"player_id": 231}
 result=basketball_players_statistics(api10)
 print(result)
 api11 = {"race_id": 2}
 result=formula_one_rankings_races_and_fastestlaps(api11)
 print(result)
-api12 = {"league_id": 3, "team_id": 123}
+api12 = {"league_id": 3, "team_id": 113}
 result=handball_teams_statistics(api12)
 print(result)
-api13 = {"league_id": 3, "team_id": 123}
+api13 = {"league_id": 3, "team_id": 113}
 result=hockey_teams_statistics(api13)
 print(result)
 api14 = {"game_id": 1234}
@@ -517,13 +554,13 @@ print(result)
 api16 = {"game_id": 1234}
 result=nba_games_statistics(api16)
 print(result)
-api17 = {"team_id": 123}
+api17 = {"team_id": 113}
 result=nfl_injuries_players(api17)
 print(result)
-api18 = {"league_id": 3, "team_id": 123}
+api18 = {"league_id": 3, "team_id": 113}
 result=rugby_teams_statistics(api18)
 print(result)
-api19 = {"league_id": 3, "team_id": 123}
+api19 = {"league_id": 3, "team_id": 113}
 result=volleyball_teams_statistics(api19)
 print(result)
 '''
