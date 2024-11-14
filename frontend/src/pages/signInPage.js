@@ -20,9 +20,9 @@ function SignUpPage(){
                             <input id={"passwordConfirmSignIn"} className={"passwordInput hidden"} placeholder={"Повторіть новий пароль"} type={"password"}/>
                         </div>
 
-                        <Link to={"/recover-password"}>Забули пароль?</Link>
+                        <Link to={"/reset-password"}>Забули пароль?</Link>
 
-                        <button id={"sign-in-btn"} className={"signBtn"}>Ввійти</button>
+                        <button id={"signInBtn"} className={"signBtn"}>Ввійти</button>
 
                     </div>
 

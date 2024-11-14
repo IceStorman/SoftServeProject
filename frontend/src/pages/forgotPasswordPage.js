@@ -15,16 +15,14 @@ function ForgotPasswordPage(){
                         <h1>Реєстрація</h1>
 
                         <div className={"inputBox"}>
-                            <input id={"emailInputReset"} className={"emailInput"} type={"email"}
-                                   placeholder={"Email"}/>
+                            <input id={"emailInputReset"} className={"emailInput"} type={"email"} placeholder={"Email"}/>
                             <h5 id={"emailError"} className={"signError"}></h5>
-                            <input id={"codeInputReset"} className={"codeInput hidden"} type={"number"}
-                                   placeholder={"Код з повідомлення"}/>
+
+                            <input id={"codeInputReset"} className={"codeInput hidden"} type={"number"} placeholder={"Код з повідомлення"}/>
                             <h5 id={"codeError"} className={"signError"}></h5>
-                            <input id={"passwordInputReset"} className={"passwordInput hidden"}
-                                   placeholder={"Новий пароль"} type={"password"}/>
-                            <input id={"passwordConfirmReset"} className={"passwordInput hidden"}
-                                   placeholder={"Повторіть новий пароль"} type={"password"}/>
+
+                            <input id={"passwordInputReset"} className={"passwordInput hidden"} placeholder={"Новий пароль"} type={"password"}/>
+                            <input id={"passwordConfirmReset"} className={"passwordInput hidden"} placeholder={"Повторіть новий пароль"} type={"password"}/>
                             <h5 id={"passwordError"} className={"signError"}></h5>
                         </div>
 
