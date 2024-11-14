@@ -134,7 +134,7 @@ def get_all_blob_indexes_from_db(session, pattern: str):
     blob_indexes = session.query(BlobIndex).filter(BlobIndex.filename.like(f"%{pattern}%")).all()
     return blob_indexes
 
-def get_blob_data_for_all_sports(blob_indexes, session):
+def get_blob_data_for_all_sports(session, blob_indexes):
     all_results = []
     for blob_index in blob_indexes:
         sport_index = session.query(SportIndex).filter_by(index_id=blob_index.sports_index_id).first()

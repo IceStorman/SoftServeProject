@@ -1,7 +1,8 @@
 import requests
 from datetime import datetime
 from logic_auto_request import current_key_index, token_usage, api_key
-from database.azure_blob_storage.save_get_blob import blob_save_specific_api
+from database.azure_blob_storage.save_get_blob import blob_save_specific_api, get_all_blob_indexes_from_db, get_blob_data_for_all_sports
+from database.session import SessionLocal
 from typing import Dict
 
 def main_request(host, name, url, blob_name):
@@ -28,10 +29,13 @@ def football_fixtures_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
         return {"error": "Missing or invalid parameters: 'fixture_id' and 'team_id' are required."}
     name = "football"
     index = f"fixtures/statistics?fixture={fixture_id}&team={team_id}"
-
-    def db_check_logic():
-        pass
-
+    with SessionLocal() as session:
+        check = get_all_blob_indexes_from_db(session, index)
+        if check:
+            result = get_blob_data_for_all_sports(session, check)
+            print("xui")
+            return result
+    print("xuiiiiiii")
     url = f"https://v3.football.api-sports.io/fixtures/statistics?fixture={fixture_id}&team={team_id}"
     host = "v3.football.api-sports.io"
     try:
@@ -48,10 +52,21 @@ def football_fixtures_events_lineups_players(api_data: Dict[str, str]) -> Dict[s
     index1 = f"fixtures/events?fixture={fixture_id}"
     index2 = f"fixtures/lineups?fixture={fixture_id}"
     index3 = f"fixtures/players?fixture=1300109{fixture_id}"
-
-    def db_check_logic():
-        pass
-
+    with SessionLocal() as session:
+        check1 = get_all_blob_indexes_from_db(session, index1)
+        check2 = get_all_blob_indexes_from_db(session, index2)
+        check3 = get_all_blob_indexes_from_db(session, index3)
+        if check1 and check2 and check3:
+            result1 = get_blob_data_for_all_sports(session, check1)
+            result2 = get_blob_data_for_all_sports(session, check2)
+            result3 = get_blob_data_for_all_sports(session, check3)
+            print("xui")
+            return {
+                "events": result1,
+                "lineups": result2,
+                "players": result3
+            }
+    print("xuiiiiiii")
     url1 = f"https://v3.football.api-sports.io/fixtures/events?fixture={fixture_id}"
     url2 = f"https://v3.football.api-sports.io/fixtures/lineups?fixture={fixture_id}"
     url3 = f"https://v3.football.api-sports.io/fixtures/players?fixture={fixture_id}"
@@ -74,10 +89,12 @@ def football_coachs(api_data: Dict[str, str]) -> Dict[str, str]:
         return {"error": "Missing or invalid parameter: 'team_id' required."}
     name = "football"
     index = f"coachs/coachs?team={team_id}"
-
-    def db_check_logic():
-        pass
-
+    with SessionLocal() as session:
+        check = get_all_blob_indexes_from_db(session, index)
+        if check:
+            result = get_blob_data_for_all_sports(session, check)
+            print("xui")
+            return result
     url = f"https://v3.football.api-sports.io/coachs?team={team_id}"
     host = "v3.football.api-sports.io"
     try:
@@ -90,15 +107,24 @@ def football_players_profiles_sidelined(api_data: Dict[str, str]) -> Dict[str, s
     player_id = api_data.get("player_id")
     if not player_id:
         return {"error": "Missing or invalid parameter: 'player_id' required."}
-
     name = "football"
     index1 = f"players/profiles?player={player_id}"
     index2 = f"players/players?id={player_id}&season=2024"
     index3 = f"players/sidelined?player={player_id}"
-
-    def db_check_logic():
-        pass
-
+    with SessionLocal() as session:
+        check1 = get_all_blob_indexes_from_db(session, index1)
+        check2 = get_all_blob_indexes_from_db(session, index2)
+        check3 = get_all_blob_indexes_from_db(session, index3)
+        if check1 and check2 and check3:
+            result1 = get_blob_data_for_all_sports(session, check1)
+            result2 = get_blob_data_for_all_sports(session, check2)
+            result3 = get_blob_data_for_all_sports(session, check3)
+            print("xui")
+            return {
+                "profiles": result1,
+                "players": result2,
+                "sidelined": result3
+            }
     url1 = f"https://v3.football.api-sports.io/players/profiles?player=276{player_id}"
     url2 = f"https://v3.football.api-sports.io/players?id={player_id}&season=2024"
     url3 = f"https://v3.football.api-sports.io/sidelined?player={player_id}"
@@ -121,10 +147,12 @@ def afl_teams_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
         return {"error": "Missing or invalid parameter: 'team_id' required."}
     name = "afl"
     index = f"teams/statistics?id={team_id}&season=2023"
-
-    def db_check_logic():
-        pass
-
+    with SessionLocal() as session:
+        check = get_all_blob_indexes_from_db(session, index)
+        if check:
+            result = get_blob_data_for_all_sports(session, check)
+            print("xui")
+            return result
     url = f"https://v1.afl.api-sports.io/teams/statistics?id={team_id}&season=2023"
     host = "v1.afl.api-sports.io"
     try:
@@ -139,10 +167,12 @@ def afl_players(api_data: Dict[str, str]) -> Dict[str, str]:
         return {"error": "Missing or invalid parameter: 'team_id' required."}
     name = "afl"
     index = f"teams/players?season=2023&team={team_id}"
-
-    def db_check_logic():
-        pass
-
+    with SessionLocal() as session:
+        check = get_all_blob_indexes_from_db(session, index)
+        if check:
+            result = get_blob_data_for_all_sports(session, check)
+            print("xui")
+            return result
     url = f"https://v1.afl.api-sports.io/players?season=2023&team={team_id}"
     host = "v1.afl.api-sports.io"
     try:
@@ -157,10 +187,12 @@ def afl_players_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
         return {"error": "Missing or invalid parameter: 'player_id' required."}
     name = "afl"
     index = f"players/statistics?id={player_id}&season=2024"
-
-    def db_check_logic():
-        pass
-
+    with SessionLocal() as session:
+        check = get_all_blob_indexes_from_db(session, index)
+        if check:
+            result = get_blob_data_for_all_sports(session, check)
+            print("xui")
+            return result
     url = f"https://v1.afl.api-sports.io/players/statistics?id={player_id}&season=2024"
     host = "v1.afl.api-sports.io"
     try:
@@ -176,10 +208,12 @@ def baseball_teams_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
         return {"error": "Missing or invalid parameter: 'team_id' and 'league_id' are required."}
     name = "baseball"
     index = f"teams/statistics?league={league_id}&season=2024&team={team_id}"
-
-    def db_check_logic():
-        pass
-
+    with SessionLocal() as session:
+        check = get_all_blob_indexes_from_db(session, index)
+        if check:
+            result = get_blob_data_for_all_sports(session, check)
+            print("xui")
+            return result
     url = f"https://v1.baseball.api-sports.io/teams/statistics?league={league_id}&season=2024&team={team_id}"
     host = "v1.baseball.api-sports.io"
     try:
@@ -194,10 +228,12 @@ def basketball_players(api_data: Dict[str, str]) -> Dict[str, str]:
         return {"error": "Missing or invalid parameter: 'team_id' required."}
     name = "basketball"
     index = f"players/players?team={team_id}&season=2024"
-
-    def db_check_logic():
-        pass
-
+    with SessionLocal() as session:
+        check = get_all_blob_indexes_from_db(session, index)
+        if check:
+            result = get_blob_data_for_all_sports(session, check)
+            print("xui")
+            return result
     url = f"https://v1.basketball.api-sports.io/players?team={team_id}&season=2024"
     host = "v1.basketball.api-sports.io"
     try:
@@ -212,10 +248,12 @@ def basketball_players_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
         return {"error": "Missing or invalid parameter: 'player_id' required."}
     name = "basketball"
     index = f"players/games/statistics/players?id={player_id}"
-
-    def db_check_logic():
-        pass
-
+    with SessionLocal() as session:
+        check = get_all_blob_indexes_from_db(session, index)
+        if check:
+            result = get_blob_data_for_all_sports(session, check)
+            print("xui")
+            return result
     url = f"https://v1.basketball.api-sports.io/games/statistics/players?id={player_id}"
     host = "v1.basketball.api-sports.io"
     try:
@@ -231,10 +269,17 @@ def formula_one_rankings_races_and_fastestlaps(api_data: Dict[str, str]) -> Dict
     name = "formula-1"
     index1 = f"rankings/races?race={race_id}"
     index2 = f"rankings/fastestlaps?race={race_id}"
-
-    def db_check_logic():
-        pass
-
+    with SessionLocal() as session:
+        check1 = get_all_blob_indexes_from_db(session, index1)
+        check2 = get_all_blob_indexes_from_db(session, index2)
+        if check1 and check2:
+            result1 = get_blob_data_for_all_sports(session, check1)
+            result2 = get_blob_data_for_all_sports(session, check2)
+            print("xui")
+            return {
+                "races": result1,
+                "fastestlaps": result2,
+            }
     url1 = f"https://v1.formula-1.api-sports.io/rankings/races?race={race_id}"
     url2 = f"https://v1.formula-1.api-sports.io/rankings/fastestlaps?race={race_id}"
     host = "v1.formula-1.api-sports.io"
@@ -255,10 +300,12 @@ def handball_teams_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
         return {"error": "Missing or invalid parameter: 'team_id' and 'league_id' are required."}
     name = "handball"
     index = f"teams/statistics?season=2024&team={team_id}&league={league_id}"
-
-    def db_check_logic():
-        pass
-
+    with SessionLocal() as session:
+        check = get_all_blob_indexes_from_db(session, index)
+        if check:
+            result = get_blob_data_for_all_sports(session, check)
+            print("xui")
+            return result
     url = f"https://v1.handball.api-sports.io/teams/statistics?season=2024&team={team_id}&league={league_id}"
     host = "v1.handball.api-sports.io"
     try:
@@ -274,10 +321,12 @@ def hockey_teams_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
         return {"error": "Missing or invalid parameter: 'team_id' and 'league_id' are required."}
     name = "hockey"
     index = f"teams/statistics?season=2024&team={team_id}&league={league_id}"
-
-    def db_check_logic():
-        pass
-
+    with SessionLocal() as session:
+        check = get_all_blob_indexes_from_db(session, index)
+        if check:
+            result = get_blob_data_for_all_sports(session, check)
+            print("xui")
+            return result
     url = f"https://v1.hockey.api-sports.io/teams/statistics?season=2024&team={team_id}&league={league_id}"
     host = "v1.hockey.api-sports.io"
     try:
@@ -292,10 +341,12 @@ def hockey_games_events(api_data: Dict[str, str]) -> Dict[str, str]:
         return {"error": "Missing or invalid parameter: 'game_id' required."}
     name = "hockey"
     index = f"games/events?game={game_id}"
-
-    def db_check_logic():
-        pass
-
+    with SessionLocal() as session:
+        check = get_all_blob_indexes_from_db(session, index)
+        if check:
+            result = get_blob_data_for_all_sports(session, check)
+            print("xui")
+            return result
     url = f"https://v1.hockey.api-sports.io/games/events?game={game_id}"
     host = "v1.hockey.api-sports.io"
     try:
@@ -310,10 +361,12 @@ def mma_fighters_records(api_data: Dict[str, str]) -> Dict[str, str]:
         return {"error": "Missing or invalid parameter: 'player_id' required."}
     name = "mma"
     index = f"fighters/records?id={player_id}"
-
-    def db_check_logic():
-        pass
-
+    with SessionLocal() as session:
+        check = get_all_blob_indexes_from_db(session, index)
+        if check:
+            result = get_blob_data_for_all_sports(session, check)
+            print("xui")
+            return result
     url = f"https://v1.mma.api-sports.io/fighters/records?id={player_id}"
     host = "v1.mma.api-sports.io"
     try:
@@ -328,10 +381,12 @@ def nba_games_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
         return {"error": "Missing or invalid parameter: 'game_id' required."}
     name = "nba"
     index = f"games/statistics?id={game_id}"
-
-    def db_check_logic():
-        pass
-
+    with SessionLocal() as session:
+        check = get_all_blob_indexes_from_db(session, index)
+        if check:
+            result = get_blob_data_for_all_sports(session, check)
+            print("xui")
+            return result
     url = f"https://v2.nba.api-sports.io/games/statistics?id={game_id}"
     host = "v2.nba.api-sports.io"
     try:
@@ -347,10 +402,17 @@ def nfl_injuries_players(api_data: Dict[str, str]) -> Dict[str, str]:
     name = "nfl"
     index1 = f"injuries/injuries?team={team_id}"
     index2 = f"players/players?team={team_id}"
-
-    def db_check_logic():
-        pass
-
+    with SessionLocal() as session:
+        check1 = get_all_blob_indexes_from_db(session, index1)
+        check2 = get_all_blob_indexes_from_db(session, index2)
+        if check1 and check2:
+            result1 = get_blob_data_for_all_sports(session, check1)
+            result2 = get_blob_data_for_all_sports(session, check2)
+            print("xui")
+            return {
+                "injuries": result1,
+                "players": result2,
+            }
     url1 = f"https://v1.american-football.api-sports.io/injuries?team={team_id}"
     url2 = f"https://v1.american-football.api-sports.io/players?team={team_id}"
     host = "v1.american-football.api-sports.io"
@@ -371,10 +433,12 @@ def rugby_teams_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
         return {"error": "Missing or invalid parameter: 'team_id' and 'league_id' are required."}
     name = "rugby"
     index = f"teams/statistics?season=2024&team={team_id}&league={league_id}"
-
-    def db_check_logic():
-        pass
-
+    with SessionLocal() as session:
+        check = get_all_blob_indexes_from_db(session, index)
+        if check:
+            result = get_blob_data_for_all_sports(session, check)
+            print("xui")
+            return result
     url = f"https://v1.rugby.api-sports.io/teams/statistics?season=2024&team={team_id}&league={league_id}"
     host = "v1.rugby.api-sports.io"
     try:
@@ -390,10 +454,12 @@ def volleyball_teams_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
          return {"error": "Missing or invalid parameter: 'team_id' and 'league_id' are required."}
     name = "volleyball"
     index = f"teams/statistics?season=2024&team={team_id}&league={league_id}"
-
-    def db_check_logic():
-        pass
-
+    with SessionLocal() as session:
+        check = get_all_blob_indexes_from_db(session, index)
+        if check:
+            result = get_blob_data_for_all_sports(session, check)
+            print("xui")
+            return result
     url = f"https://v1.volleyball.api-sports.io/teams/statistics?season=2024&team={team_id}&league={league_id}"
     host = "v1.volleyball.api-sports.io"
     try:
@@ -402,7 +468,7 @@ def volleyball_teams_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
     except Exception as e:
         return {"error": str(e)}
 
-'''
+
 api1 = {"fixture_id": 380516, "team_id": 103}
 result=football_fixtures_statistics(api1)
 print(result)
@@ -462,6 +528,7 @@ result=volleyball_teams_statistics(api19)
 print(result)
 '''
 
+'''
 
 
 
