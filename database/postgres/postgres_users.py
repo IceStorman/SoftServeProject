@@ -2,7 +2,6 @@ from sqlalchemy.orm import Session
 from ..models import User
 
 
-# тут десь мають використовуватись DTO?
 def create_user(db: Session,
                 username: str,
                 email: str,
