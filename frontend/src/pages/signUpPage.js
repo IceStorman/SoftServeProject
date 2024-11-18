@@ -14,7 +14,7 @@ function SignUpPage(){
                         <h1>Реєстрація</h1>
 
                         <div className={"inputBox"}>
-                            <input id={"nameInputSignUo"} className={"name-input"} type={"text"} placeholder={"Нік нейм"}/>
+                            <input id={"nameInputSignUo"} className={"nameInput"} type={"text"} placeholder={"Нік нейм"}/>
                             <input id={"emailInputSignUp"} className={"emailInput"} type={"email"} placeholder={"Email"}/>
                             <input id={"passwordInputSignUp"} className={"passwordInput"} placeholder={"Пароль"} type={"password"}/>
                         </div>

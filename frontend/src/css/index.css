@@ -87,7 +87,7 @@ header{
         margin: auto 2vh auto 4vh;
     }
 
-    #right-btn{
+    #rightBtn{
         rotate: 180deg;
         margin: auto 4vh auto 2vh;
     }
@@ -139,7 +139,7 @@ header{
             display: flex;
             flex-direction: row;
 
-            #live-streams{
+            #liveStreams{
                 rotate: 180deg;
                 writing-mode: vertical-rl;
                 text-orientation: mixed;
@@ -155,7 +155,7 @@ header{
             flex-direction: row;
             align-items: center;
 
-            #planned-streams{
+            #plannedStreams{
                 display: flex;
                 flex-direction: column;
                 align-items: center;
@@ -318,7 +318,7 @@ footer{
                 margin: 0;
                 box-sizing: border-box;
 
-                .name-input, .emailInput, .passwordInput, .codeInput{
+                .nameInput, .emailInput, .passwordInput, .codeInput{
                     box-sizing: inherit;
                     width: 100%;
                     height: 2rem;

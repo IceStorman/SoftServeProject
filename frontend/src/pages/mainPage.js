@@ -40,7 +40,7 @@ function MainPage() {
 
                     <div className="scheduledStream">
 
-                        <div id="planned-streams">
+                        <div id="plannedStreams">
                             <h2>MNS</h2>
                             <h2>00</h2>
                         </div>
