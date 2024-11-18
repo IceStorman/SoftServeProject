@@ -1,0 +1,608 @@
+with_react = [
+    {
+    "name": "football",
+    "index": "fixtures-statistics",
+    "url": "https://v3.football.api-sports.io/fixtures/statistics?fixture=1300109&team=18723",
+    "headers": {
+        'x-rapidapi-host': "v3.football.api-sports.io",
+        'x-rapidapi-key': api_key
+    },
+    "frequency": 1  # Інтервал у хвилинах
+},
+{
+    "name": "football",
+    "index": "fixtures-events",
+    "url": "https://v3.football.api-sports.io/fixtures/events?fixture=1300109",
+    "headers": {
+        'x-rapidapi-host': "v3.football.api-sports.io",
+        'x-rapidapi-key': api_key
+    },
+    "frequency": 1  # Інтервал у хвилинах
+},
+{
+    "name": "football",
+    "index": "fixtures-lineups",
+    "url": "https://v3.football.api-sports.io/fixtures/lineups?fixture=1300109",
+    "headers": {
+        'x-rapidapi-host': "v3.football.api-sports.io",
+        'x-rapidapi-key': api_key
+    },
+    "frequency": 1  # Інтервал у хвилинах
+},
+{
+    "name": "football",
+    "index": "fixtures-players",
+    "url": "https://v3.football.api-sports.io/fixtures/players?fixture=1300109",
+    "headers": {
+        'x-rapidapi-host': "v3.football.api-sports.io",
+        'x-rapidapi-key': api_key
+    },
+    "frequency": 1  # Інтервал у хвилинах
+},
+    {
+        "name": "football",
+        "index": "coachs",
+        "url": "https://v3.football.api-sports.io/coachs?team=85",
+        "headers": {
+            'x-rapidapi-host': "v3.football.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 1  # Інтервал у хвилинах
+    },
+    {
+        "name": "football",
+        "index": "players-profiles",
+        "url": "https://v3.football.api-sports.io/players/profiles?player=276",
+        "headers": {
+            'x-rapidapi-host': "v3.football.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 1  # Інтервал у хвилинах
+    },
+    {
+        "name": "football",
+        "index": "players",
+        "url": "https://v3.football.api-sports.io/players?id=276&season=2024",
+        "headers": {
+            'x-rapidapi-host': "v3.football.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 0.1  # Інтервал у хвилинах
+    },
+    {
+        "name": "football",
+        "index": "sidelined",
+        "url": "https://v3.football.api-sports.io/sidelined",
+        "headers": {
+            'x-rapidapi-host': "v3.football.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 0.1  # Інтервал у хвилинах
+    },
+    # маю знати id команди
+    {
+        "name": "afl",
+        "index": "afl-teams-statistics",
+        "url": "https://v1.afl.api-sports.io/teams/statistics?id=1&season=2023",
+        "headers": {
+            'x-rapidapi-host': "v1.afl.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 0.1  # 1200  # Інтервал у хвилинах
+    },
+#маю знати id команди щоб отримати список гравців в сезоні
+            {
+                "name": "afl",
+                "index": "afl-players",
+                "url": "https://v1.afl.api-sports.io/players?season=2023&team=13",
+                "headers": {
+                    'x-rapidapi-host': "v1.afl.api-sports.io",
+                    'x-rapidapi-key': api_key
+                },
+                "frequency": 1 #1200  # Інтервал у хвилинах
+            },
+            #маю знати id спортсмена щоб отримати статистику конкретонго сезона
+            {
+                "name": "afl",
+                "index": "afl-players-statistics",
+                "url": "https://v1.afl.api-sports.io/players/statistics?id=3&season=2023",
+                "headers": {
+                    'x-rapidapi-host': "v1.afl.api-sports.io",
+                    'x-rapidapi-key': api_key
+                },
+                "frequency": 1 #1200  # Інтервал у хвилинах
+            },
+#маю знати id команди
+            {
+                "name": "baseball",
+                "index": "teams-statistics",
+                "url": "https://v1.baseball.api-sports.io/teams/statistics?league=1&season=2019&team=5",
+                "headers": {
+                    'x-rapidapi-host': "v1.baseball.api-sports.io",
+                    'x-rapidapi-key': api_key
+                },
+                "frequency": 1 #600 # Інтервал у хвилинах
+            },
+#маю знати лігу сезон команду
+            {
+                "name": "basketball",
+                "index": "statistics",
+                "url": "https://v1.basketball.api-sports.io/statistics?season=2019-2020&team=139&league=12",
+                "headers": {
+                    'x-rapidapi-host': "v1.basketball.api-sports.io",
+                    'x-rapidapi-key': api_key
+                },
+                "frequency": 1  # Інтервал у хвилинах
+            },
+            #маю знати команду та сезони
+            {
+                "name": "basketball",
+                "index": "basketball-players",
+                "url": "https://v1.basketball.api-sports.io/basketball/players?team=1&season=2023-2024",
+                "headers": {
+                    'x-rapidapi-host': "v1.basketball.api-sports.io",
+                    'x-rapidapi-key': api_key
+                },
+                "frequency": 1  # Інтервал у хвилинах
+            },
+
+    {
+        "name": "basketball",
+        "index": "standings0",
+        "url": "https://v1.basketball.api-sports.io/standings?league=12&season=2019-2020",
+        "headers": {
+            'x-rapidapi-host': "v1.basketball.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 1  # Інтервал у хвилинах
+    },
+    {
+        "name": "basketball",
+        "index": "standings-stages",
+        "url": "https://v1.basketball.api-sports.io/standings/stages",
+        "headers": {
+            'x-rapidapi-host': "v1.basketball.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 1  # Інтервал у хвилинах
+    },
+    {
+        "name": "basketball",
+        "index": "standings-groups",
+        "url": "https://v1.basketball.api-sports.io/standings/groups",
+        "headers": {
+            'x-rapidapi-host': "v1.basketball.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 1  # Інтервал у хвилинах
+    },
+#маю знати id команди
+            {
+                "name": "basketball",
+                "index": "basketball-games-statistics-teams",
+                "url": "https://v1.basketball.api-sports.io/basketball/games/statistics/teams?id=391053",
+                "headers": {
+                    'x-rapidapi-host': "v1.basketball.api-sports.io",
+                    'x-rapidapi-key': api_key
+                },
+                "frequency": 1  # Інтервал у хвилинах
+            },
+    {
+        "name": "basketball",
+        "index": "basketball-games-statistics-players",
+        "url": "https://v1.basketball.api-sports.io/basketball/games/statistics/players?id=391053",
+        "headers": {
+            'x-rapidapi-host': "v1.basketball.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 1  # Інтервал у хвилинах
+    },
+    {
+        "name": "formula-1",
+        "index": "rankings-races",
+        "url": "https://v1.formula-1.api-sports.io/rankings/races?race=50",
+        "headers": {
+            'x-rapidapi-host': "v1.formula-1.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 1  # Інтервал у хвилинах
+    },
+{
+        "name": "formula-1",
+        "index": "rankings-fastestlaps",
+        "url": "https://v1.formula-1.api-sports.io/rankings/fastestlaps?race=50",
+        "headers": {
+            'x-rapidapi-host': "v1.formula-1.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 1  # Інтервал у хвилинах
+    },
+{
+                "name": "handball",
+                "index": "teams-statistics",
+                "url": "https://v1.handball.api-sports.io/teams/statistics?season=2024&team=4450&league=1",
+                "headers": {
+                    'x-rapidapi-host': "v1.handball.api-sports.io",
+                    'x-rapidapi-key': api_key
+                },
+                "frequency": 1  # Інтервал у хвилинах
+            },
+{
+                "name": "hockey",
+                "index": "teams-statistics",
+                "url": "https://v1.hockey.api-sports.io/teams/statistics?season=2019&team=29&league=3",
+                "headers": {
+                    'x-rapidapi-host': "v1.hockey.api-sports.io",
+                    'x-rapidapi-key': api_key
+                },
+                "frequency": 1  # Інтервал у хвилинах
+            },
+{
+                "name": "hockey",
+                "index": "games-events",
+                "url": "https://v1.hockey.api-sports.io/games/events?game=364867",
+                "headers": {
+                    'x-rapidapi-host': "v1.hockey.api-sports.io",
+                    'x-rapidapi-key': api_key
+                },
+                "frequency": 1  # Інтервал у хвилинах
+            },
+    {
+        "name": "mma",
+        "index": "fighters-records",
+        "url": "https://v1.mma.api-sports.io/fighters/records?id=691",
+        "headers": {
+            'x-rapidapi-host': "v1.mma.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 1  # Інтервал у хвилинах
+    },
+    {
+        "name": "nba",
+        "index": "games-statistics",
+        "url": "https://v2.nba.api-sports.io/games/statistics?id=10403",
+        "headers": {
+            'x-rapidapi-host': "v2.nba.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 1  # Інтервал у хвилинах
+    },
+    {
+        "name": "nba",
+        "index": "teams-statistics",
+        "url": "https://v2.nba.api-sports.io/teams/statistics?season=2020&id=1",
+        "headers": {
+            'x-rapidapi-host': "v2.nba.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 1  # Інтервал у хвилинах
+    },
+
+    {
+        "name": "nba",
+        "index": "players-statistics",
+        "url": "https://v2.nba.api-sports.io/players/statistics?season=2024&id=734",
+        "headers": {
+            'x-rapidapi-host': "v2.nba.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 1  # Інтервал у хвилинах
+    },
+    {
+        "name": "nfl",
+        "index": "injuries",
+        "url": "https://v1.american-football.api-sports.io/injuries?team=53",
+        "headers": {
+            'x-rapidapi-host': "v1.american-football.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 1  # Інтервал у хвилинах
+    },
+    {
+        "name": "nfl",
+        "index": "players",
+        "url": "https://v1.american-football.api-sports.io/players?team=1",
+        "headers": {
+            'x-rapidapi-host': "v1.american-football.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 1  # Інтервал у хвилинах
+    },
+            {
+                "name": "nfl",
+                "index": "players-statistics",
+                "url": "https://v1.american-football.api-sports.io/players/statistics?team=1&season=2024",
+                "headers": {
+                    'x-rapidapi-host': "v1.american-football.api-sports.io",
+                    'x-rapidapi-key': api_key
+                },
+                "frequency": 1  # Інтервал у хвилинах
+            },
+{
+                "name": "nfl",
+                "index": "games-events",
+                "url": "https://v1.american-football.api-sports.io/games/events?id=1986",
+                "headers": {
+                    'x-rapidapi-host': "v1.american-football.api-sports.io",
+                    'x-rapidapi-key': api_key
+                },
+                "frequency": 1  # Інтервал у хвилинах
+            },
+            {
+                "name": "nfl",
+                "index": "games-statistics-teams",
+                "url": "https://v1.american-football.api-sports.io/games/statistics/teams?id=1985",
+                "headers": {
+                    'x-rapidapi-host': "v1.american-football.api-sports.io",
+                    'x-rapidapi-key': api_key
+                },
+                "frequency": 1  # Інтервал у хвилинах
+            },
+            {
+                "name": "nfl",
+                "index": "games-statistics-players",
+                "url": "https://v1.american-football.api-sports.io/games/statistics/players?id=1985",
+                "headers": {
+                    'x-rapidapi-host': "v1.american-football.api-sports.io",
+                    'x-rapidapi-key': api_key
+                },
+                "frequency": 1  # Інтервал у хвилинах
+            },
+{
+                "name": "rugby",
+                "index": "teams-statistics",
+                "url": "https://v1.rugby.api-sports.io/teams/statistics?season=2019&team=29&league=3",
+                "headers": {
+                    'x-rapidapi-host': "v1.rugby.api-sports.io",
+                    'x-rapidapi-key': api_key
+                },
+                "frequency": 1  # Інтервал у хвилинах
+            },
+{
+                "name": "volleyball",
+                "index": "teams-statistics",
+                "url": "https://v1.volleyball.api-sports.io/teams/statistics?season=2019&team=1&league=1",
+                "headers": {
+                    'x-rapidapi-host': "v1.volleyball.api-sports.io",
+                    'x-rapidapi-key': api_key
+                },
+                "frequency": 1  # Інтервал у хвилинах
+            },
+    ]
+
+
+
+
+
+
+
+maybe = [
+    {
+        "name": "football",
+        "index": "teams-statistics",
+        "url": "https://v3.football.api-sports.io/teams/statistics?season=2019&team=33&league=39",
+        "headers": {
+            'x-rapidapi-host': "v3.football.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 1  # Інтервал у хвилинах
+    },
+    {
+        "name": "football",
+        "index": "standings",
+        "url": "https://v3.football.api-sports.io/standings?league=39&season=2019",
+        "headers": {
+            'x-rapidapi-host': "v3.football.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 1  # Інтервал у хвилинах
+    },
+    {
+        "name": "football",
+        "index": "predictions",
+        "url": "https://v3.football.api-sports.io/predictions?fixture=198772",
+        "headers": {
+            'x-rapidapi-host': "v3.football.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 1  # Інтервал у хвилинах
+    },
+
+{
+                "name": "football",
+                "index": "transfers",
+                "url": "https://v3.football.api-sports.io/transfers",
+                "headers": {
+                    'x-rapidapi-host': "v3.football.api-sports.io",
+                    'x-rapidapi-key': api_key
+                },
+                "frequency": 1  # Інтервал у хвилинах
+            },
+            {
+                "name": "football",
+                "index": "trophies",
+                "url": "https://v3.football.api-sports.io/trophies",
+                "headers": {
+                    'x-rapidapi-host': "v3.football.api-sports.io",
+                    'x-rapidapi-key': api_key
+                },
+                "frequency": 1  # Інтервал у хвилинах
+            },
+#маю знати id ліги та рік сезону
+            {
+                "name": "afl",
+                "index": "afl-standings",
+                "url": "https://v1.afl.api-sports.io/standings?season=2023&league=1",
+                "headers": {
+                    'x-rapidapi-host': "v1.afl.api-sports.io",
+                    'x-rapidapi-key': api_key
+                },
+                "frequency": 1 #1200 # Інтервал у хвилинах
+            },
+
+    # маю знати id ліги
+    {
+        "name": "baseball",
+        "index": "standings",
+        "url": "https://v1.baseball.api-sports.io/standings?league=1",
+        "headers": {
+            'x-rapidapi-host': "v1.baseball.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 1  # 1198 # Інтервал у хвилинах
+    },
+    {
+        "name": "baseball",
+        "index": "standings-stages",
+        "url": "https://v1.baseball.api-sports.io/standings/stages?league=1",
+        "headers": {
+            'x-rapidapi-host': "v1.baseball.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 1  # 1197 # Інтервал у хвилинах
+    },
+    {
+        "name": "baseball",
+        "index": "standings-groups",
+        "url": "https://v1.baseball.api-sports.io/sstandings/groups?league=1&season=2020",
+        "headers": {
+            'x-rapidapi-host': "v1.baseball.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 1  # 1197 # Інтервал у хвилинах
+    },
+
+    {
+        "name": "handball",
+        "index": "standings",
+        "url": "https://v1.handball.api-sports.io/standings?league=1&season=2024",
+        "headers": {
+            'x-rapidapi-host': "v1.handball.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 1  # Інтервал у хвилинах
+    },
+    {
+        "name": "handball",
+        "index": "standings-stages",
+        "url": "https://v1.handball.api-sports.io/standings/stages?league=1&season=2024",
+        "headers": {
+            'x-rapidapi-host': "v1.handball.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 1  # Інтервал у хвилинах
+    },
+    {
+        "name": "handball",
+        "index": "standings-groups",
+        "url": "https://v1.handball.api-sports.io/standings/groups?league=1&season=2024",
+        "headers": {
+            'x-rapidapi-host': "v1.handball.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 1  # Інтервал у хвилинах
+    },
+
+    {
+        "name": "hockey",
+        "index": "standings",
+        "url": "https://v1.hockey.api-sports.io/standings?league=3&season=2019",
+        "headers": {
+            'x-rapidapi-host': "v1.hockey.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 1  # Інтервал у хвилинах
+    },
+    {
+        "name": "hockey",
+        "index": "standings-stages",
+        "url": "https://v1.hockey.api-sports.io/standings/stages?league=3&season=2024",
+        "headers": {
+            'x-rapidapi-host': "v1.hockey.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 1  # Інтервал у хвилинах
+    },
+    {
+        "name": "hockey",
+        "index": "standings-groups",
+        "url": "https://v1.hockey.api-sports.io/standings/groups?league=3&season=2024",
+        "headers": {
+            'x-rapidapi-host': "v1.hockey.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 1  # Інтервал у хвилинах
+    },
+
+    {
+        "name": "nba",
+        "index": "standings",
+        "url": "https://v2.nba.api-sports.io/standings?league=standard&season=2024",
+        "headers": {
+            'x-rapidapi-host': "v2.nba.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 1  # Інтервал у хвилинах
+    },
+
+    {
+        "name": "rugby",
+        "index": "standings",
+        "url": "https://v1.rugby.api-sports.io/standings?league=3&season=2019",
+        "headers": {
+            'x-rapidapi-host': "v1.rugby.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 1  # Інтервал у хвилинах
+    },
+    {
+        "name": "rugby",
+        "index": "standings-stages",
+        "url": "https://v1.rugby.api-sports.io/standings/stages",
+        "headers": {
+            'x-rapidapi-host': "v1.rugby.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 1  # Інтервал у хвилинах
+    },
+    {
+        "name": "rugby",
+        "index": "standings-groups",
+        "url": "https://v1.rugby.api-sports.io/standings/groups",
+        "headers": {
+            'x-rapidapi-host': "v1.rugby.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 1  # Інтервал у хвилинах
+    },
+    {
+        "name": "volleyball",
+        "index": "standings",
+        "url": "https://v1.volleyball.api-sports.io/standings?league=3&season=2021",
+        "headers": {
+            'x-rapidapi-host': "v1.volleyball.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 1  # Інтервал у хвилинах
+    },
+    {
+        "name": "volleyball",
+        "index": "standings-stages",
+        "url": "https://v1.volleyball.api-sports.io/standings/stages",
+        "headers": {
+            'x-rapidapi-host': "v1.volleyball.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 1  # Інтервал у хвилинах
+    },
+    {
+        "name": "volleyball",
+        "index": "standings-groups",
+        "url": "https://v1.volleyball.api-sports.io/standings/groups",
+        "headers": {
+            'x-rapidapi-host': "v1.volleyball.api-sports.io",
+            'x-rapidapi-key': api_key
+        },
+        "frequency": 1  # Інтервал у хвилинах
+    },
+]
