@@ -15,378 +15,378 @@ apis = [
         "index": "fixtures",
         "url": "https://v3.football.api-sports.io/fixtures?date=DATE",
         "host": "v3.football.api-sports.io",
-        "frequency": 1 #5  # Інтервал у хвилинах
+        "frequency": 3
     },
     {
         "name": "football",
         "index": "timezone",
         "url": "https://v3.football.api-sports.io/timezone",
         "host": "v3.football.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 1333
     },
     {
         "name": "football",
         "index": "countries",
         "url": "https://v3.football.api-sports.io/countries",
         "host":"v3.football.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 1331
     },
     {
         "name": "football",
         "index": "leagues",
         "url": "https://v3.football.api-sports.io/leagues",
         "host":"v3.football.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 1335
     },
     {
         "name": "football",
         "index": "teams",
         "url": "https://v3.football.api-sports.io/teams?country=Ukraine",
         "host": "v3.football.api-sports.io",
-         "frequency": 1  # Інтервал у хвилинах
+         "frequency": 769
     },
     {
         "name": "football",
         "index": "venues",
         "url": "https://v3.football.api-sports.io/venues?country=Ukraine",
         "host": "v3.football.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 31
     },
     {
         "name": "football",
         "index": "injuries",
         "url": "https://v3.football.api-sports.io/injuries?date=DATE",
         "host": "v3.football.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 31.5
     },
     {
         "name": "afl",
         "index": "afl-leagues",
         "url": "https://v1.afl.api-sports.io/leagues",
         "host": "v1.afl.api-sports.io",
-        "frequency": 1 #1199  # Інтервал у хвилинах
+        "frequency": 1335
     },
     {
         "name": "afl",
         "index": "afl-teams",
         "url": "https://v1.afl.api-sports.io/teams",
         "host": "v1.afl.api-sports.io",
-        "frequency": 1 #600  # Інтервал у хвилинах
+        "frequency": 600
     },
     {
         "name": "afl",
         "index": "afl-games",
         "url": "https://v1.afl.api-sports.io/games?date=DATE",
         "host": "v1.afl.api-sports.io",
-        "frequency": 1 #13  # Інтервал у хвилинах
+        "frequency": 3
     },
     {
         "name": "afl",
         "index": "afl-games-quarters?",
         "url": "https://v1.afl.api-sports.io/games/quarters?date=DATE",
         "host": "v1.afl.api-sports.io",
-        "frequency": 1 #20  # Інтервал у хвилинах
+        "frequency": 13
     },
     {
         "name": "afl",
         "index": "afl-games-events",
         "url": "https://v1.afl.api-sports.io/games/events?date=DATE",
         "host": "v1.afl.api-sports.io",
-        "frequency": 1 #23  # Інтервал у хвилинах
+        "frequency": 15
     },
     {
         "name": "afl",
         "index": "afl-games-statistics-teams",
         "url": "https://v1.afl.api-sports.io/games/statistics/teams?date=DATE",
         "host": "v1.afl.api-sports.io",
-        "frequency": 1 #21 # Інтервал у хвилинах
+        "frequency": 17
     },
     {
         "name": "afl",
         "index": "afl-games-statistics-players",
         "url": "https://v1.afl.api-sports.io/games/statistics/players?date=DATE",
         "host": "v1.afl.api-sports.io",
-        "frequency": 1 #22 # Інтервал у хвилинах
+        "frequency": 16
     },
     {
         "name": "baseball",
         "index": "leagues",
         "url": "https://v1.baseball.api-sports.io/leagues",
         "host": "v1.baseball.api-sports.io",
-        "frequency": 1 #1200 # Інтервал у хвилинах
+        "frequency": 1333
     },
     {
         "name": "baseball",
         "index": "teams",
         "url": "https://v1.baseball.api-sports.io/teams",
         "host": "v1.baseball.api-sports.io",
-        "frequency": 1 #600 # Інтервал у хвилинах
+        "frequency": 601
     },
     {
         "name": "baseball",
         "index": "games",
         "url": "https://v1.baseball.api-sports.io/games?date=DATE",
         "host": "v1.baseball.api-sports.io",
-        "frequency": 1 #15 # Інтервал у хвилинах
+        "frequency": 3
     },
     {
         "name": "basketball",
         "index": "leagues",
         "url": "https://v1.basketball.api-sports.io/leagues",
         "host": "v1.basketball.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 1334
     },
     {
         "name": "basketball",
         "index": "teams",
         "url": "https://v1.basketball.api-sports.io/teams",
         "host": "v1.basketball.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 303
     },
     {
         "name": "basketball",
         "index": "games",
         "url": "https://v1.basketball.api-sports.io/games?date=DATE",
         "host": "v1.basketball.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 1.6
     },
     {
         "name": "formula-1",
         "index": "competitions",
         "url": "https://v1.formula-1.api-sports.io/competitions",
         "host": "v1.formula-1.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 1299
     },
     {
         "name": "formula-1",
         "index": "circuits",
         "url": "https://v1.formula-1.api-sports.io/circuits",
         "host": "v1.formula-1.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 1298
     },
     {
         "name": "formula-1",
         "index": "teams",
         "url": "https://v1.formula-1.api-sports.io/teams",
         "host": "v1.formula-1.api-sports.io",
-         "frequency": 1  # Інтервал у хвилинах
+         "frequency": 599
     },
     {
         "name": "formula-1",
         "index": "drivers?search=lewi",
         "url": "https://v1.formula-1.api-sports.io/drivers?search=lewi",
         "host": "v1.formula-1.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 302
     },
     {
         "name": "formula-1",
         "index": "races",
         "url": "https://v1.formula-1.api-sports.io/races?date=DATE",
         "host": "v1.formula-1.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 11
     },
     {
         "name": "handball",
         "index": "countries",
         "url": "https://v1.handball.api-sports.io/countries",
         "host": "v1.handball.api-sports.io",
-         "frequency": 1  # Інтервал у хвилинах
+         "frequency": 1301
     },
     {
         "name": "handball",
         "index": "leagues",
         "url": "https://v1.handball.api-sports.io/leagues",
         "host": "v1.handball.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 679
     },
     {
         "name": "handball",
         "index": "teams",
         "url": "https://v1.handball.api-sports.io/teams?country=Ukraine",
         "host": "v1.handball.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 345
     },
     {
         "name": "handball",
         "index": "games",
         "url": "https://v1.handball.api-sports.io/games?date=DATE",
         "host": "v1.handball.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 3.5
     },
     {
         "name": "hockey",
         "index": "countries",
         "url": "https://v1.hockey.api-sports.io/countries",
         "host": "v1.hockey.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 1305
     },
     {
         "name": "hockey",
         "index": "leagues",
         "url": "https://v1.hockey.api-sports.io/leagues",
         "host": "v1.hockey.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 670
     },
     {
         "name": "hockey",
         "index": "teams",
         "url": "https://v1.hockey.api-sports.io/teams?country=Ukraine",
         "host": "v1.hockey.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 659
     },
     {
         "name": "hockey",
         "index": "games",
         "url": "https://v1.hockey.api-sports.io/games?date=DATE",
         "host": "v1.hockey.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 3
     },
     {
         "name": "mma",
         "index": "categories",
         "url": "https://v1.mma.api-sports.io/categories",
         "host": "v1.mma.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 376
     },
     {
         "name": "mma",
         "index": "teams",
         "url": "https://v1.mma.api-sports.io/teams",
         "host": "v1.mma.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 1100
     },
     {
         "name": "mma",
         "index": "fighters",
         "url": "https://v1.mma.api-sports.io/fighters?category=Flyweight",
         "host": "v1.mma.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 311
     },
     {
         "name": "mma",
         "index": "fights",
         "url": "https://v1.mma.api-sports.io/fights?date=DATE",
         "host": "v1.mma.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 5
     },
     {
         "name": "mma",
         "index": "fights-results",
         "url": "https://v1.mma.api-sports.io/fights/results?date=DATE",
         "host": "v1.mma.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 7
     },
     {
         "name": "mma",
         "index": "fights-statistics-fighters",
         "url": "https://v1.mma.api-sports.io/fights/statistics/fighters?date=DATE",
         "host": "v1.mma.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 16
     },
     {
         "name": "nba",
         "index": "leagues",
         "url": "https://v2.nba.api-sports.io/leagues",
         "host": "v2.nba.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 1099
     },
     {
         "name": "nba",
         "index": "games",
         "url": "https://v2.nba.api-sports.io/games?date=DATE",
         "host": "v2.nba.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 1.7
     },
     {
         "name": "nba",
         "index": "teams",
         "url": "https://v2.nba.api-sports.io/teams",
         "host": "v2.nba.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 379
     },
     {
         "name": "nba",
         "index": "players",
         "url": "https://v2.nba.api-sports.io/players?country=USA",
         "host": "v2.nba.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 672
     },
     {
         "name": "nfl",
         "index": "leagues",
         "url": "https://v1.american-football.api-sports.io/leagues",
         "host": "v1.american-football.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 679
     },
     {
         "name": "nfl",
         "index": "teams",
         "url": "https://v1.american-football.api-sports.io/teams?season=2024&league=2",
         "host": "v1.american-football.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 113
     },
     {
         "name": "nfl",
         "index": "games",
         "url": "https://v1.american-football.api-sports.io/games?date=DATE",
         "host": "v1.american-football.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 4
     },
     {
         "name": "rugby",
         "index": "countries",
         "url": "https://v1.rugby.api-sports.io/countries",
         "host": "v1.rugby.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 1303
     },
     {
         "name": "rugby",
         "index": "leagues",
         "url": "https://v1.rugby.api-sports.io/leagues",
         "host": "v1.rugby.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 1308
     },
     {
         "name": "rugby",
         "index": "teams",
         "url": "https://v1.rugby.api-sports.io/teams?country=USA",
         "host": "v1.rugby.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 683
     },
     {
         "name": "rugby",
         "index": "games",
         "url": "https://v1.rugby.api-sports.io/games?date=DATE",
         "host": "v1.rugby.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 4
     },
     {
         "name": "volleyball",
         "index": "countries",
         "url": "https://v1.volleyball.api-sports.io/countries",
         "host": "v1.volleyball.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 1301
     },
     {
         "name": "volleyball",
         "index": "leagues",
         "url": "https://v1.volleyball.api-sports.io/leagues",
         "host": "v1.volleyball.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 1298
     },
     {
         "name": "volleyball",
         "index": "teams",
         "url": "https://v1.volleyball.api-sports.io/teams?country=Ukraine",
         "host": "v1.volleyball.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 375
     },
     {
         "name": "volleyball",
         "index": "games",
         "url": "https://v1.volleyball.api-sports.io/games?date=DATE",
         "host": "v1.volleyball.api-sports.io",
-        "frequency": 1  # Інтервал у хвилинах
+        "frequency": 3
     },
 ]
 token_usage = {
@@ -426,64 +426,3 @@ def auto_request_system(api: Dict[str, str]) -> None:
         print(f"Помилка при запиті до {api['name']}: {e}")
     except Exception as e:
         print(f"Загальна помилка при збереженні даних для {api['name']}: {e}")
-
-
-
-
-
-'''
-
-conn = http.client.HTTPSConnection("v3.football.api-sports.io")
-
-headers = {
-    'x-rapidapi-host': "v3.football.api-sports.io",
-    'x-rapidapi-key': api_key
-    }
-
-conn.request("GET", "/fixtures?live=all", headers=headers)
-res = conn.getresponse()
-data = res.read()
-json_data = json.loads(data.decode("utf-8"))
-print(json_data)
-
-blob_service_client = BlobServiceClient(account_url=account_url, credential=sas_token)
-
-
-container_client = blob_service_client.get_container_client("apidata")
-blob_name = "sport_data.json"  # Унікальний індекс для блоба. Можна запит апішки за нього брати
-blob_client = container_client.get_blob_client(blob_name)
-blob_client.upload_blob(json.dumps(json_data), overwrite=True)
-print("JSON успішно збережено в Blob Storage.")
-
-# Додавання унікальних значень ключів до основної бд
-with psycopg.connect("dbname=your_db user=your_user password=your_password") as db_connection:
-    with db_connection.cursor() as cursor:
-        cursor.execute("UPDATE sports SET blob_index = %s WHERE sport_name = %s", (blob_name, 'назва_виду_спорту'))
-    db_connection.commit()
-print("Інформацію успішно збережено.")
-
-# Читання без проміжного ключа
-container_client = blob_service_client.get_container_client("apidata")
-blob_client = container_client.get_blob_client("fixtures-live=all.json")
-blob_data = blob_client.download_blob()
-json_data = blob_data.readall().decode("utf-8")
-print(json_data)
-
-# Отримання індекса блоба з бд
-sport_name = 'sport_name'
-with psycopg.connect("dbname=your_db user=your_user password=your_password") as db_connection:
-    with db_connection.cursor() as cursor:
-        cursor.execute("SELECT blob_index FROM sports WHERE sport_name = %s", (sport_name,))
-        blob_index = cursor.fetchone()[0]
-
-# Завантаження JSON з Blob Storage
-blob_service_client = BlobServiceClient(account_url=account_url, credential=sas_token)
-container_client = blob_service_client.get_container_client("apidata")
-blob_client = container_client.get_blob_client(blob_index)
-
-blob_data = blob_client.download_blob()
-json_data = blob_data.readall().decode("utf-8")
-
-# Виведення результату
-print(json_data)
-'''

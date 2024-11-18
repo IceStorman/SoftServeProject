@@ -7,5 +7,6 @@ from .sports_index import SportIndex
 from .streams import Stream
 from .user_preferences import UserPreference
 from .interactions import Interaction
+from .teams_index import TeamIndex
 
 from .base import Base

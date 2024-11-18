@@ -1,4 +1,4 @@
-from .base import Base, Column, Integer, ForeignKey
+from .base import Base, Column, Integer, ForeignKey, String
 
 class SportIndex(Base):
     __tablename__ = 'SportsIndex'
