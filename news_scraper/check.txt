@@ -173,3 +173,22 @@ class Article_Scraper(Main_page_sport_parser):
         def write_article_into_json(self, article):
             
             pass
+
+
+
+
+
+
+
+
+
+# # if 'lazyloaded' in element.get('class', []) and 'imageLoaded' in element.get('class', []):
+                    # asides = element.select(".inline.inline-photo.full")
+                    # for aside in asides:
+                    #     if aside:
+                            
+                    #         img = aside.select_one('figure > picture > img')
+                    #         if img:
+                    #             image_url = img.get('src') or img.get('data-src')
+                    #             if image_url:
+                    #                 current_section_images.append(image_url)
