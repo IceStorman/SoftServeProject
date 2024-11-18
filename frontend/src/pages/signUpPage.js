@@ -17,6 +17,7 @@ function SignUpPage(){
                             <input id={"nameInputSignUo"} className={"nameInput"} type={"text"} placeholder={"Нік нейм"}/>
                             <input id={"emailInputSignUp"} className={"emailInput"} type={"email"} placeholder={"Email"}/>
                             <input id={"passwordInputSignUp"} className={"passwordInput"} placeholder={"Пароль"} type={"password"}/>
+                            <input id={"passwordConfirmSignUp"} className={"passwordInput"} placeholder={"Повторити пароль"} type={"password"}/>
                         </div>
 
                         <Link to={"/reset-password"}>Забули пароль?</Link>
