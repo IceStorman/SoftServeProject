@@ -77,7 +77,7 @@ class Article_Scraper(Main_page_sport_parser):
 
        
         timestamp = soup.select_one('.author .timestamp')
-        article_data['timestamp'] = timestamp.get_text(strip=True) if timestamp else article_data['timestamp'] == time.strftime("%Y-%m-%d")
+        article_data['timestamp'] = timestamp.get_text(strip=True) if timestamp else article_data['timestamp'] == time.strftime("%Y-%m-%d-%h")
        
         for aside in soup.find_all('aside', class_=['inline editorial float-r', 'inline float-r inline-track']):
             aside.decompose()
@@ -116,17 +116,11 @@ class Article_Scraper(Main_page_sport_parser):
                 elif element.name == 'p':  
                     current_section_content.append(element.get_text(strip=True))
 
-                elif element.name == 'img': 
-                    # if 'lazyloaded' in element.get('class', []) and 'imageLoaded' in element.get('class', []):
-                    asides = element.select(".inline.inline-photo.full")
-                    for aside in asides:
-                        if aside:
-                            # Пошук тега <img> всередині <aside> > <figure> > <picture>
-                            img = aside.select_one('aside > figure > picture > img')
-                            if img:
-                                image_url = img.get('src') or img.get('data-src')
-                                if image_url:
-                                    current_section_images.append(image_url)
+                elif element.name == 'img' and 'imageLoaded lazyloaded' in element.get('class', []):  
+                    image_url = element.get('src')
+                    if image_url:
+                        article_data['images'].append(image_url)
+
 
             
             if current_section_title or current_section_content or current_section_images:
