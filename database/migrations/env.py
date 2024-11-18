@@ -11,7 +11,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..',
 
 
 from database.models import Base
-from database.models import User,UserPreference, Stream, SportIndex, Sport, News, ClubPreference, BlobIndex, Interaction
+from database.models import User,UserPreference, Stream, SportIndex, Sport, News, ClubPreference, BlobIndex, Interaction, TeamIndex
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
