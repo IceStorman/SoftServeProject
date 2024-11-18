@@ -2,6 +2,7 @@ from urllib.parse import urljoin
 import requests
 from bs4 import BeautifulSoup
 import time
+import json
 
 class Main_page_sport_parser:
     def __init__(self, main_url):
@@ -57,60 +58,128 @@ class Main_page_sport_parser:
         return articles
 
 class Article_Scraper(Main_page_sport_parser):
+
     def get_article_content(self, full_url):
-        response = requests.get(full_url)
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+        response = requests.get(full_url, headers=headers)
         if response.status_code != 200:
             print(f"Error fetching the article. Status code: {response.status_code}")
             return None
 
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        timestamp = soup.select_one('.author .timestamp')
-        
         article_data = {
-            'timestamp': timestamp.get_text(strip=True) if timestamp else None,
-            'sections': []
+            'timestamp': None,
+            'article': {}
         }
 
+       
+        timestamp = soup.select_one('.author .timestamp')
+        article_data['timestamp'] = timestamp.get_text(strip=True) if timestamp else None
+
+       
+        for aside in soup.find_all('aside', class_=['inline editorial float-r', 'inline float-r inline-track']):
+            aside.decompose()
+
+        
         content_div = soup.select_one('.article-body')
         if content_div:
-            elements = content_div.find_all(['p', 'h2'])
+            elements = content_div.find_all(['p', 'h2', 'h3', 'img'])
+            current_section_title = None
+            current_section_content = []
+            current_section_images = []
+            current_section_subheadings = []  
+            section_counter = 1
 
-            current_section = None
             for element in elements:
                 if element.name == 'h2':  
-                    if current_section:
-                        article_data['sections'].append(current_section)
-                    current_section = {
-                        'title': element.get_text(strip=True),
-                        'content': []
-                    }
+                    if current_section_title or current_section_content or current_section_images:
+                        article_data['article'][f'section_{section_counter}'] = {
+                            'title': current_section_title,
+                            'subheadings': current_section_subheadings,
+                            'content': current_section_content,
+                            'images': current_section_images
+                            
+                        }
+                        section_counter += 1
+
+                    
+                    current_section_title = element.get_text(strip=True)
+                    current_section_content = []
+                    current_section_images = []
+                    current_section_subheadings = []
+
+                elif element.name == 'h3':  
+                    current_section_subheadings.append(element.get_text(strip=True))
+
                 elif element.name == 'p':  
-                    if current_section is None:
-                        current_section = {'title': '', 'content': []}
-                    current_section['content'].append(element.get_text(strip=True))
+                    current_section_content.append(element.get_text(strip=True))
 
-            if current_section:
-                article_data['sections'].append(current_section)
+                elif element.name == 'img': 
+                    if 'lazyloaded' in element.get('class', []) and 'imageLoaded' in element.get('class', []):
+                        image_url = element.get('src') or element.get('data-src')
+                        if image_url:
+                            current_section_images.append(image_url)
 
-        time.sleep(1)
+            
+            if current_section_title or current_section_content or current_section_images:
+                article_data['article'][f'section_{section_counter}'] = {
+                    'title': current_section_title,
+                    'content': current_section_content,
+                    'images': current_section_images,
+                    'subheadings': current_section_subheadings
+                }
 
+        time.sleep(1)  
         return article_data
+
+
 
     def print_article(self, article):
         print(f"\n---\nTitle: {article['title']}")
         print(f"URL: {article['url']}")
         content = self.get_article_content(article['url'])
-        
+
         if not content:
             print("Failed to fetch the content of the article.")
             return
-        
+
         print(f"Timestamp: {content['timestamp']}\n")
-        
-        for section in content['sections']:
-            if section['title']:
-                print(f"Section: {section['title']}")
-            for paragraph in section['content']:
-                print(paragraph)
-            print("\n")   
+
+        for section_key, section_data in content['article'].items():
+            title = section_data['title']
+            paragraphs = section_data['content']
+            images = section_data['images']
+            subheadings = section_data.get('subheadings', [])
+
+            print(f"Section Title: {title}\n")
+
+            for idx, paragraph in enumerate(paragraphs):
+                if idx < len(subheadings) and subheadings[idx]:
+                    print(f"Subheading: {subheadings[idx]}\n")
+
+                
+                formatted_paragraph = paragraph.replace('<br>', '\n\t')
+                print(f"Paragraph Text:\n\t{formatted_paragraph}\n")
+
+            
+            if images:
+                print("Images in this paragraph:")
+                for image in images:
+                    print(f"\t{image}")
+                print("\n")
+            else:
+                print("No images in this paragraph.\n")
+
+        print("End of Article\n---")
+
+
+    
+
+
+
+        def write_article_into_json(self, article):
+            
+            pass

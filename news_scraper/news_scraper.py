@@ -1,5 +1,6 @@
-from basic_parser import Main_page_sport_parser, Article_Scraper
+from functionality import Main_page_sport_parser, Article_Scraper
 import time
+import json
 
 sport_urls = {
    ' main_football_url' : 'https://www.espn.com/soccer/',

@@ -1,0 +1,175 @@
+    # def get_article_content(self, full_url):
+    #     headers = {
+    #         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+    #     }
+    #     response = requests.get(full_url, headers=headers)
+    #     if response.status_code != 200:
+    #         print(f"Error fetching the article. Status code: {response.status_code}")
+    #         return None
+
+    #     soup = BeautifulSoup(response.text, 'html.parser')
+
+    #     timestamp = soup.select_one('.author .timestamp')
+        
+    #     article_data = {
+    #         'timestamp': timestamp.get_text(strip=True) if timestamp else None,
+    #         'sections': [],
+    #         'images': []
+    #     }
+    #     # main_div = soup.find('div', class_='interior secondary')
+    #     # if main_div:
+    #     #     main_section = main_div.find('section', {'id': 'pane-main'})
+    #     #     if main_section:
+    #     #         first_section = main_section.find('section', {'id': 'main-container'})
+    #     #         if first_section:
+    #     #             first_div = first_section.find('div', class_='main-content layout-cb')
+    #     #             if first_div:
+    #     #                 article_section = first_div.find('section', id='article-feed')
+    #     #                 if article_section:
+    #     #                     article = article_section.find('article', class_='article')
+    #     #                     if article:
+    #     #                         container_div = article.find('div', class_='container')
+    #     #                         if container_div:
+    #     #                             figure = container_div.find('figure', class_='article-figure dim16x9')
+    #     #                             if figure:
+    #     #                                 img_wrap = figure.find('div', class_='img-wrap')
+    #     #                                 if img_wrap:
+    #     #                                     picture = img_wrap.find('picture')  
+    #     #                                     if picture:
+    #     #                                         img = picture.find('img', class_='imageLoaded')  
+    #     #                                         if img and img.get('src'):  
+    #     #                                             url = img['src']
+    #     #                                             article_data['images'].append(url)
+    #     #                                             print(f"Found image: {url}")
+    #     img = soup.select_one('div.interior.secondary #pane-main #main-container .main-content.layout-cb #article-feed article.article div.container figure.article-figure.dim16x9 div.img-wrap picture img.imageLoaded')
+    #     if img and img.get('src'):
+    #         url = img['src']
+    #         article_data['images'].append(url)
+    #         print(f"Found image: {url}")
+    #     else:
+    #         print('Not found!')
+
+    #     content_div = soup.select_one('.article-body')
+    #     if content_div:
+    #         elements = content_div.find_all(['p', 'h2', 'img'])
+    #         current_section = None
+
+    #         for element in elements:
+    #             if element.name == 'h2': 
+    #                 if current_section:
+    #                     article_data['sections'].append(current_section)
+    #                 current_section = {
+    #                     'title': element.get_text(strip=True),
+    #                     'content': []
+    #                 }
+    #             elif element.name == 'p':  
+    #                 if current_section is None:
+    #                     current_section = {'title': '', 'content': []}
+    #                 current_section['content'].append(element.get_text(strip=True))
+    #             elif element.name == 'img':
+    
+    #                 if ' imageLoaded lazyloaded' in element.get('class', []):
+                        
+    #                     image_url = element.get('src') or element.get('data-src')
+    #                     if image_url:
+    #                         article_data['images'].append(image_url)
+    #                         print(f"Found image: {image_url}")
+
+    #         if current_section:  
+    #             article_data['sections'].append(current_section)
+
+    #     time.sleep(1)  
+    #     return article_data
+        in second class
+
+
+
+
+
+class Article_Scraper(Main_page_sport_parser):
+
+    def get_article_content(self, full_url):
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+
+        response = requests.get(full_url, headers=headers)
+        if response.status_code != 200:
+            print(f"Error fetching the article. Status code: {response.status_code}")
+            return None
+
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+       
+        article_data = {
+            'timestamp': None,
+            'sections': [],
+            'images': []
+        }
+
+       
+        images = soup.select('img.imageLoaded')  
+        for img in images:
+            url = img.get('src')
+            if url:
+                article_data['images'].append(url)
+                print(f"Found image: {url}")
+
+       
+        content_div = soup.select_one('.article-body')
+        if content_div:
+            elements = content_div.find_all(['p', 'h2', 'img'])
+
+            current_section = None
+            for element in elements:
+                if element.name == 'h2':  # Новий розділ
+                    if current_section:
+                        article_data['sections'].append(current_section)
+                    current_section = {
+                        'title': element.get_text(strip=True),
+                        'content': []
+                    }
+                elif element.name == 'p':  # Контент
+                    if current_section is None:
+                        current_section = {'title': '', 'content': []}
+                    current_section['content'].append(element.get_text(strip=True))
+                elif element.name == 'img' and 'imageLoaded lazyloaded' in element.get('class', []):  # Додаткові зображення
+                    image_url = element.get('src')
+                    if image_url:
+                        article_data['images'].append(image_url)
+
+            if current_section:
+                article_data['sections'].append(current_section)
+
+        return article_data
+
+    def print_article(self, article):
+        print(f"\n---\nTitle: {article['title']}")
+        print(f"URL: {article['url']}")
+        content = self.get_article_content(article['url'])
+
+        if not content:
+            print("Failed to fetch the content of the article.")
+            return
+
+        print(f"Timestamp: {content['timestamp']}\n")
+
+        for section in content['sections']:
+            if section['title']:
+                print(f"Section: {section['title']}")
+            for paragraph in section['content']:
+                formatted_paragraph = paragraph.replace('<br>', '\n\t')
+                print(formatted_paragraph)
+            print("\n")
+
+        if content['images']:
+            print("Images:")
+            for image in content['images']:
+                print(image)
+        else:
+            print("No images found.")
+
+
+        def write_article_into_json(self, article):
+            
+            pass
