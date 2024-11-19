@@ -4,7 +4,7 @@ from typing import Dict
 import os
 from dotenv import load_dotenv
 from datetime import datetime, timezone
-from database.models import BlobIndex, News, Sport, SportIndex
+from database.models import BlobIndex, News, Sport, SportIndex, TeamIndex
 from database.session import SessionLocal
 import re
 
@@ -36,7 +36,6 @@ THREAT_LEVELS = {
     "high": "\033[31m[HIGH]\033[0m"
 }
 SUSPICIOUS_PATTERNS = [
-    r"(?:http|https)://[^\s]+",  # Посилання
     r"<script.*?>.*?</script>",  # Вбудовані скрипти
     r"data:[^;]+;base64,",  # Base64-кодовані файли
     r"\.exe|\.bat|\.sh|\.py"  # Небезпечні розширення
@@ -135,7 +134,7 @@ def blob_save_news(json_data: Dict[str, Dict[str, str]]) -> None:
         blob_client = container_client.get_blob_client(blob_name)
         blob_client.upload_blob(json.dumps(json_data), overwrite=True)
         with SessionLocal() as session:
-            save_news_index_to_db(blob_name, session)
+            save_news_index_to_db(blob_name, json_data, session)
     else:
         print("\033[31mThe file does not meet the requirements.\033[0m")
 
@@ -222,15 +221,31 @@ def get_blob_data_for_all_sports(session, blob_indexes):
     return json.dumps(all_results, ensure_ascii=False) if all_results else json.dumps({"error": "No data found"})
 
 
-def save_news_index_to_db(blob_name: str, session) -> None:
+def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
     try:
         existing_news = session.query(News).filter_by(blob_id=blob_name).first()
         if existing_news:
             print(f"\033[31mNews '{blob_name}' already exists in the database.\033[0m")
             return
-        news_index = News(blob_id=blob_name, save_at=datetime.now(timezone.utc))
+        sport = session.query(Sport).filter_by(sport_name=json_data["sport"]).first()
+        if not sport:
+            return
+        news_index = News(
+            blob_id=blob_name,
+            save_at=datetime.now(timezone.utc),
+            sport_id=sport.sport_id,
+        )
         session.add(news_index)
         print(f"\033[32mThe news item '{blob_name}' is saved in the database.\033[0m")
+        session.commit()
+
+        for team_name in json_data["body"]["team_names"]:
+            team_index = TeamIndex(
+                news_id=news_index.news_id,
+                team_name=team_name
+            )
+            session.add(team_index)
+
         session.commit()
     except Exception as e:
         session.rollback()
@@ -249,11 +264,7 @@ def get_news_by_index(blob_name: str, session) -> Dict:
         print(f"\033[31mError retrieving blob '{news_record}': {e}\033[0m")
 
 
-def get_news_by_count(count: int, session) -> str:
-    news_records = session.query(News).order_by(News.save_at.desc()).limit(count).all()
-    if not news_records:
-        print(f"\033[31mNo news was found in the database.\033[0m")
-        return json.dumps([])
+def fetch_blob_data(news_records) -> list:
     all_results = []
     for news_record in news_records:
         try:
@@ -264,8 +275,70 @@ def get_news_by_count(count: int, session) -> str:
             })
         except Exception as e:
             print(f"\033[31mError while receiving blob '{news_record.blob_id}': {e}\033[0m")
-    return json.dumps(all_results, ensure_ascii=False)
+    return all_results
 
+
+def handle_no_records_message(message: str) -> str:
+    print(f"\033[31m{message}\033[0m")
+    return json.dumps([])
+
+
+def get_news_by_teams(count: int, team_names: list[str], session) -> str:
+    team_news_ids = (
+        session.query(TeamIndex.news_id)
+        .filter(TeamIndex.team_name.in_(team_names))
+        .distinct()
+        .all()
+    )
+    team_news_ids = [id[0] for id in team_news_ids]
+
+    if not team_news_ids:
+        return handle_no_records_message(f"No news found for the specified teams: {team_names}")
+
+    news_records = (
+        session.query(News)
+        .filter(News.news_id.in_(team_news_ids))
+        .order_by(News.save_at.desc())
+        .limit(count)
+        .all()
+    )
+
+    if not news_records:
+        return handle_no_records_message(f"No news found for the specified teams: {team_names}")
+
+    return json.dumps(fetch_blob_data(news_records), ensure_ascii=False)
+
+
+def get_news_by_sport(count: int, sport_name: str, session) -> str:
+    sport = session.query(Sport).filter_by(sport_name=sport_name).first()
+    if not sport:
+        return handle_no_records_message(f"Sport '{sport_name}' was not found in the database.")
+
+    news_records = (
+        session.query(News)
+        .filter_by(sport_id=sport.sport_id)
+        .order_by(News.save_at.desc())
+        .limit(count)
+        .all()
+    )
+
+    if not news_records:
+        return handle_no_records_message(f"No news found for sport '{sport_name}'.")
+
+    return json.dumps(fetch_blob_data(news_records), ensure_ascii=False)
+
+
+def get_news_by_count(count: int, session) -> str:
+    news_records = session.query(News).order_by(News.save_at.desc()).limit(count).all()
+    if not news_records:
+        return handle_no_records_message("No news was found in the database.")
+    return json.dumps(fetch_blob_data(news_records), ensure_ascii=False)
+
+
+with SessionLocal() as session:
+    print(get_news_by_count(2, session))
+    print(get_news_by_sport(3, "football", session))
+    print(get_news_by_teams(3, ["g"], session))
 '''
 
 with SessionLocal() as session:
