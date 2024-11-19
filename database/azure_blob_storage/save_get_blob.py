@@ -36,7 +36,6 @@ THREAT_LEVELS = {
     "high": "\033[31m[HIGH]\033[0m"
 }
 SUSPICIOUS_PATTERNS = [
-    r"(?:http|https)://[^\s]+",  # Посилання
     r"<script.*?>.*?</script>",  # Вбудовані скрипти
     r"data:[^;]+;base64,",  # Base64-кодовані файли
     r"\.exe|\.bat|\.sh|\.py"  # Небезпечні розширення
@@ -240,7 +239,7 @@ def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
         print(f"\033[32mThe news item '{blob_name}' is saved in the database.\033[0m")
         session.commit()
 
-        for team_name in json_data["team_names"]:
+        for team_name in json_data["body"]["team_names"]:
             team_index = TeamIndex(
                 news_id=news_index.news_id,
                 team_name=team_name
@@ -251,7 +250,18 @@ def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
     except Exception as e:
         session.rollback()
         print(f"\033[31mError when saving the news index in the database: {e}\033[0m")
-
+a = {
+    "header": {
+        "title": "Jordan Crooks come to Ukraine"
+    },
+    "body": {
+        "body": "bodyyy",
+        "team_names": ["a","b","c","d"]
+    },
+    "sport": "mma",
+    "img": "http://i/img?&Fphoto%Fjsgsuig62v"
+}
+blob_save_news(a)
 
 def get_news_by_index(blob_name: str, session) -> Dict:
     news_record = session.query(News).filter_by(blob_id=blob_name).first()
@@ -282,6 +292,8 @@ def get_news_by_count(count: int, session) -> str:
             print(f"\033[31mError while receiving blob '{news_record.blob_id}': {e}\033[0m")
     return json.dumps(all_results, ensure_ascii=False)
 
+with SessionLocal() as session:
+    print(get_news_by_count(2, session))
 '''
 
 with SessionLocal() as session:
