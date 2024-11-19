@@ -29,14 +29,16 @@ import News from "../components/mainPage/News.js"
 function MainPage() {
     const [news, setNews] = useState([]);
 
-    useEffect(() =>{
-        axios.get(`Api:huinia`)
+    useEffect(() => {
+        axios.get('http://127.0.0.1:5001/news/recent')
             .then(res => {
                 const returnedNews = res.data;
                 setNews(returnedNews);
             })
-        }
-    )
+            .catch(error => {
+                console.error('There was an error fetching the news:', error);
+            });
+    }, []);
 
     return(
 
@@ -112,7 +114,7 @@ function MainPage() {
 
                     <h1 className="newsTitle">НОВИНИ</h1>
 
-                    {news.map((item, index) =>
+                    {news.slice(0, 5).map((item, index) =>
                         console.log(item)
                             /*<News
                                 key={index}
