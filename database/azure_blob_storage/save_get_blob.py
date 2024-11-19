@@ -264,6 +264,25 @@ def get_news_by_index(blob_name: str, session) -> Dict:
         print(f"\033[31mError retrieving blob '{news_record}': {e}\033[0m")
 
 
+def fetch_blob_data(news_records) -> list:
+    all_results = []
+    for news_record in news_records:
+        try:
+            data = blob_get_news(news_record.blob_id)
+            all_results.append({
+                "blob_id": news_record.blob_id,
+                "data": data
+            })
+        except Exception as e:
+            print(f"\033[31mError while receiving blob '{news_record.blob_id}': {e}\033[0m")
+    return all_results
+
+
+def handle_no_records_message(message: str) -> str:
+    print(f"\033[31m{message}\033[0m")
+    return json.dumps([])
+
+
 def get_news_by_teams(count: int, team_names: list[str], session) -> str:
     team_news_ids = (
         session.query(TeamIndex.news_id)
@@ -271,11 +290,10 @@ def get_news_by_teams(count: int, team_names: list[str], session) -> str:
         .distinct()
         .all()
     )
-    team_news_ids = [id[0] for id in team_news_ids]  # Перетворення результату в список ID
+    team_news_ids = [id[0] for id in team_news_ids]
 
     if not team_news_ids:
-        print(f"\033[31mNo news found for the specified teams: {team_names}\033[0m")
-        return json.dumps([])
+        return handle_no_records_message(f"No news found for the specified teams: {team_names}")
 
     news_records = (
         session.query(News)
@@ -286,28 +304,15 @@ def get_news_by_teams(count: int, team_names: list[str], session) -> str:
     )
 
     if not news_records:
-        print(f"\033[31mNo news found for the specified teams: {team_names}\033[0m")
-        return json.dumps([])
+        return handle_no_records_message(f"No news found for the specified teams: {team_names}")
 
-    all_results = []
-    for news_record in news_records:
-        try:
-            data = blob_get_news(news_record.blob_id)
-            all_results.append({
-                "blob_id": news_record.blob_id,
-                "data": data
-            })
-        except Exception as e:
-            print(f"\033[31mError while receiving blob '{news_record.blob_id}': {e}\033[0m")
-
-    return json.dumps(all_results, ensure_ascii=False)
+    return json.dumps(fetch_blob_data(news_records), ensure_ascii=False)
 
 
 def get_news_by_sport(count: int, sport_name: str, session) -> str:
     sport = session.query(Sport).filter_by(sport_name=sport_name).first()
     if not sport:
-        print(f"\033[31mSport '{sport_name}' was not found in the database.\033[0m")
-        return json.dumps([])
+        return handle_no_records_message(f"Sport '{sport_name}' was not found in the database.")
 
     news_records = (
         session.query(News)
@@ -316,40 +321,19 @@ def get_news_by_sport(count: int, sport_name: str, session) -> str:
         .limit(count)
         .all()
     )
+
     if not news_records:
-        print(f"\033[31mNo news found for sport '{sport_name}'.\033[0m")
-        return json.dumps([])
+        return handle_no_records_message(f"No news found for sport '{sport_name}'.")
 
-    all_results = []
-    for news_record in news_records:
-        try:
-            data = blob_get_news(news_record.blob_id)
-            all_results.append({
-                "blob_id": news_record.blob_id,
-                "data": data
-            })
-        except Exception as e:
-            print(f"\033[31mError while receiving blob '{news_record.blob_id}': {e}\033[0m")
-
-    return json.dumps(all_results, ensure_ascii=False)
+    return json.dumps(fetch_blob_data(news_records), ensure_ascii=False)
 
 
 def get_news_by_count(count: int, session) -> str:
     news_records = session.query(News).order_by(News.save_at.desc()).limit(count).all()
     if not news_records:
-        print(f"\033[31mNo news was found in the database.\033[0m")
-        return json.dumps([])
-    all_results = []
-    for news_record in news_records:
-        try:
-            data = blob_get_news(news_record.blob_id)
-            all_results.append({
-                "blob_id": news_record.blob_id,
-                "data": data
-            })
-        except Exception as e:
-            print(f"\033[31mError while receiving blob '{news_record.blob_id}': {e}\033[0m")
-    return json.dumps(all_results, ensure_ascii=False)
+        return handle_no_records_message("No news was found in the database.")
+    return json.dumps(fetch_blob_data(news_records), ensure_ascii=False)
+
 
 with SessionLocal() as session:
     print(get_news_by_count(2, session))
