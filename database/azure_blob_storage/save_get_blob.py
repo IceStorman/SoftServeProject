@@ -250,18 +250,7 @@ def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
     except Exception as e:
         session.rollback()
         print(f"\033[31mError when saving the news index in the database: {e}\033[0m")
-a = {
-    "header": {
-        "title": "Jordan Crooks come to Ukraine"
-    },
-    "body": {
-        "body": "bodyyy",
-        "team_names": ["a","b","c","d"]
-    },
-    "sport": "mma",
-    "img": "http://i/img?&Fphoto%Fjsgsuig62v"
-}
-blob_save_news(a)
+
 
 def get_news_by_index(blob_name: str, session) -> Dict:
     news_record = session.query(News).filter_by(blob_id=blob_name).first()
@@ -273,6 +262,76 @@ def get_news_by_index(blob_name: str, session) -> Dict:
         return data
     except Exception as e:
         print(f"\033[31mError retrieving blob '{news_record}': {e}\033[0m")
+
+
+def get_news_by_teams(count: int, team_names: list[str], session) -> str:
+    team_news_ids = (
+        session.query(TeamIndex.news_id)
+        .filter(TeamIndex.team_name.in_(team_names))
+        .distinct()
+        .all()
+    )
+    team_news_ids = [id[0] for id in team_news_ids]  # Перетворення результату в список ID
+
+    if not team_news_ids:
+        print(f"\033[31mNo news found for the specified teams: {team_names}\033[0m")
+        return json.dumps([])
+
+    news_records = (
+        session.query(News)
+        .filter(News.news_id.in_(team_news_ids))
+        .order_by(News.save_at.desc())
+        .limit(count)
+        .all()
+    )
+
+    if not news_records:
+        print(f"\033[31mNo news found for the specified teams: {team_names}\033[0m")
+        return json.dumps([])
+
+    all_results = []
+    for news_record in news_records:
+        try:
+            data = blob_get_news(news_record.blob_id)
+            all_results.append({
+                "blob_id": news_record.blob_id,
+                "data": data
+            })
+        except Exception as e:
+            print(f"\033[31mError while receiving blob '{news_record.blob_id}': {e}\033[0m")
+
+    return json.dumps(all_results, ensure_ascii=False)
+
+
+def get_news_by_sport(count: int, sport_name: str, session) -> str:
+    sport = session.query(Sport).filter_by(sport_name=sport_name).first()
+    if not sport:
+        print(f"\033[31mSport '{sport_name}' was not found in the database.\033[0m")
+        return json.dumps([])
+
+    news_records = (
+        session.query(News)
+        .filter_by(sport_id=sport.sport_id)
+        .order_by(News.save_at.desc())
+        .limit(count)
+        .all()
+    )
+    if not news_records:
+        print(f"\033[31mNo news found for sport '{sport_name}'.\033[0m")
+        return json.dumps([])
+
+    all_results = []
+    for news_record in news_records:
+        try:
+            data = blob_get_news(news_record.blob_id)
+            all_results.append({
+                "blob_id": news_record.blob_id,
+                "data": data
+            })
+        except Exception as e:
+            print(f"\033[31mError while receiving blob '{news_record.blob_id}': {e}\033[0m")
+
+    return json.dumps(all_results, ensure_ascii=False)
 
 
 def get_news_by_count(count: int, session) -> str:
@@ -294,6 +353,8 @@ def get_news_by_count(count: int, session) -> str:
 
 with SessionLocal() as session:
     print(get_news_by_count(2, session))
+    print(get_news_by_sport(3, "football", session))
+    print(get_news_by_teams(3, ["g"], session))
 '''
 
 with SessionLocal() as session:
