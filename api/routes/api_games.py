@@ -9,7 +9,6 @@ games_app = Blueprint('games_app', __name__)
 def get_games_today_endpoint():
    try:
       games = get_games_today(session)
-      print(games)
       return games, 200
    except Exception as e:
       return jsonify({"error": str(e)}), 500

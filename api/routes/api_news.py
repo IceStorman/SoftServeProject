@@ -9,7 +9,6 @@ news_app = Blueprint('news', __name__)
 def get_recent_news_endpoint():
     try:
         recent_news = get_news_by_count(5, session)
-        print(recent_news)
         return recent_news, 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
