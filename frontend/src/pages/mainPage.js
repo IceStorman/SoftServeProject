@@ -1,8 +1,42 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { Link } from "react-router-dom";
+import axios from 'axios';
+
+import News from "../components/mainPage/News.js"
+
+/*const news =[
+    {
+        img: "/img/team.jpg",
+        title: "Why did the programmer quit his job? Because he didn't get arrays.",
+        date: "02.04.2006"
+    },
+    {
+        img: "/img/team.jpg",
+        title: "Why do Java developers wear glasses? Because they can't C#.",
+        date: "11.12.2005"
+    },
+    {
+        img: "/img/team.jpg",
+        title: "There are only 10 types of people in the world: those who understand binary and those who don't.",
+        date: "14.02.2006"
+    }
+
+
+];*/
+
+
 
 function MainPage() {
+    const [news, setNews] = useState([]);
 
+    useEffect(() =>{
+        axios.get(`Api:huinia`)
+            .then(res => {
+                const returnedNews = res.data;
+                setNews(returnedNews);
+            })
+        }
+    )
 
     return(
 
@@ -78,21 +112,16 @@ function MainPage() {
 
                     <h1 className="newsTitle">НОВИНИ</h1>
 
-                    <div className="newsBox">
-
-                        <img src="/img/team.jpg" alt="news picture"/>
-
-                        <div className="newsInsight">
-
-                            <h1>TITLE BLA BLA BLA BLA</h1>
-
-                            <h4 className="date">02.04.2024</h4>
-
-                        </div>
-
-                        <hr/>
-
-                    </div>
+                    {news.map((item, index) =>
+                        console.log(item)
+                            /*<News
+                                key={index}
+                                title={item.title}
+                                date={item.date}
+                                img={item.img}
+                            />*/
+                        )
+                    }
 
                 </section>
 
