@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify
-from service.api_logic.news_logic import get_news_by_count
+from service.api_logic.news_logic import get_news_by_count, get_latest_sport_news
 from database.session import SessionLocal
 
 session = SessionLocal()
@@ -13,6 +13,11 @@ def get_recent_news_endpoint():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@news_app.route('/sport/<sport_id>', methods=['GET'])
-def test():
-    pass
+
+@news_app.route('/<sport_type>', methods=['GET'])
+def get_sport_news_endpoint(sport_type):
+    try:
+        recent_news = get_latest_sport_news(5, sport_type, session)
+        return recent_news, 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
