@@ -7,6 +7,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
 
 class Main_page_sport_parser:
     def __init__(self, main_url):
@@ -76,7 +77,7 @@ class Article_Scraper(Main_page_sport_parser):
         
         
         #driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
-        service = Service('./chromedriver.exe')
+        service = Service(ChromeDriverManager().install())
         driver = webdriver.Chrome(service=service, options=options)
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
@@ -89,13 +90,15 @@ class Article_Scraper(Main_page_sport_parser):
 
         soup = BeautifulSoup(response.text, 'html.parser')
         article_data = {
+            'title': None,
             'timestamp': None,
             'article': {},
-            'images': []
+            'images': [],
         }
         
         
         title = soup.title.string if soup.title else "Unknown Article"
+        article_data['title']=title
         
         
         try:
@@ -104,7 +107,7 @@ class Article_Scraper(Main_page_sport_parser):
             time.sleep(2)  
             
             
-            image_elements = driver.find_elements_by_css_selector("img.rg_i")[:3]
+            image_elements = driver.find_elements(By.CLASS_NAME,"YQ4gaf")[:3]
             for img in image_elements:
                 src = img.get_attribute("src")
                 if src:
@@ -134,7 +137,7 @@ class Article_Scraper(Main_page_sport_parser):
                 if element.name == 'h2':  
                     if current_section_title or current_section_content:
                         article_data['article'][f'section_{section_counter}'] = {
-                            'title': current_section_title,
+                            'heading': current_section_title,
                             'subheadings': current_section_subheadings,
                             'content': current_section_content,
                         }
@@ -152,7 +155,7 @@ class Article_Scraper(Main_page_sport_parser):
 
             if current_section_title or current_section_content:
                 article_data['article'][f'section_{section_counter}'] = {
-                    'title': current_section_title,
+                    'heading': current_section_title,
                     'content': current_section_content,
                     'subheadings': current_section_subheadings
                 }
@@ -174,7 +177,7 @@ class Article_Scraper(Main_page_sport_parser):
         
         print(f"Timestamp: {content['timestamp']}\n")
 
-        # Вивід адрес картинок
+        
         if content['images']:
             print("Images found:")
             for idx, img_url in enumerate(content['images'], start=1):
@@ -184,7 +187,7 @@ class Article_Scraper(Main_page_sport_parser):
 
         
         for section_key, section_data in content['article'].items():
-            title = section_data['title']
+            title = section_data['heading']
             paragraphs = section_data['content']
             subheadings = section_data.get('subheadings', [])
 
