@@ -26,6 +26,7 @@ import News from "../components/mainPage/News.js"
 
 
 function MainPage({news}) {
+    const [loginStatus,setLoginStatus]=useState(true)
 
     return(
 
@@ -97,43 +98,42 @@ function MainPage({news}) {
 
             <section className="container">
 
-                <section className="news">
+                <section className={`news ${loginStatus ? "narrow" : "wide"}`}>
 
                     <h1 className="newsTitle">НОВИНИ</h1>
 
-                    {news.slice(0, 5).map((item, index) =>
-                            <News
-                                key={index}
-                                title={item.data?.header?.title}
-                                text={item.data?.body}
-                                img={item.data?.img}
-                            />
-                        )
-                    }
+                    {news.slice(0, 5).map((item, index) => (
+                        <News
+                            key={index}
+                            title={item.data?.header?.title}
+                            text={item.data?.body}
+                            img={item.data?.img}
+                        />
+                    ))}
 
                 </section>
 
-                <section className="news">
+                {loginStatus ? (
+                    <section className={`news ${loginStatus ? "narrow" : "wide"}`}>
 
-                    <h1 className="newsTitle">РЕКОМЕНДАЦІЇ</h1>
+                        <h1 className="newsTitle">РЕКОМЕНДАЦІЇ</h1>
 
-                    <div className="newsBox">
+                        <div className="newsBox">
 
-                        <img src="/img/team.jpg" alt="news picture"/>
+                            <img src="/img/team.jpg" alt="news picture"/>
 
-                        <div className="newsInsight">
+                            <div className="newsInsight">
+                                <h1>TITLE BLA BLA BLA BLA</h1>
+                                <h4 className="date">02.04.2024</h4>
+                            </div>
 
-                            <h1>TITLE BLA BLA BLA BLA</h1>
-
-                            <h4 className="date">02.04.2024</h4>
+                            <hr/>
 
                         </div>
 
-                        <hr/>
+                    </section>
+                ) : null}
 
-                    </div>
-
-                </section>
 
                 <section className="navSports">
 
