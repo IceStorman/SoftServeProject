@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from "react";
 import { Link } from "react-router-dom";
-import axios from 'axios';
 
 import News from "../components/mainPage/News.js"
 
@@ -24,21 +23,7 @@ import News from "../components/mainPage/News.js"
 
 ];*/
 
-
-
-function MainPage() {
-    const [news, setNews] = useState([]);
-
-    useEffect(() => {
-        axios.get('http://127.0.0.1:5001/news/recent')
-            .then(res => {
-                const returnedNews = res.data;
-                setNews(returnedNews);
-            })
-            .catch(error => {
-                console.error('There was an error fetching the news:', error);
-            });
-    }, []);
+function MainPage({news}) {
 
     return(
 
