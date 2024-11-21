@@ -198,6 +198,7 @@ header{
         .newsInsight{
             display: flex;
             justify-content: space-between;
+            word-break: break-all;
         }
 
         h4, h1{
@@ -209,10 +210,13 @@ header{
         h4{
             color: var(--special-grey);
             align-self: end;
+            white-space:pre-wrap;
+            word-break: normal;
         }
 
         img{
-            width: 100%;
+            max-height: 50%;
+            max-width: 100%;
             margin: 0.5rem auto;
             border-radius: 1em;
         }

@@ -115,13 +115,12 @@ function MainPage() {
                     <h1 className="newsTitle">НОВИНИ</h1>
 
                     {news.slice(0, 5).map((item, index) =>
-                        console.log(item)
-                            /*<News
+                            <News
                                 key={index}
-                                title={item.title}
-                                date={item.date}
-                                img={item.img}
-                            />*/
+                                title={item.data?.header?.title}
+                                text={item.data?.body}
+                                img={item.data?.img}
+                            />
                         )
                     }
 

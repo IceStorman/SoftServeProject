@@ -1,6 +1,6 @@
 import React from "react";
 
-function News({title, date, img}){
+function News({title, text, img}){
 
 
     return (
@@ -12,7 +12,7 @@ function News({title, date, img}){
 
                 <h1>{title}</h1>
 
-                <h4 className="date">{date}</h4>
+                <h4 className="date">{text}</h4>
 
             </div>
 
