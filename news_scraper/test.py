@@ -3,7 +3,7 @@ from unittest.mock import patch, MagicMock
 from bs4 import BeautifulSoup
 import requests
 from functionality import Main_page_sport_parser, Article_Scraper
-from tokenizator import what_teams_here
+# from tokenizator import what_teams_here
 
 main_url = "https://www.espn.com/nba/" 
 parser = Article_Scraper(main_url)
@@ -22,9 +22,9 @@ if articles:
             )
 
             
-            teams = what_teams_here(article_text)
-            print("\nTeams mentioned in the article:")
-            print(teams)
+            # teams = what_teams_here(article_text)
+            # print("\nTeams mentioned in the article:")
+            # print(teams)
         else:
             print("Failed to fetch the content of the article.")
 else:

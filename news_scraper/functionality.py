@@ -3,10 +3,15 @@ import requests
 from bs4 import BeautifulSoup
 import time
 import json
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
 
 class Main_page_sport_parser:
     def __init__(self, main_url):
         self.main_url = main_url
+        self.articles = []
 
     def get_article_links(self, max_articles=5):
         headers = {
@@ -55,59 +60,88 @@ class Main_page_sport_parser:
         for article in articles:
             print(f"Title: {article['title']}, URL: {article['url']}")
 
+        self.articles=articles
         return articles
 
 class Article_Scraper(Main_page_sport_parser):
+        
 
     def get_article_content(self, full_url):
+        options = Options()
+        arguments = [
+            "--no-sandbox", "--disable-dev-shm-usage", "--disable-extensions"
+        ]
+        for arg in arguments:
+            options.add_argument(arg)
+        
+        
+        #driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+        service = Service('./chromedriver.exe')
+        driver = webdriver.Chrome(service=service, options=options)
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         }
         response = requests.get(full_url, headers=headers)
         if response.status_code != 200:
             print(f"Error fetching the article. Status code: {response.status_code}")
+            driver.quit()
             return None
 
         soup = BeautifulSoup(response.text, 'html.parser')
-
         article_data = {
             'timestamp': None,
-            'article': {}
+            'article': {},
+            'images': []
         }
+        
+        
+        title = soup.title.string if soup.title else "Unknown Article"
+        
+        
+        try:
+            search_url = f"https://www.google.com/search?tbm=isch&q={title}"
+            driver.get(search_url)
+            time.sleep(2)  
+            
+            
+            image_elements = driver.find_elements_by_css_selector("img.rg_i")[:3]
+            for img in image_elements:
+                src = img.get_attribute("src")
+                if src:
+                    article_data['images'].append(src)
+                    print(f"Found image: {src}")
+        except Exception as e:
+            print(f"Error during image search: {e}")
+        finally:
+            driver.quit()
 
-       
+        
         timestamp = soup.select_one('.author .timestamp')
-        article_data['timestamp'] = timestamp.get_text(strip=True) if timestamp else article_data['timestamp'] == time.strftime("%Y-%m-%d-%h")
-       
+        article_data['timestamp'] = timestamp.get_text(strip=True) if timestamp else time.strftime("%Y-%m-%d")
+
         for aside in soup.find_all('aside', class_=['inline editorial float-r', 'inline float-r inline-track']):
             aside.decompose()
 
-        
         content_div = soup.select_one('.article-body')
         if content_div:
-            elements = content_div.find_all(['p', 'h2', 'h3', 'img'])
+            elements = content_div.find_all(['p', 'h2', 'h3'])
             current_section_title = None
             current_section_content = []
-            current_section_images = []
             current_section_subheadings = []  
             section_counter = 1
 
             for element in elements:
                 if element.name == 'h2':  
-                    if current_section_title or current_section_content or current_section_images:
+                    if current_section_title or current_section_content:
                         article_data['article'][f'section_{section_counter}'] = {
                             'title': current_section_title,
                             'subheadings': current_section_subheadings,
                             'content': current_section_content,
-                            'images': current_section_images
-                            
                         }
                         section_counter += 1
 
-                    
                     current_section_title = element.get_text(strip=True)
                     current_section_content = []
-                    current_section_images = []
                     current_section_subheadings = []
 
                 elif element.name == 'h3':  
@@ -116,22 +150,14 @@ class Article_Scraper(Main_page_sport_parser):
                 elif element.name == 'p':  
                     current_section_content.append(element.get_text(strip=True))
 
-                elif element.name == 'img' and 'imageLoaded lazyloaded' in element.get('class', []):  
-                    image_url = element.get('src')
-                    if image_url:
-                        article_data['images'].append(image_url)
-
-
-            
-            if current_section_title or current_section_content or current_section_images:
+            if current_section_title or current_section_content:
                 article_data['article'][f'section_{section_counter}'] = {
                     'title': current_section_title,
                     'content': current_section_content,
-                    'images': current_section_images,
                     'subheadings': current_section_subheadings
                 }
 
-        time.sleep(1)  
+        time.sleep(1)
         return article_data
 
 
@@ -145,32 +171,31 @@ class Article_Scraper(Main_page_sport_parser):
             print("Failed to fetch the content of the article.")
             return
 
+        
         print(f"Timestamp: {content['timestamp']}\n")
 
+        # Вивід адрес картинок
+        if content['images']:
+            print("Images found:")
+            for idx, img_url in enumerate(content['images'], start=1):
+                print(f"{idx}. {img_url}")
+        else:
+            print("No images found.")
+
+        
         for section_key, section_data in content['article'].items():
             title = section_data['title']
             paragraphs = section_data['content']
-            images = section_data['images']
             subheadings = section_data.get('subheadings', [])
 
-            print(f"Section Title: {title}\n")
+            print(f"\nSection Title: {title}\n")
 
             for idx, paragraph in enumerate(paragraphs):
                 if idx < len(subheadings) and subheadings[idx]:
                     print(f"Subheading: {subheadings[idx]}\n")
 
-                
                 formatted_paragraph = paragraph.replace('<br>', '\n\t')
                 print(f"Paragraph Text:\n\t{formatted_paragraph}\n")
-
-            
-            if images:
-                print("Images in this paragraph:")
-                for image in images:
-                    print(f"\t{image}")
-                print("\n")
-            else:
-                print("No images in this paragraph.\n")
 
         print("End of Article\n---")
 
