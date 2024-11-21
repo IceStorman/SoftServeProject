@@ -14,4 +14,5 @@ def get_recent_news_endpoint():
         return jsonify({"error": str(e)}), 500
 
 @news_app.route('/sport/<sport_id>', methods=['GET'])
-
+def test():
+    pass
