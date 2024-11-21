@@ -27,7 +27,6 @@ sastokens_dict = {
     "news": os.getenv("SASNEWS"),
 }
 
-required_keys = ['header', 'body', 'sport']
 SUSPICIOUS_DOMAINS = ["malicious.com", "phishing.net", "unsafe.io"]
 # Рівні загрози
 THREAT_LEVELS = {
@@ -95,19 +94,16 @@ def contains_suspicious_links(data, parent_key=""):
     return found_suspicious
 
 
-def validate_json_structure(json_data, required_keys):
+def validate_json_structure(json_data):
     if not isinstance(json_data, dict):
         raise ValueError("\033[31mExpected JSON (dict) format, but received a different data type.\033[0m")
-    for key in required_keys:
-        if key not in json_data:
-            raise ValueError(f"\033[31mJSON data should contain the field '{key}', but it is missing.\033[0m")
-    if 'title' not in json_data['header'] or not json_data['header']['title']:
+    if 'title' not in json_data:
         raise ValueError(f"\033[31mJSON data should contain the field '['header']['title']', but it is missing or empty.\033[0m")
 
 
-def check_json(json_data, required_keys):
+def check_json(json_data):
     try:
-        validate_json_structure(json_data, required_keys)
+        validate_json_structure(json_data)
         results = contains_suspicious_links(json_data)
         if results:
             print("\033[31mPotential threats detected:\033[0m")
@@ -124,9 +120,9 @@ def check_json(json_data, required_keys):
 
 
 def blob_save_news(json_data: Dict[str, Dict[str, str]]) -> None:
-    if check_json(json_data, required_keys):
+    if check_json(json_data):
         print("\033[32mAll good in file.\033[0m")
-        name = json_data['header']['title']
+        name = json_data['title']
         key = sastokens_dict["news"]
         blob_service_client = BlobServiceClient(account_url=account_url, credential=key)
         container_client = blob_service_client.get_container_client("news")
@@ -339,6 +335,24 @@ with SessionLocal() as session:
     print(get_news_by_count(2, session))
     print(get_news_by_sport(3, "football", session))
     print(get_news_by_teams(3, ["g"], session))
+
+a = {
+    'timestamp': '2024-11-20',
+    'article': {
+        'section_1': {
+            'title': 'Introduction',
+            'content': ['This is the introduction paragraph.'],
+            'images': ['https://www.google.com/imgres?q=png%20sport%20nba&imgurl=https%3A%2F%2Fwww.pngarts.com%2Ffiles%2F12%2FNBA-Player-PNG-Image.png&imgrefurl=https%3A%2F%2Fwww.pngarts.com%2Fexplore%2F263429&docid=6qV5t19iJnnrCM&tbnid=gVskAEIkQhikZM&vet=12ahUKEwj6m6SBueuJAxUVgv0HHe8TGAYQM3oECGYQAA..i&w=528&h=392&hcb=2&ved=2ahUKEwj6m6SBueuJAxUVgv0HHe8TGAYQM3oECGYQAA', 'https://www.google.com/imgres?q=png%20sport%20nba&imgurl=https%3A%2F%2Fe7.pngegg.com%2Fpngimages%2F509%2F262%2Fpng-clipart-basketball-moves-oklahoma-city-thunder-basketball-player-nba-nba-sport-jersey.png&imgrefurl=https%3A%2F%2Fwww.pngegg.com%2Fen%2Fpng-bghgy&docid=BBHR4SqFahOUZM&tbnid=Ni-5-sVaJOxvYM&vet=12ahUKEwj6m6SBueuJAxUVgv0HHe8TGAYQM3oECE4QAA..i&w=900&h=512&hcb=2&ved=2ahUKEwj6m6SBueuJAxUVgv0HHe8TGAYQM3oECE4QAA'],            'subheadings': ['Subheading 1']
+        },
+        'section_2': {
+            'title': 'Details',
+            'content': ['Details about the article.'],
+            'images': ['image_url_3.jpg'],
+            'subheadings': []
+        }
+    }
+}
+
 '''
 
 with SessionLocal() as session:
@@ -352,19 +366,16 @@ with SessionLocal() as session:
     # Використовуємо отримані індекси для отримання даних
     b = get_blob_data_for_all_sports(a, session)
     print("Дані блобів:", b)
-    
+'''
 test_json = {
-    "header": {
-        "title": "Safe JSON",
-        "links": ["http://malicious-site.com/virus.exe", "http://safe-site.com"]
-    },
-    "body": "<script>alert('Hacked!');</script>",
-    "file": {
-        "name": "malicious.exe",
-        "data": "data:application/octet-stream;base64,VGhpcyBpcyBhIHRlc3Q="
-    },
-    "sport": "football"
 
+    "title": "vvvvv",
+    "body": "bnhjijughhy",
+    "file": {
+        "name": "malicious",
+    },
+    "sport": "football",
+    "img": "https://cdn.britannica.com/69/228369-050-0B18A1F6/Asian-Cup-Final-2019-Hasan-Al-Haydos-Qatar-Japan-Takumi-Minamino.jpg"
 }
 blob_save_news(test_json)
-'''
+
