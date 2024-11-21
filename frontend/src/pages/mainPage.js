@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react";
 import { Link } from "react-router-dom";
+import axios from 'axios';
 
 import News from "../components/mainPage/News.js"
 
@@ -22,6 +23,7 @@ import News from "../components/mainPage/News.js"
 
 
 ];*/
+
 
 function MainPage({news}) {
 

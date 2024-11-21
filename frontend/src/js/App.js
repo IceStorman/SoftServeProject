@@ -49,7 +49,7 @@ function App(){
 
                 <Routes>
 
-                    <Route exact path="/" element={<MainPage />} />
+                    <Route exact path="/" element={<MainPage news={news}/>} />
 
                     <Route path="/sign-in" element={<SignInPage />} />
 
