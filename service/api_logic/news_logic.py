@@ -29,8 +29,7 @@ def get_latest_sport_news(count: int, sport_name, session):
         session.query(News).filter(News.sport_id == sport.sport_id)
         .order_by(News.save_at.desc()).limit(count).all()
     )
-    if not news_records:
-        print(f"\033[31mNo news was found in the database.\033[0m")
+
     all_results = []
     for news_record in news_records:
         try:
