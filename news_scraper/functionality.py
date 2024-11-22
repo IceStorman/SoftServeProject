@@ -8,6 +8,8 @@ from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+import os
+from ai_models.tokenizator import what_teams_here
 
 class Main_page_sport_parser:
     def __init__(self, main_url):
@@ -70,15 +72,14 @@ class Article_Scraper(Main_page_sport_parser):
     def get_article_content(self, full_url):
         options = Options()
         arguments = [
-            "--no-sandbox", "--disable-dev-shm-usage", "--disable-extensions"
+            "--headless", "--no-sandbox", "--disable-dev-shm-usage", "--disable-extensions"
         ]
         for arg in arguments:
             options.add_argument(arg)
-        
-        
-        #driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+
         service = Service(ChromeDriverManager().install())
         driver = webdriver.Chrome(service=service, options=options)
+
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         }
@@ -94,20 +95,41 @@ class Article_Scraper(Main_page_sport_parser):
             'timestamp': None,
             'article': {},
             'images': [],
+            'team_names': [],
+            'S_P_O_R_T': None
         }
+
         
+        sport_urls = {
+            'main_football_url': 'https://www.espn.com/soccer/',
+            'main_afl_url': '',
+            'main_baseball_url': 'https://www.espn.com/mlb/',
+            'main_basketball_url': '',
+            'main_formula_1_url': 'https://www.espn.com/f1/',
+            'main_handball_url': '',
+            'main_hockey_url': 'https://www.espn.com/nhl/',
+            'main_mma_url': 'https://www.espn.com/mma/',
+            'main_nba_url': 'https://www.espn.com/nba/',
+            'main_nfl_url': 'https://www.espn.com/nfl/',
+            'main_rugby_url': 'https://www.espn.com/rugby/',
+            'main_volleyball_url': ''
+        }
+
         
+        for sport_key, sport_url in sport_urls.items():
+            if sport_url and sport_url in full_url:  
+                article_data['S_P_O_R_T'] = sport_key.replace('main_', '').replace('_url', '').replace('_', ' ').capitalize()
+                break
+
         title = soup.title.string if soup.title else "Unknown Article"
-        article_data['title']=title
-        
-        
+        article_data['title'] = title
+
         try:
             search_url = f"https://www.google.com/search?tbm=isch&q={title}"
             driver.get(search_url)
-            time.sleep(2)  
-            
-            
-            image_elements = driver.find_elements(By.CLASS_NAME,"YQ4gaf")[:3]
+            time.sleep(2)
+
+            image_elements = driver.find_elements(By.CLASS_NAME, "YQ4gaf")[:2]
             for img in image_elements:
                 src = img.get_attribute("src")
                 if src:
@@ -118,7 +140,6 @@ class Article_Scraper(Main_page_sport_parser):
         finally:
             driver.quit()
 
-        
         timestamp = soup.select_one('.author .timestamp')
         article_data['timestamp'] = timestamp.get_text(strip=True) if timestamp else time.strftime("%Y-%m-%d")
 
@@ -130,7 +151,7 @@ class Article_Scraper(Main_page_sport_parser):
             elements = content_div.find_all(['p', 'h2', 'h3'])
             current_section_title = None
             current_section_content = []
-            current_section_subheadings = []  
+            current_section_subheadings = []
             section_counter = 1
 
             for element in elements:
@@ -159,6 +180,8 @@ class Article_Scraper(Main_page_sport_parser):
                     'content': current_section_content,
                     'subheadings': current_section_subheadings
                 }
+            teams = what_teams_here(article_data['article'])
+            article_data['team_names'].append(teams)
 
         time.sleep(1)
         return article_data
@@ -168,16 +191,18 @@ class Article_Scraper(Main_page_sport_parser):
     def print_article(self, article):
         print(f"\n---\nTitle: {article['title']}")
         print(f"URL: {article['url']}")
+        print(f"Teams: {article['teams']}")
         content = self.get_article_content(article['url'])
 
         if not content:
             print("Failed to fetch the content of the article.")
             return
 
-        
+        # Print the type of sport
+        sport_type = content.get('S_P_O_R_T', 'Unknown Sport')
+        print(f"Sport Type: {sport_type}")
         print(f"Timestamp: {content['timestamp']}\n")
 
-        
         if content['images']:
             print("Images found:")
             for idx, img_url in enumerate(content['images'], start=1):
@@ -185,7 +210,6 @@ class Article_Scraper(Main_page_sport_parser):
         else:
             print("No images found.")
 
-        
         for section_key, section_data in content['article'].items():
             title = section_data['heading']
             paragraphs = section_data['content']
@@ -202,11 +226,24 @@ class Article_Scraper(Main_page_sport_parser):
 
         print("End of Article\n---")
 
+    def write_article_into_json(self, article):
+        content = self.get_article_content(article['url'])
+        if not content:
+            print(f"Failed to fetch content for: {article['title']}")
+            return
 
-    
+        
+        sport_type = content.get('S_P_O_R_T', 'Unknown Sport')
+        content['sport_type'] = sport_type
 
+        filename = article['title'].replace(" ", "_").replace("/", "_").replace("\\", "_").replace(":", "_") + ".json"
+        filepath = os.path.join("articles", filename)
 
+        os.makedirs("articles", exist_ok=True)
 
-        def write_article_into_json(self, article):
-            
-            pass
+        try:
+            with open(filepath, 'w', encoding='utf-8') as file:
+                json.dump(content, file, ensure_ascii=False, indent=4)
+            print(f"Article saved successfully: {filepath}")
+        except Exception as e:
+            print(f"Error saving article '{filename}': {e}")
