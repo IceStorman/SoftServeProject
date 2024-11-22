@@ -9,7 +9,8 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 import os
-from ai_models.tokenizator import what_teams_here
+from tokenizator import what_teams_here
+
 
 class Main_page_sport_parser:
     def __init__(self, main_url):
@@ -180,8 +181,8 @@ class Article_Scraper(Main_page_sport_parser):
                     'content': current_section_content,
                     'subheadings': current_section_subheadings
                 }
-            teams = what_teams_here(article_data['article'])
-            article_data['team_names'].append(teams)
+            # teams = what_teams_here(article_data['article'])
+            # article_data['team_names'].append(teams)
 
         time.sleep(1)
         return article_data
@@ -191,7 +192,7 @@ class Article_Scraper(Main_page_sport_parser):
     def print_article(self, article):
         print(f"\n---\nTitle: {article['title']}")
         print(f"URL: {article['url']}")
-        print(f"Teams: {article['teams']}")
+        #print(f"Teams: {article['team_names']}")
         content = self.get_article_content(article['url'])
 
         if not content:
@@ -233,8 +234,7 @@ class Article_Scraper(Main_page_sport_parser):
             return
 
         
-        sport_type = content.get('S_P_O_R_T', 'Unknown Sport')
-        content['sport_type'] = sport_type
+        
 
         filename = article['title'].replace(" ", "_").replace("/", "_").replace("\\", "_").replace(":", "_") + ".json"
         filepath = os.path.join("articles", filename)

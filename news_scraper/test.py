@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import requests
 from functionality import Main_page_sport_parser, Article_Scraper
 import os
-# from tokenizator import what_teams_here
+
 
 main_url = "https://www.espn.com/nba/" 
 parser = Article_Scraper(main_url)
@@ -25,9 +25,7 @@ if articles:
             )
 
             
-            teams = what_teams_here(article_text)
-            print("\nTeams mentioned in the article:")
-            print(teams)
+            
         else:
             print("Failed to fetch the content of the article.")
 else:
