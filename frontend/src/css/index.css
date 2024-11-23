@@ -1,0 +1,381 @@
+:root{
+    --main-background-color: #D3D9E9;
+    --special-dark-purple: #31293F;
+    --special-light-purple: #A6A9C8;
+    --special-red: #B82426;
+    --main-text-color: #D3D9E9;
+    --purple-btn-color: #796EA8;
+    --special-grey: #818398;
+}
+
+#root{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+body{
+    width: 100%;
+    background-color: var(--main-background-color);
+    margin: 0;
+    padding: 0;
+}
+
+.hidden{
+    display: none;
+}
+
+header{
+    width: 100%;
+    height: 5rem;
+    background-color: var(--special-dark-purple);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+    overflow: hidden;
+
+    .red{
+        color: var(--special-red);
+    }
+
+    .title{
+        margin: auto 4vh auto;
+        text-decoration: none;
+        font-size: 4rem;
+        color: var(--main-text-color);
+    }
+
+    .navMenu{
+        display: flex;
+        justify-content: space-between;
+        flex-direction: row;
+        margin: auto 0;
+        font-size: 2.5rem;
+
+        a{
+            text-decoration: none;
+            color: var(--main-text-color);
+            margin: 0 4vh;
+            padding: 0.5rem 1.6rem;
+        }
+
+        .signLink{
+            background-color: var(--purple-btn-color);
+            border-radius: 0.6rem;
+        }
+    }
+}
+
+.streams{
+    width: 100%;
+    height: 9rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--special-light-purple);
+
+    button{
+        width: 0;
+        height: 0;
+        all: unset;
+        border-top: 1.3rem solid var(--special-light-purple);
+        border-bottom: 1.3rem solid var(--special-light-purple);
+        border-right: 1.3rem solid black;
+        cursor: pointer;
+        margin: auto 2vh auto 4vh;
+    }
+
+    #rightBtn{
+        rotate: 180deg;
+        margin: auto 4vh auto 2vh;
+    }
+
+    .streamsBar{
+        display: flex;
+        flex-direction: row;
+        width: 90%;
+        overflow: hidden;
+
+        .streamBox{
+            display: flex;
+            justify-content: center;
+            flex-direction: row;
+            background-color: var(--main-background-color);
+            padding: 0.5rem 1rem;
+            margin: auto 1rem;
+            border-radius: 0.5rem;
+            font-size: 1.4rem;
+        }
+
+        i{
+            width: 1rem;
+            height: 1rem;
+            margin: auto 0.7rem;
+        }
+
+        .streamInfo{
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+
+
+            .online, .preview, .score, .matchLeague{
+                margin: auto 2vh;
+            }
+
+            .online{
+                color: red;
+            }
+
+            .matchLeague{
+                color: var(--special-grey);
+            }
+
+        }
+
+        .activeStreams{
+            display: flex;
+            flex-direction: row;
+
+            #liveStreams{
+                rotate: 180deg;
+                writing-mode: vertical-rl;
+                text-orientation: mixed;
+                margin: auto 0 auto 1rem;
+                color: var(--special-red);
+            }
+
+
+        }
+
+        .scheduledStream{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+
+            #plannedStreams{
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+
+                h2{
+                    margin: 0;
+                }
+            }
+        }
+    }
+
+
+}
+
+.container{
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 1rem;
+}
+
+.news{
+    width: 30%;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    margin: 4vh auto auto;
+    background-color: var(--special-light-purple);
+    background-color: white;
+    border-top-left-radius: 3vh;
+    border-top-right-radius: 3vh;
+    overflow: hidden;
+
+    .newsBox{
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        width: 95%;
+        margin: auto auto 0.1vh;
+        cursor: pointer;
+
+        .newsInsight{
+            display: flex;
+            justify-content: space-between;
+            word-break: break-all;
+        }
+
+        h4, h1{
+            text-decoration: none;
+            margin: 0;
+            text-align: justify;
+        }
+
+        h4{
+            color: var(--special-grey);
+            align-self: end;
+            white-space:pre-wrap;
+            word-break: normal;
+        }
+
+        img{
+            max-height: 50%;
+            max-width: 100%;
+            margin: 0.5rem auto;
+            border-radius: 1em;
+        }
+    }
+
+    .newsTitle{
+        width: 100%;
+        text-align: center;
+        margin: 0;
+        background-color: var(--special-dark-purple);
+        color: var(--main-text-color);
+        border-top-left-radius: 3vh;
+        border-top-right-radius: 3vh;
+        font-size: 4vh;
+    }
+
+    h1{
+        font-size: 1.5rem;
+    }
+
+
+    hr{
+        border: 0.2vh solid var(--special-grey);
+        width: 100%;
+    }
+}
+
+.navSports{
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    margin: 4vh 0 0;
+    width: 30%;
+
+    .sportBox{
+        display: flex;
+        justify-content: center;
+        margin: 0 auto 5vh;
+        width: 25vh;
+        cursor: pointer;
+
+        img{
+            background-color: var(--special-light-purple);
+            background-color: white;
+            padding: 1vh;
+            border: 1.5vh solid var(--special-dark-purple);
+            border-radius: 2vh;
+            width: 15vh;
+            height: 15vh;
+            object-fit: contain;
+        }
+    }
+}
+
+footer{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: auto;
+    width: 100%;
+    background-color: var(--special-dark-purple);
+    color: var(--main-text-color);
+
+    button{
+        all: unset;
+        font-size: 3rem;
+        margin: auto 2rem;
+        cursor: pointer;
+        background-color: var(--purple-btn-color);
+        padding: 0 0.8vh;
+    }
+
+    .footerInfo{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: auto;
+    }
+}
+
+.signPage{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 2rem 0;
+
+    .signContainer{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 50%;
+        padding: 2vh;
+        background-color: var(--special-light-purple);
+        border-radius: 1rem;
+        font-weight: bold;
+
+        .signBox{
+            width: 70%;
+            display: flex;
+            flex-direction: column;
+
+            .inputBox{
+                margin: 0;
+                box-sizing: border-box;
+
+                .nameInput, .emailInput, .passwordInput, .codeInput{
+                    box-sizing: inherit;
+                    width: 100%;
+                    height: 2rem;
+                    font-size: 1rem;
+                    margin: 1vh 0 0;
+                    border-radius: 0.5rem;
+                    padding: 0.2rem;
+                }
+            }
+
+            h1{
+                color: var(--main-text-color);
+                font-size: 3rem;
+                margin: 1vh auto;
+            }
+
+            .signError{
+                margin: 0;
+                color: red;
+            }
+
+            a{
+                margin: 0 0 2vh;
+                align-self: end;
+                color: black;
+                font-size: 1.1rem;
+                cursor: pointer;
+            }
+
+            .signBtn{
+                all: unset;
+                margin: 1rem auto 0;
+                font-size: 1.5rem;
+                background-color: var(--special-dark-purple);
+                border-radius: 0.5rem;
+                color: var(--main-text-color);
+                padding: 1vh;
+                cursor: pointer;
+            }
+        }
+    }
+
+    .signRedirect{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 1rem;
+
+        a{
+            margin: 1rem 0.2rem;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    }
+}
