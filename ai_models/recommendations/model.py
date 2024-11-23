@@ -1,13 +1,11 @@
 import lightgbm as lgb
 import pandas as pd
-from sqlalchemy import create_engine
 from flask import Flask, jsonify, request
 from apscheduler.schedulers.background import BackgroundScheduler
 import datetime
 from imblearn.over_sampling import SMOTE
 from database.models import *
 from database.session import SessionLocal
-from service.implementation.auto_request_api.logic_request_by_react import result
 
 SessionLocal = SessionLocal()
 app = Flask(__name__)
@@ -37,7 +35,7 @@ def load_initial_data():
         Interaction.news_id,
         Interaction.interaction_type,
         News.sport_id,
-        News.team_name,
+        TeamIndex.team_name,
         News.interest_rate,
         News.save_at,
         ClubPreference.preferences,
@@ -46,7 +44,8 @@ def load_initial_data():
      .join(User, Interaction.user_id == User.user_id) \
      .join(ClubPreference, User.user_id == ClubPreference.users_id) \
      .join(UserPreference, User.user_id == UserPreference.users_id) \
-     .join(Sport, UserPreference.sports_id == Sport.sport_id)
+     .join(Sport, UserPreference.sports_id == Sport.sport_id) \
+     .join(TeamIndex, News.news_id == TeamIndex.news_id)
     results = interactions.all()
     SessionLocal.close()
 
