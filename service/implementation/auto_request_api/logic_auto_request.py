@@ -78,7 +78,7 @@ apis = [
         "index": "games",
         "url": "https://v1.afl.api-sports.io/games?date=DATE",
         "host": "v1.afl.api-sports.io",
-        "frequency": 0.3
+        "frequency": 3
     },
     {
         "name": "afl",

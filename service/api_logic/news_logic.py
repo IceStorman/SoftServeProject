@@ -1,12 +1,13 @@
 import json
 from database.models import News, Sport
 from database.azure_blob_storage.save_get_blob import blob_get_news
+from exept.colors_text import print_error_message
 
 
 def get_news_by_count(count: int, session) -> str:
     news_records = session.query(News).order_by(News.save_at.desc()).limit(count).all()
     if not news_records:
-        print(f"\033[31mNo news was found in the database.\033[0m")
+        print_error_message(f"No news was found in the database.")
     all_results = []
     for news_record in news_records:
         try:
@@ -16,7 +17,7 @@ def get_news_by_count(count: int, session) -> str:
                 "data": data
             })
         except Exception as e:
-            print(f"\033[31mError while receiving blob '{news_record.blob_id}': {e}\033[0m")
+            print_error_message(f"Error while receiving blob '{news_record.blob_id}': {e}")
 
     return json.dumps(all_results, ensure_ascii=False)
 
@@ -39,7 +40,7 @@ def get_latest_sport_news(count: int, sport_name, session):
                 "data": data
             })
         except Exception as e:
-            print(f"\033[31mError while receiving blob '{news_record.blob_id}': {e}\033[0m")
+            print_error_message(f"Error while receiving blob '{news_record.blob_id}': {e}")
     return json.dumps(all_results, ensure_ascii=False)
 
 
