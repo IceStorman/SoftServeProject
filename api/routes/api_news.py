@@ -1,5 +1,5 @@
 from flask import Blueprint
-from service.api_logic.news_logic import get_news_by_count, get_latest_sport_news
+from service.api_logic.news_logic import get_news_by_count, get_latest_sport_news, get_popular_news
 from database.session import SessionLocal
 from api.routes.cache import cache
 from api.routes.scripts import get_error_response, make_cache_key
@@ -23,6 +23,16 @@ def get_recent_news_endpoint():
 def get_sport_news_endpoint(sport_type):
     try:
         recent_news = get_latest_sport_news(5, sport_type, session)
+        return recent_news, 200
+    except Exception as e:
+        return get_error_response(e), 500
+
+
+@news_app.route('/popular', methods=['GET'])
+@cache.cached(timeout=60*3)
+def get_popular_news_endpoint():
+    try:
+        recent_news = get_popular_news(5, session)
         return recent_news, 200
     except Exception as e:
         return get_error_response(e), 500
