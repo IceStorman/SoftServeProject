@@ -8,6 +8,7 @@ def create_app():
     app = Flask(__name__)
     CORS(app)
     app.config['CACHE_TYPE'] = 'SimpleCache'
+    app.config['JSON_AS_ASCII'] = False
     app.config['CACHE_DEFAULT_TIMEOUT'] = 60*5
     cache.init_app(app)
     app.register_blueprint(api_news.news_app, url_prefix='/news')

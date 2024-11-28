@@ -334,8 +334,8 @@ def get_news_by_count(count: int, session) -> str:
 
 test_json1 = {
 
-    "title": "nba match",
-    "body": "bnhjijughhy",
+    "title": "nba la la la",
+    "body": "ля ля ля",
     "file": {
         "name": "malicious",
     },
