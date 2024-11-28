@@ -1,7 +1,7 @@
 from flask import jsonify, request
 
 def get_error_response(e, status_code=500):
-    return jsonify({"error": e}), status_code
+    return jsonify({e}), status_code
 
 
 def make_cache_key():

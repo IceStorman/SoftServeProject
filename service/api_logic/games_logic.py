@@ -1,7 +1,11 @@
 from database.azure_blob_storage.save_get_blob import get_all_blob_indexes_from_db, get_blob_data_for_all_sports
 from datetime import datetime
-from database.models import Sport, SportIndex, BlobIndex
+from database.models import SportIndex, BlobIndex
+from exept.exeptions import InvalidDateFormatError, SportNotFoundError
+from exept.colors_text import print_error_message
+from service.api_logic.scripts import get_sport_by_name
 import json
+
 
 GAMES_JSON = "games.json"
 FIXTURES_JSON = "fixtures.json"
@@ -12,6 +16,7 @@ RESPONSE_KEY = "response"
 MATCHES_KEY = "matches"
 FIXTURES_KEY = "fixtures"
 
+
 def filter_matches_by_date(matches, today, date_key=DATE_KEY):
     today_matches = []
     for match in matches:
@@ -21,6 +26,8 @@ def filter_matches_by_date(matches, today, date_key=DATE_KEY):
                 if datetime.fromisoformat(match_date).date() == today:
                     today_matches.append(match)
             except ValueError:
+                error = InvalidDateFormatError(match_date)
+                print(f"Warning: {error}")
                 continue
     return today_matches
 
@@ -62,15 +69,15 @@ def get_stream_info_today(session):
         processed_data = process_blob_data(sport_data, today)
         if processed_data:
             filtered_data.append(processed_data)
-
     return filtered_data
 
 
 def get_stream_info_for_sport(session, sport_name):
-    sport = session.query(Sport).filter(Sport.sport_name == sport_name).first()
-    if not sport:
-        return {"error": f"Sport '{sport_name}' not found"}
-
+    try:
+        sport = get_sport_by_name(session, sport_name)
+    except SportNotFoundError as e:
+        print_error_message({"error": e.message})
+        return json.dumps({"error": e.message}, ensure_ascii=False)
     blob_indexes = (
         session.query(BlobIndex)
         .join(SportIndex, SportIndex.index_id == BlobIndex.sports_index_id)
@@ -87,5 +94,4 @@ def get_stream_info_for_sport(session, sport_name):
         if processed_data:
             processed_data["sport"] = sport_name  # Додати назву спорту
             filtered_data.append(processed_data)
-
     return filtered_data
