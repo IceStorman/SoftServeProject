@@ -61,49 +61,49 @@ apis = [
     },
     {
         "name": "afl",
-        "index": "afl-leagues",
+        "index": "leagues",
         "url": "https://v1.afl.api-sports.io/leagues",
         "host": "v1.afl.api-sports.io",
         "frequency": 1335
     },
     {
         "name": "afl",
-        "index": "afl-teams",
+        "index": "teams",
         "url": "https://v1.afl.api-sports.io/teams",
         "host": "v1.afl.api-sports.io",
         "frequency": 600
     },
     {
         "name": "afl",
-        "index": "afl-games",
+        "index": "games",
         "url": "https://v1.afl.api-sports.io/games?date=DATE",
         "host": "v1.afl.api-sports.io",
         "frequency": 3
     },
     {
         "name": "afl",
-        "index": "afl-games-quarters?",
+        "index": "games-quarters?",
         "url": "https://v1.afl.api-sports.io/games/quarters?date=DATE",
         "host": "v1.afl.api-sports.io",
         "frequency": 13
     },
     {
         "name": "afl",
-        "index": "afl-games-events",
+        "index": "games-events",
         "url": "https://v1.afl.api-sports.io/games/events?date=DATE",
         "host": "v1.afl.api-sports.io",
         "frequency": 15
     },
     {
         "name": "afl",
-        "index": "afl-games-statistics-teams",
+        "index": "games-statistics-teams",
         "url": "https://v1.afl.api-sports.io/games/statistics/teams?date=DATE",
         "host": "v1.afl.api-sports.io",
         "frequency": 17
     },
     {
         "name": "afl",
-        "index": "afl-games-statistics-players",
+        "index": "games-statistics-players",
         "url": "https://v1.afl.api-sports.io/games/statistics/players?date=DATE",
         "host": "v1.afl.api-sports.io",
         "frequency": 16
