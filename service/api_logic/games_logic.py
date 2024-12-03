@@ -4,6 +4,7 @@ from database.models import SportIndex, BlobIndex
 from exept.exeptions import InvalidDateFormatError, SportNotFoundError
 from exept.colors_text import print_error_message
 from service.api_logic.scripts import get_sport_by_name
+from api.routes.scripts import get_error_response
 import json
 
 
@@ -69,7 +70,7 @@ def get_stream_info_today(session):
         processed_data = process_blob_data(sport_data, today)
         if processed_data:
             filtered_data.append(processed_data)
-    return filtered_data
+    return filtered_data, 200
 
 
 def get_stream_info_for_sport(session, sport_name):
@@ -77,7 +78,7 @@ def get_stream_info_for_sport(session, sport_name):
         sport = get_sport_by_name(session, sport_name)
     except SportNotFoundError as e:
         print_error_message({"error": e.message})
-        return json.dumps({"error": e.message}, ensure_ascii=False)
+        return get_error_response({"error": e.message },404)
     blob_indexes = (
         session.query(BlobIndex)
         .join(SportIndex, SportIndex.index_id == BlobIndex.sports_index_id)
@@ -94,4 +95,4 @@ def get_stream_info_for_sport(session, sport_name):
         if processed_data:
             processed_data["sport"] = sport_name  # Додати назву спорту
             filtered_data.append(processed_data)
-    return filtered_data
+    return filtered_data, 200
