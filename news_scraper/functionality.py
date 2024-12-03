@@ -181,8 +181,8 @@ class Article_Scraper(Main_page_sport_parser):
                     'content': current_section_content,
                     'subheadings': current_section_subheadings
                 }
-            # teams = what_teams_here(article_data['article'])
-            # article_data['team_names'].append(teams)
+            teams = what_teams_here(json.dumps(article_data['article']))
+            article_data['team_names'].append(teams)
 
         time.sleep(1)
         return article_data
@@ -232,11 +232,10 @@ class Article_Scraper(Main_page_sport_parser):
         if not content:
             print(f"Failed to fetch content for: {article['title']}")
             return
-
         
-        
-
-        filename = article['title'].replace(" ", "_").replace("/", "_").replace("\\", "_").replace(":", "_") + ".json"
+        invalid_chars = r'<>:"/\|?*'
+        sanitized_title = ''.join(c if c not in invalid_chars else '_' for c in article['title'])
+        filename = sanitized_title.replace(" ", "_") + ".json"
         filepath = os.path.join("articles", filename)
 
         os.makedirs("articles", exist_ok=True)

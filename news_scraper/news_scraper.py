@@ -1,6 +1,4 @@
 from functionality import Main_page_sport_parser, Article_Scraper
-import time
-import json
 
 sport_urls = {
    ' main_football_url' : 'https://www.espn.com/soccer/',
@@ -19,5 +17,23 @@ sport_urls = {
 
 
 
-print(sport_urls['main_football_url'])
-#for key, value in d.items():
+
+for url in sport_urls.values():
+    if not url.strip():  
+        print("Skipping empty URL.")
+        continue
+
+    parser = Article_Scraper(url)
+    articles = parser.get_article_links(max_articles=3)
+    if articles:
+        for article in articles:
+            content = parser.get_article_content(article['url'])
+            if content:
+                parser.write_article_into_json(article)
+                article_text = "\n".join(
+                    " ".join(section['content']) for section in content['article'].values()
+                )
+            else:
+                print("Failed to fetch the content of the article.")
+    else:
+        print("No articles found.")
