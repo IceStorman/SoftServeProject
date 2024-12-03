@@ -173,11 +173,10 @@ header{
 .container{
     display: flex;
     flex-direction: row;
-    margin-bottom: 1rem;
+    margin-bottom: 4vh;
 }
 
 .news{
-    width: 30%;
     flex-wrap: wrap;
     align-content: flex-start;
     margin: 4vh auto auto;
@@ -186,6 +185,15 @@ header{
     border-top-left-radius: 3vh;
     border-top-right-radius: 3vh;
     overflow: hidden;
+
+    &.narrow {
+        width: 30%;
+    }
+
+    &.wide {
+        width: 60%;
+    }
+
 
     .newsBox{
         display: flex;
@@ -215,7 +223,7 @@ header{
         }
 
         img{
-            max-height: 50%;
+            max-height: 50rem;
             max-width: 100%;
             margin: 0.5rem auto;
             border-radius: 1em;
@@ -262,10 +270,10 @@ header{
             background-color: var(--special-light-purple);
             background-color: white;
             padding: 1vh;
-            border: 1.5vh solid var(--special-dark-purple);
+            border: 0.9rem solid var(--special-dark-purple);
             border-radius: 2vh;
-            width: 15vh;
-            height: 15vh;
+            width: 7.5rem;
+            height: 7.5rem;
             object-fit: contain;
         }
     }
