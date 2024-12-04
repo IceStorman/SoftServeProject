@@ -14,12 +14,11 @@ import axios from "axios";
 import header from "../components/header";
 import footer from "../components/footer";
 
-// import Home component
-import homePage from "../pages/mainPage";
 import SignUpPage from "../pages/signUpPage";
 import SignInPage from "../pages/signInPage";
 import MainPage from "../pages/mainPage";
 import ForgotPasswordPage from "../pages/forgotPasswordPage";
+import SportPage from "../pages/sportPage";
 
 function App(){
 
@@ -44,6 +43,8 @@ function App(){
                     <Route path="/sign-up" element={<SignUpPage />} />
 
                     <Route path="/reset-password" element={<ForgotPasswordPage />} />
+
+                    <Route path="/sport/:sportName" element={<SportPage />} />
 
                     <Route path="*" element={<Navigate to="/" />} />
 

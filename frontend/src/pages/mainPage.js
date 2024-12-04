@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, createContext, useContext} from "react";
 import { Link } from "react-router-dom";
 import axios from 'axios';
 import apiEndpoints from "../apiEndpoints";
@@ -112,9 +112,9 @@ function MainPage() {
                     {news.slice(0, 5).map((item, index) => (
                         <News
                             key={index}
-                            title={item.data?.header?.title}
-                            text={item.data?.body}
-                            img={item.data?.img}
+                            title={item.data?.title}
+                            text={item.data?.timestamp}
+                            img={item.data?.images[0]}
                         />
                     ))}
 
