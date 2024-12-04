@@ -1,32 +1,38 @@
 import React, {useState, useEffect} from "react";
 import { Link } from "react-router-dom";
 import axios from 'axios';
+import apiEndpoints from "../apiEndpoints";
 
 import News from "../components/mainPage/News.js"
 
-/*const news =[
-    {
-        img: "/img/team.jpg",
-        title: "Why did the programmer quit his job? Because he didn't get arrays.",
-        date: "02.04.2006"
-    },
-    {
-        img: "/img/team.jpg",
-        title: "Why do Java developers wear glasses? Because they can't C#.",
-        date: "11.12.2005"
-    },
-    {
-        img: "/img/team.jpg",
-        title: "There are only 10 types of people in the world: those who understand binary and those who don't.",
-        date: "14.02.2006"
-    }
+function MainPage() {
+    const [loginStatus,setLoginStatus]=useState(false)
+
+    const [news, setNews] = useState([]);
+    const [sports, setSport] = useState([]);
 
 
-];*/
+    useEffect(() => {
+        axios.get(`${apiEndpoints.url}${apiEndpoints.news.getRecent}`)
+            .then(res => {
+                const returnedNews = res.data;
+                setNews(returnedNews);
+            })
+            .catch(error => {
+                console.error('There was an error fetching the news:', error);
+            });
+    }, []);
 
-
-function MainPage({news}) {
-    const [loginStatus,setLoginStatus]=useState(true)
+    /*useEffect(() => {
+        axios.get('${apiEndpoints.url}${apiEndpoints.news.getRecent}')
+            .then(res => {
+                const returnedNews = res.data;
+                setNews(returnedNews);
+            })
+            .catch(error => {
+                console.error('There was an error fetching the news:', error);
+            });
+    }, []);*/
 
     return(
 

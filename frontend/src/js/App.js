@@ -22,18 +22,6 @@ import MainPage from "../pages/mainPage";
 import ForgotPasswordPage from "../pages/forgotPasswordPage";
 
 function App(){
-    const [news, setNews] = useState([]);
-
-    useEffect(() => {
-        axios.get('http://127.0.0.1:5001/news/recent')
-            .then(res => {
-                const returnedNews = res.data;
-                setNews(returnedNews);
-            })
-            .catch(error => {
-                console.error('There was an error fetching the news:', error);
-            });
-    }, []);
 
     return (
         <>
@@ -49,7 +37,7 @@ function App(){
 
                 <Routes>
 
-                    <Route exact path="/" element={<MainPage news={news}/>} />
+                    <Route exact path="/" element={<MainPage />} />
 
                     <Route path="/sign-in" element={<SignInPage />} />
 
