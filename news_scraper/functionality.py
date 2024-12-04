@@ -232,7 +232,7 @@ class Article_Scraper(Main_page_sport_parser):
         if not content:
             print(f"Failed to fetch content for: {article['title']}")
             return
-        
+
         invalid_chars = r'<>:"/\|?*'
         sanitized_title = ''.join(c if c not in invalid_chars else '_' for c in article['title'])
         filename = sanitized_title.replace(" ", "_") + ".json"
@@ -241,8 +241,13 @@ class Article_Scraper(Main_page_sport_parser):
         os.makedirs("articles", exist_ok=True)
 
         try:
+
             with open(filepath, 'w', encoding='utf-8') as file:
                 json.dump(content, file, ensure_ascii=False, indent=4)
-            print(f"Article saved successfully: {filepath}")
+            print(f"Article saved locally: {filepath}")
+
+            blob_save_news(content)
+            print(f"Article uploaded to Azure Blob Storage successfully.")
+
         except Exception as e:
             print(f"Error saving article '{filename}': {e}")
