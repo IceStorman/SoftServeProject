@@ -2,7 +2,6 @@ import React from "react";
 
 function News({title, text, img}){
 
-
     return (
         <div className="newsBox">
 

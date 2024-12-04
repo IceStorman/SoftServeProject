@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import axios from 'axios';
 import apiEndpoints from "../apiEndpoints";
 
-import News from "../components/mainPage/News.js"
+import News from "../components/mainPage/news.js"
+import SportBtn from "../components/mainPage/sportBtn"
 
 function MainPage() {
     const [loginStatus,setLoginStatus]=useState(false)
@@ -19,20 +20,20 @@ function MainPage() {
                 setNews(returnedNews);
             })
             .catch(error => {
-                console.error('There was an error fetching the news:', error);
+                console.error('There was an error getting news:', error);
             });
     }, []);
 
-    /*useEffect(() => {
-        axios.get('${apiEndpoints.url}${apiEndpoints.news.getRecent}')
+    useEffect(() => {
+        axios.get(`${apiEndpoints.url}${apiEndpoints.sports.getAll}`)
             .then(res => {
-                const returnedNews = res.data;
-                setNews(returnedNews);
+                const returnedSports = res.data;
+                setSport(returnedSports);
             })
             .catch(error => {
-                console.error('There was an error fetching the news:', error);
+                console.error('There was an error getting sports:', error);
             });
-    }, []);*/
+    }, []);
 
     return(
 
@@ -143,103 +144,13 @@ function MainPage() {
 
                 <section className="navSports">
 
-                    <div className="sportBox">
-
-                        <Link to={"/"}>
-                            <img src="/img/hero-banner.png" alt="footbal player"/>
-                        </Link>
-
-                    </div>
-
-                    <div className="sportBox">
-
-                        <Link to={"/"}>
-                            <img src="/img/basket-player.png" alt="basket player"/>
-                        </Link>
-
-                    </div>
-
-                    <div className="sportBox">
-
-                        <Link to={"/"}>
-                            <img src="/img/min-nba.png" alt="nba player"/>
-                        </Link>
-
-
-                    </div>
-
-                    <div className="sportBox">
-
-                        <Link to={"/"}>
-                            <img src="/img/mma-logo.png" alt="mma player"/>
-                        </Link>
-
-                    </div>
-
-                    <div className="sportBox">
-
-                        <Link to={"/"}>
-                            <img src="/img/handball-logo.png" alt="handball player"/>
-                        </Link>
-
-                    </div>
-
-                    <div className="sportBox">
-
-                        <Link to={"/"}>
-                            <img src="/img/hockey-logo.png" alt="hockey player"/>
-                        </Link>
-
-                    </div>
-
-                    <div className="sportBox">
-
-                        <Link to={"/"}>
-                            <img src="/img/afl-logo.png" alt="afl player"/>
-                        </Link>
-
-                    </div>
-
-                    <div className="sportBox">
-
-                        <Link to={"/"}>
-                            <img src="/img/baseball-logo.png" alt="baseball player"/>
-                        </Link>
-
-                    </div>
-
-                    <div className="sportBox">
-
-                        <Link to={"/"}>
-                            <img src="/img/rugby-logo.png" alt="rugby player"/>
-                        </Link>
-
-                    </div>
-
-                    <div className="sportBox">
-
-                        <Link to={"/"}>
-                            <img src="/img/volleyball-logo.png" alt="balleyball player"/>
-                        </Link>
-
-                    </div>
-
-                    <div className="sportBox">
-
-                        <Link to={"/"}>
-                            <img src="/img/nfl-logo.png" alt="nfl player"/>
-                        </Link>
-
-                    </div>
-
-                    <div className="sportBox">
-
-                        <Link to={"/"}>
-                            <img src="/img/f1-mini.png" alt="formula player"/>
-                        </Link>
-
-                    </div>
-
+                    {sports.map((item, index)=>(
+                        <SportBtn
+                            key={index}
+                            sport={item.data?.sport_name}
+                            img={item.data?.sport_img}
+                        />
+                    ))}
 
                 </section>
 
