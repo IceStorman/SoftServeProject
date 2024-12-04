@@ -1,6 +1,10 @@
-transformers==4.46.2
-datasets==3.0.1
-torch==2.4.1
-
-
-
+Flask-Caching~=2.3.0
+Flask~=3.0.3
+Flask-Cors~=5.0.0
+requests~=2.32.3
+APScheduler~=3.10.4
+python-dotenv~=1.0.1
+SQLAlchemy~=2.0.36
+alembic~=1.14.0
+azure-core~=1.32.0
+SQLAlchemy-Utils~=0.41.2

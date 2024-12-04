@@ -251,17 +251,17 @@ web_modules/
 # parcel-bundler cache (https://parceljs.org/)
 .parcel-cache
 
-# Next.js build output
+# Next.src build output
 .next
 out
 
-# Nuxt.js build / generate output
+# Nuxt.src build / generate output
 .nuxt
 dist
 
 # Gatsby files
 .cache/
-# Comment in the public line in if your project uses Gatsby and not Next.js
+# Comment in the public line in if your project uses Gatsby and not Next.src
 # https://nextjs.org/blog/next-9-1#public-directory-support
 # public
 
