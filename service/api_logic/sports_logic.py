@@ -12,5 +12,6 @@ def get_all_sports():
     return [
         {
             "sport_id": sport.sport_id,
-            "sport_name": sport.sport_name
+            "sport_name": sport.sport_name,
+            "sport_img": sport.sport_img
         } for sport in sports], 200
