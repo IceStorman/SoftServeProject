@@ -147,8 +147,8 @@ function MainPage() {
                     {sports.map((item, index)=>(
                         <SportBtn
                             key={index}
-                            sport={item.data?.sport_name}
-                            img={item.data?.sport_img}
+                            sport={item.sport_name}
+                            img={item.sport_img}
                         />
                     ))}
 
