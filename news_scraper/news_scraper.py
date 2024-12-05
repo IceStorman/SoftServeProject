@@ -1,4 +1,11 @@
 from functionality import Main_page_sport_parser, Article_Scraper
+import shutil
+def cleanup_articles_directory():
+    try:
+        shutil.rmtree('articles')  
+        print("Articles directory removed successfully.")
+    except Exception as e:
+        print(f"Error removing articles directory: {e}")
 
 sport_urls = {
     'main_formula_1_url' : 'https://www.espn.com/f1/',
@@ -38,3 +45,6 @@ for url in sport_urls.values():
                 print("Failed to fetch the content of the article.")
     else:
         print("No articles found.")
+
+
+cleanup_articles_directory()
