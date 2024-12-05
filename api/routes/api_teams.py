@@ -24,7 +24,6 @@ def get_teams_endpoint():
         print(e)
 
 
-'''NEED FIX'''
 @teams_app.route("/<sport_type>", methods=['GET'])
 @cache.cached(timeout=60*60)
 def get_teams_sport_endpoint(sport_type):
