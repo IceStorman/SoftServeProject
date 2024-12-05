@@ -122,7 +122,7 @@ class Article_Scraper(Main_page_sport_parser):
         for sport_key, sport_url in sport_urls.items():
             if sport_url and sport_url in full_url:
                 if sport_url ==  'https://www.espn.com/f1/':
-                    article_data['S_P_O_R_T'] ='formula-1'
+                    article_data['S_P_O_R_T'] ='formulaKURWA1'
                 else:
                     article_data['S_P_O_R_T'] = sport_key.replace('main_', '').replace('_url', '').replace('_', ' ').capitalize()
                 break
@@ -204,7 +204,7 @@ class Article_Scraper(Main_page_sport_parser):
             print("Failed to fetch the content of the article.")
             return
 
-        # Print the type of sport
+
         sport_type = content.get('S_P_O_R_T', 'Unknown Sport')
         print(f"Sport Type: {sport_type}")
         print(f"Timestamp: {content['timestamp']}\n")
