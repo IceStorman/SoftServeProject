@@ -1,6 +1,6 @@
 import requests
 from datetime import datetime
-from logic_auto_request import current_key_index, token_usage, api_key
+from service.implementation.auto_request_api.logic_auto_request import current_key_index, token_usage, api_key
 from database.azure_blob_storage.save_get_blob import blob_save_specific_api, get_all_blob_indexes_from_db, get_blob_data_for_all_sports
 from database.session import SessionLocal
 from typing import Dict
@@ -172,6 +172,7 @@ def afl_teams_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
 
 
 def afl_players(api_data: Dict[str, str]) -> Dict[str, str]:
+    print(api_data)
     team_id = api_data.get("team_id")
     if not team_id:
         return {"error": "Missing or invalid parameter: 'team_id' required."}
@@ -505,7 +506,7 @@ def volleyball_teams_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
     except Exception as e:
         return {"error": str(e)}
 
-
+'''
 api1 = {"fixture_id": 380516, "team_id": 103}
 result=football_fixtures_statistics(api1)
 print(result)
@@ -565,7 +566,7 @@ result=volleyball_teams_statistics(api19)
 print(result)
 '''
 
-'''
+
 
 
 

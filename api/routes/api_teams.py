@@ -1,7 +1,8 @@
 from flask import Blueprint, jsonify, request
 from database.session import SessionLocal
 from api.routes.scripts import get_error_response
-from service.api_logic.teams_logic import get_teams
+from service.api_logic.teams_logic import get_teams, get_teams_sport
+from service.implementation.auto_request_api.logic_request_by_react import basketball_players, rugby_teams_statistics
 
 session = SessionLocal()
 teams_app = Blueprint('teams', __name__)
@@ -19,17 +20,27 @@ def get_teams_endpoint():
         return all_teams
     except Exception as e:
         print(e)
+
+
+@teams_app.route("/<sport_type>", methods=['GET'])
+def get_teams_sport_endpoint(sport_type):
+    try:
+        all_teams = get_teams_sport(session, sport_type)
+        return all_teams
+    except Exception as e:
+        print(e)
+
+
 @teams_app.route('/statistics', methods=['POST'])
 def get_teams_statistics_endpoint():
     try:
         data = request.get_json()
-        sport = data.get("sport", "Unknown")
-        team_id = data.get("team_id", "Unknown")
         response = {
-            "sport": sport,
-            "team_id": team_id,
+            "sport": data.get("sport", "Unknown"),
+            "team_id": data.get("team_id", "Unknown"),
+            "league_id": 3
         }
-        #response = teams_statistics_info()
+        response = rugby_teams_statistics(response)
         return response
     except Exception as e:
         print(e)
@@ -39,13 +50,11 @@ def get_teams_statistics_endpoint():
 def get_players_endpoint():
     try:
         data = request.get_json()
-        sport = data.get("sport", "Unknown")
-        team_id = data.get("team_id", "Unknown")
         response = {
-            "sport": sport,
-            "team_id": team_id,
+            "sport": data.get("sport", "Unknown"),
+            "team_id": data.get("team_id", "Unknown"),
         }
-        #response = players_info()
+        response = basketball_players(response)
         return response
     except Exception as e:
        print(e)

@@ -1,7 +1,7 @@
 import time
 from apscheduler.schedulers.background import BackgroundScheduler
 from concurrent.futures import ThreadPoolExecutor
-from logic_auto_request import apis, auto_request_system
+from service.implementation.auto_request_api.logic_auto_request import apis, auto_request_system
 
 scheduler = BackgroundScheduler()
 executor = ThreadPoolExecutor(max_workers=3)
