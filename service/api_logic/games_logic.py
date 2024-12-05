@@ -21,7 +21,9 @@ FIXTURES_KEY = "fixtures"
 def filter_matches_by_date(matches, today, date_key=DATE_KEY):
     today_matches = []
     for match in matches:
-        match_date = match.get(date_key)
+        match_date = match
+        for key in date_key.split('.'):
+            match_date = match_date.get(key, {})
         if match_date and isinstance(match_date, str):
             try:
                 if datetime.fromisoformat(match_date).date() == today:
@@ -31,6 +33,7 @@ def filter_matches_by_date(matches, today, date_key=DATE_KEY):
                 print(f"Warning: {error}")
                 continue
     return today_matches
+
 
 
 def process_blob_data(sport_data, today):
