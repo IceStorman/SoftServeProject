@@ -10,6 +10,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 import os
 from tokenizator import what_teams_here
+from database.azure_blob_storage.save_get_blob import blob_save_news
 
 
 class Main_page_sport_parser:
@@ -102,11 +103,12 @@ class Article_Scraper(Main_page_sport_parser):
 
         
         sport_urls = {
+            'main_formula_1_url': 'https://www.espn.com/f1/',
             'main_football_url': 'https://www.espn.com/soccer/',
             'main_afl_url': '',
             'main_baseball_url': 'https://www.espn.com/mlb/',
             'main_basketball_url': '',
-            'main_formula_1_url': 'https://www.espn.com/f1/',
+            
             'main_handball_url': '',
             'main_hockey_url': 'https://www.espn.com/nhl/',
             'main_mma_url': 'https://www.espn.com/mma/',
@@ -118,8 +120,11 @@ class Article_Scraper(Main_page_sport_parser):
 
         
         for sport_key, sport_url in sport_urls.items():
-            if sport_url and sport_url in full_url:  
-                article_data['S_P_O_R_T'] = sport_key.replace('main_', '').replace('_url', '').replace('_', ' ').capitalize()
+            if sport_url and sport_url in full_url:
+                if sport_url ==  'https://www.espn.com/f1/':
+                    article_data['S_P_O_R_T'] ='formula-1'
+                else:
+                    article_data['S_P_O_R_T'] = sport_key.replace('main_', '').replace('_url', '').replace('_', ' ').capitalize()
                 break
 
         title = soup.title.string if soup.title else "Unknown Article"
@@ -238,7 +243,7 @@ class Article_Scraper(Main_page_sport_parser):
         filename = sanitized_title.replace(" ", "_") + ".json"
         filepath = os.path.join("articles", filename)
 
-        os.makedirs("articles", exist_ok=True)
+        
 
         try:
 
