@@ -15,7 +15,7 @@ class VolleyballDataManager(AbstractSportDataManager):
         league_id = api_data.get("league_id")
         if not team_id or not league_id:
             return {"error": "Missing or invalid parameter: 'team_id' and 'league_id' are required."}
-        
+
         index = f"teams/statistics?season=2024&team={team_id}&league={league_id}"
         with SessionLocal() as session:
             check = get_all_blob_indexes_from_db(session, index)
