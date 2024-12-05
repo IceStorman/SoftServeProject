@@ -22,6 +22,7 @@ def get_stream_info_today_endpoint():
    except Exception as e:
        print(e)
 
+
 @games_app.route('/<sport_type>', methods=['GET'])
 @cache.cached(60*1.3, key_prefix=make_cache_key)
 def get_sport_stream_info_today_endpoint(sport_type):

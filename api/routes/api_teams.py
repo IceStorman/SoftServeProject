@@ -3,6 +3,7 @@ from database.session import SessionLocal
 from api.routes.scripts import get_error_response
 from service.api_logic.teams_logic import get_teams, get_teams_sport
 from service.implementation.auto_request_api.logic_request_by_react import basketball_players, rugby_teams_statistics
+from api.routes.cache import cache
 
 session = SessionLocal()
 teams_app = Blueprint('teams', __name__)
@@ -14,6 +15,7 @@ def handle_exception(e):
 
 
 @teams_app.route("/", methods=['GET'])
+@cache.cached(timeout=60*60)
 def get_teams_endpoint():
     try:
         all_teams = get_teams(session)
@@ -22,7 +24,9 @@ def get_teams_endpoint():
         print(e)
 
 
+'''NEED FIX'''
 @teams_app.route("/<sport_type>", methods=['GET'])
+@cache.cached(timeout=60*60)
 def get_teams_sport_endpoint(sport_type):
     try:
         all_teams = get_teams_sport(session, sport_type)
@@ -32,6 +36,7 @@ def get_teams_sport_endpoint(sport_type):
 
 
 @teams_app.route('/statistics', methods=['POST'])
+@cache.cached(timeout=60*1.3)
 def get_teams_statistics_endpoint():
     try:
         data = request.get_json()
