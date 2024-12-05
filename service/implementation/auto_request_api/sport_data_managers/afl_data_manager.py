@@ -35,6 +35,8 @@ class AflDataManager(AbstractSportDataManager):
         if not team_id:
             return {"error": "Missing or invalid parameter: 'team_id' required."}
         index = f"teams/players?season=2023&team={team_id}"
+        url = f"https://v1.afl.api-sports.io/players?season=2023&team={team_id}"
+
         with SessionLocal() as session:
             check = get_all_blob_indexes_from_db(session, index)
             if check:
@@ -42,7 +44,6 @@ class AflDataManager(AbstractSportDataManager):
                 print("\033[32mxui\033[0m")
                 return result
         print("\033[31mxui tam plaval\033[0m")
-        url = f"https://v1.afl.api-sports.io/players?season=2023&team={team_id}"
         host = "v1.afl.api-sports.io"
         try:
             json_data = super().main_request(host, url, index)

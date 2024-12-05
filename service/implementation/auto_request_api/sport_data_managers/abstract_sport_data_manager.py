@@ -32,3 +32,6 @@ class AbstractSportDataManager:
         blob_save_specific_api(AbstractSportDataManager._sport_name, blob_name, json_data)
 
         return json_data
+
+    def get_players(self, api_data: Dict[str, str]) -> Dict[str, str]:
+        pass
