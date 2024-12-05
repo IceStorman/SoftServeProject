@@ -115,6 +115,7 @@ function MainPage() {
                             title={item.data?.title}
                             text={item.data?.timestamp}
                             img={item.data?.images[0]}
+                            sport={item.data?.S_P_O_R_T}
                         />
                     ))}
 

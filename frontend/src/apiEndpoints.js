@@ -3,10 +3,15 @@ const apiEndpoints = {
 
     news: {
         getRecent: 'news/recent',
+        getSport: 'news/'
     },
 
     sports:{
-        getAll: '/sports/all',
+        getAll: 'sports/all',
+    },
+
+    team:{
+        getAll: 'team/'
     }
 };
 
