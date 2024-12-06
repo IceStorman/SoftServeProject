@@ -4,14 +4,29 @@ from api.routes.scripts import get_error_response
 from service.api_logic.teams_logic import get_teams, get_teams_sport
 from service.implementation.auto_request_api.logic_request_by_react import basketball_players, rugby_teams_statistics
 from api.routes.cache import cache
+from exept.exeptions import DatabaseConnectionError
+from pyodbc import OperationalError
 
 session = SessionLocal()
 teams_app = Blueprint('teams', __name__)
 
 @teams_app.errorhandler(Exception)
 def handle_exception(e):
-    response = {"error in service": str(e)}
+    if isinstance(e, DatabaseConnectionError):
+        response = {"error": e.message}
+        return get_error_response(response, 503)  # 503 - Service Unavailable
+    # Для інших помилок
+    response = {"error": "An unexpected error occurred."}
     return get_error_response(response, 500)
+
+
+@teams_app.errorhandler(OperationalError)
+def handle_db_timeout_error(e):
+    response = {
+        "error": "Database connection timed out. Please try again later.",
+        "details": str(e)
+    }
+    return get_error_response(response, 503)
 
 
 @teams_app.route("/", methods=['GET'])
@@ -22,6 +37,8 @@ def get_teams_endpoint():
         return all_teams
     except Exception as e:
         print(e)
+    except OperationalError as e:
+        return handle_db_timeout_error(e)
 
 
 @teams_app.route("/<sport_type>", methods=['GET'])
