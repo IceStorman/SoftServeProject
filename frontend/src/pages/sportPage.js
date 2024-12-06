@@ -9,6 +9,8 @@ import ReactPaginate from 'react-paginate';
 function SportPage(){
     const { sportName  } = useParams();
 
+    const [rangeScale ,setRangeScale]= useState(3)
+
     const [sportNews, setSportNews] = useState([]);
     const [teams, setTeams] = useState([]);
 
@@ -95,7 +97,7 @@ function SportPage(){
                 breakLabel="..."
                 nextLabel="→"
                 onPageChange={handlePageClick}
-                pageRangeDisplayed={3}
+                pageRangeDisplayed={rangeScale}
                 pageCount={pageCount}
                 previousLabel="←"
                 renderOnZeroPageCount={null}

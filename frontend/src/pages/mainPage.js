@@ -121,7 +121,7 @@ function MainPage() {
 
                     <h1 className="newsTitle">НОВИНИ</h1>
 
-                    {news.slice(0, 5).map((item, index) => (
+                    {news.map((item, index) => (
                         <News
                             key={index}
                             title={item.data?.title}
