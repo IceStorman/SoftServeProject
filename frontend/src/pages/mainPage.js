@@ -5,13 +5,14 @@ import apiEndpoints from "../apiEndpoints";
 
 import News from "../components/mainPage/news.js"
 import SportBtn from "../components/mainPage/sportBtn"
+import Stream from "../components/mainPage/stream.js"
 
 function MainPage() {
     const [loginStatus,setLoginStatus]=useState(false)
 
     const [news, setNews] = useState([]);
     const [sports, setSport] = useState([]);
-
+    const [games, setGames] = useState([]);
 
     useEffect(() => {
         axios.get(`${apiEndpoints.url}${apiEndpoints.news.getRecent}`)
@@ -35,6 +36,23 @@ function MainPage() {
             });
     }, []);
 
+    useEffect(() => {
+        axios.get(`${apiEndpoints.url}${apiEndpoints.games.getGames}`)
+            .then(res => {
+                const returnedGames = res.data;
+                let arr = [];
+                returnedGames.forEach(element => {
+                  element.matches.forEach(a => {
+                    arr.push(a);
+                  })
+                });
+                setGames(arr);
+            })
+            .catch(error => {
+                console.error('There was an error getting sports:', error);
+            });
+    }, []);
+
     return(
 
         <>
@@ -46,28 +64,22 @@ function MainPage() {
                 <div className="streamsBar">
 
                     <div className="activeStreams">
-
                         <h2 id="liveStreams">Активні</h2>
 
-                        <div className="streamBox">
+                        {games.slice(0, 5).map((item, index) => (
+                       <Stream
+                            key={index}
+                            logoHome = {item?.teams?.home?.logo}
+                            logoAway = {item?.teams?.away?.logo}
+                            scoreHome = {item?.scores?.home}
+                            scoreAway = {item?.scores?.away}
+                            //league = {item?.league?.name}
+                        />
+                    ))}
 
-                            <i className="fa fa-user-o" aria-hidden="true"></i>
-
-                            <div className="streamInfo">
-
-                                <h4 className="online">етер</h4>
-
-                                <h1 className="score">0:0</h1>
-
-                                <h4 className="matchLeague">ліга</h4>
-
-                            </div>
-
-                            <i className="fa fa-user-o" aria-hidden="true"></i>
-
-                        </div>
 
                     </div>
+                    
 
                     <div className="scheduledStream">
 

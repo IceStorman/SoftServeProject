@@ -12,6 +12,10 @@ const apiEndpoints = {
 
     team:{
         getAll: 'team/'
+    },
+    
+    games:{
+        getGames: 'games/'
     }
 };
 
