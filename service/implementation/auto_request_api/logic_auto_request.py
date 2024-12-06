@@ -4,6 +4,10 @@ import requests
 from datetime import datetime
 from typing import Dict
 from database.azure_blob_storage.save_get_blob import blob_autosave_api
+from database.session import SessionLocal
+from sqlalchemy.orm import scoped_session
+from sqlalchemy.sql import text
+
 
 load_dotenv()
 api_key = [os.getenv("APIKEY"), "API_KEY_2", "API_KEY_3"]
@@ -426,3 +430,12 @@ def auto_request_system(api: Dict[str, str]) -> None:
         print(f"Помилка при запиті до {api['name']}: {e}")
     except Exception as e:
         print(f"Загальна помилка при збереженні даних для {api['name']}: {e}")
+
+
+def keep_db_alive():
+    session = scoped_session(SessionLocal)
+    try:
+        session.execute(text("SELECT 1"))
+        session.commit()
+    except Exception as e:
+        print(f"Keep-alive failed: {e}")
