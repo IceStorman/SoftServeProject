@@ -21,7 +21,7 @@ function MainPage() {
                 setNews(returnedNews);
             })
             .catch(error => {
-                console.error('There was an error getting news:', error);
+                alert(`There was an error getting news :(\n${error}`);
             });
     }, []);
 
@@ -32,7 +32,7 @@ function MainPage() {
                 setSport(returnedSports);
             })
             .catch(error => {
-                console.error('There was an error getting sports:', error);
+                alert(`There was an error getting sports :(\n${error}`);
             });
     }, []);
 
@@ -49,7 +49,7 @@ function MainPage() {
                 setGames(arr);
             })
             .catch(error => {
-                console.error('There was an error getting sports:', error);
+                alert(`There was an error getting sports :(\n${error}`);
             });
     }, []);
 

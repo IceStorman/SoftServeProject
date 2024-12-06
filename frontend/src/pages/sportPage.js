@@ -37,7 +37,7 @@ function SportPage(){
                 setSportNews(returnedNews);
             })
             .catch(error => {
-                console.error('There was an error getting news:', error);
+                alert(`There was an error getting news :(\n${error}`);
             });
     }, []);
 
@@ -53,7 +53,7 @@ function SportPage(){
                 })
             })
             .catch(error => {
-                console.error('There was an error getting teams:', error);
+                alert(`There was an error getting teams :(\n${error}`);
             });
     }, []);
 
