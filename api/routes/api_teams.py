@@ -14,8 +14,7 @@ teams_app = Blueprint('teams', __name__)
 def handle_exception(e):
     if isinstance(e, DatabaseConnectionError):
         response = {"error": e.message}
-        return get_error_response(response, 503)  # 503 - Service Unavailable
-    # Для інших помилок
+        return get_error_response(response, 503)
     response = {"error": "An unexpected error occurred."}
     return get_error_response(response, 500)
 
@@ -32,23 +31,16 @@ def handle_db_timeout_error(e):
 @teams_app.route("/", methods=['GET'])
 @cache.cached(timeout=60*60)
 def get_teams_endpoint():
-    try:
-        all_teams = get_teams(session)
-        return all_teams
-    except Exception as e:
-        print(e)
-    except OperationalError as e:
-        return handle_db_timeout_error(e)
+    all_teams = get_teams(session)
+    return all_teams
 
 
 @teams_app.route("/<sport_type>", methods=['GET'])
 @cache.cached(timeout=60*60)
 def get_teams_sport_endpoint(sport_type):
-    try:
-        all_teams = get_teams_sport(session, sport_type)
-        return all_teams
-    except Exception as e:
-        print(e)
+    all_teams = get_teams_sport(session, sport_type)
+    return all_teams
+
 
 
 @teams_app.route('/statistics', methods=['POST'])

@@ -1,7 +1,6 @@
 import json
 from database.azure_blob_storage.save_get_blob import get_all_blob_indexes_from_db, get_blob_data_for_all_sports
 from exept.exeptions import SportNotFoundError, DatabaseConnectionError
-from exept.colors_text import print_error_message
 from api.routes.scripts import get_error_response
 from service.api_logic.scripts import get_sport_by_name
 from sqlalchemy.exc import OperationalError
@@ -44,7 +43,6 @@ def get_teams_sport(session, sport_type):
     try:
         sport = get_sport_by_name(session, sport_type)
     except SportNotFoundError as e:
-        print_error_message({"error": e.message})
         return get_error_response({"error": e.message}, 404)
     blob_indexes = get_all_blob_indexes_from_db(session, TEAMS_JSON)
     result = get_blob_data_for_all_sports(session, blob_indexes)
