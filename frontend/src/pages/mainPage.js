@@ -1,6 +1,8 @@
 import React, {useState, useEffect, createContext, useContext} from "react";
 import { Link } from "react-router-dom";
 import axios from 'axios';
+import { Toaster, toast } from 'sonner'
+
 import apiEndpoints from "../apiEndpoints";
 
 import News from "../components/mainPage/news.js"
@@ -21,7 +23,7 @@ function MainPage() {
                 setNews(returnedNews);
             })
             .catch(error => {
-                alert(`There was an error getting news :(\n${error}`);
+                toast.error(`:( Troubles With News Loading: ${error}`);
             });
     }, []);
 
@@ -32,7 +34,7 @@ function MainPage() {
                 setSport(returnedSports);
             })
             .catch(error => {
-                alert(`There was an error getting sports :(\n${error}`);
+                toast.error(`:( Troubles With Sports Loading: ${error}`);
             });
     }, []);
 
@@ -49,13 +51,15 @@ function MainPage() {
                 setGames(arr);
             })
             .catch(error => {
-                alert(`There was an error getting streams :(\n${error}`);
+                toast.error(`:( Troubles With Games Loading: ${error}`);
             });
     }, []);
 
     return(
 
         <>
+
+            <Toaster  position="top-center" expand={true} richColors  />
 
             <section className="streams">
 
