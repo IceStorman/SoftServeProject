@@ -8,3 +8,4 @@ class TeamIndex(Base):
     name = Column(String)
     logo = Column(String)
     api_id = Column(Integer)
+    country = Column(ForeignKey('Country.country_id'))
