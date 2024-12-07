@@ -49,7 +49,7 @@ function MainPage() {
                 setGames(arr);
             })
             .catch(error => {
-                alert(`There was an error getting sports :(\n${error}`);
+                alert(`There was an error getting streams :(\n${error}`);
             });
     }, []);
 
