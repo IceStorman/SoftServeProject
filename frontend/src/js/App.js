@@ -14,26 +14,13 @@ import axios from "axios";
 import header from "../components/header";
 import footer from "../components/footer";
 
-// import Home component
-import homePage from "../pages/mainPage";
 import SignUpPage from "../pages/signUpPage";
 import SignInPage from "../pages/signInPage";
 import MainPage from "../pages/mainPage";
 import ForgotPasswordPage from "../pages/forgotPasswordPage";
+import SportPage from "../pages/sportPage";
 
 function App(){
-    const [news, setNews] = useState([]);
-
-    useEffect(() => {
-        axios.get('http://127.0.0.1:5001/news/recent')
-            .then(res => {
-                const returnedNews = res.data;
-                setNews(returnedNews);
-            })
-            .catch(error => {
-                console.error('There was an error fetching the news:', error);
-            });
-    }, []);
 
     return (
         <>
@@ -49,13 +36,15 @@ function App(){
 
                 <Routes>
 
-                    <Route exact path="/" element={<MainPage news={news}/>} />
+                    <Route exact path="/" element={<MainPage />} />
 
                     <Route path="/sign-in" element={<SignInPage />} />
 
                     <Route path="/sign-up" element={<SignUpPage />} />
 
                     <Route path="/reset-password" element={<ForgotPasswordPage />} />
+
+                    <Route path="/sport/:sportName" element={<SportPage />} />
 
                     <Route path="*" element={<Navigate to="/" />} />
 
