@@ -42,6 +42,7 @@ apis = [
         "host":"v3.football.api-sports.io",
         "frequency": 1335
     },
+    #--------------------------------
     {
         "name": "football",
         "index": "teams",
@@ -49,6 +50,7 @@ apis = [
         "host": "v3.football.api-sports.io",
          "frequency": 769
     },
+    #--------------------------------
     {
         "name": "football",
         "index": "venues",
@@ -56,6 +58,7 @@ apis = [
         "host": "v3.football.api-sports.io",
         "frequency": 31
     },
+    # --------------------------------
     {
         "name": "football",
         "index": "injuries",
@@ -203,6 +206,7 @@ apis = [
         "host": "v1.handball.api-sports.io",
         "frequency": 679
     },
+    # --------------------------------
     {
         "name": "handball",
         "index": "teams",
@@ -210,6 +214,7 @@ apis = [
         "host": "v1.handball.api-sports.io",
         "frequency": 345
     },
+    # --------------------------------
     {
         "name": "handball",
         "index": "games",
@@ -231,6 +236,7 @@ apis = [
         "host": "v1.hockey.api-sports.io",
         "frequency": 670
     },
+    # --------------------------------
     {
         "name": "hockey",
         "index": "teams",
@@ -238,6 +244,7 @@ apis = [
         "host": "v1.hockey.api-sports.io",
         "frequency": 659
     },
+    # --------------------------------
     {
         "name": "hockey",
         "index": "games",
@@ -322,6 +329,7 @@ apis = [
         "host": "v1.american-football.api-sports.io",
         "frequency": 679
     },
+    # --------------------------------
     {
         "name": "nfl",
         "index": "teams",
@@ -329,6 +337,7 @@ apis = [
         "host": "v1.american-football.api-sports.io",
         "frequency": 113
     },
+    # --------------------------------
     {
         "name": "nfl",
         "index": "games",
@@ -378,6 +387,7 @@ apis = [
         "host": "v1.volleyball.api-sports.io",
         "frequency": 1298
     },
+    # --------------------------------
     {
         "name": "volleyball",
         "index": "teams",
@@ -385,6 +395,7 @@ apis = [
         "host": "v1.volleyball.api-sports.io",
         "frequency": 375
     },
+    # --------------------------------
     {
         "name": "volleyball",
         "index": "games",

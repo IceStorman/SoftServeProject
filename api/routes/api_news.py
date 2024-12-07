@@ -15,30 +15,22 @@ def handle_exception(e):
 @news_app.route('/recent', methods=['GET'])
 @cache.cached(timeout=60*60)
 def get_recent_news_endpoint():
-    try:
-        recent_news = get_news_by_count(5, session)
-        return recent_news
-    except Exception as e:
-        print(e)
+    recent_news = get_news_by_count(5, session)
+    return recent_news
 
 
 @news_app.route('/<sport_type>', methods=['GET'])
 @cache.cached(timeout=60*60, key_prefix=make_cache_key)
 def get_sport_news_endpoint(sport_type):
-    try:
-        recent_news = get_latest_sport_news(5, sport_type, session)
-        return recent_news
-    except Exception as e:
-        print(e)
+    recent_news = get_latest_sport_news(5, sport_type, session)
+    return recent_news
 
 
 @news_app.route('/popular', methods=['GET'])
 @cache.cached(timeout=60*3)
 def get_popular_news_endpoint():
-    try:
-        recent_news = get_popular_news(5, session)
-        return recent_news
-    except Exception as e:
-        print(e)
+    recent_news = get_popular_news(5, session)
+    return recent_news
+
 
 

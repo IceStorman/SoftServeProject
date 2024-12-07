@@ -16,18 +16,12 @@ def handle_exception(e):
 @games_app.route('/', methods=['GET'])
 @cache.cached(60*1.3)
 def get_stream_info_today_endpoint():
-   try:
-      games = get_stream_info_today(session)
-      return games
-   except Exception as e:
-       print(e)
+    games = get_stream_info_today(session)
+    return games
 
 
 @games_app.route('/<sport_type>', methods=['GET'])
 @cache.cached(60*1.3, key_prefix=make_cache_key)
 def get_sport_stream_info_today_endpoint(sport_type):
-    try:
-       games = get_stream_info_for_sport(session, sport_type)
-       return games
-    except Exception as e:
-        print(e)
+    games = get_stream_info_for_sport(session, sport_type)
+    return games
