@@ -500,7 +500,7 @@ footer{
             font-weight: bold;
             width: 2rem;
             height: 2rem;
-            background-color: var(--special-dark-purple);
+            background-color: var(--purple-btn-color);
             color: var(--main-text-color);
             border-radius: 50%;
             cursor: pointer;
@@ -510,8 +510,7 @@ footer{
     }
 
     .activePaginationPane{
-        background-color: green;
+        border: solid 0.3rem #2BA36C;
         border-radius: 50%;
-        color: green;
     }
 }

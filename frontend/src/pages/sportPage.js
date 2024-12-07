@@ -5,6 +5,7 @@ import axios from "axios";
 import apiEndpoints from "../apiEndpoints";
 import Team from "../components/sportPage/team";
 import ReactPaginate from 'react-paginate';
+import {toast, Toaster} from "sonner";
 
 function SportPage(){
     const { sportName  } = useParams();
@@ -39,7 +40,7 @@ function SportPage(){
                 setSportNews(returnedNews);
             })
             .catch(error => {
-                alert(`There was an error getting news :(\n${error}`);
+                toast.error(`:( Troubles With News Loading: ${error}`);
             });
     }, []);
 
@@ -55,12 +56,14 @@ function SportPage(){
                 })
             })
             .catch(error => {
-                alert(`There was an error getting teams :(\n${error}`);
+                toast.error(`:( Troubles With Teams Loading: ${error}`);
             });
     }, []);
 
     return(
         <section className={"sportPage"}>
+
+            <Toaster  position="top-center" expand={true} richColors  />
 
             <h1 className={"sportTitle"}>{ sportName }</h1>
 
