@@ -103,7 +103,7 @@ class Article_Scraper(Main_page_sport_parser):
 
         
         sport_urls = {
-            'main_formula_1_url': 'https://www.espn.com/f1/',
+            'main_formula-1_url': 'https://www.espn.com/f1/',
             'main_football_url': 'https://www.espn.com/soccer/',
             'main_afl_url': '',
             'main_baseball_url': 'https://www.espn.com/mlb/',
@@ -121,10 +121,8 @@ class Article_Scraper(Main_page_sport_parser):
         
         for sport_key, sport_url in sport_urls.items():
             if sport_url and sport_url in full_url:
-                if sport_url ==  'https://www.espn.com/f1/':
-                    article_data['S_P_O_R_T'] ='formulaKURWA1'
-                else:
-                    article_data['S_P_O_R_T'] = sport_key.replace('main_', '').replace('_url', '').replace('_', ' ').capitalize()
+            
+                article_data['S_P_O_R_T'] = sport_key.replace('main_', '').replace('_url', '').replace('_', ' ').capitalize()
                 break
 
         title = soup.title.string if soup.title else "Unknown Article"
@@ -135,7 +133,7 @@ class Article_Scraper(Main_page_sport_parser):
             driver.get(search_url)
             time.sleep(2)
 
-            image_elements = driver.find_elements(By.CLASS_NAME, "YQ4gaf")[:2]
+            image_elements = driver.find_elements(By.CLASS_NAME, "YQ4gaf")[:3]
             for img in image_elements:
                 src = img.get_attribute("src")
                 if src:
@@ -197,7 +195,7 @@ class Article_Scraper(Main_page_sport_parser):
     def print_article(self, article):
         print(f"\n---\nTitle: {article['title']}")
         print(f"URL: {article['url']}")
-        #print(f"Teams: {article['team_names']}")
+        
         content = self.get_article_content(article['url'])
 
         if not content:
