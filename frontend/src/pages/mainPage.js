@@ -73,7 +73,7 @@ function MainPage() {
                             logoAway = {item?.teams?.away?.logo}
                             scoreHome = {item?.scores?.home}
                             scoreAway = {item?.scores?.away}
-                            //league = {item?.league?.name}
+                            league = {item?.league?.logo}
                         />
                     ))}
 

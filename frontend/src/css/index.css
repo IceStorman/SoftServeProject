@@ -112,8 +112,8 @@ header{
         img{
             display: flex;
             justify-content:center ;
-            width: 1rem;
-            height: 1rem;
+            width: 2rem;
+            height: 2rem;
             margin: auto 0.7rem;
         }
 

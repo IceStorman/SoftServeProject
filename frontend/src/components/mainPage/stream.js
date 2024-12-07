@@ -13,7 +13,9 @@ function Stream({logoHome, logoAway, scoreHome, scoreAway, teamHome, teamAway, l
 
                 <h1 className="score">{scoreHome}:{scoreAway}</h1>
 
-                <h4 className="matchLeague">{league}</h4>
+                {/*<h4 className="matchLeague">{league}</h4>*/}
+
+                <img src={league} alt={teamAway}/>
 
             </div>
 
