@@ -127,7 +127,9 @@ def fetch_games(
             League.name.label("league_name"),
             Country.name.label("country_name"),
             TeamIndex.name.label("home_team_name"),
+            TeamIndex.logo.label("home_team_logo"),
             TeamIndex.name.label("away_team_name"),
+            TeamIndex.logo.label("home_team_logo"),
         )
         .join(League, Games.league_id == League.legue_id)
         .join(Country, Games.country_id == Country.country_id)
@@ -164,7 +166,9 @@ def fetch_games(
             "league_name": game.league_name,
             "country_name": game.country_name,
             "home_team_name": game.home_team_name,
+            "home_team_logo": game.home_team_logo,
             "away_team_name": game.away_team_name,
+            "away_team_logo": game.home_team_logo,
             "home_score": game.home,
             "away_score": game.away,
         }
@@ -177,31 +181,7 @@ def fetch_games(
     )
 
 
-def get_games_today(session, count):
-    news = fetch_games(session, limit=count)
-    return news
-
-
-def get_games_by_sport(session, count, sport_name):
-    news = fetch_games(
-        session,
-        limit=count,
-        sport_id=sport_name
-    )
-    return news
-
-
-def get_games_by_sport_and_league(session, count, sport_name, league):
-    news = fetch_games(
-        session,
-        limit=count,
-        sport_id=sport_name,
-        league_id=league
-    )
-    return news
-
-
-def get_games_by_sport_and_league_and_country(session, count, sport_name, league, country):
+def get_games_today(session, count, sport_name=None, league=None, country=None):
     news = fetch_games(
         session,
         limit=count,
