@@ -121,7 +121,7 @@ function MainPage() {
 
             <section className="container">
 
-                <section className={`news ${loginStatus ? "narrow" : "wide"}`}>
+                <section className={`news ${loginStatus ? "narrow" : "wide wrapedNews"}`}>
 
                     <h1 className="newsTitle">НОВИНИ</h1>
 
