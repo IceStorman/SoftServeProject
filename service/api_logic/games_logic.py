@@ -7,10 +7,12 @@ from database.models.games import Games
 from database.models.country import Country
 from database.models.teams_index import TeamIndex
 from database.models.league import League
+from database.models.score import Score
 from exept.exeptions import InvalidDateFormatError, SportNotFoundError
 from exept.colors_text import print_error_message
 from service.api_logic.scripts import get_sport_by_name
 from api.routes.scripts import get_error_response
+from sqlalchemy.orm import aliased
 import json
 
 
@@ -113,12 +115,15 @@ def fetch_games(
         date: Optional[str] = None,
         limit: Optional[int] = None
 ):
+
     query = (
         session.query(
             Games.game_id,
             Games.status,
             Games.date,
             Games.time,
+            Score.away,
+            Score.home,
             League.name.label("league_name"),
             Country.name.label("country_name"),
             TeamIndex.name.label("home_team_name"),
@@ -128,6 +133,7 @@ def fetch_games(
         .join(Country, Games.country_id == Country.country_id)
         .join(TeamIndex, Games.team_home_id == TeamIndex.team_index_id)
         .join(TeamIndex, Games.team_away_id == TeamIndex.team_index_id)
+        .join(Score, Games.game_id == Score.game_id)
     )
     filters = []
     if sport_id is not None:
@@ -159,6 +165,8 @@ def fetch_games(
             "country_name": game.country_name,
             "home_team_name": game.home_team_name,
             "away_team_name": game.away_team_name,
+            "home_score": game.home,
+            "away_score": game.away,
         }
         for game in games
     ]
