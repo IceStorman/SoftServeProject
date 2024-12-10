@@ -6,6 +6,8 @@ import apiEndpoints from "../apiEndpoints";
 import Team from "../components/sportPage/team";
 import ReactPaginate from 'react-paginate';
 import {toast, Toaster} from "sonner";
+import {Link} from "react-router-dom";
+
 
 function SportPage(){
     const { sportName  } = useParams();
