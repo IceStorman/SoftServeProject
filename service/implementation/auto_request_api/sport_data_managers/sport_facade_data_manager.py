@@ -19,22 +19,35 @@ from service.implementation.auto_request_api.sport_data_managers.volleyball_data
 
 
 class SportFacadeDataManager:
-    data_managers: Dict[str, AbstractSportDataManager] = {
-            "football": FootballDataManager(),
-            "afl": AflDataManager(),
-            "baseball": BaseballDataManager(),
-            "basketball": BaseballDataManager(),
-            "formula_one": FormulaOneDataManager(),
-            "handball": HandballDataManager(),
-            "hockey": HockeyDataManager(),
-            "mma": MmaDataManager(),
-            "nba": NbaDataManager(),
-            "nfl": NflDataManager(),
-            "rugby": RugbyDataManager(),
-            "volleyball": VolleyballDataManager()
-        }
-
     @staticmethod
-    def get_data_manager(self, sport_name: str) -> AbstractSportDataManager:
-        return self.data_managers[sport_name]
+    def get_data_manager(sport_name: str, api_data: Dict[str, str]) -> AbstractSportDataManager:
+        match sport_name:
+            case "football":
+                return FootballDataManager(api_data)
+            case "baseball":
+                return BaseballDataManager(api_data)
+            case "basketball":
+                return BaseballDataManager(api_data)
+            case "handball":
+                return HandballDataManager(api_data)
+            case "hockey":
+                return HockeyDataManager(api_data)
+            case "afl":
+                return AflDataManager(api_data)
+            case "formula_one":
+                return FormulaOneDataManager(api_data)
+            case "mma":
+                return MmaDataManager(api_data)
+            case "nba":
+                return NbaDataManager(api_data)
+            case "nfl":
+                return NflDataManager(api_data)
+            case "rugby":
+                return RugbyDataManager(api_data)
+            case "volleyball":
+                return VolleyballDataManager(api_data)
+            case _:
+                return AbstractSportDataManager(api_data)
+
+
 
