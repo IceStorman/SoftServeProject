@@ -1,13 +1,13 @@
 import React from "react";
 
-function Stream({logoHome, logoAway, scoreHome, scoreAway, teamHome, teamAway, league}){
+function ActiveGames({logoHome, logoAway, scoreHome, scoreAway, teamHome, teamAway, league}){
 
     return(
-        <div className="streamBox">
+        <div className="gamesBox">
 
             <img src={logoHome} alt={teamHome}/>
 
-            <div className="streamInfo">
+            <div className="gamesInfo">
 
                 <h4 className="online">етер</h4>
 
@@ -25,4 +25,4 @@ function Stream({logoHome, logoAway, scoreHome, scoreAway, teamHome, teamAway, l
     );
 }
 
-export default Stream;
+export default ActiveGames;

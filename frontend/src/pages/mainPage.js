@@ -7,7 +7,7 @@ import apiEndpoints from "../apiEndpoints";
 
 import News from "../components/mainPage/news.js"
 import SportBtn from "../components/mainPage/sportBtn"
-import Stream from "../components/mainPage/stream.js"
+import Slider from "../components/games/slider.js";
 
 function MainPage() {
     const [loginStatus,setLoginStatus]=useState(false)
@@ -61,63 +61,7 @@ function MainPage() {
 
             <Toaster  position="top-center" expand={true} richColors  />
 
-            <section className="streams">
-
-                <button></button>
-
-                <div className="streamsBar">
-
-                    <div className="activeStreams">
-                        <h2 id="liveStreams">Активні</h2>
-
-                        {games.slice(0, 5).map((item, index) => (
-                       <Stream
-                            key={index}
-                            logoHome = {item?.teams?.home?.logo}
-                            logoAway = {item?.teams?.away?.logo}
-                            scoreHome = {item?.scores?.home}
-                            scoreAway = {item?.scores?.away}
-                            league = {item?.league?.logo}
-                        />
-                    ))}
-
-
-                    </div>
-                    
-
-                    <div className="scheduledStream">
-
-                        <div id="plannedStreams">
-                            <h2>MNS</h2>
-                            <h2>00</h2>
-                        </div>
-
-                        <div className="streamBox">
-
-                            <i className="fa fa-user-o" aria-hidden="true"></i>
-
-                            <div className="streamInfo">
-
-                                <h4 className="preview">скоро</h4>
-
-                                <h1 className="score">VS</h1>
-
-                                <h4 className="matchLeague">ліга</h4>
-
-                            </div>
-
-                            <i className="fa fa-user-o" aria-hidden="true"></i>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <button id="rightBtn"></button>
-
-            </section>
+            <Slider games={games} />
 
             <section className="container">
 

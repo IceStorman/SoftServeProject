@@ -67,7 +67,7 @@ header{
     }
 }
 
-.streams{
+.games{
     width: 100%;
     height: 9rem;
     display: flex;
@@ -75,6 +75,7 @@ header{
     justify-content: space-between;
     align-items: center;
     background-color: var(--special-light-purple);
+    overflow: hidden;
 
     button{
         width: 0;
@@ -92,13 +93,13 @@ header{
         margin: auto 4vh auto 2vh;
     }
 
-    .streamsBar{
+    .gamesBar{
         display: flex;
         flex-direction: row;
         width: 90%;
         overflow: hidden;
-
-        .streamBox{
+        
+        .gamesBox{
             display: flex;
             justify-content: center;
             flex-direction: row;
@@ -107,6 +108,7 @@ header{
             margin: auto 1rem;
             border-radius: 0.5rem;
             font-size: 1.4rem;
+            transition: transform 0.5s ease-in-out;
         }
 
         img{
@@ -117,7 +119,7 @@ header{
             margin: auto 0.7rem;
         }
 
-        .streamInfo{
+        .gamesInfo{
             display: flex;
             align-items: center;
             flex-direction: column;
@@ -137,11 +139,11 @@ header{
 
         }
 
-        .activeStreams{
+        .activeGames{
             display: flex;
             flex-direction: row;
 
-            #liveStreams{
+            #liveGames{
                 rotate: 180deg;
                 writing-mode: vertical-rl;
                 text-orientation: mixed;
@@ -152,12 +154,12 @@ header{
 
         }
 
-        .scheduledStream{
+        .scheduledGames{
             display: flex;
             flex-direction: row;
             align-items: center;
 
-            #plannedStreams{
+            #plannedGames{
                 display: flex;
                 flex-direction: column;
                 align-items: center;
