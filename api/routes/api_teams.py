@@ -31,10 +31,23 @@ def get_teams_endpoint():
     return all_teams
 
 
-@teams_app.route("/<sport_type>", methods=['GET'])
-@cache.cached(timeout=60*60)
-def get_teams_sport_endpoint(sport_type):
-    all_teams = get_teams_sport(session, sport_type)
+@teams_app.route("/league/teams", methods=['POST'])
+#@cache.cached(timeout=60*60, query_string=True)
+def get_teams_sport_endpoint():
+    data = request.get_json()
+    response = {
+        "sport": data.get("sport", "Unknown"),
+        "country_id": data.get("country_id", "Unknown"),
+        "league_id": data.get("league_id", "Unknown"),
+    }
+    cache_key = f"teams:{response['sport']}:{response['country_id']}:{response['league_id']}"
+
+    cached_data = cache.get(cache_key)
+    if cached_data:
+        return cached_data, 200
+
+    all_teams = get_teams_sport(session, response)
+    cache.set(cache_key, all_teams, timeout=60 * 60)
     return all_teams
 
 

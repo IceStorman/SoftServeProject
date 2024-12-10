@@ -64,6 +64,8 @@ def get_teams_sport(session, sport_type):
 
 "-------------------TEST--------------------"
 from database.models import TeamIndex, Sport
+from flask import Response
+
 def get_teams1(session):
     try:
         teams = session.query(TeamIndex).join(Sport).all()
@@ -103,3 +105,66 @@ def get_teams_sport1(session, sport_type):
         return filtered_data, 200
     except Exception:
         raise Exception
+
+
+'''
+from typing import Optional
+from database.models import SportIndex, BlobIndex, Games, Country, TeamIndex, League
+
+def fetch_teams(
+        session,
+        sport_id: Optional[int] = None,
+        league_id: Optional[int] = None,
+        country_id: Optional[int] = None,
+        limit: Optional[int] = None
+):
+    query = session.query(TeamIndex)
+
+    filters = []
+    if sport_id is not None or "Unknown":
+        filters.append(TeamIndex.sport_id == sport_id)
+    if league_id is not None or "Unknown":
+        filters.append(TeamIndex.league_id == league_id)
+    if country_id is not None or "Unknown":
+        filters.append(TeamIndex.country_id == country_id)
+
+    # Застосовуємо фільтри до запиту
+    if filters:
+        query = query.filter(*filters)
+    if limit is not None:
+        query = query.limit(limit)
+
+    teams = query.all()
+    results = [
+        {
+            "sport_name": team.sport_name,
+            "league_name": team.league_name,
+            "country_name": team.country_name,
+            "team_name": team.name,
+        }
+        for team in teams
+    ]
+    return Response(
+        json.dumps(results, ensure_ascii=False),
+        content_type='application/json; charset=utf-8',
+        status=200
+    )
+
+
+def get_teams2(session, count, sport_id=None, league_id=None, country_id=None):
+    try:
+        session.execute(text("SELECT 1"))
+        session.commit()
+    except OperationalError:
+        raise DatabaseConnectionError()
+    except Exception:
+        raise Exception
+    teams = fetch_teams(
+        session,
+        limit=count,
+        sport_id=sport_id,
+        league_id=league_id,
+        country_id=country_id
+    )
+    return teams
+'''
