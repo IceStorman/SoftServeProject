@@ -1,0 +1,101 @@
+.sportPage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .sportTitle {
+        margin: 1rem 0;
+        text-transform: capitalize;
+        font-size: 3rem;
+        letter-spacing: 0.5rem;
+    }
+
+    .news {
+        width: 80%;
+        background-color: var(--special-light-purple);
+        border-radius: 0.5rem;
+        margin-top: 0;
+
+        .newsBox {
+            flex-direction: row;
+            justify-content: space-evenly;
+            width: 95%;
+            margin: 1rem auto;
+
+            .newsInsight {
+                width: 55%;
+            }
+
+            h4, h1 {
+                margin: 0 0.5rem 0 2rem;
+                align-self: end;
+            }
+
+            img {
+                width: 45%;
+            }
+
+            .leftPlaceData {
+                align-self: start;
+            }
+        }
+
+        hr {
+            margin: 0 auto 1rem;
+            border: 0.1vh solid white;
+            width: 95%;
+        }
+    }
+
+    .sportTeams {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 3rem auto 0;
+        width: 80%;
+
+        .team {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 30%;
+            height: 18rem;
+            margin: 0 auto 1rem;
+            background-color: var(--special-light-purple);
+            border-radius: 0.5rem;
+            cursor: pointer;
+
+            img {
+                max-height: 90%;
+                max-width: 90%;
+            }
+        }
+    }
+
+    .pagination {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        list-style: none;
+        padding: 0;
+        margin-bottom: 1rem;
+
+        li {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            width: 2rem;
+            height: 2rem;
+            background-color: var(--purple-btn-color);
+            color: var(--main-text-color);
+            border-radius: 50%;
+            cursor: pointer;
+            margin: 0 0.5rem;
+        }
+    }
+
+    .activePaginationPane {
+        border: solid 0.3rem #2BA36C;
+        border-radius: 50%;
+    }
+}

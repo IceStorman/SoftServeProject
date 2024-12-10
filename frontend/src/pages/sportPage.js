@@ -15,7 +15,7 @@ function SportPage(){
     const [rangeScale ,setRangeScale]= useState(3)
 
     const [sportNews, setSportNews] = useState([]);
-    const [teams, setTeams] = useState([]);
+    const [leagues, setLeagues] = useState([]);
 
     const [currentTeams, setCurrentTeams] = useState([]);
     const [pageCount, setPageCount] = useState(0);
@@ -25,12 +25,12 @@ function SportPage(){
 
     useEffect(() => {
         const endOffset = teamOffset + teemsPerPage;
-        setCurrentTeams(teams.slice(teamOffset, endOffset));
-        setPageCount(Math.ceil(teams.length / teemsPerPage));
-    }, [teamOffset, teams]);
+        setCurrentTeams(leagues.slice(teamOffset, endOffset));
+        setPageCount(Math.ceil(leagues.length / teemsPerPage));
+    }, [teamOffset, leagues]);
 
     const handlePageClick = (event) => {
-        const newOffset = (event.selected * teemsPerPage) % teams.length;
+        const newOffset = (event.selected * teemsPerPage) % leagues.length;
         setTeamOffset(newOffset);
     };
 
@@ -53,7 +53,7 @@ function SportPage(){
                 res.data.forEach((sport) =>{
                     if(sport?.sport === sportName) {
                         returnedTeams = sport?.team
-                        setTeams(returnedTeams);
+                        setLeagues(returnedTeams);
                     }
                 })
             })
@@ -69,7 +69,7 @@ function SportPage(){
 
             <h1 className={"sportTitle"}>{ sportName }</h1>
 
-            <section className={"sportNews"}>
+            <section className={"news"}>
 
                 {sportNews.map((item, index) => (
 
