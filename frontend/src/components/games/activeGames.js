@@ -5,7 +5,7 @@ function ActiveGames({logoHome, logoAway, scoreHome, scoreAway, teamHome, teamAw
     return(
         <div className="gamesBox">
 
-            <img src={logoHome} alt={teamHome}/>
+            <img src={logoHome} alt={teamHome}  className="teamLogo"/>
 
             <div className="gamesInfo">
 
@@ -19,7 +19,7 @@ function ActiveGames({logoHome, logoAway, scoreHome, scoreAway, teamHome, teamAw
 
             </div>
 
-            <img src={logoAway} alt={teamAway}/>
+            <img src={logoAway} alt={teamAway}  className="teamLogo"/>
 
         </div>
     );

@@ -34,7 +34,7 @@ const Slider = ({ games }) => {
             <div className="activeGames">
                 <h2 id="liveGames">Активні</h2>
         
-                {getVisibleGames().slice(0, 4).map((item, index) => (
+                {getVisibleGames().map((item, index) => (
                <ActiveGames
                     key={index}
                     logoHome = {item?.teams?.home?.logo}
@@ -54,7 +54,7 @@ const Slider = ({ games }) => {
                     <h2>00</h2>
                 </div>
            
-                {getVisibleGames().slice(0, 4).map((item, index) => (
+                {getVisibleGames().map((item, index) => (
                <Games
                     key={index}
                     logoHome = {item?.teams?.home?.logo}
