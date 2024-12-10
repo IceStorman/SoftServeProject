@@ -2,12 +2,7 @@ from flask import Response
 from database.azure_blob_storage.save_get_blob import get_all_blob_indexes_from_db, get_blob_data_for_all_sports
 from datetime import datetime
 from typing import Optional
-from database.models import SportIndex, BlobIndex
-from database.models.games import Games
-from database.models.country import Country
-from database.models.teams_index import TeamIndex
-from database.models.league import League
-from database.models.score import Score
+from database.models import SportIndex, BlobIndex, Games, Country, TeamIndex, League
 from exept.exeptions import InvalidDateFormatError, SportNotFoundError
 from exept.colors_text import print_error_message
 from service.api_logic.scripts import get_sport_by_name
@@ -122,8 +117,8 @@ def fetch_games(
             Games.status,
             Games.date,
             Games.time,
-            Score.away,
-            Score.home,
+            Games.score_away_team,
+            Games.score_home_team,
             League.name.label("league_name"),
             Country.name.label("country_name"),
             TeamIndex.name.label("home_team_name"),
@@ -131,11 +126,10 @@ def fetch_games(
             TeamIndex.name.label("away_team_name"),
             TeamIndex.logo.label("home_team_logo"),
         )
-        .join(League, Games.league_id == League.legue_id)
+        .join(League, Games.league_id == League.league_id)
         .join(Country, Games.country_id == Country.country_id)
         .join(TeamIndex, Games.team_home_id == TeamIndex.team_index_id)
         .join(TeamIndex, Games.team_away_id == TeamIndex.team_index_id)
-        .join(Score, Games.game_id == Score.game_id)
     )
     filters = []
     if sport_id is not None:
@@ -169,8 +163,8 @@ def fetch_games(
             "home_team_logo": game.home_team_logo,
             "away_team_name": game.away_team_name,
             "away_team_logo": game.home_team_logo,
-            "home_score": game.home,
-            "away_score": game.away,
+            "home_score": game.score_home_team,
+            "away_score": game.score_away_team,
         }
         for game in games
     ]
