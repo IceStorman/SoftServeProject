@@ -3,6 +3,7 @@ from service.api_logic.games_logic import get_stream_info_today, get_stream_info
 from database.session import SessionLocal
 from api.routes.cache import cache
 from api.routes.scripts import get_error_response, make_cache_key
+from exept.exeptions import DatabaseConnectionError
 
 session = SessionLocal()
 games_app = Blueprint('games_app', __name__)
@@ -11,6 +12,12 @@ games_app = Blueprint('games_app', __name__)
 def handle_exception(e):
     response = {"error in service": str(e)}
     return get_error_response(response, 500)
+
+
+@games_app.errorhandler(DatabaseConnectionError)
+def handle_db_timeout_error(e):
+    response = {"error in data base": str(e)}
+    return get_error_response(response, 503)
 
 
 @games_app.route('/', methods=['GET'])

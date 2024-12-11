@@ -3,7 +3,8 @@ from flask import Response
 from database.models import News
 from database.azure_blob_storage.save_get_blob import blob_get_news
 from sqlalchemy.sql.expression import ClauseElement
-from exept.exeptions import SportNotFoundError, BlobFetchError
+from sqlalchemy.exc import OperationalError
+from exept.exeptions import SportNotFoundError, BlobFetchError, DatabaseConnectionError
 from service.api_logic.scripts import get_sport_by_name
 from api.routes.scripts import get_error_response
 
@@ -22,6 +23,8 @@ def get_news_by_count(count: int, session):
     try:
         news = fetch_news(session, order_by=News.save_at.desc(), limit=count)
         return json_news(news)
+    except OperationalError:
+        raise DatabaseConnectionError()
     except Exception:
         raise Exception
 
@@ -40,6 +43,8 @@ def get_popular_news(count: int, session):
     try:
         news = fetch_news(session, order_by=News.interest_rate.desc(), limit=count)
         return json_news(news)
+    except OperationalError:
+        raise DatabaseConnectionError()
     except Exception:
         raise Exception
 

@@ -17,10 +17,7 @@ def handle_exception(e):
 
 @teams_app.errorhandler(DatabaseConnectionError)
 def handle_db_timeout_error(e):
-    response = {
-        "error": "Database connection timed out. Please try again later.",
-        "details": str(e)
-    }
+    response = {"error in data base": str(e)}
     return get_error_response(response, 503)
 
 

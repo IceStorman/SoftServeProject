@@ -3,6 +3,7 @@ from service.api_logic.news_logic import get_news_by_count, get_latest_sport_new
 from database.session import SessionLocal
 from api.routes.cache import cache
 from api.routes.scripts import make_cache_key, get_error_response
+from exept.exeptions import DatabaseConnectionError
 session = SessionLocal()
 news_app = Blueprint('news', __name__)
 
@@ -10,6 +11,12 @@ news_app = Blueprint('news', __name__)
 def handle_exception(e):
     response = {"error in service": str(e)}
     return get_error_response(response, 500)
+
+
+@news_app.errorhandler(DatabaseConnectionError)
+def handle_db_timeout_error(e):
+    response = {"error in data base": str(e)}
+    return get_error_response(response, 503)
 
 
 @news_app.route('/recent', methods=['GET'])
