@@ -17,21 +17,21 @@ function SportPage(){
     const [sportNews, setSportNews] = useState([]);
     const [leagues, setLeagues] = useState([]);
 
-    const [currentTeams, setCurrentTeams] = useState([]);
+    const [currentLeagues, setCurrentLeagues] = useState([]);
     const [pageCount, setPageCount] = useState(0);
-    const teemsPerPage = 9;
+    const leaguesPerPage = 9;
 
-    const [teamOffset, setTeamOffset] = useState(0);
+    const [leaguesOffset, setLeaguesOffset] = useState(0);
 
     useEffect(() => {
-        const endOffset = teamOffset + teemsPerPage;
-        setCurrentTeams(leagues.slice(teamOffset, endOffset));
-        setPageCount(Math.ceil(leagues.length / teemsPerPage));
-    }, [teamOffset, leagues]);
+        const endOffset = leaguesOffset + leaguesPerPage;
+        setCurrentLeagues(leagues.slice(leaguesOffset, endOffset));
+        setPageCount(Math.ceil(leagues.length / leaguesPerPage));
+    }, [leaguesOffset, leagues]);
 
     const handlePageClick = (event) => {
-        const newOffset = (event.selected * teemsPerPage) % leagues.length;
-        setTeamOffset(newOffset);
+        const newOffset = (event.selected * leaguesPerPage) % leagues.length;
+        setLeaguesOffset(newOffset);
     };
 
 
@@ -58,7 +58,7 @@ function SportPage(){
                 })
             })
             .catch(error => {
-                toast.error(`:( Troubles With Teams Loading: ${error}`);
+                toast.error(`:( Troubles With Leagues Loading: ${error}`);
             });
     }, []);
 
@@ -88,7 +88,7 @@ function SportPage(){
 
             <section className={"sportTeams"}>
 
-                {currentTeams.map((item, index) =>(
+                {currentLeagues.map((item, index) =>(
                     <Team
                         key={index}
                         name={item?.name}
