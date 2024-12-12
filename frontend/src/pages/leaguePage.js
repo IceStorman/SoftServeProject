@@ -4,9 +4,9 @@ import ReactPaginate from "react-paginate";
 import {useParams} from "react-router-dom";
 import axios from "axios";
 import apiEndpoints from "../apiEndpoints";
-import {toast} from "sonner";
+import {toast, Toaster} from "sonner";
 
-function League(){
+function LeaguePage(){
     const { leagueName  } = useParams();
 
     const [rangeScale ,setRangeScale]= useState(3)
@@ -30,8 +30,6 @@ function League(){
         setTeamOffset(newOffset);
     };
 
-
-
     useEffect(() => {
         axios.get(`${apiEndpoints.url}${apiEndpoints.team.getAll}`)
             .then(res => {
@@ -50,6 +48,8 @@ function League(){
 
     return(
         <>
+            <Toaster  position="top-center" expand={true} richColors  />
+
             <section className={"sportTeams"}>
 
                 {currentTeams.map((item, index) => (
@@ -77,4 +77,4 @@ function League(){
     );
 }
 
-export default League;
+export default LeaguePage;
