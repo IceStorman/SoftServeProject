@@ -2,7 +2,7 @@ from flask import Blueprint
 from service.api_logic.news_logic import get_news_by_count, get_latest_sport_news, get_popular_news
 from database.session import SessionLocal
 from api.routes.cache import cache
-from api.routes.scripts import make_cache_key, get_error_response
+from api.routes.scripts import make_cache_key, get_error_response, check_positive_param
 from exept.exeptions import DatabaseConnectionError
 session = SessionLocal()
 news_app = Blueprint('news', __name__)

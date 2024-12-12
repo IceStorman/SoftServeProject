@@ -25,8 +25,8 @@ def get_news_by_count(count: int, session):
         return json_news(news)
     except OperationalError:
         raise DatabaseConnectionError()
-    except Exception:
-        raise Exception
+    except Exception as e:
+        raise Exception(f"An unexpected error occurred: {str(e)}") from e
 
 
 def get_latest_sport_news(count: int, sport_name: str, session):
@@ -45,8 +45,8 @@ def get_popular_news(count: int, session):
         return json_news(news)
     except OperationalError:
         raise DatabaseConnectionError()
-    except Exception:
-        raise Exception
+    except Exception as e:
+        raise Exception (f"An unexpected error occurred: {str(e)}") from e
 
 
 def json_news(news_records):

@@ -419,10 +419,11 @@ token_usage = {
     "rugby": 0
 }
 
+
 def auto_request_system(api: Dict[str, str]) -> None:
     try:
         global current_key_index
-        print(f"Виконання запиту для {api['name']}, {api['index']}")
+        print(f"Executing request for {api['name']}, {api['index']}")
         today = datetime.now().strftime('%Y-%m-%d')
         url_with_date = api["url"].replace("DATE", today)
         if token_usage[api['name']] >= 99:
@@ -438,9 +439,9 @@ def auto_request_system(api: Dict[str, str]) -> None:
         json_data = response.json()
         blob_autosave_api(json_data, api)
     except requests.exceptions.RequestException as e:
-        print(f"Помилка при запиті до {api['name']}: {e}")
+        print(f"Error while making request to {api['name']}: {e}")
     except Exception as e:
-        print(f"Загальна помилка при збереженні даних для {api['name']}: {e}")
+        print(f"General error while saving data for {api['name']}: {e}")
 
 
 def keep_db_alive():
