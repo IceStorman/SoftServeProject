@@ -1,6 +1,6 @@
 import requests
 
-from abstract_sport_data_manager import AbstractSportDataManager
+from service.implementation.auto_request_api.sport_data_managers.abstract_sport_data_manager import AbstractSportDataManager
 from database.azure_blob_storage.save_get_blob import get_all_blob_indexes_from_db, get_blob_data_for_all_sports
 from database.session import SessionLocal
 from typing import Dict
