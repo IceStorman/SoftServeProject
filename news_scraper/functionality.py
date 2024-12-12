@@ -11,9 +11,7 @@ from selenium.webdriver.common.by import By
 import os
 from tokenizator import what_teams_here
 from database.azure_blob_storage.save_get_blob import blob_save_news
-from ctypes import*
 
-cts = cdll.LoadLibrary("custom_selenium.dll")
 
 
 class Main_page_sport_parser:

@@ -1,13 +1,11 @@
 import clr
-import os
+clr.AddReference("dlls/Custom_Selenium")
+from Selenium_right_click import Driver
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-dll_path = os.path.join(current_dir, 'custom_selenium.dll')
+driver=Driver()
 
-if os.path.exists(dll_path):
-    print(f"Файл знайдено: {dll_path}")
-else:
-    print("DLL файл не знайдено!")
+driver.OpenUrl("https://www.espn.com/fantasy/basketball/insider/story/_/id/42388491/fantasy-basketball-2024-25-nba-surprised-jalen-johnson-klay-thompson-buddy-hield")
 
-clr.AddReference(dll_path)
+driver.PerformRightClickByXpath("//div[@class='img-wrap']//img[@class='imageLoaded']")
 
+driver.Quit()
