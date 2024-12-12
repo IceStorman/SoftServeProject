@@ -62,9 +62,6 @@ class AbstractSportDataManager:
 
         return json_data
 
-    def get_players(self) -> Dict[str, str]:
-        pass
-
     def try_return_json_data(self, url: str, index: str) -> Dict[str, str]:
         with SessionLocal() as session:
             check = get_all_blob_indexes_from_db(session, index)
@@ -78,3 +75,39 @@ class AbstractSportDataManager:
             return json_data
         except Exception as e:
             return {"error": str(e)}
+
+    def get_rankings_races_and_fastestlaps(self) -> Dict[str, Dict[str, str]]:
+        pass
+
+    def get_injuries_players(self) -> Dict[str, Dict[str, str]]:
+        pass
+
+    def get_teams_statistics(self) -> Dict[str, str]:
+        pass
+
+    def get_players(self) -> Dict[str, str]:
+        pass
+
+    def get_player_statistics(self) -> Dict[str, str]:
+        pass
+
+    def get_coaches(self) -> Dict[str, str]:
+        pass
+
+    def get_fixtures_statistics(self) -> Dict[str, str]:
+        pass
+
+    def get_fixtures_events_lineups_players(self) -> Dict[str, Dict[str, str]]:
+        pass
+
+    def get_players_profiles_sidelined(self) -> Dict[str, Dict[str, str]]:
+        pass
+
+    def get_games_events(self) -> Dict[str, str]:
+        pass
+
+    def get_fighters_records(self) -> Dict[str, str]:
+        pass
+
+    def get_games_statistics(self) -> Dict[str, str]:
+        pass

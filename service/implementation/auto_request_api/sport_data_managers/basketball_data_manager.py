@@ -17,7 +17,7 @@ class BasketballDataManager(AbstractSportDataManager):
 
         return self.try_return_json_data(url, index)
 
-    def get_players_statistics(self) -> Dict[str, str]:
+    def get_player_statistics(self) -> Dict[str, str]:
         url = f"https://v1.basketball.api-sports.io/games/statistics/players?id={self._player_id}"
         index = f"players/games/statistics/players?id={self._player_id}"
 
