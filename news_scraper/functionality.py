@@ -11,6 +11,9 @@ from selenium.webdriver.common.by import By
 import os
 from tokenizator import what_teams_here
 from database.azure_blob_storage.save_get_blob import blob_save_news
+from ctypes import*
+
+cts = cdll.LoadLibrary("custom_selenium.dll")
 
 
 class Main_page_sport_parser:
@@ -132,7 +135,6 @@ class Article_Scraper(Main_page_sport_parser):
             search_url = f"https://www.google.com/search?tbm=isch&q={title}"
             driver.get(search_url)
             time.sleep(2)
-
             image_elements = driver.find_elements(By.CLASS_NAME, "YQ4gaf")[:3]
             for img in image_elements:
                 src = img.get_attribute("src")
