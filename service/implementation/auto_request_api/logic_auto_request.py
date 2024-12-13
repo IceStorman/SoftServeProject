@@ -39,20 +39,6 @@ apis = [
         "frequency": 1335
     },
     {
-        "name": "football",
-        "index": "venues",
-        "url": "https://v3.football.api-sports.io/venues?country=Ukraine",
-        "host": "v3.football.api-sports.io",
-        "frequency": 31
-    },
-    {
-        "name": "football",
-        "index": "injuries",
-        "url": "https://v3.football.api-sports.io/injuries?date=DATE",
-        "host": "v3.football.api-sports.io",
-        "frequency": 31.5
-    },
-    {
         "name": "afl",
         "index": "leagues",
         "url": "https://v1.afl.api-sports.io/leagues",
@@ -326,11 +312,10 @@ token_usage = {
     "nfl": 0,
     "rugby": 0
 }
-
 def auto_request_system(api: Dict[str, str]) -> None:
     try:
         global current_key_index
-        print(f"Виконання запиту для {api['name']}, {api['index']}")
+        print(f"Making a request for {api['name']}, {api['index']}")
         today = datetime.now().strftime('%Y-%m-%d')
         url_with_date = api["url"].replace("DATE", today)
         if token_usage[api['name']] >= 99:
@@ -346,6 +331,6 @@ def auto_request_system(api: Dict[str, str]) -> None:
         json_data = response.json()
         blob_autosave_api(json_data, api)
     except requests.exceptions.RequestException as e:
-        print(f"Помилка при запиті до {api['name']}: {e}")
+        print(f"Error while making a request to {api['name']}: {e}")
     except Exception as e:
-        print(f"Загальна помилка при збереженні даних для {api['name']}: {e}")
+        print(f"General error while saving data for {api['name']}: {e}")
