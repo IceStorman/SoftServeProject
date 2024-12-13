@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import Team from "../components/sportPage/team";
+import IconBlockElement from "../components/iconBlockElement";
 import ReactPaginate from "react-paginate";
 import {useParams} from "react-router-dom";
 import axios from "axios";
@@ -53,7 +53,7 @@ function LeaguePage(){
             <section className={"sportTeams"}>
 
                 {currentTeams.map((item, index) => (
-                    <Team
+                    <IconBlockElement
                         key={index}
                         name={item?.name}
                         logo={item?.team?.logo || item?.logo}

@@ -17,6 +17,7 @@ header{
         text-decoration: none;
         font-size: 4rem;
         color: var(--main-text-color);
+        font-family: "RubikBubbles";
     }
 
     .navMenu{

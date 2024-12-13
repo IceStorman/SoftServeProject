@@ -47,30 +47,6 @@
         }
     }
 
-    .sportTeams {
-        display: flex;
-        flex-wrap: wrap;
-        margin: 3rem auto 0;
-        width: 80%;
-
-        .team {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 30%;
-            height: 18rem;
-            margin: 0 auto 1rem;
-            background-color: var(--special-light-purple);
-            border-radius: 0.5rem;
-            cursor: pointer;
-
-            img {
-                max-height: 90%;
-                max-width: 90%;
-            }
-        }
-    }
-
     .pagination {
         display: flex;
         flex-direction: row;

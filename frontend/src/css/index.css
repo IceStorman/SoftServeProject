@@ -5,6 +5,12 @@
 @import "footer.css";
 @import "sportPage.css";
 @import "sign.css";
+@import "iconsBlock.css";
+
+@font-face {
+    font-family: 'RubikBubbles';
+    src: url('./fonts/RubikBubbles-Regular.ttf') format('woff2'); /* Правильно */
+}
 
 :root{
     --main-background-color: #D3D9E9;
@@ -29,6 +35,7 @@
 
 body{
     width: 100%;
+    font-family: "";
     background-color: var(--main-background-color);
 }
 

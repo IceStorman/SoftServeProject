@@ -3,7 +3,7 @@ import {useParams} from "react-router-dom";
 import SportNews from "../components/sportPage/sportNews";
 import axios from "axios";
 import apiEndpoints from "../apiEndpoints";
-import Team from "../components/sportPage/team";
+import IconBlockElement from "../components/iconBlockElement";
 import ReactPaginate from 'react-paginate';
 import {toast, Toaster} from "sonner";
 import {Link} from "react-router-dom";
@@ -86,10 +86,10 @@ function SportPage(){
 
             </section>
 
-            <section className={"sportTeams"}>
+            <section className={"iconsBlock"}>
 
                 {currentLeagues.map((item, index) =>(
-                    <Team
+                    <IconBlockElement
                         key={index}
                         name={item?.name}
                         logo={item?.team?.logo || item?.logo}
