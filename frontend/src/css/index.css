@@ -109,7 +109,9 @@ header{
             font-size: 1.4rem;
         }
 
-        i{
+        img{
+            display: flex;
+            justify-content:center ;
             width: 1rem;
             height: 1rem;
             margin: auto 0.7rem;
@@ -173,19 +175,26 @@ header{
 .container{
     display: flex;
     flex-direction: row;
-    margin-bottom: 1rem;
+    margin-bottom: 4vh;
 }
 
 .news{
-    width: 30%;
     flex-wrap: wrap;
     align-content: flex-start;
     margin: 4vh auto auto;
-    background-color: var(--special-light-purple);
     background-color: white;
     border-top-left-radius: 3vh;
     border-top-right-radius: 3vh;
     overflow: hidden;
+
+    &.narrow {
+        width: 30%;
+    }
+
+    &.wide {
+        width: 60%;
+    }
+
 
     .newsBox{
         display: flex;
@@ -215,7 +224,7 @@ header{
         }
 
         img{
-            max-height: 50%;
+            max-height: 50rem;
             max-width: 100%;
             margin: 0.5rem auto;
             border-radius: 1em;
@@ -259,13 +268,12 @@ header{
         cursor: pointer;
 
         img{
-            background-color: var(--special-light-purple);
             background-color: white;
             padding: 1vh;
-            border: 1.5vh solid var(--special-dark-purple);
+            border: 0.9rem solid var(--special-dark-purple);
             border-radius: 2vh;
-            width: 15vh;
-            height: 15vh;
+            width: 7.5rem;
+            height: 7.5rem;
             object-fit: contain;
         }
     }
@@ -377,5 +385,133 @@ footer{
             text-decoration: none;
             cursor: pointer;
         }
+    }
+}
+
+.sportPage{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .sportTitle{
+        margin: 1rem 0;
+        text-transform: capitalize;
+        font-size: 3rem;
+        letter-spacing: 0.5rem;
+    }
+
+    .sportNews{
+        margin: 0;
+        width: 80%;
+        display: flex;
+        flex-direction: column;
+        background-color: var(--special-light-purple);
+        border-radius: 0.5rem;
+
+        .sportNewsBox {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-evenly;
+            width: 95%;
+            margin: 1rem auto;
+            cursor: pointer;
+
+            .newsInsight{
+                display: flex;
+                width: 55%;
+                flex-direction: column;
+                justify-content: space-between;
+                word-break: break-all;
+            }
+
+            h4, h1{
+                text-decoration: none;
+                margin: 0 0.5rem 0 2rem;
+                text-align: justify;
+                align-self: end;
+            }
+
+            h1{
+                font-size: 1.5rem;
+            }
+
+            h4{
+                color: #636060;
+                align-self: end;
+                white-space:pre-wrap;
+                word-break: normal;
+            }
+
+            .leftPlaceData{
+                align-self: start;
+            }
+
+            img{
+                max-height: 50rem;
+                width: 45%;
+                margin: 0.5rem auto;
+                border-radius: 1em;
+            }
+
+        }
+        hr{
+            margin: 0 auto 1rem;
+            border: 0.1vh solid white;
+            width: 95%;
+        }
+    }
+
+    .sportTeams{
+        display: flex;
+        flex-wrap: wrap;
+        margin: 3rem auto 0;
+        width: 80%;
+
+        .team{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 30%;
+            height: 18rem;
+            margin: 0 auto 1rem;
+            background-color: var(--special-light-purple);
+            border-radius: 0.5rem;
+            cursor: pointer;
+
+            img{
+                max-height: 90%;
+                max-width: 90%;
+            }
+
+        }
+    }
+
+    .pagination{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        list-style: none;
+        padding: 0;
+
+        li{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            width: 2rem;
+            height: 2rem;
+            background-color: var(--special-dark-purple);
+            color: var(--main-text-color);
+            border-radius: 50%;
+            cursor: pointer;
+            margin: 0 0.5rem;
+        }
+
+    }
+
+    .activePaginationPane{
+        background-color: green;
+        border-radius: 50%;
+        color: green;
     }
 }

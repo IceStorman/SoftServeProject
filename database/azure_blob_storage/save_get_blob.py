@@ -29,6 +29,21 @@ sastokens_dict = {
     "news": os.getenv("SASNEWS"),
 }
 
+img = {
+    "football": "https://www.api-football.com/public/img/home1/hero-banner.png",
+    "nba": "https://api-sports.io/assets/img/news/min-nba.png",
+    "mma": "https://www.api-football.com/public/img/home1/mma-logo.png",
+    "hockey": "https://www.api-football.com/public/img/home1/hockey-logo.png",
+    "afl": "https://www.api-football.com/public/img/home1/afl-logo.png",
+    "baseball": "https://www.api-football.com/public/img/home1/baseball-logo.png",
+    "basketball": "https://api-sports.io/assets/img/news/basket-player.png",
+    "formula-1": "https://www.api-football.com/public/img/news/f1-mini.png",
+    "nfl": "https://www.api-football.com/public/img/home1/nfl-logo.png",
+    "rugby": "https://www.api-football.com/public/img/home1/rugby-logo.png",
+    "volleyball": "https://www.api-football.com/public/img/home1/volleyball-logo.png",
+    "handball": "https://www.api-football.com/public/img/home1/handball-logo.png"
+}
+
 SUSPICIOUS_DOMAINS = ["malicious.com", "phishing.net", "unsafe.io"]
 # Рівні загрози
 THREAT_LEVELS = {
@@ -167,7 +182,8 @@ def save_blob_indexes_to_db(selected_sport: str, blob_name: str, session) -> Non
     try:
         sport = session.query(Sport).filter_by(sport_name=selected_sport).first()
         if not sport:
-            sport = Sport(sport_name=selected_sport)
+            sport_img = img[selected_sport]
+            sport = Sport(sport_name=selected_sport, sport_img=sport_img)
             session.add(sport)
             session.commit()
 
@@ -330,16 +346,3 @@ def get_news_by_count(count: int, session) -> str:
     if not news_records:
         return handle_no_records_message("No news was found in the database.")
     return json.dumps(fetch_blob_data(news_records), ensure_ascii=False)
-
-
-test_json1 = {
-
-    "title": "nba la la la",
-    "body": "ля ля ля",
-    "file": {
-        "name": "malicious",
-    },
-    "sport": "nba",
-    "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKnWDXTdQP2z1f9xcf5VLdAaifmIWCWQO6JQ&s"
-}
-blob_save_news(test_json1)

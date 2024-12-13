@@ -4,6 +4,10 @@ import requests
 from datetime import datetime
 from typing import Dict
 from database.azure_blob_storage.save_get_blob import blob_autosave_api
+from database.session import SessionLocal
+from sqlalchemy.orm import scoped_session
+from sqlalchemy.sql import text
+
 
 load_dotenv()
 api_key = [os.getenv("APIKEY"), "API_KEY_2", "API_KEY_3"]
@@ -38,6 +42,7 @@ apis = [
         "host":"v3.football.api-sports.io",
         "frequency": 1335
     },
+    #--------------------------------
     {
         "name": "football",
         "index": "teams",
@@ -45,6 +50,7 @@ apis = [
         "host": "v3.football.api-sports.io",
          "frequency": 769
     },
+    #--------------------------------
     {
         "name": "football",
         "index": "venues",
@@ -52,6 +58,7 @@ apis = [
         "host": "v3.football.api-sports.io",
         "frequency": 31
     },
+    # --------------------------------
     {
         "name": "football",
         "index": "injuries",
@@ -199,6 +206,7 @@ apis = [
         "host": "v1.handball.api-sports.io",
         "frequency": 679
     },
+    # --------------------------------
     {
         "name": "handball",
         "index": "teams",
@@ -206,6 +214,7 @@ apis = [
         "host": "v1.handball.api-sports.io",
         "frequency": 345
     },
+    # --------------------------------
     {
         "name": "handball",
         "index": "games",
@@ -227,6 +236,7 @@ apis = [
         "host": "v1.hockey.api-sports.io",
         "frequency": 670
     },
+    # --------------------------------
     {
         "name": "hockey",
         "index": "teams",
@@ -234,6 +244,7 @@ apis = [
         "host": "v1.hockey.api-sports.io",
         "frequency": 659
     },
+    # --------------------------------
     {
         "name": "hockey",
         "index": "games",
@@ -318,6 +329,7 @@ apis = [
         "host": "v1.american-football.api-sports.io",
         "frequency": 679
     },
+    # --------------------------------
     {
         "name": "nfl",
         "index": "teams",
@@ -325,6 +337,7 @@ apis = [
         "host": "v1.american-football.api-sports.io",
         "frequency": 113
     },
+    # --------------------------------
     {
         "name": "nfl",
         "index": "games",
@@ -374,6 +387,7 @@ apis = [
         "host": "v1.volleyball.api-sports.io",
         "frequency": 1298
     },
+    # --------------------------------
     {
         "name": "volleyball",
         "index": "teams",
@@ -381,6 +395,7 @@ apis = [
         "host": "v1.volleyball.api-sports.io",
         "frequency": 375
     },
+    # --------------------------------
     {
         "name": "volleyball",
         "index": "games",
@@ -404,10 +419,11 @@ token_usage = {
     "rugby": 0
 }
 
+
 def auto_request_system(api: Dict[str, str]) -> None:
     try:
         global current_key_index
-        print(f"Виконання запиту для {api['name']}, {api['index']}")
+        print(f"Executing request for {api['name']}, {api['index']}")
         today = datetime.now().strftime('%Y-%m-%d')
         url_with_date = api["url"].replace("DATE", today)
         if token_usage[api['name']] >= 99:
@@ -423,6 +439,15 @@ def auto_request_system(api: Dict[str, str]) -> None:
         json_data = response.json()
         blob_autosave_api(json_data, api)
     except requests.exceptions.RequestException as e:
-        print(f"Помилка при запиті до {api['name']}: {e}")
+        print(f"Error while making request to {api['name']}: {e}")
     except Exception as e:
-        print(f"Загальна помилка при збереженні даних для {api['name']}: {e}")
+        print(f"General error while saving data for {api['name']}: {e}")
+
+
+def keep_db_alive():
+    session = scoped_session(SessionLocal)
+    try:
+        session.execute(text("SELECT 1"))
+        session.commit()
+    except Exception as e:
+        print(f"Keep-alive failed: {e}")

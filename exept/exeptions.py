@@ -19,6 +19,12 @@ class InvalidDateFormatError(Exception):
         super().__init__(self.message)
 
 
+class DatabaseConnectionError(Exception):
+    def __init__(self, message="Database is currently unavailable. Please try again later."):
+        self.message = message
+        super().__init__(self.message)
+
+
 
 
 
