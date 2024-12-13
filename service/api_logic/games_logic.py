@@ -1,10 +1,13 @@
+from flask import Response
 from database.azure_blob_storage.save_get_blob import get_all_blob_indexes_from_db, get_blob_data_for_all_sports
 from datetime import datetime
-from database.models import SportIndex, BlobIndex
+from typing import Optional
+from database.models import SportIndex, BlobIndex, Games, Country, TeamIndex, League
 from exept.exeptions import InvalidDateFormatError, SportNotFoundError
 from exept.colors_text import print_error_message
 from service.api_logic.scripts import get_sport_by_name
 from api.routes.scripts import get_error_response
+from sqlalchemy.orm import aliased
 import json
 
 
@@ -99,3 +102,88 @@ def get_stream_info_for_sport(session, sport_name):
             processed_data["sport"] = sport_name  # Додати назву спорту
             filtered_data.append(processed_data)
     return filtered_data, 200
+
+"-----------------TEST---------------------"
+def fetch_games(
+        session,
+        sport_id: Optional[int] = None,
+        league_id: Optional[int] = None,
+        country_id: Optional[int] = None,
+        status: Optional[str] = None,
+        date: Optional[str] = None,
+        limit: Optional[int] = None
+):
+
+    query = (
+        session.query(
+            Games.game_id,
+            Games.status,
+            Games.date,
+            Games.time,
+            Games.score_away_team,
+            Games.score_home_team,
+            League.name.label("league_name"),
+            Country.name.label("country_name"),
+            TeamIndex.name.label("home_team_name"),
+            TeamIndex.logo.label("home_team_logo"),
+            TeamIndex.name.label("away_team_name"),
+            TeamIndex.logo.label("home_team_logo"),
+        )
+        .join(League, Games.league_id == League.league_id)
+        .join(Country, Games.country_id == Country.country_id)
+        .join(TeamIndex, Games.team_home_id == TeamIndex.team_index_id)
+        .join(TeamIndex, Games.team_away_id == TeamIndex.team_index_id)
+    )
+    filters = []
+    if sport_id is not None:
+        filters.append(Games.sport_id == sport_id)
+    if league_id is not None:
+        filters.append(Games.league_id == league_id)
+    if country_id is not None:
+        filters.append(Games.country_id == country_id)
+    if status is not None:
+        filters.append(Games.status == status)
+    if date is not None:
+        filters.append(Games.date == date)
+
+    # Застосовуємо фільтри до запиту
+    if filters:
+        query = query.filter(*filters)
+    if limit is not None:
+        query = query.limit(limit)
+
+    games = query.all()
+    results = [
+        {
+            "game_id": game.game_id,
+            "status": game.status,
+            "date": game.date,
+            "time": game.time,
+            "sport_name": game.sport_name,
+            "league_name": game.league_name,
+            "country_name": game.country_name,
+            "home_team_name": game.home_team_name,
+            "home_team_logo": game.home_team_logo,
+            "away_team_name": game.away_team_name,
+            "away_team_logo": game.home_team_logo,
+            "home_score": game.score_home_team,
+            "away_score": game.score_away_team,
+        }
+        for game in games
+    ]
+    return Response(
+        json.dumps(results, ensure_ascii=False),
+        content_type='application/json; charset=utf-8',
+        status=200
+    )
+
+
+def get_games_today(session, count, sport_name=None, league=None, country=None):
+    news = fetch_games(
+        session,
+        limit=count,
+        sport_id=sport_name,
+        league_id=league,
+        country_id=country
+    )
+    return news
