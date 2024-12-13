@@ -40,13 +40,6 @@ apis = [
     },
     {
         "name": "football",
-        "index": "teams",
-        "url": "https://v3.football.api-sports.io/teams?country=Ukraine",
-        "host": "v3.football.api-sports.io",
-         "frequency": 769
-    },
-    {
-        "name": "football",
         "index": "venues",
         "url": "https://v3.football.api-sports.io/venues?country=Ukraine",
         "host": "v3.football.api-sports.io",
@@ -65,13 +58,6 @@ apis = [
         "url": "https://v1.afl.api-sports.io/leagues",
         "host": "v1.afl.api-sports.io",
         "frequency": 1335
-    },
-    {
-        "name": "afl",
-        "index": "teams",
-        "url": "https://v1.afl.api-sports.io/teams",
-        "host": "v1.afl.api-sports.io",
-        "frequency": 600
     },
     {
         "name": "afl",
@@ -117,13 +103,6 @@ apis = [
     },
     {
         "name": "baseball",
-        "index": "teams",
-        "url": "https://v1.baseball.api-sports.io/teams",
-        "host": "v1.baseball.api-sports.io",
-        "frequency": 601
-    },
-    {
-        "name": "baseball",
         "index": "games",
         "url": "https://v1.baseball.api-sports.io/games?date=DATE",
         "host": "v1.baseball.api-sports.io",
@@ -135,13 +114,6 @@ apis = [
         "url": "https://v1.basketball.api-sports.io/leagues",
         "host": "v1.basketball.api-sports.io",
         "frequency": 1334
-    },
-    {
-        "name": "basketball",
-        "index": "teams",
-        "url": "https://v1.basketball.api-sports.io/teams",
-        "host": "v1.basketball.api-sports.io",
-        "frequency": 303
     },
     {
         "name": "basketball",
@@ -163,13 +135,6 @@ apis = [
         "url": "https://v1.formula-1.api-sports.io/circuits",
         "host": "v1.formula-1.api-sports.io",
         "frequency": 1298
-    },
-    {
-        "name": "formula-1",
-        "index": "teams",
-        "url": "https://v1.formula-1.api-sports.io/teams",
-        "host": "v1.formula-1.api-sports.io",
-         "frequency": 599
     },
     {
         "name": "formula-1",
@@ -201,13 +166,6 @@ apis = [
     },
     {
         "name": "handball",
-        "index": "teams",
-        "url": "https://v1.handball.api-sports.io/teams?country=Ukraine",
-        "host": "v1.handball.api-sports.io",
-        "frequency": 345
-    },
-    {
-        "name": "handball",
         "index": "games",
         "url": "https://v1.handball.api-sports.io/games?date=DATE",
         "host": "v1.handball.api-sports.io",
@@ -229,13 +187,6 @@ apis = [
     },
     {
         "name": "hockey",
-        "index": "teams",
-        "url": "https://v1.hockey.api-sports.io/teams?country=Ukraine",
-        "host": "v1.hockey.api-sports.io",
-        "frequency": 659
-    },
-    {
-        "name": "hockey",
         "index": "games",
         "url": "https://v1.hockey.api-sports.io/games?date=DATE",
         "host": "v1.hockey.api-sports.io",
@@ -247,13 +198,6 @@ apis = [
         "url": "https://v1.mma.api-sports.io/categories",
         "host": "v1.mma.api-sports.io",
         "frequency": 376
-    },
-    {
-        "name": "mma",
-        "index": "teams",
-        "url": "https://v1.mma.api-sports.io/teams",
-        "host": "v1.mma.api-sports.io",
-        "frequency": 1100
     },
     {
         "name": "mma",
@@ -299,13 +243,6 @@ apis = [
     },
     {
         "name": "nba",
-        "index": "teams",
-        "url": "https://v2.nba.api-sports.io/teams",
-        "host": "v2.nba.api-sports.io",
-        "frequency": 379
-    },
-    {
-        "name": "nba",
         "index": "players",
         "url": "https://v2.nba.api-sports.io/players?country=USA",
         "host": "v2.nba.api-sports.io",
@@ -317,13 +254,6 @@ apis = [
         "url": "https://v1.american-football.api-sports.io/leagues",
         "host": "v1.american-football.api-sports.io",
         "frequency": 679
-    },
-    {
-        "name": "nfl",
-        "index": "teams",
-        "url": "https://v1.american-football.api-sports.io/teams?season=2024&league=2",
-        "host": "v1.american-football.api-sports.io",
-        "frequency": 113
     },
     {
         "name": "nfl",
@@ -349,9 +279,9 @@ apis = [
     {
         "name": "rugby",
         "index": "teams",
-        "url": "https://v1.rugby.api-sports.io/teams?country=USA",
+        "url": "https://v1.rugby.api-sports.io/teams?country=Argentina&league=1&season=2022",
         "host": "v1.rugby.api-sports.io",
-        "frequency": 683
+        "frequency": 0.1683
     },
     {
         "name": "rugby",
@@ -373,13 +303,6 @@ apis = [
         "url": "https://v1.volleyball.api-sports.io/leagues",
         "host": "v1.volleyball.api-sports.io",
         "frequency": 1298
-    },
-    {
-        "name": "volleyball",
-        "index": "teams",
-        "url": "https://v1.volleyball.api-sports.io/teams?country=Ukraine",
-        "host": "v1.volleyball.api-sports.io",
-        "frequency": 375
     },
     {
         "name": "volleyball",

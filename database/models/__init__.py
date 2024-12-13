@@ -8,5 +8,8 @@ from .streams import Stream
 from .user_preferences import UserPreference
 from .interactions import Interaction
 from .teams_index import TeamIndex
+from .country import Country
+from .league import League
+from .games import Games
 
 from .base import Base
