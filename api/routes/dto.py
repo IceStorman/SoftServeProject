@@ -16,6 +16,7 @@ class TeamsLeagueDTO(BaseModel):
 class TeamsStatisticsOrPlayersDTO(BaseModel):
     sport: Optional[Union[int, str]] = None
     team_id: Optional[int] = None
+    league_id: Optional[int] = None
 
 class SportsLeagueDTO(BaseModel):
     sport: Optional[Union[int, str]] = None
