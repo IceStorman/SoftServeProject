@@ -3,15 +3,15 @@ from service.api_logic.news_logic import get_news_by_count, get_latest_sport_new
 from database.session import SessionLocal
 from api.routes.cache import cache
 from api.routes.scripts import make_cache_key, get_error_response, check_positive_param
-from exept.exeptions import SoftServeException
+from exept.exeptions import DatabaseConnectionError
 session = SessionLocal()
 news_app = Blueprint('news', __name__)
 
 
-@news_app.errorhandler(SoftServeException)
+@news_app.errorhandler(DatabaseConnectionError)
 def handle_db_timeout_error(e):
-    response = e.get_response()
-    return get_error_response(response, response.status_code)
+    response = {"error in data base": str(e)}
+    return get_error_response(response, 503)
 
 
 @news_app.route('/recent', methods=['GET'])

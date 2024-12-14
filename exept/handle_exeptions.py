@@ -1,14 +1,22 @@
 from functools import wraps
 from sqlalchemy.exc import OperationalError
-from exept.exeptions import DatabaseConnectionError, SoftServeException
+from exept.exeptions import SoftServeException, DatabaseConnectionError
+from api.routes.scripts import get_error_response
 
 def handle_exceptions(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         try:
-            return func(*args, **kwargs)
-        except OperationalError as oe:
-            raise DatabaseConnectionError(oe)
+            result = func(*args, **kwargs)
+        except OperationalError:
+            raise DatabaseConnectionError
         except SoftServeException as e:
-            raise SoftServeException from e
+            return e.get_response()
+        except Exception as e:
+            response = {"error in service": str(e)}
+            return get_error_response(response, 500)
+        return result
+
     return wrapper
+
+

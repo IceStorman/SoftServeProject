@@ -1,7 +1,8 @@
-from database.models import Sport
+from database.models import Sport, League
 from exept.colors_text import print_error_message
+from exept.handle_exeptions import handle_exceptions
 
-
+@handle_exceptions
 def get_all_sports(session):
     sports = session.query(Sport).all()
     if not sports:
@@ -15,8 +16,7 @@ def get_all_sports(session):
         } for sport in sports], 200
 
 
-from database.models.league import League
-
+@handle_exceptions
 def get_all_leagues_by_sport(session, sport_name, page, per_page):
     if sport_name is None or "Unknown":
         return {"error": "Not param sport_name"}

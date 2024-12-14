@@ -3,16 +3,16 @@ from service.api_logic.sports_logic import get_all_sports, get_all_leagues_by_sp
 from database.session import SessionLocal
 from api.routes.scripts import get_error_response
 from api.routes.cache import cache
-from exept.exeptions import SoftServeException
+from exept.exeptions import DatabaseConnectionError
 
 session = SessionLocal()
 sports_app = Blueprint('sports', __name__)
 
 
-@sports_app.errorhandler(SoftServeException)
+@sports_app.errorhandler(DatabaseConnectionError)
 def handle_db_timeout_error(e):
-    response = e.get_response()
-    return get_error_response(response, response.status_code)
+    response = {"error in data base": str(e)}
+    return get_error_response(response, 503)
 
 
 @sports_app.route('/all', methods=['GET'])

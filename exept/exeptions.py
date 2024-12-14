@@ -19,7 +19,7 @@ class SportNotFoundError(SoftServeException):
 
 
 class BlobFetchError(SoftServeException):
-    status_code = 500
+    status_code = 401
 
     def __init__(self, blob_id):
         self.blob_id = blob_id
