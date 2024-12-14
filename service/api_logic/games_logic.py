@@ -31,13 +31,9 @@ def filter_matches_by_date(matches, today, date_key=DATE_KEY):
         for key in date_key.split('.'):
             match_date = match_date.get(key, {})
         if match_date and isinstance(match_date, str):
-            try:
-                if datetime.fromisoformat(match_date).date() == today:
-                    today_matches.append(match)
-            except ValueError:
-                error = InvalidDateFormatError(match_date)
-                print(f"Warning: {error}")
-                continue
+            if datetime.fromisoformat(match_date).date() == today:
+                today_matches.append(match)
+
     return today_matches
 
 
@@ -111,6 +107,8 @@ def get_stream_info_for_sport(session, sport_name):
 #-------------------------------------
 
 from service.api_logic.scripts import apply_filters
+
+@handle_exceptions
 def fetch_games(
         session,
         filters_dto: GamesDTO,

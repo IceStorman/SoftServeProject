@@ -59,6 +59,8 @@ def get_teams_sport(session, dto: TeamsLeagueDTO):
 #-------------------------------------
 from typing import Optional
 from database.models import Games, TeamIndex
+
+@handle_exceptions
 def fetch_teams(
         session,
         filters_dto: TeamsLeagueDTO,
