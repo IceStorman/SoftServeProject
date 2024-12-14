@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from database.session import SessionLocal
 from api.routes.scripts import get_error_response
 from service.api_logic.teams_logic import get_teams, get_teams_sport
@@ -10,11 +10,6 @@ from exept.exeptions import DatabaseConnectionError
 session = SessionLocal()
 teams_app = Blueprint('teams', __name__)
 
-@teams_app.errorhandler(Exception)
-def handle_exception(e):
-    response = {"error in service": str(e)}
-    return get_error_response(response, 500)
-
 
 @teams_app.errorhandler(DatabaseConnectionError)
 def handle_db_timeout_error(e):
@@ -25,40 +20,58 @@ def handle_db_timeout_error(e):
 @teams_app.route("/", methods=['GET'])
 @cache.cached(timeout=60*60)
 def get_teams_endpoint():
-    all_teams = get_teams(session)
-    return all_teams
+    try:
+        all_teams = get_teams(session)
+        return all_teams
+    except Exception as e:
+        response = {"error in service": str(e)}
+        return get_error_response(response, 500)
 
 
 @teams_app.route("/league", methods=['POST'])
-#@cache.cached(timeout=60*60, query_string=True)
 def get_teams_sport_endpoint():
-    data = request.get_json()
-    dto = UniversalResponseDTO(**data)
-    cache_key = f"teams:{dto.sport}:{dto.country_id}:{dto.league_id}"
+    try:
+        data = request.get_json()
+        dto = UniversalResponseDTO(**data)
+        cache_key = f"teams:{dto.sport}:{dto.country_id}:{dto.league_id}"
+        print(f"Cache key: {cache_key}")
 
-    cached_data = cache.get(cache_key)
-    if cached_data:
-        return cached_data, 200
+        cached_data = cache.get(cache_key)
+        print(f"Cache hit: {bool(cached_data)}")
 
-    all_teams = get_teams_sport(session, dto)
-    cache.set(cache_key, all_teams, timeout=60 * 60)
-    return all_teams
+        if cached_data:
+            return jsonify(cached_data), 200
+
+        all_teams = get_teams_sport(session, dto)
+        cache.set(cache_key, all_teams, timeout=60*60)
+        return all_teams
+    except Exception as e:
+        response = {"error in service": str(e)}
+        return get_error_response(response, 500)
 
 
 @teams_app.route('/statistics', methods=['POST'])
 @cache.cached(timeout=60*1.3)
 def get_teams_statistics_endpoint():
-    data = request.get_json()
-    dto = UniversalResponseDTO(**data)
-    response = rugby_teams_statistics(dto)
-    return response
+    try:
+        data = request.get_json()
+        dto = UniversalResponseDTO(**data)
+        response = rugby_teams_statistics(dto)
+        return response
+    except Exception as e:
+        response = {"error in service": str(e)}
+        return get_error_response(response, 500)
 
 
 @teams_app.route('/players', methods=['POST'])
 def get_players_endpoint():
-    data = request.get_json()
-    dto = UniversalResponseDTO(**data)
-    response = basketball_players(dto)
-    return response
+    try:
+        data = request.get_json()
+        dto = UniversalResponseDTO(**data)
+        response = basketball_players(dto)
+        return response
+    except Exception as e:
+        response = {"error in service": str(e)}
+        return get_error_response(response, 500)
 
 

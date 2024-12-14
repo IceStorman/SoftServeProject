@@ -1,10 +1,15 @@
+from flask import Response
 from database.azure_blob_storage.save_get_blob import get_all_blob_indexes_from_db, get_blob_data_for_all_sports
 from datetime import datetime
-from database.models import SportIndex, BlobIndex
+from typing import Optional
+from database.models import SportIndex, BlobIndex, Games, Country, TeamIndex, League
 from exept.exeptions import InvalidDateFormatError, SportNotFoundError
 from exept.colors_text import print_error_message
 from service.api_logic.scripts import get_sport_by_name
 from api.routes.scripts import get_error_response
+from exept.handle_exeptions import handle_exceptions
+
+from sqlalchemy.orm import aliased
 import json
 
 
@@ -96,6 +101,7 @@ def get_stream_info_for_sport(session, sport_name):
     for sport_data in data:
         processed_data = process_blob_data(sport_data, today)
         if processed_data:
-            processed_data["sport"] = sport_name  # Додати назву спорту
+            processed_data["sport"] = sport_name
             filtered_data.append(processed_data)
     return filtered_data, 200
+

@@ -3,11 +3,10 @@ from flask import Response
 from database.models import News
 from database.azure_blob_storage.save_get_blob import blob_get_news
 from sqlalchemy.sql.expression import ClauseElement
-from sqlalchemy.exc import OperationalError
-from exept.exeptions import SportNotFoundError, BlobFetchError, DatabaseConnectionError
+from exept.handle_exeptions import handle_exceptions
 from service.api_logic.scripts import get_sport_by_name
-from api.routes.scripts import get_error_response
 
+@handle_exceptions
 def fetch_news(session, order_by: ClauseElement = None, limit: int = None, filters=None):
     query = session.query(News)
     if filters:
@@ -19,47 +18,36 @@ def fetch_news(session, order_by: ClauseElement = None, limit: int = None, filte
     return query.all()
 
 
+@handle_exceptions
 def get_news_by_count(count: int, session):
-    try:
-        news = fetch_news(session, order_by=News.save_at.desc(), limit=count)
-        return json_news(news)
-    except OperationalError:
-        raise DatabaseConnectionError()
-    except Exception as e:
-        raise Exception(f"An unexpected error occurred: {str(e)}") from e
+    news = fetch_news(session, order_by=News.save_at.desc(), limit=count)
+    return json_news(news)
 
 
+@handle_exceptions
 def get_latest_sport_news(count: int, sport_name: str, session):
-    try:
-        sport = get_sport_by_name(session, sport_name)
-    except SportNotFoundError as e:
-        return get_error_response({"error": e.message },404)
+    sport = get_sport_by_name(session, sport_name)
+
     filters = [News.sport_id == sport.sport_id]
     news = fetch_news(session, order_by=News.save_at.desc(), limit=count, filters=filters)
     return json_news(news)
 
-
+@handle_exceptions
 def get_popular_news(count: int, session):
-    try:
-        news = fetch_news(session, order_by=News.interest_rate.desc(), limit=count)
-        return json_news(news)
-    except OperationalError:
-        raise DatabaseConnectionError()
-    except Exception as e:
-        raise Exception (f"An unexpected error occurred: {str(e)}") from e
+    news = fetch_news(session, order_by=News.interest_rate.desc(), limit=count)
+    return json_news(news)
 
 
+@handle_exceptions
 def json_news(news_records):
     all_results = []
     for news_record in news_records:
-        try:
-            data = blob_get_news(news_record.blob_id)
-            all_results.append({
-                "blob_id": news_record.blob_id,
-                "data": data
-            })
-        except BlobFetchError as e:
-            return get_error_response({"error": e.message },502)
+        data = blob_get_news(news_record.blob_id)
+        all_results.append({
+            "blob_id": news_record.blob_id,
+            "data": data
+        })
+
     return Response(
         json.dumps(all_results, ensure_ascii=False),
         content_type='application/json; charset=utf-8',

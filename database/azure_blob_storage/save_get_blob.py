@@ -346,3 +346,4 @@ def get_news_by_count(count: int, session) -> str:
     if not news_records:
         return handle_no_records_message("No news was found in the database.")
     return json.dumps(fetch_blob_data(news_records), ensure_ascii=False)
+

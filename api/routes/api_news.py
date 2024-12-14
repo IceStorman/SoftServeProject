@@ -7,11 +7,6 @@ from exept.exeptions import DatabaseConnectionError
 session = SessionLocal()
 news_app = Blueprint('news', __name__)
 
-@news_app.errorhandler(Exception)
-def handle_exception(e):
-    response = {"error in service": str(e)}
-    return get_error_response(response, 500)
-
 
 @news_app.errorhandler(DatabaseConnectionError)
 def handle_db_timeout_error(e):
@@ -22,22 +17,33 @@ def handle_db_timeout_error(e):
 @news_app.route('/recent', methods=['GET'])
 @cache.cached(timeout=60*60)
 def get_recent_news_endpoint():
-    recent_news = get_news_by_count(5, session)
-    return recent_news
-
+    try:
+        recent_news = get_news_by_count(5, session)
+        return recent_news
+    except Exception as e:
+        response = {"error in service": str(e)}
+        return get_error_response(response, 500)
 
 @news_app.route('/<sport_type>', methods=['GET'])
 @cache.cached(timeout=60*60, key_prefix=make_cache_key)
 def get_sport_news_endpoint(sport_type):
-    recent_news = get_latest_sport_news(5, sport_type, session)
-    return recent_news
+    try:
+        recent_news = get_latest_sport_news(5, sport_type, session)
+        return recent_news
+    except Exception as e:
+        response = {"error in service": str(e)}
+        return get_error_response(response, 500)
 
 
 @news_app.route('/popular', methods=['GET'])
 @cache.cached(timeout=60*3)
 def get_popular_news_endpoint():
-    recent_news = get_popular_news(5, session)
-    return recent_news
+    try:
+        recent_news = get_popular_news(5, session)
+        return recent_news
+    except Exception as e:
+        response = {"error in service": str(e)}
+        return get_error_response(response, 500)
 
 
 
