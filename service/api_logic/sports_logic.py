@@ -1,6 +1,7 @@
 from database.models import Sport, League
 from exept.colors_text import print_error_message
 from exept.handle_exeptions import handle_exceptions
+from api.routes.dto import SportsLeagueDTO, SportsLeagueOutputDTO, SportsOutputDTO
 
 @handle_exceptions
 def get_all_sports(session):
@@ -8,37 +9,38 @@ def get_all_sports(session):
     if not sports:
         print_error_message("No sports found in the database")
         return [], 204
+
     return [
-        {
-            "sport_id": sport.sport_id,
-            "sport_name": sport.sport_name,
-            "sport_img": sport.sport_img
-        } for sport in sports], 200
+        SportsOutputDTO(
+            id=sport.sport_id,
+            sport=sport.sport_name,
+            logo=sport.sport_img,
+        ) for sport in sports
+    ], 200
 
 
 @handle_exceptions
-def get_all_leagues_by_sport(session, sport_name, page, per_page):
-    if sport_name is None or "Unknown":
+def get_all_leagues_by_sport(session, dto: SportsLeagueDTO):
+    if dto.sport is None:
         return {"error": "Not param sport_name"}
-    offset = (page - 1) * per_page
+    offset = (dto.page - 1) * dto.per_page
     leagues = (
         session.query(League)
         .join(Sport, Sport.sport_id == League.sport_id)
-        .filter(Sport.sport_name == sport_name)
-        .limit(per_page)
+        .filter(Sport.sport_name == dto.sport)
+        .limit(dto.per_page)
         .offset(offset)
         .all()
     )
     if not leagues:
         print_error_message("No leagues found for the sport")
         return [], 204
-    return [
-        {
-            "_id": league.league_id,
-            "name": league.name,
-            "logo": league.logo,
-            "sport_name": sport_name
-        }
-        for league in leagues
-    ], 200
 
+    return [
+        SportsLeagueOutputDTO(
+            id=league.league_id,
+            sport=league.name,
+            logo=league.logo,
+            name=dto.sport,
+        ) for league in leagues
+    ], 200

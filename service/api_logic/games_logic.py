@@ -7,6 +7,7 @@ from exept.exeptions import InvalidDateFormatError, SportNotFoundError
 from exept.colors_text import print_error_message
 from service.api_logic.scripts import get_sport_by_name
 from api.routes.scripts import get_error_response
+from api.routes.dto import GamesDTO, GameOutputDTO
 from exept.handle_exeptions import handle_exceptions
 
 from sqlalchemy.orm import aliased
@@ -104,4 +105,70 @@ def get_stream_info_for_sport(session, sport_name):
             processed_data["sport"] = sport_name
             filtered_data.append(processed_data)
     return filtered_data, 200
+
+
+
+#-------------------------------------
+
+from service.api_logic.scripts import apply_filters
+def fetch_games(
+        session,
+        filters_dto: GamesDTO,
+        limit: Optional[int] = None
+):
+    query = (
+        session.query(
+            Games.game_id,
+            Games.status,
+            Games.date,
+            Games.time,
+            Games.score_away_team,
+            Games.score_home_team,
+            League.name.label("league_name"),
+            Country.name.label("country_name"),
+            TeamIndex.name.label("home_team_name"),
+            TeamIndex.logo.label("home_team_logo"),
+            TeamIndex.name.label("away_team_name"),
+            TeamIndex.logo.label("away_team_logo"),
+        )
+        .join(League, Games.league_id == League.league_id)
+        .join(Country, Games.country_id == Country.country_id)
+        .join(TeamIndex, Games.team_home_id == TeamIndex.team_index_id)
+        .join(TeamIndex, Games.team_away_id == TeamIndex.team_index_id)
+    )
+
+    query = apply_filters(query, Games ,filters_dto)
+
+    if limit is not None:
+        query = query.limit(limit)
+
+    games = query.all()
+
+    return [
+        GameOutputDTO(
+            game_id=game.game_id,
+            status=game.status,
+            date=game.date,
+            time=game.time,
+            league_name=game.league_name,
+            country_name=game.country_name,
+            home_team_name=game.home_team_name,
+            home_team_logo=game.home_team_logo,
+            away_team_name=game.away_team_name,
+            away_team_logo=game.away_team_logo,
+            home_score=game.score_home_team,
+            away_score=game.score_away_team,
+        )
+        for game in games
+    ]
+
+
+
+def get_games_today(session, count, dto):
+    news = fetch_games(
+        session,
+        filters_dto=dto,
+        limit=count
+    )
+    return news
 

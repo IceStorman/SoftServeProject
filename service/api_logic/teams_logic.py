@@ -1,9 +1,9 @@
 import json
 from database.azure_blob_storage.save_get_blob import get_all_blob_indexes_from_db, get_blob_data_for_all_sports
-from service.api_logic.scripts import get_sport_by_name
-from api.routes.dto import UniversalResponseDTO
+from service.api_logic.scripts import get_sport_by_name, apply_filters
+from api.routes.dto import TeamsLeagueDTO, TeamsLeagueOutputDTO
 from exept.handle_exeptions import handle_exceptions
-from database.models import TeamIndex, Sport
+from database.models import TeamIndex, Sport, Games
 from flask import Response
 
 
@@ -15,7 +15,7 @@ RESPONSE_KEY = "response"
 
 
 @handle_exceptions
-def get_teams(session):
+def get_teams1(session):
         teams_blob_indexes = get_all_blob_indexes_from_db(session, TEAMS_JSON)
         sport_result = get_blob_data_for_all_sports(session, teams_blob_indexes)
         sport_result_json = json.loads(sport_result)
@@ -40,7 +40,7 @@ def process_blob_data(sport_data):
     return None
 
 @handle_exceptions
-def get_teams_sport(session, dto: UniversalResponseDTO):
+def get_teams_sport(session, dto: TeamsLeagueDTO):
 
         sport = get_sport_by_name(session, dto.sport)
 
@@ -56,5 +56,38 @@ def get_teams_sport(session, dto: UniversalResponseDTO):
         return filtered_data, 200
 
 
+#-------------------------------------
+from typing import Optional
+from database.models import Games, TeamIndex
+def fetch_teams(
+        session,
+        filters_dto: TeamsLeagueDTO,
+        limit: Optional[int] = None
+):
+    query = session.query(TeamIndex)
 
+    query = apply_filters(query, TeamIndex, filters_dto)
+
+    if limit is not None:
+        query = query.limit(limit)
+
+    teams = query.all()
+
+    return [
+        TeamsLeagueOutputDTO(
+            league_name=team.league_name,
+            country_name=team.country_name,
+            team_name=team.name,
+        ) for team in teams
+    ], 200
+
+
+def get_teams(session, count, dto):
+    teams = fetch_teams(
+        session,
+        filters_dto=dto,
+        limit=count,
+
+    )
+    return teams
 
