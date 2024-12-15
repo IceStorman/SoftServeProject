@@ -3,10 +3,11 @@ import {useParams} from "react-router-dom";
 import SportNews from "../components/sportPage/sportNews";
 import axios from "axios";
 import apiEndpoints from "../apiEndpoints";
-import IconBlockElement from "../components/iconBlockElement";
+import LeagueBtn from "../components/sportPage/leagueBtn";
 import ReactPaginate from 'react-paginate';
 import {toast, Toaster} from "sonner";
 import {Link} from "react-router-dom";
+import Dropdown from 'react-bootstrap/Dropdown';
 
 
 function SportPage(){
@@ -86,29 +87,49 @@ function SportPage(){
 
             </section>
 
-            <section className={"iconsBlock"}>
+            <section className={"leaguesBlock"}>
 
-                {currentLeagues.map((item, index) =>(
-                    <IconBlockElement
-                        key={index}
-                        name={item?.name}
-                        logo={item?.team?.logo || item?.logo}
-                    />
-                ))}
+                <section className={"leaguesFilter"}>
+
+                    <input className={"leaguesSearch"} type={"search"}></input>
+
+                    <Dropdown className={"leaguesCountry"}>
+                        <Dropdown.Toggle variant="success" id="dropdown-basic">
+                            Country
+                        </Dropdown.Toggle>
+
+                        <Dropdown.Menu>
+                            <Dropdown.Item href="#/action-1">Ukraine</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+
+                </section>
+
+                <section className={"iconsBlock"}>
+
+                    {currentLeagues.map((item, index) => (
+                        <LeagueBtn
+                            key={index}
+                            name={item?.name}
+                            logo={item?.team?.logo || item?.logo}
+                        />
+                    ))}
+
+                </section>
+
+                <ReactPaginate
+                    breakLabel="..."
+                    nextLabel="→"
+                    onPageChange={handlePageClick}
+                    pageRangeDisplayed={rangeScale}
+                    pageCount={pageCount}
+                    previousLabel="←"
+                    renderOnZeroPageCount={null}
+                    activeClassName="activePaginationPane"
+                    containerClassName="pagination"
+                />
 
             </section>
-
-            <ReactPaginate
-                breakLabel="..."
-                nextLabel="→"
-                onPageChange={handlePageClick}
-                pageRangeDisplayed={rangeScale}
-                pageCount={pageCount}
-                previousLabel="←"
-                renderOnZeroPageCount={null}
-                activeClassName="activePaginationPane"
-                containerClassName="pagination"
-            />
 
         </section>
     );

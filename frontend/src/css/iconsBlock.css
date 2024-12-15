@@ -1,8 +1,10 @@
 .iconsBlock {
     display: flex;
     flex-wrap: wrap;
-    margin: 3rem auto 0;
-    width: 80%;
+    justify-content: center;
+    margin: 0.5rem auto 0.5rem;
+    gap: 3rem;
+    width: 100%;
 
     .iconsBlockElement {
         display: flex;
@@ -10,7 +12,7 @@
         align-items: center;
         width: 30%;
         height: 18rem;
-        margin: 0 auto 1rem;
+        gap: 2rem;
         background-color: var(--special-light-purple);
         border-radius: 0.5rem;
         cursor: pointer;

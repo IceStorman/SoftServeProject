@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from "react";
-import IconBlockElement from "../components/iconBlockElement";
+import LeagueBtn from "../components/sportPage/leagueBtn";
 import ReactPaginate from "react-paginate";
 import {useParams} from "react-router-dom";
 import axios from "axios";
 import apiEndpoints from "../apiEndpoints";
 import {toast, Toaster} from "sonner";
+import TeamsBtn from "../components/LeaguePage/teamsBtn";
 
 function LeaguePage(){
     const { leagueName  } = useParams();
@@ -42,7 +43,7 @@ function LeaguePage(){
                 })
             })
             .catch(error => {
-                toast.error(`:( Troubles With Teams Loading: ${error}`);
+                toast.error(`:( Troubles With Teams Loading ${error}`);
             });
     }, []);
 
@@ -53,7 +54,7 @@ function LeaguePage(){
             <section className={"sportTeams"}>
 
                 {currentTeams.map((item, index) => (
-                    <IconBlockElement
+                    <TeamsBtn
                         key={index}
                         name={item?.name}
                         logo={item?.team?.logo || item?.logo}

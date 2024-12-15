@@ -1,7 +1,7 @@
 .news{
     flex-wrap: wrap;
     align-content: flex-start;
-    margin: 4vh auto auto;
+    margin: 4vh 0 0;
     background-color: white;
     border-top-left-radius: 3vh;
     border-top-right-radius: 3vh;

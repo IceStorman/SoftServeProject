@@ -1,7 +1,7 @@
 import React from "react";
 import {Link} from "react-router-dom";
 
-function IconBlockElement({link ,name, logo}){
+function LeagueBtn({name, logo}){
 
     return (
         <Link className={"iconsBlockElement"} to={`/league/${name}`}>
@@ -12,4 +12,4 @@ function IconBlockElement({link ,name, logo}){
     );
 }
 
-export default IconBlockElement;
+export default LeagueBtn;

@@ -47,6 +47,22 @@
         }
     }
 
+    .leaguesBlock{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 80%;
+
+        .leaguesFilter{
+            display: flex;
+            flex-direction: row;
+            align-self: start;
+            margin: 2rem auto 0;
+            gap: 2rem;
+            width: 100%;
+        }
+    }
+
     .pagination {
         display: flex;
         flex-direction: row;
@@ -56,22 +72,34 @@
         margin-bottom: 1rem;
 
         li {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            width: 2rem;
-            height: 2rem;
-            background-color: var(--purple-btn-color);
-            color: var(--main-text-color);
-            border-radius: 50%;
-            cursor: pointer;
-            margin: 0 0.5rem;
+
+            a{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                text-decoration: none;
+                background-color: var(--purple-btn-color);
+                color: var(--main-text-color);
+                border-radius: 50%;
+                cursor: pointer;
+                margin: 0 0.5rem;
+                font-size: 1.75rem;
+                font-weight: bolder;
+                width: 2.5rem;
+                height: 2.5rem;
+            }
+
+            a:hover{
+                color: var(--main-text-color);
+            }
         }
     }
 
     .activePaginationPane {
-        border: solid 0.3rem #2BA36C;
-        border-radius: 50%;
+
+        a{
+            border: solid 0.3rem #2BA36C;
+            border-radius: 50%;
+        }
     }
 }
