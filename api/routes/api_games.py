@@ -2,7 +2,7 @@ from flask import Blueprint
 from service.api_logic.games_logic import get_stream_info_today, get_stream_info_for_sport
 from database.session import SessionLocal
 from api.routes.cache import cache
-from api.routes.scripts import get_error_response, make_cache_key
+from api.routes.scripts import get_error_response, get_cache_key
 from exept.exeptions import DatabaseConnectionError
 
 session = SessionLocal()
@@ -27,7 +27,7 @@ def get_stream_info_today_endpoint():
 
 
 @games_app.route('/<sport_type>', methods=['GET'])
-@cache.cached(60*1.3, key_prefix=make_cache_key)
+@cache.cached(60*1.3, key_prefix=get_cache_key)
 def get_sport_stream_info_today_endpoint(sport_type):
     try:
         games = get_stream_info_for_sport(session, sport_type)

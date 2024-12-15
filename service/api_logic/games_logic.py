@@ -7,7 +7,7 @@ from exept.exeptions import InvalidDateFormatError, SportNotFoundError
 from exept.colors_text import print_error_message
 from service.api_logic.scripts import get_sport_by_name
 from api.routes.scripts import get_error_response
-from exept.handle_exeptions import handle_exceptions
+from exept.handle_exeptions import code_status
 
 from sqlalchemy.orm import aliased
 import json

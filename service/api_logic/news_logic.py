@@ -3,10 +3,10 @@ from flask import Response
 from database.models import News
 from database.azure_blob_storage.save_get_blob import blob_get_news
 from sqlalchemy.sql.expression import ClauseElement
-from exept.handle_exeptions import handle_exceptions
+from exept.handle_exeptions import code_status
 from service.api_logic.scripts import get_sport_by_name
 
-@handle_exceptions
+@code_status
 def fetch_news(session, order_by: ClauseElement = None, limit: int = None, filters=None):
     query = session.query(News)
     if filters:
@@ -18,13 +18,13 @@ def fetch_news(session, order_by: ClauseElement = None, limit: int = None, filte
     return query.all()
 
 
-@handle_exceptions
+@code_status
 def get_news_by_count(count: int, session):
     news = fetch_news(session, order_by=News.save_at.desc(), limit=count)
     return json_news(news)
 
 
-@handle_exceptions
+@code_status
 def get_latest_sport_news(count: int, sport_name: str, session):
     sport = get_sport_by_name(session, sport_name)
 
@@ -32,13 +32,13 @@ def get_latest_sport_news(count: int, sport_name: str, session):
     news = fetch_news(session, order_by=News.save_at.desc(), limit=count, filters=filters)
     return json_news(news)
 
-@handle_exceptions
+@code_status
 def get_popular_news(count: int, session):
     news = fetch_news(session, order_by=News.interest_rate.desc(), limit=count)
     return json_news(news)
 
 
-@handle_exceptions
+@code_status
 def json_news(news_records):
     all_results = []
     for news_record in news_records:
