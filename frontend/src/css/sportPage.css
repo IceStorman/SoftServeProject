@@ -61,6 +61,34 @@
             gap: 2rem;
             width: 100%;
         }
+
+        .leaguesSearch{
+            width: 15rem;
+            height: 2rem;
+            border-radius: 0.5rem;
+            padding: 0 0.2rem;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .leaguesCountry{
+            all: unset;
+            width: 10rem;
+
+            button{
+                all: unset;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 10rem;
+                height: 2rem;
+                font-size: 1rem;
+                background-color: var(--special-dark-purple);
+                border-radius: 0.5rem;
+                color: var(--main-text-color);
+                cursor: pointer;
+            }
+        }
     }
 
     .pagination {
