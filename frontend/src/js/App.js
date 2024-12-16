@@ -11,8 +11,8 @@ import {
 } from "react-router-dom";
 import axios from "axios";
 
-import header from "../components/header";
-import footer from "../components/footer";
+import Header from "../components/header";
+import Footer from "../components/footer";
 
 import SignUpPage from "../pages/signUpPage";
 import SignInPage from "../pages/signInPage";
@@ -33,7 +33,7 @@ function App(){
                 }}
             >
 
-                {header()}
+                {<Header />}
 
                 <Routes>
 
@@ -53,7 +53,7 @@ function App(){
 
                 </Routes>
 
-                {footer()}
+                {<Footer />}
 
             </Router>
 
