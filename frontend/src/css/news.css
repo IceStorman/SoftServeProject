@@ -86,6 +86,7 @@
 
 
     hr{
+        align-self: center;
         border: 0.2vh solid var(--special-grey);
         width: 100%;
     }

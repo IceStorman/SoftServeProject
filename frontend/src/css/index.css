@@ -12,6 +12,11 @@
     src: url('./fonts/RubikBubbles-Regular.ttf') format('woff2');
 }
 
+@font-face {
+    font-family: 'Merriweather';
+    src: url('./fonts/Merriweather-Black.ttf') format('woff2');
+}
+
 :root{
     --main-background-color: #D3D9E9;
     --special-dark-purple: #31293F;
@@ -35,7 +40,7 @@
 
 body{
     width: 100%;
-    font-family: "Times New Roman";
+    font-family: "Merriweather";
     background-color: var(--main-background-color);
 }
 
