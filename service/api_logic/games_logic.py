@@ -7,7 +7,7 @@ from exept.exeptions import InvalidDateFormatError, SportNotFoundError
 from exept.colors_text import print_error_message
 from service.api_logic.scripts import get_sport_by_name
 from api.routes.scripts import get_error_response
-from exept.handle_exeptions import code_status
+from exept.handle_exeptions import handle_exceptions
 
 from sqlalchemy.orm import aliased
 import json
@@ -66,7 +66,7 @@ def process_blob_data(sport_data, today):
     return None
 
 
-@code_status
+@handle_exceptions
 def get_stream_info_today(session):
     blob_indexes = get_all_blob_indexes_from_db(session, GAMES_JSON) + \
                    get_all_blob_indexes_from_db(session, FIXTURES_JSON)
@@ -82,7 +82,7 @@ def get_stream_info_today(session):
     return filtered_data
 
 
-@code_status
+@handle_exceptions
 def get_stream_info_for_sport(session, sport_name):
     try:
         sport = get_sport_by_name(session, sport_name)

@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from service.api_logic.sports_logic import get_all_sports, get_all_leagues_by_sport
 from database.session import SessionLocal
-from api.routes.scripts import get_error_response, post_cache_key
+from api.routes.scripts import get_error_response, post_cache_key, get_good_response
 from api.routes.cache import cache
 from exept.exeptions import DatabaseConnectionError
 from api.routes.dto import SportsLeagueDTO
@@ -21,7 +21,7 @@ def handle_db_timeout_error(e):
 def get_all_sports_endpoint():
     try:
         sports = get_all_sports(session)
-        return [sport.dict() for sport in sports]
+        return get_good_response(sports)
     except Exception as e:
         response = {"error in service": str(e)}
         return get_error_response(response, 500)
@@ -33,7 +33,7 @@ def get_all_leagues_endpoint():
         data = request.get_json()
         dto = SportsLeagueDTO(**data)
         sports = get_all_leagues_by_sport(session, dto)
-        return sports
+        return get_good_response(sports)
     except Exception as e:
         response = {"error in service": str(e)}
         return get_error_response(response, 500)

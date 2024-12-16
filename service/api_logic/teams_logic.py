@@ -2,7 +2,7 @@ import json
 from database.azure_blob_storage.save_get_blob import get_all_blob_indexes_from_db, get_blob_data_for_all_sports
 from service.api_logic.scripts import get_sport_by_name
 from api.routes.dto import TeamsLeagueDTO
-from exept.handle_exeptions import code_status
+from exept.handle_exeptions import handle_exceptions
 from database.models import TeamIndex, Sport
 from flask import Response
 
@@ -14,7 +14,7 @@ SPORT_KEY = "sport"
 RESPONSE_KEY = "response"
 
 
-@code_status
+@handle_exceptions
 def get_teams(session):
     teams_blob_indexes = get_all_blob_indexes_from_db(session, TEAMS_JSON)
     sport_result = get_blob_data_for_all_sports(session, teams_blob_indexes)
@@ -28,7 +28,7 @@ def get_teams(session):
 
 
 
-@code_status
+@handle_exceptions
 def process_blob_data(sport_data):
     team = sport_data.get(DATA_KEY, {}).get(RESPONSE_KEY, [])
     sport = sport_data.get(SPORT_KEY)
@@ -39,7 +39,7 @@ def process_blob_data(sport_data):
         }
     return None
 
-@code_status
+@handle_exceptions
 def get_teams_sport(session, dto: TeamsLeagueDTO):
 
         sport = get_sport_by_name(session, dto.sport)

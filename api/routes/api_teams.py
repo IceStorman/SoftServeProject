@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from database.session import SessionLocal
-from api.routes.scripts import get_error_response
+from api.routes.scripts import get_error_response, get_good_response
 from service.api_logic.teams_logic import get_teams, get_teams_sport
 from service.implementation.auto_request_api.logic_request_by_react import basketball_players, rugby_teams_statistics
 from api.routes.cache import cache
@@ -21,7 +21,7 @@ def get_teams_endpoint():
     try:
         dto = TeamsLeagueDTO()
         all_teams = get_teams(session, 9, dto)
-        return all_teams
+        return get_good_response(all_teams)
     except Exception as e:
         response = {"error in service": str(e)}
         return get_error_response(response, 500)
@@ -33,7 +33,7 @@ def get_teams_sport_endpoint():
         data = request.get_json()
         dto = TeamsLeagueDTO(**data)
         all_teams = get_teams(session, 9, dto)
-        return all_teams
+        return get_good_response(all_teams)
     except Exception as e:
         response = {"error in service": str(e)}
         return get_error_response(response, 500)
@@ -46,7 +46,7 @@ def get_teams_statistics_endpoint():
         data = request.get_json()
         dto = TeamsStatisticsOrPlayersDTO(**data)
         response = rugby_teams_statistics(dto)
-        return response
+        return get_good_response(response)
     except Exception as e:
         response = {"error in service": str(e)}
         return get_error_response(response, 500)
@@ -58,7 +58,7 @@ def get_players_endpoint():
         data = request.get_json()
         dto = TeamsStatisticsOrPlayersDTO(**data)
         response = basketball_players(dto)
-        return response
+        return get_good_response(response)
     except Exception as e:
         response = {"error in service": str(e)}
         return get_error_response(response, 500)

@@ -2,7 +2,7 @@ from flask import Blueprint
 from service.api_logic.news_logic import get_news_by_count, get_latest_sport_news, get_popular_news
 from database.session import SessionLocal
 from api.routes.cache import cache
-from api.routes.scripts import get_cache_key, get_error_response, check_positive_param
+from api.routes.scripts import get_cache_key, get_error_response, get_good_response
 from exept.exeptions import DatabaseConnectionError
 session = SessionLocal()
 news_app = Blueprint('news', __name__)
@@ -19,7 +19,7 @@ def handle_db_timeout_error(e):
 def get_recent_news_endpoint():
     try:
         recent_news = get_news_by_count(5, session)
-        return recent_news
+        return get_good_response(recent_news)
     except Exception as e:
         response = {"error in service": str(e)}
         return get_error_response(response, 500)
@@ -29,7 +29,7 @@ def get_recent_news_endpoint():
 def get_sport_news_endpoint(sport_type):
     try:
         recent_news = get_latest_sport_news(5, sport_type, session)
-        return recent_news
+        return get_good_response(recent_news)
     except Exception as e:
         response = {"error in service": str(e)}
         return get_error_response(response, 500)
@@ -40,7 +40,7 @@ def get_sport_news_endpoint(sport_type):
 def get_popular_news_endpoint():
     try:
         recent_news = get_popular_news(5, session)
-        return recent_news
+        return get_good_response(recent_news)
     except Exception as e:
         response = {"error in service": str(e)}
         return get_error_response(response, 500)

@@ -2,7 +2,7 @@ from flask import Blueprint
 from service.api_logic.games_logic import get_stream_info_today, get_stream_info_for_sport
 from database.session import SessionLocal
 from api.routes.cache import cache
-from api.routes.scripts import get_error_response, get_cache_key
+from api.routes.scripts import get_error_response, get_cache_key, get_good_response
 from exept.exeptions import DatabaseConnectionError
 
 session = SessionLocal()
@@ -20,7 +20,7 @@ def handle_db_timeout_error(e):
 def get_stream_info_today_endpoint():
     try:
         games = get_stream_info_today(session)
-        return games
+        return get_good_response(games)
     except Exception as e:
         response = {"error in service": str(e)}
         return get_error_response(response, 500)
@@ -31,7 +31,7 @@ def get_stream_info_today_endpoint():
 def get_sport_stream_info_today_endpoint(sport_type):
     try:
         games = get_stream_info_for_sport(session, sport_type)
-        return games
+        return get_good_response(games)
     except Exception as e:
         response = {"error in service": str(e)}
         return get_error_response(response, 500)

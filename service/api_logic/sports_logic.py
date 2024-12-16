@@ -1,8 +1,12 @@
+import json
+
+from flask import Response
+
 from database.models import Sport, League
 from api.routes.dto import SportsLeagueDTO, SportsLeagueOutputDTO, SportsOutputDTO
-from exept.handle_exeptions import code_status
+from exept.handle_exeptions import handle_exceptions
 
-@code_status
+@handle_exceptions
 def get_all_sports(session):
     sports = session.query(Sport).all()
     return [
@@ -10,11 +14,11 @@ def get_all_sports(session):
             id=sport.sport_id,
             sport=sport.sport_name,
             logo=sport.sport_img,
-        ) for sport in sports
+        ).to_dict() for sport in sports
     ]
 
 
-@code_status
+@handle_exceptions
 def get_all_leagues_by_sport(session, dto: SportsLeagueDTO):
     offset = (dto.page - 1) * dto.per_page
     leagues = (
@@ -26,11 +30,12 @@ def get_all_leagues_by_sport(session, dto: SportsLeagueDTO):
         .all()
     )
     return [
-        SportsLeagueOutputDTO(
-            id=league.league_id,
-            sport=league.name,
-            logo=league.logo,
-            name=dto.sport,
-        ) for league in leagues
+        {
+            "_id": league.league_id,
+            "name": league.name,
+            "logo": league.logo,
+            "sport_name": dto.sport
+        }
+        for league in leagues
     ]
 

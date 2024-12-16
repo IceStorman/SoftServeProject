@@ -4,7 +4,7 @@ from sqlalchemy.exc import OperationalError
 from exept.exeptions import SoftServeException, DatabaseConnectionError
 from api.routes.scripts import get_error_response
 
-def code_status(func):
+def handle_exceptions(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         try:
@@ -19,8 +19,10 @@ def code_status(func):
         except Exception as e:
             response = {"error in service": str(e)}
             return get_error_response(response, 500)
-        return result, 200
+        return result
 
     return wrapper
+
+
 
 
