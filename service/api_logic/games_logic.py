@@ -66,6 +66,7 @@ def process_blob_data(sport_data, today):
     return None
 
 
+@code_status
 def get_stream_info_today(session):
     blob_indexes = get_all_blob_indexes_from_db(session, GAMES_JSON) + \
                    get_all_blob_indexes_from_db(session, FIXTURES_JSON)
@@ -78,9 +79,10 @@ def get_stream_info_today(session):
         processed_data = process_blob_data(sport_data, today)
         if processed_data:
             filtered_data.append(processed_data)
-    return filtered_data, 200
+    return filtered_data
 
 
+@code_status
 def get_stream_info_for_sport(session, sport_name):
     try:
         sport = get_sport_by_name(session, sport_name)
@@ -103,5 +105,5 @@ def get_stream_info_for_sport(session, sport_name):
         if processed_data:
             processed_data["sport"] = sport_name
             filtered_data.append(processed_data)
-    return filtered_data, 200
+    return filtered_data
 

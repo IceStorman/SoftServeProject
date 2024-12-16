@@ -54,6 +54,9 @@ class SportsOutputDTO(BaseModel):
     sport: str
     logo: str
 
+    def to_dict(self):
+        return self.dict()
+
 class SportsLeagueOutputDTO(BaseModel):
     id: int
     sport: str
