@@ -49,7 +49,6 @@ function LeaguePage(){
 
     return(
         <>
-            <Toaster  position="top-center" expand={true} richColors  />
 
             <section className={"sportTeams"}>
 

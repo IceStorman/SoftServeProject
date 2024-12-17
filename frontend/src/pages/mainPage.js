@@ -1,7 +1,6 @@
 import React, {useState, useEffect, createContext, useContext} from "react";
 import { Link } from "react-router-dom";
 import axios from 'axios';
-import { Toaster, toast } from 'sonner'
 
 import apiEndpoints from "../apiEndpoints";
 
@@ -58,8 +57,6 @@ function MainPage() {
     return(
 
         <>
-
-            <Toaster  position="top-center" expand={true} richColors  />
 
             <Slider games={games} />
 

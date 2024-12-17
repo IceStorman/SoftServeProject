@@ -1,4 +1,4 @@
-import {
+import React, {
     useEffect,
     useState
 } from "react";
@@ -20,6 +20,7 @@ import MainPage from "../pages/mainPage";
 import ForgotPasswordPage from "../pages/forgotPasswordPage";
 import SportPage from "../pages/sportPage";
 import LeaguePage from "../pages/leaguePage";
+import {Toaster} from "sonner";
 
 function App(){
 
@@ -32,6 +33,8 @@ function App(){
                 v7_relativeSplatPath: true,
                 }}
             >
+
+                <Toaster  position="top-center" expand={true} richColors  />
 
                 {<Header />}
 

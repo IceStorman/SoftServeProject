@@ -6,7 +6,6 @@ import apiEndpoints from "../apiEndpoints";
 import LeagueBtn from "../components/sportPage/leagueBtn";
 import ReactPaginate from 'react-paginate';
 import {toast, Toaster} from "sonner";
-import {Link} from "react-router-dom";
 //import Dropdown from 'react-bootstrap/Dropdown';
 import DropDown from "../components/dropDown/dropDown";
 
@@ -71,8 +70,6 @@ function SportPage(){
 
     return(
         <section className={"sportPage"}>
-
-            <Toaster  position="top-center" expand={true} richColors  />
 
             <h1 className={"sportTitle"}>{ sportName }</h1>
 
