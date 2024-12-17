@@ -4,6 +4,7 @@
     align-items: end;
     gap: 0.2rem 2rem;
     margin: 4vh 0 0;
+    padding: 0 0 0.4rem;
     background-color: white;
     border-top-left-radius: 3vh;
     border-top-right-radius: 3vh;
@@ -21,7 +22,7 @@
         display: flex;
         flex-direction: column;
         justify-content: start;
-        width: 25rem;
+        width: 32rem;
         max-width: 95%;
         margin: 0 auto;
         cursor: pointer;
@@ -60,7 +61,7 @@
         justify-content: center;
 
         .newsBox {
-            width: 25rem;
+            width: 32rem;
             margin: 0;
 
             img {
