@@ -1,0 +1,76 @@
+$main-background-color: #D3D9E9;
+$special-dark-purple: #31293F;
+$special-light-purple: #A6A9C8;
+$special-red: #B82426;
+$main-text-color: #D3D9E9;
+$purple-btn-color: #796EA8;
+$special-grey: #818398;
+
+@import "header.scss";
+@import "games.scss";
+@import "news";
+@import "sportsBtn";
+@import "footer.scss";
+@import "sportPage";
+@import "sign";
+@import "iconsBlock.scss";
+
+@font-face {
+    font-family: 'RubikBubbles';
+    src: url('./fonts/RubikBubbles-Regular.ttf') format('woff2');
+}
+
+@font-face {
+    font-family: 'Merriweather';
+    src: url('./fonts/Merriweather-Black.ttf') format('woff2');
+}
+
+#root{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    width: 100%;
+    font-family: "Merriweather";
+    background-color: $main-background-color;
+}
+
+body::-webkit-scrollbar {
+    width: 12px;  /* Width of the scrollbar */
+}
+
+/* Style for the scrollbar track (background) */
+body::-webkit-scrollbar-track {
+    background: #f1f1f1;  /* Track color */
+    border-radius: 10px;
+}
+
+/* Style for the draggable part of the scrollbar (thumb) */
+body::-webkit-scrollbar-thumb {
+    background: #888;  /* Thumb color */
+    border-radius: 10px;
+}
+
+/* Hover effect for the thumb */
+body::-webkit-scrollbar-thumb:hover {
+    background: #555;  /* Thumb hover color */
+}
+
+.hidden{
+    display: none;
+}
+
+.container{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 3rem;
+    margin-bottom: 4vh;
+}

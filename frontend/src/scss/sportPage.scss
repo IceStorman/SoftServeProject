@@ -13,7 +13,7 @@
 
     .news {
         width: 80%;
-        background-color: var(--special-light-purple);
+        background-color: $special-light-purple;
         border-radius: 0.5rem;
         margin-top: 0;
 
@@ -48,13 +48,13 @@
         }
     }
 
-    .leaguesBlock{
+    .leaguesBlock {
         display: flex;
         flex-direction: column;
         align-items: center;
         width: 80%;
 
-        .leaguesFilter{
+        .leaguesFilter {
             display: flex;
             flex-direction: row;
             align-self: start;
@@ -62,26 +62,25 @@
             gap: 2rem;
             width: 100%;
 
-
-            .leaguesSearch{
+            .leaguesSearch {
                 position: relative;
                 width: 17.3rem;
                 height: 2rem;
 
-                input{
+                input {
                     width: 15rem;
                     height: 2rem;
                     padding: 0 0.2rem;
-                    border: 0.2rem solid var(--special-dark-purple);
-                    background-color: var(--main-background-color);
-                    color: var(--special-dark-purple);
+                    border: 0.2rem solid $special-dark-purple;
+                    background-color: $main-background-color;
+                    color: $special-dark-purple;
                     border-radius: 0.5rem;
                     outline: none;
                     font-size: 1rem;
                     font-weight: bold;
                 }
 
-                label{
+                label {
                     position: absolute;
                     pointer-events: none;
                     font-size: 1rem;
@@ -92,17 +91,17 @@
                 }
 
                 input:focus ~ label,
-                input:not(:placeholder-shown) ~ label{
+                input:not(:placeholder-shown) ~ label {
                     top: -0.6rem;
                     left: 0.6rem;
                     font-size: 0.8rem;
-                    background-color: var(--main-background-color);
-                    color: var(--special-dark-purple);
+                    background-color: $main-background-color;
+                    color: $special-dark-purple;
                     padding: 0 0.3rem;
                     margin: 0;
                 }
 
-                button{
+                button {
                     position: absolute;
                     display: flex;
                     justify-content: center;
@@ -113,20 +112,19 @@
                     font-size: 1.3rem;
                     top: 0;
                     right: 0;
-                    background-color: var(--main-background-color);
-                    border: 0.2rem solid var(--special-dark-purple);
+                    background-color: $main-background-color;
+                    border: 0.2rem solid $special-dark-purple;
                     border-radius: 0.5rem;
                     cursor: pointer;
                 }
             }
         }
 
-
-        .leaguesCountry{
+        .leaguesCountry {
             all: unset;
             width: 10rem;
 
-            button{
+            button {
                 all: unset;
                 display: flex;
                 align-items: center;
@@ -134,34 +132,33 @@
                 width: 10rem;
                 height: 2rem;
                 font-size: 1rem;
-                background-color: var(--special-dark-purple);
+                background-color: $special-dark-purple;
                 border-top-left-radius: 0.5rem;
                 border-top-right-radius: 0.5rem;
-                color: var(--main-text-color);
+                color: $main-text-color;
                 cursor: pointer;
             }
 
-            .dropMenu{
+            .dropMenu {
                 width: 10rem;
                 max-height: 20rem;
                 position: absolute;
                 overflow-y: scroll;
 
-                h1{
+                h1 {
                     display: flex;
                     justify-content: center;
-                    background-color: var(--purple-btn-color);
+                    background-color: $purple-btn-color;
                     width: 100%;
                     box-sizing: border-box;
-                    border: 0.1rem solid var(--special-dark-purple);
+                    border: 0.1rem solid $special-dark-purple;
                     cursor: pointer;
                 }
             }
 
-            .inActiveDrop{
+            .inActiveDrop {
                 border-radius: 0.5rem;
             }
-
         }
     }
 
@@ -174,14 +171,13 @@
         margin-bottom: 1rem;
 
         li {
-
-            a{
+            a {
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 text-decoration: none;
-                background-color: var(--purple-btn-color);
-                color: var(--main-text-color);
+                background-color: $purple-btn-color;
+                color: $main-text-color;
                 border-radius: 50%;
                 cursor: pointer;
                 margin: 0 0.5rem;
@@ -191,15 +187,14 @@
                 height: 2.5rem;
             }
 
-            a:hover{
-                color: var(--main-text-color);
+            a:hover {
+                color: $main-text-color;
             }
         }
     }
 
     .activePaginationPane {
-
-        a{
+        a {
             border: solid 0.3rem #2BA36C;
             border-radius: 50%;
         }

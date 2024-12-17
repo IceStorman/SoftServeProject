@@ -1,4 +1,4 @@
-.navSports{
+.navSports {
     display: flex;
     flex-wrap: wrap;
     align-content: flex-start;
@@ -7,15 +7,15 @@
     margin: 4vh 0 0 0;
     width: 30%;
 
-    .sportBox{
+    .sportBox {
         display: flex;
         justify-content: center;
         cursor: pointer;
 
-        img{
+        img {
             background-color: white;
             padding: 0.5rem;
-            border: 0.9rem solid var(--special-dark-purple);
+            border: 0.9rem solid $special-dark-purple;
             border-radius: 2vh;
             width: 7.5rem;
             height: 7.5rem;

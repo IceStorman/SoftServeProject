@@ -1,13 +1,13 @@
-footer{
+footer {
     display: flex;
     flex-direction: row;
     align-items: center;
     margin-top: auto;
     width: 100%;
-    background-color: var(--special-dark-purple);
-    color: var(--main-text-color);
+    background-color: $special-dark-purple;
+    color: $main-text-color;
 
-    button{
+    button {
         all: unset;
         display: flex;
         justify-content: center;
@@ -16,12 +16,12 @@ footer{
         font-size: 3rem;
         margin: auto 2rem;
         cursor: pointer;
-        background-color: var(--purple-btn-color);
+        background-color: $purple-btn-color;
         border-radius: 0.5rem;
         padding: 0.8vh;
     }
 
-    .footerInfo{
+    .footerInfo {
         display: flex;
         flex-direction: column;
         align-items: center;

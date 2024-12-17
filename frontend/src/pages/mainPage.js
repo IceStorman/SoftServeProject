@@ -7,6 +7,7 @@ import apiEndpoints from "../apiEndpoints";
 import News from "../components/mainPage/news.js"
 import SportBtn from "../components/mainPage/sportBtn"
 import Slider from "../components/games/slider.js";
+import {toast} from "sonner";
 
 function MainPage() {
     const [loginStatus,setLoginStatus]=useState(false)

@@ -1,29 +1,29 @@
-.signPage{
+.signPage {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin: 2rem 0;
 
-    .signContainer{
+    .signContainer {
         display: flex;
         flex-direction: column;
         align-items: center;
         width: 50%;
         padding: 2vh;
-        background-color: var(--special-light-purple);
+        background-color: $special-light-purple;
         border-radius: 1rem;
         font-weight: bold;
 
-        .signBox{
+        .signBox {
             width: 70%;
             display: flex;
             flex-direction: column;
 
-            .inputBox{
+            .inputBox {
                 margin: 0;
                 box-sizing: border-box;
 
-                .nameInput, .emailInput, .passwordInput, .codeInput{
+                .nameInput, .emailInput, .passwordInput, .codeInput {
                     box-sizing: inherit;
                     width: 100%;
                     height: 2rem;
@@ -34,18 +34,18 @@
                 }
             }
 
-            h1{
-                color: var(--main-text-color);
+            h1 {
+                color: $main-text-color;
                 font-size: 3rem;
                 margin: 1vh auto;
             }
 
-            .signError{
+            .signError {
                 margin: 0;
                 color: red;
             }
 
-            a{
+            a {
                 margin: 0 0 2vh;
                 align-self: end;
                 color: black;
@@ -53,27 +53,27 @@
                 cursor: pointer;
             }
 
-            .signBtn{
+            .signBtn {
                 all: unset;
                 margin: 1rem auto 0;
                 font-size: 1.5rem;
-                background-color: var(--special-dark-purple);
+                background-color: $special-dark-purple;
                 border-radius: 0.5rem;
-                color: var(--main-text-color);
+                color: $main-text-color;
                 padding: 1vh;
                 cursor: pointer;
             }
         }
     }
 
-    .signRedirect{
+    .signRedirect {
         display: flex;
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
         font-size: 1rem;
 
-        a{
+        a {
             margin: 1rem 0.2rem;
             text-decoration: none;
             cursor: pointer;

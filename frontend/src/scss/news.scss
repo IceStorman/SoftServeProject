@@ -1,4 +1,4 @@
-.news{
+.news {
     flex-wrap: wrap;
     align-content: flex-start;
     margin: 4vh 0 0;
@@ -15,7 +15,7 @@
         width: 60%;
     }
 
-    .newsBox{
+    .newsBox {
         display: flex;
         flex-direction: column;
         justify-content: start;
@@ -23,27 +23,27 @@
         margin: auto auto 0.1vh;
         cursor: pointer;
 
-        .newsInsight{
+        .newsInsight {
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             word-break: break-all;
         }
 
-        h4, h1{
+        h4, h1 {
             text-decoration: none;
             margin: 0;
             text-align: justify;
         }
 
-        h4{
-            color: var(--special-grey);
+        h4 {
+            color: $special-grey;
             align-self: end;
-            white-space:pre-wrap;
+            white-space: pre-wrap;
             word-break: normal;
         }
 
-        img{
+        img {
             max-height: 50rem;
             width: 100%;
             margin: 0.5rem auto;
@@ -51,43 +51,42 @@
         }
     }
 
-    &.wrapedNews{
+    &.wrapedNews {
         display: flex;
         flex-wrap: wrap;
 
-        .newsBox{
+        .newsBox {
             width: 45%;
             margin: auto auto 0;
 
-            img{
+            img {
                 width: 95%;
             }
 
-            hr{
+            hr {
                 width: 98%;
             }
         }
     }
 
-    .newsTitle{
+    .newsTitle {
         width: 100%;
         text-align: center;
         margin: 0;
-        background-color: var(--special-dark-purple);
-        color: var(--main-text-color);
+        background-color: $special-dark-purple;
+        color: $main-text-color;
         border-top-left-radius: 3vh;
         border-top-right-radius: 3vh;
         font-size: 4vh;
     }
 
-    h1{
+    h1 {
         font-size: 1.5rem;
     }
 
-
-    hr{
+    hr {
         align-self: center;
-        border: 0.2vh solid var(--special-grey);
+        border: 0.2vh solid $special-grey;
         width: 100%;
     }
 }
