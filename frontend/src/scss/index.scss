@@ -5,6 +5,9 @@ $special-red: #B82426;
 $main-text-color: #D3D9E9;
 $purple-btn-color: #796EA8;
 $special-grey: #818398;
+$scroll-hover: #4a4453;
+$scroll-thumb: #60566f;
+$scroll-track: #f9eaff;
 
 @mixin scrollbar-style {
 
@@ -13,16 +16,16 @@ $special-grey: #818398;
     }
 
     &::-webkit-scrollbar-track {
-        background:  #f9eaff;
+        background:  $scroll-track;
     }
 
     &::-webkit-scrollbar-thumb {
-        background: #60566f;
+        background: $scroll-thumb;
         border-radius: 0.3rem;
     }
 
     &::-webkit-scrollbar-thumb:hover {
-        background: #4a4453;
+        background: $scroll-hover;
     }
 }
 

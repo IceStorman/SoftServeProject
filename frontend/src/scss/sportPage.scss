@@ -20,8 +20,10 @@
         .newsBox {
             flex-direction: row;
             justify-content: space-evenly;
-            width: 95%;
-            margin: 1rem auto;
+            width: 120rem;
+            max-width: 95%;
+            margin: 1rem auto 0;
+            color: $special-dark-purple;
 
             .newsInsight {
                 width: 55%;
@@ -32,8 +34,13 @@
                 align-self: end;
             }
 
+            h4{
+                color: $scroll-hover;
+            }
+
             img {
-                width: 45%;
+                width: 50rem;
+                max-width: 45%;
             }
 
             .leftPlaceData {

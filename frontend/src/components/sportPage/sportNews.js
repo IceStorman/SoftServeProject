@@ -20,6 +20,7 @@ function SportNews({title, text, img, side, sport}){
                 {side === "right" ? (<img src={img} alt={sport}/>) : null}
 
             </div>
+
             <hr/>
         </>
     );
