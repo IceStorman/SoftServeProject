@@ -6,6 +6,26 @@ $main-text-color: #D3D9E9;
 $purple-btn-color: #796EA8;
 $special-grey: #818398;
 
+@mixin scrollbar-style {
+
+    &::-webkit-scrollbar {
+        width: 0.6rem;
+    }
+
+    &::-webkit-scrollbar-track {
+        background:  #f9eaff;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: #60566f;
+        border-radius: 0.3rem;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background: #4a4453;
+    }
+}
+
 @import "header.scss";
 @import "games.scss";
 @import "news";
@@ -36,31 +56,12 @@ $special-grey: #818398;
     padding: 0;
 }
 
-body{
+body {
     width: 100%;
     font-family: "Merriweather";
     background-color: $main-background-color;
-}
 
-body::-webkit-scrollbar {
-    width: 12px;  /* Width of the scrollbar */
-}
-
-/* Style for the scrollbar track (background) */
-body::-webkit-scrollbar-track {
-    background: #f1f1f1;  /* Track color */
-    border-radius: 10px;
-}
-
-/* Style for the draggable part of the scrollbar (thumb) */
-body::-webkit-scrollbar-thumb {
-    background: #888;  /* Thumb color */
-    border-radius: 10px;
-}
-
-/* Hover effect for the thumb */
-body::-webkit-scrollbar-thumb:hover {
-    background: #555;  /* Thumb hover color */
+    @include scrollbar-style;
 }
 
 .hidden{
@@ -73,4 +74,5 @@ body::-webkit-scrollbar-thumb:hover {
     justify-content: center;
     gap: 3rem;
     margin-bottom: 4vh;
+
 }

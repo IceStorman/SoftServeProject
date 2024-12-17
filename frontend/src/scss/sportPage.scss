@@ -154,6 +154,8 @@
                     border: 0.1rem solid $special-dark-purple;
                     cursor: pointer;
                 }
+
+                @include scrollbar-style;
             }
 
             .inActiveDrop {
