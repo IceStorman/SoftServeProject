@@ -4,8 +4,10 @@ from typing import Dict
 import os
 from dotenv import load_dotenv
 from datetime import datetime, timezone
+
 from database.models import BlobIndex, News, Sport, SportIndex, TeamIndex
 from database.session import SessionLocal
+from exept.colors_text import print_error_message, print_good_message
 import re
 
 
@@ -27,7 +29,21 @@ sastokens_dict = {
     "news": os.getenv("SASNEWS"),
 }
 
-required_keys = ['header', 'body', 'sport']
+img = {
+    "football": "https://www.api-football.com/public/img/home1/hero-banner.png",
+    "nba": "https://api-sports.io/assets/img/news/min-nba.png",
+    "mma": "https://www.api-football.com/public/img/home1/mma-logo.png",
+    "hockey": "https://www.api-football.com/public/img/home1/hockey-logo.png",
+    "afl": "https://www.api-football.com/public/img/home1/afl-logo.png",
+    "baseball": "https://www.api-football.com/public/img/home1/baseball-logo.png",
+    "basketball": "https://api-sports.io/assets/img/news/basket-player.png",
+    "formula-1": "https://www.api-football.com/public/img/news/f1-mini.png",
+    "nfl": "https://www.api-football.com/public/img/home1/nfl-logo.png",
+    "rugby": "https://www.api-football.com/public/img/home1/rugby-logo.png",
+    "volleyball": "https://www.api-football.com/public/img/home1/volleyball-logo.png",
+    "handball": "https://www.api-football.com/public/img/home1/handball-logo.png"
+}
+
 SUSPICIOUS_DOMAINS = ["malicious.com", "phishing.net", "unsafe.io"]
 # Рівні загрози
 THREAT_LEVELS = {
@@ -42,6 +58,7 @@ SUSPICIOUS_PATTERNS = [
 ]
 
 
+
 def blob_autosave_api(json_data, api: Dict[str, str]) -> None:
     selected_sport = api["name"]
     key = sastokens_dict[selected_sport]
@@ -50,7 +67,7 @@ def blob_autosave_api(json_data, api: Dict[str, str]) -> None:
     blob_name = f"{api['index'].replace(' ', '_').lower()}.json"
     blob_client = container_client.get_blob_client(blob_name)
     blob_client.upload_blob(json.dumps(json_data), overwrite=True)
-    print(f"\033[32mJSON auto saved to Blob Storage as {blob_name}.\033[0m")
+    print_good_message("JSON auto saved to Blob Storage as {blob_name}.")
     with SessionLocal() as session:
         save_blob_indexes_to_db(selected_sport, blob_name, session)
 
@@ -63,7 +80,7 @@ def blob_save_specific_api(name: str, blob_name: str, json_data: Dict[str, str])
     blob_name = f"{blob_name}.json"
     blob_client = container_client.get_blob_client(blob_name)
     blob_client.upload_blob(json.dumps(json_data), overwrite=True)
-    print(f"\033[32mJSON specific saved to Blob Storage as {blob_name}.\033[0m")
+    print_good_message("JSON specific saved to Blob Storage as {blob_name}.")
     with SessionLocal() as session:
         save_blob_indexes_to_db(selected_sport, blob_name, session)
 
@@ -95,38 +112,35 @@ def contains_suspicious_links(data, parent_key=""):
     return found_suspicious
 
 
-def validate_json_structure(json_data, required_keys):
+def validate_json_structure(json_data):
     if not isinstance(json_data, dict):
-        raise ValueError("\033[31mExpected JSON (dict) format, but received a different data type.\033[0m")
-    for key in required_keys:
-        if key not in json_data:
-            raise ValueError(f"\033[31mJSON data should contain the field '{key}', but it is missing.\033[0m")
-    if 'title' not in json_data['header'] or not json_data['header']['title']:
-        raise ValueError(f"\033[31mJSON data should contain the field '['header']['title']', but it is missing or empty.\033[0m")
+        raise ValueError (print_error_message("Expected JSON (dict) format, but received a different data type."))
+    if 'title' not in json_data:
+        raise ValueError(print_error_message("JSON data should contain the field '['header']['title']', but it is missing or empty."))
 
 
-def check_json(json_data, required_keys):
+def check_json(json_data):
     try:
-        validate_json_structure(json_data, required_keys)
+        validate_json_structure(json_data)
         results = contains_suspicious_links(json_data)
         if results:
-            print("\033[31mPotential threats detected:\033[0m")
+            print_error_message("Potential threats detected:")
             for path, content, level in results:
                 print(f"{THREAT_LEVELS[level]} Field: {path} | Content: {content}")
-                raise ValueError("\033[31mJSON contains suspicious content and cannot be saved.\033[0m")
+                raise ValueError(print_error_message("JSON contains suspicious content and cannot be saved."))
         else:
-            print("\033[32mNo threats detected in JSON.\033[0m")
+            print_good_message("No threats detected in JSON.")
     except ValueError as e:
-        print(f"\031[31mJSON validation error: {e}\033[0m")
+        print_error_message("JSON validation error: {e}")
         return False
-    print("\033[32mJSON passed all validation checks.\033[0m")
+    print_good_message("JSON passed all validation checks.")
     return True
 
 
 def blob_save_news(json_data: Dict[str, Dict[str, str]]) -> None:
-    if check_json(json_data, required_keys):
-        print("\033[32mAll good in file.\033[0m")
-        name = json_data['header']['title']
+    if check_json(json_data):
+        print_good_message("All good in file.")
+        name = json_data['title']
         key = sastokens_dict["news"]
         blob_service_client = BlobServiceClient(account_url=account_url, credential=key)
         container_client = blob_service_client.get_container_client("news")
@@ -136,8 +150,7 @@ def blob_save_news(json_data: Dict[str, Dict[str, str]]) -> None:
         with SessionLocal() as session:
             save_news_index_to_db(blob_name, json_data, session)
     else:
-        print("\033[31mThe file does not meet the requirements.\033[0m")
-
+        print_error_message("The file does not meet the requirements.")
 
 def blob_get_data(blob_index: str, sport_index: str) -> dict:
     try:
@@ -169,7 +182,8 @@ def save_blob_indexes_to_db(selected_sport: str, blob_name: str, session) -> Non
     try:
         sport = session.query(Sport).filter_by(sport_name=selected_sport).first()
         if not sport:
-            sport = Sport(sport_name=selected_sport)
+            sport_img = img[selected_sport]
+            sport = Sport(sport_name=selected_sport, sport_img=sport_img)
             session.add(sport)
             session.commit()
 
@@ -185,11 +199,10 @@ def save_blob_indexes_to_db(selected_sport: str, blob_name: str, session) -> Non
             session.add(blob_index)
             session.commit()
 
-        print(f"\033[32mThe information is successfully saved in the DB for the blob:\033[0m {blob_name}")
+        print_good_message(f"The information is successfully saved in the DB for the blob: {blob_name}")
     except Exception as e:
         session.rollback()
-        print(f"\033[31mError when saving indexes in the database: {e}\033[0m")
-
+        print_error_message(f"Error when saving indexes in the database: {e}")
 
 def get_all_blob_indexes_from_db(session, pattern: str):
     blob_indexes = session.query(BlobIndex).filter(BlobIndex.filename.like(f"%{pattern}%")).all()
@@ -201,11 +214,11 @@ def get_blob_data_for_all_sports(session, blob_indexes):
     for blob_index in blob_indexes:
         sport_index = session.query(SportIndex).filter_by(index_id=blob_index.sports_index_id).first()
         if not sport_index:
-            print(f"\033[31mSportIndex for blob: {blob_index.blob_id} not found.\033[0m")
+            print_error_message(f"SportIndex for blob: {blob_index.blob_id} not found.")
             continue
         sport = session.query(Sport).filter_by(sport_id=sport_index.sport_id).first()
         if not sport:
-            print(f"\033[31mSport for SportIndex {sport_index.index_id} not found.\033[0m")
+            print_error_message(f"Sport for SportIndex {sport_index.index_id} not found.")
             continue
         related_sports = session.query(Sport).filter_by(sport_name=sport.sport_name).all()
         for related_sport in related_sports:
@@ -217,7 +230,7 @@ def get_blob_data_for_all_sports(session, blob_indexes):
                     "data": data
                 })
             except Exception as e:
-                print(f"\033[31mError retrieving blob '{blob_index.filename}' for sport '{related_sport.sport_name}': {e}\033[0m")
+                print_error_message(f"Error retrieving blob '{blob_index.filename}' for sport '{related_sport.sport_name}': {e}")
     return json.dumps(all_results, ensure_ascii=False) if all_results else json.dumps({"error": "No data found"})
 
 
@@ -225,7 +238,7 @@ def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
     try:
         existing_news = session.query(News).filter_by(blob_id=blob_name).first()
         if existing_news:
-            print(f"\033[31mNews '{blob_name}' already exists in the database.\033[0m")
+            print_error_message(f"News '{blob_name}' already exists in the database.")
             return
         sport = session.query(Sport).filter_by(sport_name=json_data["sport"]).first()
         if not sport:
@@ -236,10 +249,10 @@ def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
             sport_id=sport.sport_id,
         )
         session.add(news_index)
-        print(f"\033[32mThe news item '{blob_name}' is saved in the database.\033[0m")
+        print_good_message(f"The news item '{blob_name}' is saved in the database.")
         session.commit()
 
-        for team_name in json_data["body"]["team_names"]:
+        for team_name in json_data["team_names"]:
             team_index = TeamIndex(
                 news_id=news_index.news_id,
                 team_name=team_name
@@ -249,19 +262,19 @@ def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
         session.commit()
     except Exception as e:
         session.rollback()
-        print(f"\033[31mError when saving the news index in the database: {e}\033[0m")
+        print_error_message(f"Error when saving the news index in the database: {e}")
 
 
 def get_news_by_index(blob_name: str, session) -> Dict:
     news_record = session.query(News).filter_by(blob_id=blob_name).first()
     if not news_record:
-        print(f"\033[31mNews with blob_name '{blob_name}' not found in database.\033[0m")
+        print_error_message(f"News with blob_name '{blob_name}' not found in database")
         return {}
     try:
         data = blob_get_news(news_record)
         return data
     except Exception as e:
-        print(f"\033[31mError retrieving blob '{news_record}': {e}\033[0m")
+        print_error_message(f"Error retrieving blob '{news_record}': {e}")
 
 
 def fetch_blob_data(news_records) -> list:
@@ -274,12 +287,12 @@ def fetch_blob_data(news_records) -> list:
                 "data": data
             })
         except Exception as e:
-            print(f"\033[31mError while receiving blob '{news_record.blob_id}': {e}\033[0m")
+            print_error_message(f"Error while receiving blob '{news_record.blob_id}': {e}")
     return all_results
 
 
 def handle_no_records_message(message: str) -> str:
-    print(f"\033[31m{message}\033[0m")
+    print_error_message(f"{message}")
     return json.dumps([])
 
 
@@ -334,37 +347,3 @@ def get_news_by_count(count: int, session) -> str:
         return handle_no_records_message("No news was found in the database.")
     return json.dumps(fetch_blob_data(news_records), ensure_ascii=False)
 
-
-with SessionLocal() as session:
-    print(get_news_by_count(2, session))
-    print(get_news_by_sport(3, "football", session))
-    print(get_news_by_teams(3, ["g"], session))
-'''
-
-with SessionLocal() as session:
-    result = get_news_by_count(2, session)
-    print(result)
-with SessionLocal() as session:
-    # Отримуємо всі індекси блобів
-    a = get_all_blob_indexes_from_db(session, "players/players?team=333&season=2024.json")
-    print("Отримані індекси блобів:", a)
-
-    # Використовуємо отримані індекси для отримання даних
-    b = get_blob_data_for_all_sports(a, session)
-    print("Дані блобів:", b)
-    
-test_json = {
-    "header": {
-        "title": "Safe JSON",
-        "links": ["http://malicious-site.com/virus.exe", "http://safe-site.com"]
-    },
-    "body": "<script>alert('Hacked!');</script>",
-    "file": {
-        "name": "malicious.exe",
-        "data": "data:application/octet-stream;base64,VGhpcyBpcyBhIHRlc3Q="
-    },
-    "sport": "football"
-
-}
-blob_save_news(test_json)
-'''
