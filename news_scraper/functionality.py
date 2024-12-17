@@ -9,7 +9,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 import os
-from tokenizator import what_teams_here
+from ai_models.tokenizator import what_teams_here
 from database.azure_blob_storage.save_get_blob import blob_save_news
 
 
