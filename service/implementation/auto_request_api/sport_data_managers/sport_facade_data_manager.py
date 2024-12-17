@@ -7,6 +7,7 @@ from typing import Dict
 
 from service.implementation.auto_request_api.sport_data_managers.afl_data_manager import AflDataManager
 from service.implementation.auto_request_api.sport_data_managers.baseball_data_manager import BaseballDataManager
+from service.implementation.auto_request_api.sport_data_managers.basketball_data_manager import BasketballDataManager
 from service.implementation.auto_request_api.sport_data_managers.football_data_manager import FootballDataManager
 from service.implementation.auto_request_api.sport_data_managers.formula_one_data_manager import FormulaOneDataManager
 from service.implementation.auto_request_api.sport_data_managers.handball_data_manager import HandballDataManager
@@ -27,7 +28,7 @@ class SportFacadeDataManager:
             case "baseball":
                 return BaseballDataManager(api_data)
             case "basketball":
-                return BaseballDataManager(api_data)
+                return BasketballDataManager(api_data)
             case "handball":
                 return HandballDataManager(api_data)
             case "hockey":
