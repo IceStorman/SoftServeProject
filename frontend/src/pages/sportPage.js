@@ -7,8 +7,8 @@ import LeagueBtn from "../components/sportPage/leagueBtn";
 import ReactPaginate from 'react-paginate';
 import {toast, Toaster} from "sonner";
 import {Link} from "react-router-dom";
-import Dropdown from 'react-bootstrap/Dropdown';
-
+//import Dropdown from 'react-bootstrap/Dropdown';
+import DropDown from "../components/dropDown/dropDown";
 
 function SportPage(){
     const { sportName  } = useParams();
@@ -23,6 +23,8 @@ function SportPage(){
     const leaguesPerPage = 9;
 
     const [leaguesOffset, setLeaguesOffset] = useState(0);
+
+    const [countryFilter, setCountryFilter] = useState()
 
     useEffect(() => {
         const endOffset = leaguesOffset + leaguesPerPage;
@@ -63,6 +65,10 @@ function SportPage(){
             });
     }, []);
 
+    useEffect(() => {
+        console.log(countryFilter);
+    }, [countryFilter]);
+
     return(
         <section className={"sportPage"}>
 
@@ -93,15 +99,19 @@ function SportPage(){
 
                     <input className={"leaguesSearch"} type={"search"}></input>
 
-                    <Dropdown className={"leaguesCountry"}>
-                        <Dropdown.Toggle variant="success" id="dropdown-basic">
-                            Country
-                        </Dropdown.Toggle>
+                    <DropDown
+                        setCountry = {setCountryFilter}
+                    />
 
-                        <Dropdown.Menu>
-                            <Dropdown.Item href="#/action-1">Ukraine</Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
+                    {/*<Dropdown className={"leaguesCountry"}>*/}
+                    {/*    <Dropdown.Toggle variant="success" id="dropdown-basic">*/}
+                    {/*        Country*/}
+                    {/*    </Dropdown.Toggle>*/}
+
+                    {/*    <Dropdown.Menu>*/}
+                    {/*        <Dropdown.Item href="#/action-1">Ukraine</Dropdown.Item>*/}
+                    {/*    </Dropdown.Menu>*/}
+                    {/*</Dropdown>*/}
 
                 </section>
 

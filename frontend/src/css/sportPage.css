@@ -84,10 +84,30 @@
                 height: 2rem;
                 font-size: 1rem;
                 background-color: var(--special-dark-purple);
-                border-radius: 0.5rem;
+                border-top-left-radius: 0.5rem;
+                border-top-right-radius: 0.5rem;
                 color: var(--main-text-color);
                 cursor: pointer;
             }
+
+            .dropMenu{
+                width: 10rem;
+                position: absolute;
+
+                h1{
+                    display: flex;
+                    justify-content: center;
+                    background-color: var(--purple-btn-color);
+                    width: 100%;
+                    box-sizing: border-box;
+                    border: 0.1rem solid var(--special-dark-purple);
+                }
+            }
+
+            .inActiveDrop{
+                border-radius: 0.5rem;
+            }
+
         }
     }
 
