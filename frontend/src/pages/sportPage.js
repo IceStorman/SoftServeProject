@@ -120,7 +120,7 @@ function SportPage(){
                         <button onClick={handleSearchClick}>
                             <i className="fa-solid fa-magnifying-glass"></i>
                         </button>
-                        
+
                     </div>
 
                     <DropDown

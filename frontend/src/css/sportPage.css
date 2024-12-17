@@ -154,6 +154,7 @@
                     width: 100%;
                     box-sizing: border-box;
                     border: 0.1rem solid var(--special-dark-purple);
+                    cursor: pointer;
                 }
             }
 
