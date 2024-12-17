@@ -6,7 +6,7 @@ import apiEndpoints from "../apiEndpoints";
 import LeagueBtn from "../components/sportPage/leagueBtn";
 import ReactPaginate from 'react-paginate';
 import {toast, Toaster} from "sonner";
-//import Dropdown from 'react-bootstrap/Dropdown';
+
 import DropDown from "../components/dropDown/dropDown";
 
 function SportPage(){
@@ -23,7 +23,9 @@ function SportPage(){
 
     const [leaguesOffset, setLeaguesOffset] = useState(0);
 
-    const [countryFilter, setCountryFilter] = useState()
+    const [countryFilter, setCountryFilter] = useState();
+    const [inputValue, setInputValue] = useState('');
+    const [searchClicked, setSearchClicked] = useState(false);
 
     useEffect(() => {
         const endOffset = leaguesOffset + leaguesPerPage;
@@ -36,6 +38,15 @@ function SportPage(){
         setLeaguesOffset(newOffset);
     };
 
+    function handleSearchClick(){
+        setSearchClicked((prev) => !prev);
+    }
+
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            handleSearchClick();
+        }
+    };
 
     useEffect(() => {
         axios.get(`${apiEndpoints.url}${apiEndpoints.news.getSport}${sportName}`)
@@ -66,7 +77,8 @@ function SportPage(){
 
     useEffect(() => {
         console.log(countryFilter);
-    }, [countryFilter]);
+        console.log(inputValue);
+    }, [countryFilter, searchClicked]);
 
     return(
         <section className={"sportPage"}>
@@ -94,21 +106,26 @@ function SportPage(){
 
                 <section className={"leaguesFilter"}>
 
-                    <input className={"leaguesSearch"} type={"search"}></input>
+                    <div className={"leaguesSearch"}>
+
+                        <input
+                            type={"search"}
+                            placeholder={" "}
+                            onChange={(e) => setInputValue(e.target.value)}
+                            onKeyDown={handleKeyDown}
+                        ></input>
+
+                        <label>Search league</label>
+
+                        <button onClick={handleSearchClick}>
+                            <i className="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                        
+                    </div>
 
                     <DropDown
-                        setCountry = {setCountryFilter}
+                        setCountry={setCountryFilter}
                     />
-
-                    {/*<Dropdown className={"leaguesCountry"}>*/}
-                    {/*    <Dropdown.Toggle variant="success" id="dropdown-basic">*/}
-                    {/*        Country*/}
-                    {/*    </Dropdown.Toggle>*/}
-
-                    {/*    <Dropdown.Menu>*/}
-                    {/*        <Dropdown.Item href="#/action-1">Ukraine</Dropdown.Item>*/}
-                    {/*    </Dropdown.Menu>*/}
-                    {/*</Dropdown>*/}
 
                 </section>
 

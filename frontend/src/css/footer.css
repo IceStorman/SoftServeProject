@@ -9,11 +9,16 @@ footer{
 
     button{
         all: unset;
+        display: flex;
+        justify-content: center;
+        width: 3rem;
+        height: 3rem;
         font-size: 3rem;
         margin: auto 2rem;
         cursor: pointer;
         background-color: var(--purple-btn-color);
-        padding: 0 0.8vh;
+        border-radius: 0.5rem;
+        padding: 0.8vh;
     }
 
     .footerInfo{
