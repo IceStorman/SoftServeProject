@@ -2,24 +2,33 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    gap: 2%;
     margin: 0.5rem auto 0.5rem;
-    gap: 3rem;
     width: 100%;
 
     .iconsBlockElement {
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 30%;
+        width: 32%;
+        margin-bottom: 2%;
         height: 18rem;
-        gap: 2rem;
         background-color: $special-light-purple;
         border-radius: 0.5rem;
         cursor: pointer;
+        overflow: hidden;
 
         img {
             max-height: 90%;
             max-width: 90%;
+            transition: transform 0.1s linear;
+        }
+    }
+
+    .iconsBlockElement:hover{
+
+        img{
+            transform: scale(1.1);
         }
     }
 }

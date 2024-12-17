@@ -24,6 +24,7 @@
             max-width: 95%;
             margin: 1rem auto 0;
             color: $special-dark-purple;
+            overflow: visible;
 
             .newsInsight {
                 width: 55%;
@@ -52,6 +53,13 @@
             margin: 0 auto 1rem;
             border: 0.1vh solid white;
             width: 95%;
+        }
+
+        .newsBox:hover{
+
+            img{
+                transform: scale(1.02);
+            }
         }
     }
 
@@ -108,6 +116,11 @@
                     margin: 0;
                 }
 
+                input:hover ~ label,
+                input:focus ~ label{
+                    transform: scale(1.05);
+                }
+
                 button {
                     position: absolute;
                     display: flex;
@@ -123,6 +136,11 @@
                     border: 0.2rem solid $special-dark-purple;
                     border-radius: 0.5rem;
                     cursor: pointer;
+                    transition: transform 0.3s ease;
+                }
+
+                button:hover{
+                    transform: scale(1.05);
                 }
             }
         }
@@ -144,6 +162,7 @@
                 border-top-right-radius: 0.5rem;
                 color: $main-text-color;
                 cursor: pointer;
+                transition: all 0.2s ease;
             }
 
             .dropMenu {
@@ -151,19 +170,27 @@
                 max-height: 20rem;
                 position: absolute;
                 overflow-y: scroll;
+                overflow-x: hidden;
 
                 h1 {
                     display: flex;
                     justify-content: center;
                     background-color: $purple-btn-color;
                     width: 100%;
+                    padding: 0.2rem 0;
                     color: $main-text-color;
                     box-sizing: border-box;
                     border: 0.1rem solid $special-dark-purple;
                     cursor: pointer;
+                    transition: all 0.2s ease;
                 }
 
                 @include scrollbar-style;
+            }
+
+            button:hover, h1:hover{
+                font-size: 1.1rem;
+                color: $scroll-track;
             }
 
             .inActiveDrop {
@@ -195,10 +222,12 @@
                 font-weight: bolder;
                 width: 2.5rem;
                 height: 2.5rem;
+                transition: transform 0.1s ease;
             }
 
             a:hover {
-                color: $main-text-color;
+                color: $special-dark-purple;
+                transform: scale(1.1);
             }
         }
     }

@@ -11,15 +11,28 @@
         display: flex;
         justify-content: center;
         cursor: pointer;
+        overflow: hidden;
+        border: 0.9rem solid $special-dark-purple;
+        border-radius: 2vh;
+
+        a{
+            overflow: hidden;
+        }
 
         img {
             background-color: white;
             padding: 0.5rem;
-            border: 0.9rem solid $special-dark-purple;
-            border-radius: 2vh;
             width: 7.5rem;
             height: 7.5rem;
             object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+    }
+
+    .sportBox:hover{
+
+        img{
+            transform: scale(1.1);
         }
     }
 }
