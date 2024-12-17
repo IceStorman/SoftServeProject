@@ -89,7 +89,6 @@ class Article_Scraper(Main_page_sport_parser):
         response = requests.get(full_url, headers=headers)
         if response.status_code != 200:
             print(f"Error fetching the article. Status code: {response.status_code}")
-            driver.quit()
             return None
 
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -128,21 +127,39 @@ class Article_Scraper(Main_page_sport_parser):
 
         title = soup.title.string if soup.title else "Unknown Article"
         article_data['title'] = title
+        
+        driver.get(full_url)
+        driver.implicitly_wait(30)
+        image_sources = driver.execute_script(
+            '''var els = document.getElementsByTagName('source');
+            var imageSources = [];
+            Array.from(els).forEach(img => {
+                imageSources.push(img.getAttribute('data-srcset'));
+            });
+            return imageSources;'''
+        )
+        for i,image_source in enumerate(image_sources):
+            if image_source is not None and(i==0 or i%2==0):
+                sep =','
+                images = image_source[:image_source.index(sep)]
+                article_data['images'].append(images)
 
-        try:
-            search_url = f"https://www.google.com/search?tbm=isch&q={title}"
-            driver.get(search_url)
-            time.sleep(2)
-            image_elements = driver.find_elements(By.CLASS_NAME, "YQ4gaf")[:3]
-            for img in image_elements:
-                src = img.get_attribute("src")
-                if src:
-                    article_data['images'].append(src)
-                    print(f"Found image: {src}")
-        except Exception as e:
-            print(f"Error during image search: {e}")
-        finally:
-            driver.quit()
+        driver.quit()
+        if not article_data['images']:
+            try:
+                search_url = f"https://www.google.com/search?tbm=isch&q={title}"
+                driver.get(search_url)
+                time.sleep(2)
+                image_elements = driver.find_elements(By.CLASS_NAME, "YQ4gaf")[:3]
+                for img in image_elements:
+                    src = img.get_attribute("src")
+                    if src:
+                        article_data['images'].append(src)
+                        print(f"Found image: {src}")
+            except Exception as e:
+                print(f"Error during image search: {e}")
+            finally:
+                driver.quit()
 
         timestamp = soup.select_one('.author .timestamp')
         article_data['timestamp'] = timestamp.get_text(strip=True) if timestamp else time.strftime("%Y-%m-%d")
@@ -250,7 +267,7 @@ class Article_Scraper(Main_page_sport_parser):
             print(f"Article saved locally: {filepath}")
 
             blob_save_news(content)
-            print(f"Article uploaded to Azure Blob Storage successfully.")
+            print("Article uploaded to Azure Blob Storage successfully.")
 
         except Exception as e:
             print(f"Error saving article '{filename}': {e}") 
