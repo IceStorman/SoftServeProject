@@ -23,12 +23,16 @@
         rotate: 180deg;
         margin: auto 4vh auto 2vh;
     }
+    .active{
+        transform: translate(-50rem);
+    }
 
     .gamesBar {
         display: flex;
         flex-direction: row;
         width: 90%;
         overflow: hidden;
+        transition: transform 0.5s ease-in-out;
 
         .gamesBox {
             display: flex;

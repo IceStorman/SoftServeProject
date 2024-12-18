@@ -4,7 +4,8 @@ import ActiveGames from "./activeGames";
 
 const Slider = ({ games }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
-    const itemsPerSlide = 4; 
+    const [isClicked, setIsClicked] = useState(false);
+    const itemsPerSlide = 6; 
   
     const getVisibleGames = () => {
       const start = currentIndex * itemsPerSlide;
@@ -16,6 +17,7 @@ const Slider = ({ games }) => {
       setCurrentIndex((prevIndex) =>
         (prevIndex + 1) * itemsPerSlide >= games.length ? 0 : prevIndex + 1
       );
+      setIsClicked(true);
     };
   
     const onPrev = () => {
@@ -29,7 +31,7 @@ const Slider = ({ games }) => {
         
         <button onClick={onPrev}></button>
         
-        <div className="gamesBar">
+        <div className={isClicked ? 'gamesBar active' : 'gamesBar'}>
         
             <div className="activeGames">
                 <h2 id="liveGames">Активні</h2>
@@ -49,20 +51,20 @@ const Slider = ({ games }) => {
            
             <div className="scheduledGames">
            
-                <div id="plannedGames">
+               {/*  <div id="plannedGames">
                     <h2>MNS</h2>
                     <h2>00</h2>
                 </div>
            
-                {getVisibleGames().map((item, index) => (
+               {getVisibleGames().map((item, index) => (
                <Games
                     key={index}
                     logoHome = {item?.teams?.home?.logo}
                     logoAway = {item?.teams?.away?.logo}
                     league = {item?.league?.logo}
                     time = {item?.time}
-                />
-            ))}
+                /> 
+            ))} */}
 
             </div>
         
