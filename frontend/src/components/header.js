@@ -12,7 +12,7 @@ function Header(){
 
             <div className="navMenu">
 
-                <Link to={""}>Трансляції</Link>
+                <Link to={"/stream"}>Трансляції</Link>
                 <Link to={""}>Розклад подій</Link>
                 <Link className="signLink" to={"/sign-in"}>Вхід</Link>
 

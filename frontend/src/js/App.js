@@ -21,6 +21,7 @@ import ForgotPasswordPage from "../pages/forgotPasswordPage";
 import SportPage from "../pages/sportPage";
 import LeaguePage from "../pages/leaguePage";
 import {Toaster} from "sonner";
+import StreamPage from "../pages/streamPage";
 
 function App(){
 
@@ -51,6 +52,8 @@ function App(){
                     <Route path="/sport/:sportName" element={<SportPage />} />
 
                     <Route path="/league/:leagueName" element={<LeaguePage />} />
+
+                    <Route path="/stream" element={<StreamPage />} />
 
                     <Route path="*" element={<Navigate to="/" />} />
 

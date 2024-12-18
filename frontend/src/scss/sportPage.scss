@@ -121,6 +121,11 @@
                     transform: scale(1.05);
                 }
 
+                input::-webkit-search-cancel-button{
+                    -webkit-appearance: none;
+                    appearance: none;
+                }
+
                 button {
                     position: absolute;
                     display: flex;
