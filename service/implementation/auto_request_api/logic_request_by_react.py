@@ -1,8 +1,9 @@
 import requests
 from datetime import datetime
-from logic_auto_request import current_key_index, token_usage, api_key
+from service.implementation.auto_request_api.logic_auto_request import current_key_index, token_usage, api_key
 from database.azure_blob_storage.save_get_blob import blob_save_specific_api, get_all_blob_indexes_from_db, get_blob_data_for_all_sports
 from database.session import SessionLocal
+from api.routes.dto import TeamsStatisticsOrPlayersDTO
 from typing import Dict
 
 
@@ -238,8 +239,8 @@ def baseball_teams_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
         return {"error": str(e)}
 
 
-def basketball_players(api_data: Dict[str, str]) -> Dict[str, str]:
-    team_id = api_data.get("team_id")
+def basketball_players(dto: TeamsStatisticsOrPlayersDTO)  -> Dict[str, str]:
+    team_id = dto.team_id
     if not team_id:
         return {"error": "Missing or invalid parameter: 'team_id' required."}
     name = "basketball"
@@ -460,9 +461,9 @@ def nfl_injuries_players(api_data: Dict[str, str]) -> Dict[str, str]:
         return {"error": str(e)}
 
 
-def rugby_teams_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
-    team_id = api_data.get("team_id")
-    league_id = api_data.get("league_id")
+def rugby_teams_statistics(dto: TeamsStatisticsOrPlayersDTO) -> Dict[str, str]:
+    team_id = dto.team_id
+    league_id = dto.league_id
     if not team_id or not league_id:
         return {"error": "Missing or invalid parameter: 'team_id' and 'league_id' are required."}
     name = "rugby"
@@ -506,66 +507,6 @@ def volleyball_teams_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
         return {"error": str(e)}
 
 
-api1 = {"fixture_id": 380516, "team_id": 103}
-result=football_fixtures_statistics(api1)
-print(result)
-api2 = {"fixture_id": 123456}
-result=football_fixtures_events_lineups_players(api2)
-print(result)
-api3 = {"team_id": 234}
-result=football_coachs(api3)
-print(result)
-api4 = {"player_id": 235}
-result=football_players_profiles_sidelined(api4)
-print(result)
-api5 = {"team_id": 123}
-result=afl_teams_statistics(api5)
-print(result)
-api6 = {"team_id": 125}
-result=afl_players(api6)
-print(result)
-api7 = {"player_id": 234}
-result=afl_players_statistics(api7)
-print(result)
-api8 = {"league_id": 3, "team_id": 123}
-result=baseball_teams_statistics(api8)
-print(result)
-api9 = {"team_id": 333}
-result=basketball_players(api9)
-print(result)
-api10 = {"player_id": 231}
-result=basketball_players_statistics(api10)
-print(result)
-api11 = {"race_id": 2}
-result=formula_one_rankings_races_and_fastestlaps(api11)
-print(result)
-api12 = {"league_id": 3, "team_id": 113}
-result=handball_teams_statistics(api12)
-print(result)
-api13 = {"league_id": 3, "team_id": 113}
-result=hockey_teams_statistics(api13)
-print(result)
-api14 = {"game_id": 1234}
-result=hockey_games_events(api14)
-print(result)
-api15 = {"player_id": 123}
-result=mma_fighters_records(api15)
-print(result)
-api16 = {"game_id": 1234}
-result=nba_games_statistics(api16)
-print(result)
-api17 = {"team_id": 113}
-result=nfl_injuries_players(api17)
-print(result)
-api18 = {"league_id": 3, "team_id": 113}
-result=rugby_teams_statistics(api18)
-print(result)
-api19 = {"league_id": 3, "team_id": 113}
-result=volleyball_teams_statistics(api19)
-print(result)
-'''
-
-'''
 
 
 

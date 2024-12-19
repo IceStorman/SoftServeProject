@@ -1,52 +1,66 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, request, jsonify
 from database.session import SessionLocal
-from api.routes.scripts import get_error_response
-from service.api_logic.teams_logic import get_teams
+from api.routes.scripts import get_error_response, get_good_response
+from service.api_logic.teams_logic import get_teams, get_teams_sport
+from service.implementation.auto_request_api.logic_request_by_react import basketball_players, rugby_teams_statistics
+from api.routes.cache import cache
+from api.routes.dto import TeamsLeagueDTO, TeamsStatisticsOrPlayersDTO
+from exept.exeptions import DatabaseConnectionError
 
 session = SessionLocal()
 teams_app = Blueprint('teams', __name__)
 
-@teams_app.errorhandler(Exception)
-def handle_exception(e):
-    response = {"error in service": str(e)}
-    return get_error_response(response, 500)
 
+@teams_app.errorhandler(DatabaseConnectionError)
+def handle_db_timeout_error(e):
+    response = {"error in data base": str(e)}
+    return get_error_response(response, 503)
 
 @teams_app.route("/", methods=['GET'])
 def get_teams_endpoint():
     try:
-        all_teams = get_teams(session)
-        return all_teams
+        dto = TeamsLeagueDTO()
+        all_teams = get_teams(session, 9, dto)
+        return get_good_response(all_teams)
     except Exception as e:
-        print(e)
+        response = {"error in service": str(e)}
+        return get_error_response(response, 500)
+
+
+@teams_app.route("/league", methods=['POST'])
+def get_teams_sport_endpoint():
+    try:
+        data = request.get_json()
+        dto = TeamsLeagueDTO(**data)
+        all_teams = get_teams(session, 9, dto)
+        return get_good_response(all_teams)
+    except Exception as e:
+        response = {"error in service": str(e)}
+        return get_error_response(response, 500)
+
+
 @teams_app.route('/statistics', methods=['POST'])
+@cache.cached(timeout=60*1.3)
 def get_teams_statistics_endpoint():
     try:
         data = request.get_json()
-        sport = data.get("sport", "Unknown")
-        team_id = data.get("team_id", "Unknown")
-        response = {
-            "sport": sport,
-            "team_id": team_id,
-        }
-        #response = teams_statistics_info()
-        return response
+        dto = TeamsStatisticsOrPlayersDTO(**data)
+        response = rugby_teams_statistics(dto)
+        return get_good_response(response)
     except Exception as e:
-        print(e)
+        response = {"error in service": str(e)}
+        return get_error_response(response, 500)
 
 
 @teams_app.route('/players', methods=['POST'])
 def get_players_endpoint():
     try:
         data = request.get_json()
-        sport = data.get("sport", "Unknown")
-        team_id = data.get("team_id", "Unknown")
-        response = {
-            "sport": sport,
-            "team_id": team_id,
-        }
-        #response = players_info()
-        return response
+        dto = TeamsStatisticsOrPlayersDTO(**data)
+        response = basketball_players(dto)
+        return get_good_response(response)
     except Exception as e:
-       print(e)
+        response = {"error in service": str(e)}
+        return get_error_response(response, 500)
+
 
