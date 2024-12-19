@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {useParams} from "react-router-dom";
-import Section from "../components/newsPage/section";
+import NewsSection from "../components/newsPage/newsSection";
 
 function NewsPage(){
     const { id  } = useParams();
@@ -86,7 +86,7 @@ function NewsPage(){
                     "And Paul's impact doesn't end with the young Frenchman. Paul has been a veteran presence with Popovich away from the team. And with Wembanyama on the bench Tuesday night, Paul led the Spurs to a win over theOklahoma City Thunder, one of the NBA's top teams. At 7-8, the Spurs still have a lot of work to do to reach the playoffs, but they are well ahead of last year's pace, when they recorded their seventh win on Jan. 12.",
                     "\"I wish you guys could see the work that goes in, day in and day out,\" Paul said. \"You know how talented he is. But his will and want to get better, his will to want to work on things...the more games we play, I think we'll get more familiar with each other.\""
                 ],
-                "subheadings": []
+                "subheadings": ["ja jebav"]
             }
         },
         "images": [
@@ -99,11 +99,15 @@ function NewsPage(){
 
     return(
         <section className={"newsContent"}>
+
+            <h1>{news.title}</h1>
+
             {
                 Object.entries(news.article).map(([key, value], index) => (
-                    <Section
+                    <NewsSection
                         key={key}
                         text={value.content}
+                        subheading={value.subheadings}
                         img={news.images[index]}
                     />
                 ))
