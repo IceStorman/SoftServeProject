@@ -9,7 +9,7 @@ import {
     Navigate,
     Link
 } from "react-router-dom";
-import axios from "axios";
+import {Toaster} from "sonner";
 
 import Header from "../components/header";
 import Footer from "../components/footer";
@@ -20,8 +20,8 @@ import MainPage from "../pages/mainPage";
 import ForgotPasswordPage from "../pages/forgotPasswordPage";
 import SportPage from "../pages/sportPage";
 import LeaguePage from "../pages/leaguePage";
-import {Toaster} from "sonner";
 import StreamPage from "../pages/streamPage";
+import NewsPage from "../pages/newsPage";
 
 function App(){
 
@@ -54,6 +54,8 @@ function App(){
                     <Route path="/league/:leagueName" element={<LeaguePage />} />
 
                     <Route path="/stream" element={<StreamPage />} />
+
+                    <Route path="/news/:id" element={<NewsPage />} />
 
                     <Route path="*" element={<Navigate to="/" />} />
 
