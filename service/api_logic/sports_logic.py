@@ -30,12 +30,11 @@ def get_all_leagues_by_sport(session, dto: SportsLeagueDTO):
         .all()
     )
     return [
-        {
-            "_id": league.league_id,
-            "name": league.name,
-            "logo": league.logo,
-            "sport_name": dto.sport
-        }
-        for league in leagues
+        SportsLeagueOutputDTO(
+            id=league.league_id,
+            sport=league.sport_id,
+            logo=league.logo,
+            name=league.name,
+        ).to_dict() for league in leagues
     ]
 
