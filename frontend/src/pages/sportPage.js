@@ -10,14 +10,16 @@ import SportNews from "../components/sportPage/sportNews";
 import LeagueBtn from "../components/sportPage/leagueBtn";
 import DropDown from "../components/dropDown/dropDown";
 
-function SportPage(){
-    const { sportName  } = useParams();
+function SportPage() {
+    const {sportName} = useParams();
     const navigate = useNavigate();
 
     const location = useLocation();
     const sports = location.state || {};
 
-    const [rangeScale ,setRangeScale]= useState(3)
+    const [readyToLoading, setReadyToLoading] = useState(false)
+
+    const [rangeScale, setRangeScale] = useState(3)
 
     const [sportNews, setSportNews] = useState([]);
     const [leagues, setLeagues] = useState([]);
@@ -30,7 +32,7 @@ function SportPage(){
 
     const [countryFilter, setCountryFilter] = useState();
     const [inputValue, setInputValue] = useState('');
-    const [searchClicked, setSearchClicked] = useState(false);
+    const [searchClicked, setSearchClicked] = useState();
 
     useEffect(() => {
         const endOffset = leaguesOffset + leaguesPerPage;
@@ -43,7 +45,7 @@ function SportPage(){
         setLeaguesOffset(newOffset);
     };
 
-    function handleSearchClick(){
+    function handleSearchClick() {
         setSearchClicked((prev) => !prev);
     }
 
@@ -56,12 +58,14 @@ function SportPage(){
     useEffect(() => {
         if (Array.isArray(sports) && sports.length > 0) {
 
-            if (!sports.includes(sportName)) {
-                navigate("/");
+            if (!sports.find(item => item.sport === sportName)) {
+                navigate("/not-existing");
             }
 
+            setReadyToLoading(true);
+
         } else {
-            navigate("/");
+            navigate("/not-existing");
         }
     }, [sports, sportName]);
 

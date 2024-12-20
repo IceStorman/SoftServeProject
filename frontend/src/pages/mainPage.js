@@ -68,15 +68,6 @@ function MainPage() {
 
                     <h1 className="newsTitle">НОВИНИ</h1>
 
-                    <News
-                        key={1}
-                        id={"1"}
-                        title={"dfgdg"}
-                        date={"dfgdg"}
-                        img={"dfgdg"}
-                        sport={"dfgdg"}
-                    />
-
                     {news.map((item, index) => (
                         <News
                             key={index}
@@ -117,8 +108,8 @@ function MainPage() {
                     {sports.map((item, index)=>(
                         <SportBtn
                             key={index}
-                            sport={item.sport_name}
-                            img={item.sport_img}
+                            sport={item.sport}
+                            img={item.logo}
                             sports={sports}
                         />
                     ))}

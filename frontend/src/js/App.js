@@ -22,6 +22,7 @@ import SportPage from "../pages/sportPage";
 import LeaguePage from "../pages/leaguePage";
 import StreamPage from "../pages/streamPage";
 import NewsPage from "../pages/newsPage";
+import NotExistingPage from "../pages/notExistingPage";
 
 function App(){
 
@@ -57,7 +58,10 @@ function App(){
 
                     <Route path="/news/:id" element={<NewsPage />} />
 
-                    <Route path="*" element={<Navigate to="/" />} />
+
+                    <Route path="/not-existing" element={<NotExistingPage />} />
+
+                    <Route path="*" element={<Navigate to="/not-existing" replace />} />
 
                 </Routes>
 
