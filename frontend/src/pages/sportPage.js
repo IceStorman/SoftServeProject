@@ -1,16 +1,21 @@
 import React, {useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
-import SportNews from "../components/sportPage/sportNews";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
-import apiEndpoints from "../apiEndpoints";
-import LeagueBtn from "../components/sportPage/leagueBtn";
 import ReactPaginate from 'react-paginate';
-import {toast, Toaster} from "sonner";
+import {toast} from "sonner";
 
+import apiEndpoints from "../apiEndpoints";
+
+import SportNews from "../components/sportPage/sportNews";
+import LeagueBtn from "../components/sportPage/leagueBtn";
 import DropDown from "../components/dropDown/dropDown";
 
 function SportPage(){
     const { sportName  } = useParams();
+    const navigate = useNavigate();
+
+    const location = useLocation();
+    const sports = location.state || {};
 
     const [rangeScale ,setRangeScale]= useState(3)
 
@@ -47,6 +52,18 @@ function SportPage(){
             handleSearchClick();
         }
     };
+
+    useEffect(() => {
+        if (Array.isArray(sports) && sports.length > 0) {
+
+            if (!sports.includes(sportName)) {
+                navigate("/");
+            }
+
+        } else {
+            navigate("/");
+        }
+    }, [sports, sportName]);
 
     useEffect(() => {
         axios.get(`${apiEndpoints.url}${apiEndpoints.news.getSport}${sportName}`)

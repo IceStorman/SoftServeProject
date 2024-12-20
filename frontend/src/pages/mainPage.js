@@ -8,6 +8,7 @@ import News from "../components/mainPage/news.js"
 import SportBtn from "../components/mainPage/sportBtn"
 import Slider from "../components/games/slider.js";
 import {toast} from "sonner";
+import footer from "../components/footer";
 
 function MainPage() {
     const [loginStatus,setLoginStatus]=useState(false)
@@ -67,9 +68,19 @@ function MainPage() {
 
                     <h1 className="newsTitle">НОВИНИ</h1>
 
+                    <News
+                        key={1}
+                        id={"1"}
+                        title={"dfgdg"}
+                        date={"dfgdg"}
+                        img={"dfgdg"}
+                        sport={"dfgdg"}
+                    />
+
                     {news.map((item, index) => (
                         <News
                             key={index}
+                            id={""}
                             title={item.data?.title}
                             date={item.data?.timestamp}
                             img={item.data?.images[0]}
@@ -108,6 +119,7 @@ function MainPage() {
                             key={index}
                             sport={item.sport_name}
                             img={item.sport_img}
+                            sports={sports}
                         />
                     ))}
 
