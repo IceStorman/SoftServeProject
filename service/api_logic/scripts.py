@@ -1,4 +1,4 @@
-from database.models import Sport
+from database.models import Sport, Games, League, Country, TeamIndex
 from exept.exeptions import SportNotFoundError
 
 def get_sport_by_name(session, sport_name):
