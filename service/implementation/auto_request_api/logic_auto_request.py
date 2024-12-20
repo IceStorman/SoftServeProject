@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import requests
 from datetime import datetime
 from typing import Dict
+from sqlalchemy import text
 from database.session import SessionLocal
 from database.azure_blob_storage.save_get_blob import blob_autosave_api
 
@@ -341,7 +342,7 @@ def auto_request_system(api: Dict[str, str]) -> None:
 def keep_db_alive():
     try:
         with SessionLocal() as session:
-            session.execute("SELECT 1")
+            session.execute(text("SELECT 1"))
             print("Database connection is alive.")
     except Exception as e:
         print(f"Error keeping database connection alive: {e}")
