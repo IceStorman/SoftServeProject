@@ -29,6 +29,53 @@ $scroll-track: #f9eaff;
     }
 }
 
+@mixin custom-form($customInput, $customLabel, $inputWidth, $borderAndTextColor, $backgroundColor, $labelColor){
+
+    #{$customInput} {
+        width: $inputWidth;
+        height: 2rem;
+        padding: 0 0.2rem;
+        border: 0.2rem solid $borderAndTextColor;
+        background-color: $backgroundColor;
+        color: $borderAndTextColor;
+        border-radius: 0.5rem;
+        outline: none;
+        font-size: 1rem;
+        font-weight: bold;
+    }
+
+    #{$customLabel} {
+        position: absolute;
+        pointer-events: none;
+        font-size: 1rem;
+        top: 20%;
+        left: 0.55rem;
+        color: $labelColor;
+        transition: all 0.1s linear;
+    }
+
+    #{$customInput}:focus ~ #{$customLabel},
+    #{$customInput}:not(:placeholder-shown) ~ #{$customLabel} {
+        top: -0.6rem;
+        left: 0.6rem;
+        font-size: 0.8rem;
+        background-color: $backgroundColor;
+        color: $borderAndTextColor;
+        padding: 0 0.3rem;
+        margin: 0;
+    }
+
+    #{$customInput}:hover ~ #{$customLabel},
+    #{$customInput}:focus ~ #{$customLabel} {
+        transform: scale(1.05);
+    }
+
+    #{$customInput}::-webkit-search-cancel-button {
+        -webkit-appearance: none;
+        appearance: none;
+    }
+}
+
 @import "header.scss";
 @import "games.scss";
 @import "news";

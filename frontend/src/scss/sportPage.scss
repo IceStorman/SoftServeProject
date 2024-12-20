@@ -82,50 +82,6 @@
                 width: 17.3rem;
                 height: 2rem;
 
-                input {
-                    width: 15rem;
-                    height: 2rem;
-                    padding: 0 0.2rem;
-                    border: 0.2rem solid $special-dark-purple;
-                    background-color: $main-background-color;
-                    color: $special-dark-purple;
-                    border-radius: 0.5rem;
-                    outline: none;
-                    font-size: 1rem;
-                    font-weight: bold;
-                }
-
-                label {
-                    position: absolute;
-                    pointer-events: none;
-                    font-size: 1rem;
-                    top: 20%;
-                    left: 0.4rem;
-                    color: #5a5a5a;
-                    transition: all 0.1s linear;
-                }
-
-                input:focus ~ label,
-                input:not(:placeholder-shown) ~ label {
-                    top: -0.6rem;
-                    left: 0.6rem;
-                    font-size: 0.8rem;
-                    background-color: $main-background-color;
-                    color: $special-dark-purple;
-                    padding: 0 0.3rem;
-                    margin: 0;
-                }
-
-                input:hover ~ label,
-                input:focus ~ label{
-                    transform: scale(1.05);
-                }
-
-                input::-webkit-search-cancel-button{
-                    -webkit-appearance: none;
-                    appearance: none;
-                }
-
                 button {
                     position: absolute;
                     display: flex;
@@ -147,6 +103,8 @@
                 button:hover{
                     transform: scale(1.05);
                 }
+
+                @include custom-form(input, label, 15rem, $special-dark-purple, $main-background-color, #5a5a5a);
             }
         }
 
