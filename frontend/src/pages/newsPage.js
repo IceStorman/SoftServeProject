@@ -7,8 +7,6 @@ import {toast} from "sonner";
 
 function NewsPage(){
     const location = useLocation();
-
-    console.log(location.state)
     const newsId = location.state || {};
 
     const [news, setNews] = useState({

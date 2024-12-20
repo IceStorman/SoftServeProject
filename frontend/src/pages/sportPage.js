@@ -30,7 +30,7 @@ function SportPage() {
 
     const [leaguesOffset, setLeaguesOffset] = useState(0);
 
-    const [countryFilter, setCountryFilter] = useState();
+    const [countryFilter, setCountryFilter] = useState("All");
     const [inputValue, setInputValue] = useState('');
     const [searchClicked, setSearchClicked] = useState();
 
@@ -153,13 +153,19 @@ function SportPage() {
 
                 <section className={"iconsBlock"}>
 
-                    {currentLeagues.map((item, index) => (
+                    {
+                        !(leagues.length === 0) ?
+                        currentLeagues.map((item, index) => (
                         <LeagueBtn
                             key={index}
                             name={item?.name}
                             logo={item?.team?.logo || item?.logo}
-                        />
-                    ))}
+                        /> ))
+                        :
+                        <div className={"noItems"}>
+                            <h1>no leagues were found :(</h1>
+                        </div>
+                    }
 
                 </section>
 

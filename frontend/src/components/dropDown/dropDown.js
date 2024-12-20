@@ -34,6 +34,7 @@ function DropDown({setCountry}){
 
             <div className={`dropMenu ${isActive ? "" : "hidden"}`}>
 
+                <h1 key={-1} onClick={handleClick}>All</h1>
                 <h1 key={0} onClick={handleClick}>{choice[0]}</h1>
                 <h1 key={1} onClick={handleClick}>{choice[1]}</h1>
                 <h1 key={2} onClick={handleClick}>{choice[2]}</h1>

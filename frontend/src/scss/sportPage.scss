@@ -202,6 +202,17 @@
                 border-radius: 0.5rem;
             }
         }
+
+        .noItems{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 80%;
+            height: 25rem;
+            text-transform: capitalize;
+            font-size: 3rem;
+            color: $special-dark-purple;
+        }
     }
 
     .pagination {
