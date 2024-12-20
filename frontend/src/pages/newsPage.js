@@ -1,9 +1,14 @@
-import React, {useState} from "react";
-import {useParams} from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {useLocation} from "react-router-dom";
 import NewsSection from "../components/newsPage/newsSection";
+import axios from "axios";
+import apiEndpoints from "../apiEndpoints";
+import {toast} from "sonner";
 
 function NewsPage(){
-    const { id  } = useParams();
+    const location = useLocation();
+    const {currentNewsTitle, currentNewsId } = location.state || {};
+
     const [news, setNews] = useState({
         "title": "How Chris Paul and Victor Wembanyama are evolving together - ESPN",
         "timestamp": "Nov 21, 2024, 08:00 AM ET",
@@ -97,21 +102,36 @@ function NewsPage(){
         "S_P_O_R_T": "Nba",
         "sport_type": "Nba"});
 
+    useEffect(() => {
+
+        const postData = async () => {
+            try {
+                const res = await axios.post(`${apiEndpoints.url}${apiEndpoints.news.getCurrentNews}`, {currentNewsTitle, currentNewsId});
+                setNews(res.data);
+            } catch (error) {
+                toast.error(`:( Troubles With This News Loading: ${error}`);
+            }
+        };
+
+        postData();
+    }, []);
+
     return(
         <section className={"newsContent"}>
 
             <h1>{news.title}</h1>
 
-            {
-                Object.entries(news.article).map(([key, value], index) => (
-                    <NewsSection
-                        key={key}
-                        text={value.content}
-                        subheading={value.subheadings}
-                        img={news.images[index]}
-                    />
-                ))
-            }
+            {Object.entries(news.article).map(([key, value], index) => (
+                <NewsSection
+                    key={key}
+                    text={value.content}
+                    subheading={value.subheadings}
+                    img={news.images[index]}
+                />
+            ))}
+
+            <h4 className="date">{news.timestamp}</h4>
+
         </section>
 
     );

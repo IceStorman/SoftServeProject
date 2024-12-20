@@ -5,12 +5,16 @@ function NewsSection({text, img, subheading}){
     return(
         <section className={"newsSection"}>
 
-            {subheading ? <h2>{subheading}</h2> : null}
+            {!(subheading.length === 0) ? <h2>{subheading}</h2> : null}
 
             <div className={"sectionContent"}>
+
+                <div className={"imgContainer"}>
+                    <img src={img}/>
+                </div>
+
                 <p>{text}</p>
 
-                <img src={img}/>
             </div>
 
         </section>

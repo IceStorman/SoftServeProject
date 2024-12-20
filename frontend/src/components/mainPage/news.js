@@ -8,7 +8,7 @@ function News({title, date, img, sport, id}){
 
     return (
 
-        <Link className="newsBox" to={`/news/${link}`}>
+        <Link className="newsBox" to={`/news/${link}`} state={{ title, id }}>
 
             <img src={img} alt={sport}/>
 

@@ -67,39 +67,6 @@ function MainPage() {
 
                     <h1 className="newsTitle">НОВИНИ</h1>
 
-                    <News
-                        key={1}
-                        id={1}
-                        title={"HUI *HUI^HUI"}
-                        date={"HUI HUI"}
-                        img={"./img/team.jpg"}
-                        sport={"nba"}
-                    />
-                    <News
-                        key={2}
-                        id={2}
-                        title={"HUI"}
-                        date={"HUI HUI"}
-                        img={"./img/team.jpg"}
-                        sport={"nba"}
-                    />
-                    <News
-                        key={3}
-                        id={3}
-                        title={"HUI"}
-                        date={"HUI HUI"}
-                        img={"./img/team.jpg"}
-                        sport={"nba"}
-                    />
-                    <News
-                        key={4}
-                        id={4}
-                        title={"HUI"}
-                        date={"HUI HUI"}
-                        img={"./img/team.jpg"}
-                        sport={"nba"}
-                    />
-
                     {news.map((item, index) => (
                         <News
                             key={index}
