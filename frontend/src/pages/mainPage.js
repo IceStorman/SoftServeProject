@@ -68,16 +68,23 @@ function MainPage() {
 
                     <h1 className="newsTitle">НОВИНИ</h1>
 
-                    {news.map((item, index) => (
-                        <News
-                            key={index}
-                            id={item.blob_id}
-                            title={item.data?.title}
-                            date={item.data?.timestamp}
-                            img={item.data?.images[0]}
-                            sport={item.data?.S_P_O_R_T}
-                        />
-                    ))}
+                    {
+                        !(news.length === 0) ?
+                            news.map((item, index) => (
+                                <News
+                                    key={index}
+                                    id={item.blob_id}
+                                    title={item.data?.title}
+                                    date={item.data?.timestamp}
+                                    img={item.data?.images[0]}
+                                    sport={item.data?.S_P_O_R_T}
+                                />
+                            ))
+                            :
+                            <div className={"noItems"}>
+                                <h1>no latest news were found :(</h1>
+                            </div>
+                    }
 
                 </section>
 

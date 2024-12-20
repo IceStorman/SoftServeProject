@@ -108,19 +108,24 @@ function SportPage() {
 
             <section className={"news"}>
 
-                {sportNews.map((item, index) => (
-
-                    <SportNews
-                        key={index}
-                        title={item.data?.title}
-                        text={item.data?.timestamp}
-                        sport={sportName}
-                        img={item.data?.images[0]}
-                        side={index%2 === 0 ? "right" : "left"}
-                        id={item.blob_id}
-                    />
-
-                ))}
+                {
+                !(sportNews.length === 0) ?
+                    sportNews.map((item, index) => (
+                        <SportNews
+                            key={index}
+                            title={item.data?.title}
+                            text={item.data?.timestamp}
+                            sport={sportName}
+                            img={item.data?.images[0]}
+                            side={index%2 === 0 ? "right" : "left"}
+                            id={item.blob_id}
+                        />
+                    ))
+                    :
+                    <div className={"noItems"}>
+                        <h1>no {sportName} news were found :(</h1>
+                    </div>
+                }
 
             </section>
 
