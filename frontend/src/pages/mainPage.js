@@ -71,7 +71,7 @@ function MainPage() {
                     {news.map((item, index) => (
                         <News
                             key={index}
-                            id={""}
+                            id={item.blob_id}
                             title={item.data?.title}
                             date={item.data?.timestamp}
                             img={item.data?.images[0]}

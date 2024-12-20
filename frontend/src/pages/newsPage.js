@@ -7,12 +7,9 @@ import {toast} from "sonner";
 
 function NewsPage(){
     const location = useLocation();
-    const newsData = location.state || {};
-    const newsId = newsData.id;
-    const newsTitle = newsData.title;
 
-    console.log(newsData)
-
+    console.log(location.state)
+    const newsId = location.state || {};
 
     const [news, setNews] = useState({
         "title": "How Chris Paul and Victor Wembanyama are evolving together - ESPN",
@@ -112,7 +109,7 @@ function NewsPage(){
 
         const postData = async () => {
             try {
-                const res = await axios.post(`${apiEndpoints.url}${apiEndpoints.news.getCurrentNews}`, {newsId, newsTitle});
+                const res = await axios.post(`${apiEndpoints.url}${apiEndpoints.news.getCurrentNews}`, {newsId});
                 setNews(res.data);
             } catch (error) {
                 toast.error(`:( Troubles With This News Loading: ${error}`);

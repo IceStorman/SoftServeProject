@@ -3,12 +3,10 @@ import {Link} from "react-router-dom";
 
 
 function News({title, date, img, sport, id}){
-    const words = title.split(/[\s.,\/#!$%\^&\*;:{}=\-_`~()@\[\]'"<>?|\\+]+/).join('-');
-    const link = id + "-" + words;
 
     return (
 
-        <Link className="newsBox" to={`/news/${link}`} state={{ title, id }}>
+        <Link className="newsBox" to={`/news/${id}`} state={ id }>
 
             <img src={img} alt={sport}/>
 

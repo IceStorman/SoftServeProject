@@ -117,6 +117,7 @@ function SportPage() {
                         sport={sportName}
                         img={item.data?.images[0]}
                         side={index%2 === 0 ? "right" : "left"}
+                        id={item.blob_id}
                     />
 
                 ))}

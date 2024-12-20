@@ -1,11 +1,12 @@
 import React from "react";
+import {Link} from "react-router-dom";
 
-function SportNews({title, text, img, side, sport}){
-    const placement = side === "right" ? ("leftPlaceData") : ""
+function SportNews({title, text, img, side, sport, id}){
+    const placement = side === "right" ? ("leftPlaceData") : "";
 
     return (
         <>
-            <div className="newsBox">
+            <Link className="newsBox" to={`/news/${id}`} state={ id }>
 
                 {side === "left" ? (<img src={img} alt={sport}/>) : null}
 
@@ -19,7 +20,7 @@ function SportNews({title, text, img, side, sport}){
 
                 {side === "right" ? (<img src={img} alt={sport}/>) : null}
 
-            </div>
+            </Link>
 
             <hr/>
         </>
