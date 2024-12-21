@@ -4,7 +4,6 @@ from typing import Dict
 import os
 from dotenv import load_dotenv
 from datetime import datetime, timezone
-
 from database.models import BlobIndex, News, Sport, SportIndex, TeamIndex
 from database.session import SessionLocal
 from exept.colors_text import print_error_message, print_good_message
@@ -137,6 +136,11 @@ def check_json(json_data):
     return True
 
 
+def sanitize_name(name):
+    name = re.sub(r'[^a-zA-Z0-9а-яА-Я]', '-', name)
+    name = re.sub(r'_{2,}', '_', name)
+    return name.lower()
+
 def blob_save_news(json_data: Dict[str, Dict[str, str]]) -> None:
     if check_json(json_data):
         print_good_message("All good in file.")
@@ -144,7 +148,7 @@ def blob_save_news(json_data: Dict[str, Dict[str, str]]) -> None:
         key = sastokens_dict["news"]
         blob_service_client = BlobServiceClient(account_url=account_url, credential=key)
         container_client = blob_service_client.get_container_client("news")
-        blob_name = f"{name.replace(' ', '_').lower()}.json"
+        blob_name = f"{sanitize_name(name)}.json"
         blob_client = container_client.get_blob_client(blob_name)
         blob_client.upload_blob(json.dumps(json_data), overwrite=True)
         with SessionLocal() as session:
@@ -255,7 +259,7 @@ def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
         for team_name in json_data["team_names"]:
             team_index = TeamIndex(
                 news_id=news_index.news_id,
-                team_name=team_name
+                name=team_name
             )
             session.add(team_index)
 
@@ -299,7 +303,7 @@ def handle_no_records_message(message: str) -> str:
 def get_news_by_teams(count: int, team_names: list[str], session) -> str:
     team_news_ids = (
         session.query(TeamIndex.news_id)
-        .filter(TeamIndex.team_name.in_(team_names))
+        .filter(TeamIndex.name.in_(team_names))
         .distinct()
         .all()
     )
@@ -346,4 +350,3 @@ def get_news_by_count(count: int, session) -> str:
     if not news_records:
         return handle_no_records_message("No news was found in the database.")
     return json.dumps(fetch_blob_data(news_records), ensure_ascii=False)
-
