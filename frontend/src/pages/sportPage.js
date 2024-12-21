@@ -1,40 +1,94 @@
 import React, {useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
-import SportNews from "../components/sportPage/sportNews";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
-import apiEndpoints from "../apiEndpoints";
-import LeagueBtn from "../components/sportPage/leagueBtn";
 import ReactPaginate from 'react-paginate';
-import {toast, Toaster} from "sonner";
-import {Link} from "react-router-dom";
-import Dropdown from 'react-bootstrap/Dropdown';
+import {toast} from "sonner";
 
+import apiEndpoints from "../apiEndpoints";
 
-function SportPage(){
-    const { sportName  } = useParams();
+import SportNews from "../components/sportPage/sportNews";
+import LeagueBtn from "../components/sportPage/leagueBtn";
+import DropDown from "../components/dropDown/dropDown";
 
-    const [rangeScale ,setRangeScale]= useState(3)
+function SportPage() {
+    const {sportName} = useParams();
+    const navigate = useNavigate();
+
+    const location = useLocation();
+    const sports = location.state || {};
+
+    const [readyToLoading, setReadyToLoading] = useState(false)
+
+    const [rangeScale, setRangeScale] = useState(3)
 
     const [sportNews, setSportNews] = useState([]);
-    const [leagues, setLeagues] = useState([]);
 
     const [currentLeagues, setCurrentLeagues] = useState([]);
     const [pageCount, setPageCount] = useState(0);
+    const [currentPage, setCurrentPage] = useState(0);
     const leaguesPerPage = 9;
 
-    const [leaguesOffset, setLeaguesOffset] = useState(0);
 
-    useEffect(() => {
-        const endOffset = leaguesOffset + leaguesPerPage;
-        setCurrentLeagues(leagues.slice(leaguesOffset, endOffset));
-        setPageCount(Math.ceil(leagues.length / leaguesPerPage));
-    }, [leaguesOffset, leagues]);
+    const [countryFilter, setCountryFilter] = useState("All");
+    const [inputValue, setInputValue] = useState('');
+    const [searchClicked, setSearchClicked] = useState();
+
 
     const handlePageClick = (event) => {
-        const newOffset = (event.selected * leaguesPerPage) % leagues.length;
-        setLeaguesOffset(newOffset);
+        getTeams(pageCount);
     };
 
+    function handleSearchClick() {
+        setSearchClicked((prev) => !prev);
+    }
+
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            handleSearchClick();
+        }
+    };
+
+
+    const getTeams = async (page) => {
+
+        try {
+            const response = await axios.post(
+                `${apiEndpoints.url}${apiEndpoints.sports.getLeague}`,
+                {
+                    sport: sportName,
+                    page: page + 1,
+                    pre_page: leaguesPerPage
+                },
+                {
+                    headers: { 'Content-Type': 'application/json' },
+                }
+            );
+
+            setCurrentLeagues(response.data); // Оновлення списку постів
+
+            // Розрахунок загальної кількості сторінок
+            const totalPosts = response.data.totalCount;
+            setPageCount(Math.ceil(totalPosts / leaguesPerPage));
+        } catch (error) {
+            toast.error(`:( Troubles With Leagues Loading: ${error}`);
+        }
+
+    };
+
+
+    useEffect(() => {
+        if (Array.isArray(sports) && sports.length > 0) {
+
+            if (!sports.find(item => item.sport === sportName)) {
+                navigate("/not-existing");
+            }
+
+            setReadyToLoading(true);
+
+        } else {
+            navigate("/not-existing");
+        }
+    }, [sports, sportName]);
 
     useEffect(() => {
         axios.get(`${apiEndpoints.url}${apiEndpoints.news.getSport}${sportName}`)
@@ -48,42 +102,36 @@ function SportPage(){
     }, []);
 
     useEffect(() => {
-        axios.get(`${apiEndpoints.url}${apiEndpoints.team.getAll}`)
-            .then(res => {
-                let returnedTeams = res.data;
-                res.data.forEach((sport) =>{
-                    if(sport?.sport === sportName) {
-                        returnedTeams = sport?.team
-                        setLeagues(returnedTeams);
-                    }
-                })
-            })
-            .catch(error => {
-                toast.error(`:( Troubles With Leagues Loading: ${error}`);
-            });
-    }, []);
+        getTeams(currentPage);
+        console.log(countryFilter);
+        console.log(inputValue);
+    }, [countryFilter, searchClicked]);
 
     return(
         <section className={"sportPage"}>
-
-            <Toaster  position="top-center" expand={true} richColors  />
 
             <h1 className={"sportTitle"}>{ sportName }</h1>
 
             <section className={"news"}>
 
-                {sportNews.map((item, index) => (
-
-                    <SportNews
-                        key={index}
-                        title={item.data?.title}
-                        text={item.data?.timestamp}
-                        sport={sportName}
-                        img={item.data?.images[0]}
-                        side={index%2 === 0 ? "right" : "left"}
-                    />
-
-                ))}
+                {
+                !(sportNews.length === 0) ?
+                    sportNews.map((item, index) => (
+                        <SportNews
+                            key={index}
+                            title={item.data?.title}
+                            text={item.data?.timestamp}
+                            sport={sportName}
+                            img={item.data?.images[0]}
+                            side={index%2 === 0 ? "right" : "left"}
+                            id={item.blob_id}
+                        />
+                    ))
+                    :
+                    <div className={"noItems"}>
+                        <h1>no {sportName} news were found :(</h1>
+                    </div>
+                }
 
             </section>
 
@@ -91,29 +139,44 @@ function SportPage(){
 
                 <section className={"leaguesFilter"}>
 
-                    <input className={"leaguesSearch"} type={"search"}></input>
+                    <div className={"leaguesSearch"}>
 
-                    <Dropdown className={"leaguesCountry"}>
-                        <Dropdown.Toggle variant="success" id="dropdown-basic">
-                            Country
-                        </Dropdown.Toggle>
+                        <input
+                            type={"search"}
+                            placeholder={" "}
+                            onChange={(e) => setInputValue(e.target.value)}
+                            onKeyDown={handleKeyDown}
+                        ></input>
 
-                        <Dropdown.Menu>
-                            <Dropdown.Item href="#/action-1">Ukraine</Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
+                        <label>Search league</label>
+
+                        <button onClick={handleSearchClick}>
+                            <i className="fa-solid fa-magnifying-glass"></i>
+                        </button>
+
+                    </div>
+
+                    <DropDown
+                        setCountry={setCountryFilter}
+                    />
 
                 </section>
 
                 <section className={"iconsBlock"}>
 
-                    {currentLeagues.map((item, index) => (
+                    {
+                        !(currentLeagues.length === 0) ?
+                        currentLeagues.map((item, index) => (
                         <LeagueBtn
                             key={index}
                             name={item?.name}
                             logo={item?.team?.logo || item?.logo}
-                        />
-                    ))}
+                        /> ))
+                        :
+                        <div className={"noItems"}>
+                            <h1>no leagues were found :(</h1>
+                        </div>
+                    }
 
                 </section>
 

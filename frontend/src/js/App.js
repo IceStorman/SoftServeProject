@@ -1,4 +1,4 @@
-import {
+import React, {
     useEffect,
     useState
 } from "react";
@@ -9,10 +9,10 @@ import {
     Navigate,
     Link
 } from "react-router-dom";
-import axios from "axios";
+import {Toaster} from "sonner";
 
-import header from "../components/header";
-import footer from "../components/footer";
+import Header from "../components/header";
+import Footer from "../components/footer";
 
 import SignUpPage from "../pages/signUpPage";
 import SignInPage from "../pages/signInPage";
@@ -20,6 +20,9 @@ import MainPage from "../pages/mainPage";
 import ForgotPasswordPage from "../pages/forgotPasswordPage";
 import SportPage from "../pages/sportPage";
 import LeaguePage from "../pages/leaguePage";
+import StreamPage from "../pages/streamPage";
+import NewsPage from "../pages/newsPage";
+import NotExistingPage from "../pages/notExistingPage";
 
 function App(){
 
@@ -33,7 +36,9 @@ function App(){
                 }}
             >
 
-                {header()}
+                <Toaster  position="top-center" expand={true} richColors  />
+
+                {<Header />}
 
                 <Routes>
 
@@ -49,11 +54,18 @@ function App(){
 
                     <Route path="/league/:leagueName" element={<LeaguePage />} />
 
-                    <Route path="*" element={<Navigate to="/" />} />
+                    <Route path="/stream" element={<StreamPage />} />
+
+                    <Route path="/news/:id" element={<NewsPage />} />
+
+
+                    <Route path="/not-existing" element={<NotExistingPage />} />
+
+                    <Route path="*" element={<Navigate to="/not-existing" replace />} />
 
                 </Routes>
 
-                {footer()}
+                {<Footer />}
 
             </Router>
 

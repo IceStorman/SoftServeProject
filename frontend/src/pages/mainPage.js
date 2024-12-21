@@ -1,13 +1,14 @@
 import React, {useState, useEffect, createContext, useContext} from "react";
 import { Link } from "react-router-dom";
 import axios from 'axios';
-import { Toaster, toast } from 'sonner'
 
 import apiEndpoints from "../apiEndpoints";
 
 import News from "../components/mainPage/news.js"
 import SportBtn from "../components/mainPage/sportBtn"
 import Slider from "../components/games/slider.js";
+import {toast} from "sonner";
+import footer from "../components/footer";
 
 function MainPage() {
     const [loginStatus,setLoginStatus]=useState(false)
@@ -59,8 +60,6 @@ function MainPage() {
 
         <>
 
-            <Toaster  position="top-center" expand={true} richColors  />
-
             <Slider games={games} />
 
             <section className="container">
@@ -69,15 +68,23 @@ function MainPage() {
 
                     <h1 className="newsTitle">НОВИНИ</h1>
 
-                    {news.map((item, index) => (
-                        <News
-                            key={index}
-                            title={item.data?.title}
-                            text={item.data?.timestamp}
-                            img={item.data?.images[0]}
-                            sport={item.data?.S_P_O_R_T}
-                        />
-                    ))}
+                    {
+                        !(news.length === 0) ?
+                            news.map((item, index) => (
+                                <News
+                                    key={index}
+                                    id={item.blob_id}
+                                    title={item.data?.title}
+                                    date={item.data?.timestamp}
+                                    img={item.data?.images[0]}
+                                    sport={item.data?.S_P_O_R_T}
+                                />
+                            ))
+                            :
+                            <div className={"noItems"}>
+                                <h1>no latest news were found :(</h1>
+                            </div>
+                    }
 
                 </section>
 
@@ -108,8 +115,9 @@ function MainPage() {
                     {sports.map((item, index)=>(
                         <SportBtn
                             key={index}
-                            sport={item.sport_name}
-                            img={item.sport_img}
+                            sport={item.sport}
+                            img={item.logo}
+                            sports={sports}
                         />
                     ))}
 
