@@ -105,24 +105,19 @@ class Article_Scraper(Main_page_sport_parser):
         sport_urls = {
             'main_formula-1_url': 'https://www.espn.com/f1/',
             'main_football_url': 'https://www.espn.com/soccer/',
-            'main_afl_url': '',
             'main_baseball_url': 'https://www.espn.com/mlb/',
-            'main_basketball_url': '',
-            
-            'main_handball_url': '',
             'main_hockey_url': 'https://www.espn.com/nhl/',
             'main_mma_url': 'https://www.espn.com/mma/',
             'main_nba_url': 'https://www.espn.com/nba/',
             'main_nfl_url': 'https://www.espn.com/nfl/',
             'main_rugby_url': 'https://www.espn.com/rugby/',
-            'main_volleyball_url': ''
         }
 
         
         for sport_key, sport_url in sport_urls.items():
             if sport_url and sport_url in full_url:
             
-                article_data['S_P_O_R_T'] = sport_key.replace('main_', '').replace('_url', '').replace('_', ' ').capitalize()
+                article_data['S_P_O_R_T'] = sport_key.replace('main_', '').replace('_url', '').replace('_', ' ')
                 break
 
         title = soup.title.string if soup.title else "Unknown Article"

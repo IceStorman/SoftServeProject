@@ -10,17 +10,12 @@ def cleanup_articles_directory():
 sport_urls = {
     'main_formula_1_url' : 'https://www.espn.com/f1/',
    ' main_football_url' : 'https://www.espn.com/soccer/',
-   ' main_afl_url' : '',
    ' main_baseball_url' : 'https://www.espn.com/mlb/',
-    'main_basketball_url' : '',
-    
-    'main_handball_url' : '',
     'main_hockey_url' : 'https://www.espn.com/nhl/',
     'main_mma_url' : 'https://www.espn.com/mma/',
     'main_nba_url' : 'https://www.espn.com/nba/',
     'main_nfl_url' : 'https://www.espn.com/nfl/',
     'main_rugby_url' : 'https://www.espn.com/rugby/',
-    'main_volleyball_url' : ''
 }
 
 
