@@ -96,19 +96,31 @@ class GameOutputDTO(BaseModel):
     home_score: Optional[int] = None
     away_score: Optional[int] = None
 
+    def to_dict(self):
+        return dict(self)
+
 class TeamsLeagueOutputDTO(BaseModel):
     league_name: str
     country_name: str
     team_name: str
+
+    def to_dict(self):
+        return dict(self)
 
 class SportsOutputDTO(BaseModel):
     id: int
     sport: str
     logo: str
 
+    def to_dict(self):
+        return dict(self)
+
 class SportsLeagueOutputDTO(BaseModel):
     id: int
     sport: Optional[int]
     logo: str
     name: str
+
+    def to_dict(self):
+        return dict(self)
 
