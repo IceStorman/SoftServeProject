@@ -9,6 +9,7 @@ const apiEndpoints = {
 
     sports:{
         getAll: 'sports/all',
+        getLeague: 'sports/league'
     },
 
     team:{

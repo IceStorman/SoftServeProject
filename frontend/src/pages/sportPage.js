@@ -22,27 +22,20 @@ function SportPage() {
     const [rangeScale, setRangeScale] = useState(3)
 
     const [sportNews, setSportNews] = useState([]);
-    const [leagues, setLeagues] = useState([]);
 
     const [currentLeagues, setCurrentLeagues] = useState([]);
     const [pageCount, setPageCount] = useState(0);
+    const [currentPage, setCurrentPage] = useState(0);
     const leaguesPerPage = 9;
 
-    const [leaguesOffset, setLeaguesOffset] = useState(0);
 
     const [countryFilter, setCountryFilter] = useState("All");
     const [inputValue, setInputValue] = useState('');
     const [searchClicked, setSearchClicked] = useState();
 
-    useEffect(() => {
-        const endOffset = leaguesOffset + leaguesPerPage;
-        setCurrentLeagues(leagues.slice(leaguesOffset, endOffset));
-        setPageCount(Math.ceil(leagues.length / leaguesPerPage));
-    }, [leaguesOffset, leagues]);
 
     const handlePageClick = (event) => {
-        const newOffset = (event.selected * leaguesPerPage) % leagues.length;
-        setLeaguesOffset(newOffset);
+        getTeams(pageCount);
     };
 
     function handleSearchClick() {
@@ -54,6 +47,34 @@ function SportPage() {
             handleSearchClick();
         }
     };
+
+
+    const getTeams = async (page) => {
+
+        try {
+            const response = await axios.post(
+                `${apiEndpoints.url}${apiEndpoints.sports.getLeague}`,
+                {
+                    sport: sportName,
+                    page: page + 1,
+                    pre_page: leaguesPerPage
+                },
+                {
+                    headers: { 'Content-Type': 'application/json' },
+                }
+            );
+
+            setCurrentLeagues(response.data); // Оновлення списку постів
+
+            // Розрахунок загальної кількості сторінок
+            const totalPosts = response.data.totalCount;
+            setPageCount(Math.ceil(totalPosts / leaguesPerPage));
+        } catch (error) {
+            toast.error(`:( Troubles With Leagues Loading: ${error}`);
+        }
+
+    };
+
 
     useEffect(() => {
         if (Array.isArray(sports) && sports.length > 0) {
@@ -81,22 +102,7 @@ function SportPage() {
     }, []);
 
     useEffect(() => {
-        axios.get(`${apiEndpoints.url}${apiEndpoints.team.getAll}`)
-            .then(res => {
-                let returnedTeams = res.data;
-                res.data.forEach((sport) =>{
-                    if(sport?.sport === sportName) {
-                        returnedTeams = sport?.team
-                        setLeagues(returnedTeams);
-                    }
-                })
-            })
-            .catch(error => {
-                toast.error(`:( Troubles With Leagues Loading: ${error}`);
-            });
-    }, []);
-
-    useEffect(() => {
+        getTeams(currentPage);
         console.log(countryFilter);
         console.log(inputValue);
     }, [countryFilter, searchClicked]);
@@ -159,7 +165,7 @@ function SportPage() {
                 <section className={"iconsBlock"}>
 
                     {
-                        !(leagues.length === 0) ?
+                        !(currentLeagues.length === 0) ?
                         currentLeagues.map((item, index) => (
                         <LeagueBtn
                             key={index}
