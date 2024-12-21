@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {useLocation, useNavigate, useParams} from "react-router-dom";
-import axios from "axios";
+import axios, {spread} from "axios";
 import ReactPaginate from 'react-paginate';
 import {toast} from "sonner";
 
@@ -15,7 +15,9 @@ function SportPage() {
     const navigate = useNavigate();
 
     const location = useLocation();
-    const sports = location.state || {};
+    const stateData = location.state || {};
+    const sports = stateData.sports;
+    const sportId = stateData.sportId;
 
     const [readyToLoading, setReadyToLoading] = useState(false)
 
@@ -35,7 +37,9 @@ function SportPage() {
 
 
     const handlePageClick = (event) => {
-        getTeams(pageCount);
+        const selectedPage = event.selected;
+        setCurrentPage(selectedPage);
+        getTeams(selectedPage);
     };
 
     function handleSearchClick() {
@@ -50,29 +54,26 @@ function SportPage() {
 
 
     const getTeams = async (page) => {
-
         try {
+
             const response = await axios.post(
                 `${apiEndpoints.url}${apiEndpoints.sports.getLeague}`,
                 {
-                    sport: sportName,
+                    sport_id: sportId,
                     page: page + 1,
-                    pre_page: leaguesPerPage
+                    per_page: leaguesPerPage
                 },
                 {
                     headers: { 'Content-Type': 'application/json' },
                 }
             );
 
-            setCurrentLeagues(response.data); // Оновлення списку постів
-
-            // Розрахунок загальної кількості сторінок
-            const totalPosts = response.data.totalCount;
+            setCurrentLeagues(response.data);
+            const totalPosts = response.data[0].count;
             setPageCount(Math.ceil(totalPosts / leaguesPerPage));
         } catch (error) {
             toast.error(`:( Troubles With Leagues Loading: ${error}`);
         }
-
     };
 
 
@@ -105,7 +106,7 @@ function SportPage() {
         getTeams(currentPage);
         console.log(countryFilter);
         console.log(inputValue);
-    }, [countryFilter, searchClicked]);
+    }, [countryFilter, searchClicked, currentPage]);
 
     return(
         <section className={"sportPage"}>

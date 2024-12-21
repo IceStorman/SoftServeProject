@@ -116,6 +116,7 @@ function MainPage() {
                         <SportBtn
                             key={index}
                             sport={item.sport}
+                            sportId={item.id}
                             img={item.logo}
                             sports={sports}
                         />
