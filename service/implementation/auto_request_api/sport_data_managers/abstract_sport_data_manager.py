@@ -21,26 +21,12 @@ class AbstractSportDataManager:
     def __init__(self, new_api_data: Dict[str, str]):
         self.api_data = new_api_data
 
+        #TODO: rewrite from dicts to dtos
         self._team_id = self.api_data.get("team_id")
-        if not self._team_id:
-            print("error: Missing or invalid parameter: 'team_id' required.")
-
         self._player_id = self.api_data.get("player_id")
-        if not self._player_id:
-            print("error: Missing or invalid parameter: 'player_id' required.")
-
         self._league_id = self.api_data.get("league_id")
-        if not self._league_id:
-            print("error: Missing or invalid parameter: 'league_id' required.")
-
         self._game_id = self.api_data.get("game_id")
-        if not self._game_id:
-            print("error: Missing or invalid parameter: 'game_id' required.")
-
         self._race_id = self.api_data.get("race_id")
-        if not self._race_id:
-            print("error: Missing or invalid parameter: 'race_id' required.")
-
 
     def main_request(self, host, url, blob_name) -> Dict[str, str]:
         global current_key_index, account_url
