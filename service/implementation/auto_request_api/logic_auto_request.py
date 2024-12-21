@@ -7,6 +7,8 @@ from sqlalchemy import text
 from database.session import SessionLocal
 from database.azure_blob_storage.save_get_blob import blob_autosave_api
 
+from database.postgres import save_api_data
+
 load_dotenv()
 api_key = [os.getenv("APIKEY"), "API_KEY_2", "API_KEY_3"]
 current_key_index = 0
@@ -332,7 +334,9 @@ def auto_request_system(api: Dict[str, str]) -> None:
         response = requests.get(url_with_date, headers=headers, timeout=10)
         response.raise_for_status()
         json_data = response.json()
-        blob_autosave_api(json_data, api)
+        #blob_autosave_api(json_data, api)
+
+        save_api_data(json_data, api['name'])
     except requests.exceptions.RequestException as e:
         print(f"Error while making a request to {api['name']}: {e}")
     except Exception as e:
