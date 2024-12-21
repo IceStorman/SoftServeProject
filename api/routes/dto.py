@@ -16,9 +16,23 @@ class TeamsStatisticsOrPlayersDTO(BaseModel):
     league_id: Optional[int] = None
 
 class SportsLeagueDTO(BaseModel):
-    sport: Optional[Union[int, str]] = None
+    sport_id: Optional[Union[int, str]] = None
     page: Optional[int] = 1
     per_page: Optional[int] = 9
+
+    def to_dict(self):
+        filters = {}
+        if self.sport_id is not None:
+            filters["leagues.sport_id"] = self.sport_id
+        return filters
+
+    def get_pagination(self):
+        if self.page != 0:
+            offset = (self.page - 1) * self.per_page
+            limit = self.per_page
+            return offset, limit
+        else:
+            return None, None
 
 # class GamesDTO(BaseModel):
 #     sport_id: Optional[Union[int, str]] = None
