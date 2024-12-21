@@ -3,7 +3,7 @@ from nltk.sem.chat80 import country
 from database.models import Sport, League
 from api.routes.dto import SportsLeagueDTO, SportsLeagueOutputDTO, SportsOutputDTO
 from exept.handle_exeptions import handle_exceptions
-from service.api_logic.scripts import apply_filters
+from service.api_logic.scripts import apply_filters, get_leagues_count_by_sport
 
 
 @handle_exceptions
@@ -56,6 +56,3 @@ def get_all_leagues_by_sport(session, filters_dto: SportsLeagueDTO):
         ).to_dict() for league in leagues
     ]
 
-def get_leagues_count_by_sport(session, sport_id):
-    count = session.query(League).join(Sport, League.sport_id == Sport.sport_id).filter(League.sport_id == sport_id).count()
-    return count

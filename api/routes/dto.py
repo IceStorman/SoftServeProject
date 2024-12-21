@@ -1,23 +1,22 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from typing import Optional, Union
-from datetime import datetime
 
 
 class TeamsLeagueDTO(BaseModel):
-    sport_id: Optional[Union[int, str]] = None
+    sport_id: Optional[int] = None
     league_id: Optional[int] = None
     country_id: Optional[int] = None
-    page: Optional[int] = 1
+    page: Optional[int] = 0
     per_page: Optional[int] = 9
 
     def to_dict(self):
         filters = {}
         if self.sport_id is not None:
-            filters["games.sport_id"] = self.sport_id
+            filters["teams.sport_id"] = self.sport_id
         if self.league_id is not None:
-            filters["games.league_id"] = self.league_id
+            filters["teams.league_id"] = self.league_id
         if self.country_id is not None:
-            filters["games.country_id"] = self.country_id
+            filters["teams.country_id"] = self.country_id
         return filters
 
     def get_pagination(self):
@@ -28,14 +27,16 @@ class TeamsLeagueDTO(BaseModel):
         else:
             return None, None
 
+
 class TeamsStatisticsOrPlayersDTO(BaseModel):
     sport: Optional[Union[int, str]] = None
     team_id: Optional[int] = None
     league_id: Optional[int] = None
 
+
 class SportsLeagueDTO(BaseModel):
-    sport_id: Optional[Union[int, str]] = None
-    page: Optional[int] = 1
+    sport_id: Optional[int] = None
+    page: Optional[int] = 0
     per_page: Optional[int] = 9
 
     def to_dict(self):
@@ -52,17 +53,7 @@ class SportsLeagueDTO(BaseModel):
         else:
             return None, None
 
-# class GamesDTO(BaseModel):
-#     sport_id: Optional[Union[int, str]] = None
-#     league_id: Optional[int] = None
-#     country_id: Optional[int] = None
-#     status: Optional[str] = None
-#     date: Optional[str] = datetime.now().date()
-#     page: Optional[int] = 1
-#     per_page: Optional[int] = 9
-#
-#     def to_dict(self):
-#         return dict(self)
+
 class GamesDTO(BaseModel):
     sport_id: Optional[Union[int, str]] = None
     league_id: Optional[int] = None
@@ -112,9 +103,10 @@ class GameOutputDTO(BaseModel):
     def to_dict(self):
         return dict(self)
 
+
 class TeamsLeagueOutputDTO(BaseModel):
-    league_name: str
-    country_name: str
+    league_name:  Optional[str]
+    country_name:  Optional[str]
     team_name: str
     logo: str
     id: str
@@ -129,6 +121,7 @@ class SportsOutputDTO(BaseModel):
 
     def to_dict(self):
         return dict(self)
+
 
 class SportsLeagueOutputDTO(BaseModel):
     id: int
