@@ -1,4 +1,5 @@
 from typing import Dict
+from datetime import datetime
 from database.models import Games
 from database.postgres.postgres_country import extract_country, save_country
 from database.postgres.postgres_team import save_team
@@ -30,7 +31,22 @@ def save_games(json_data: Dict, sport_id, session) -> None:
         else:
             time = game.get('time')
 
-        # status -----------------
+        try:
+            if isinstance(date, str):  # Якщо дата — рядок
+                parsed_date = datetime.fromisoformat(date)  # Розбір ISO 8601 формату
+            elif isinstance(date, datetime):  # Якщо це об'єкт datetime
+                parsed_date = date
+            else:
+                raise ValueError("Невідомий формат дати")
+
+            # Форматування дати
+            date = parsed_date.strftime('%Y-%m-%d')
+        except Exception as e:
+            print(f"Помилка обробки дати для гри з ID {api_id}: {e}")
+            date = None
+
+
+            # status -----------------
         if not isinstance(status, str) and isinstance(status, dict):
             status = status.get('long')
 

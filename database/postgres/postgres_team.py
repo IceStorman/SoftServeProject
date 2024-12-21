@@ -6,6 +6,9 @@ def save_team(team_data: Dict, session, sport_id):
     if not team_data:
         return None
 
+    if "team" in team_data:
+        team_data = team_data.get("team")
+
     team_api_id = team_data.get('id')
     team_name = team_data.get('name')
     team_logo = team_data.get('logo')
