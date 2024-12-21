@@ -29,7 +29,9 @@ from database.models.base import Base
 #
 #     return query
 
-from sqlalchemy import and_
+from sqlalchemy import and_, func
+from datetime import datetime, date
+
 
 # def apply_filters(base_query: Query, filters: dict, model_aliases: dict):
 #     filter_conditions = []
@@ -65,6 +67,7 @@ def apply_filters(base_query: Query, filters: dict, model_aliases: dict):
     """
     filter_conditions = []
 
+
     for key, value in filters.items():
         if "." in key:
             table_name, column_name = key.split(".")
@@ -74,7 +77,21 @@ def apply_filters(base_query: Query, filters: dict, model_aliases: dict):
 
             column = getattr(model, column_name, None)
             if column is not None:
-                filter_conditions.append(column == value)
+                # Обробка для поля date
+                if column_name == "date":
+                    try:
+                        # Перетворення значення в datetime, якщо воно в ISO-форматі
+                        if isinstance(value, str):
+                            value = datetime.fromisoformat(value)
+                            value = value.strftime("%y-%m-%d")  # Форматування дати в формат yy-mm-dd
+                        print(value)
+                        print(column)
+
+                        filter_conditions.append(column == value)
+                    except ValueError:
+                        raise ValueError(f"Неправильний формат дати: {value}. Очікується формат ISO 8601.")
+                else:
+                    filter_conditions.append(column == value)
             else:
                 raise ValueError(f"Column '{column_name}' не знайдено в моделі '{table_name}'.")
         else:
@@ -82,6 +99,7 @@ def apply_filters(base_query: Query, filters: dict, model_aliases: dict):
 
     if filter_conditions:
         base_query = base_query.filter(and_(*filter_conditions))
+        print(base_query)
 
     return base_query
 

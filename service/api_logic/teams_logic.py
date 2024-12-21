@@ -63,15 +63,14 @@ from typing import Optional
 from database.models import Games, TeamIndex
 
 @handle_exceptions
-def fetch_teams(
+def get_teams(
         session,
-        filters_dto: TeamsLeagueDTO,
-        limit: Optional[int] = None
+        filters_dto: TeamsLeagueDTO
 ):
     query = session.query(TeamIndex)
 
     model_aliases = {
-        "games": Games,
+        "teams": TeamIndex,
     }
 
     query = apply_filters(query, filters_dto.to_dict(), model_aliases)
@@ -89,15 +88,6 @@ def fetch_teams(
             team_name=team.name,
         ).to_dict() for team in teams
     ]
-
-
-def get_teams(session, dto):
-    teams = fetch_teams(
-        session,
-        filters_dto=dto,
-    )
-    return teams
-
 
 
 

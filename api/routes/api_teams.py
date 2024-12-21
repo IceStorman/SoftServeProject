@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from database.session import SessionLocal
 from api.routes.scripts import get_error_response
-from service.api_logic.teams_logic import get_teams, fetch_teams
+from service.api_logic.teams_logic import get_teams
 from service.implementation.auto_request_api.logic_request_by_react import basketball_players, rugby_teams_statistics
 from api.routes.cache import cache
 from api.routes.dto import TeamsLeagueDTO, TeamsStatisticsOrPlayersDTO
@@ -20,7 +20,7 @@ def handle_db_timeout_error(e):
 def get_teams_endpoint():
     try:
         dto = TeamsLeagueDTO()
-        all_teams = fetch_teams(session, dto)
+        all_teams = get_teams(session, dto)
         return all_teams
     except Exception as e:
         response = {"error in service": str(e)}
@@ -32,7 +32,7 @@ def get_teams_sport_endpoint():
     try:
         data = request.get_json()
         dto = TeamsLeagueDTO(**data)
-        league_teams = fetch_teams(session, dto)
+        league_teams = get_teams(session, dto)
         return league_teams
     except Exception as e:
         response = {"error in service": str(e)}

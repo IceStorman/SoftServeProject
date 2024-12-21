@@ -4,7 +4,7 @@ from api.routes.dto import GamesDTO, GameOutputDTO
 from database.azure_blob_storage.save_get_blob import get_all_blob_indexes_from_db, get_blob_data_for_all_sports
 from datetime import datetime
 from typing import Optional
-from database.models import SportIndex, BlobIndex, Games, Country, TeamIndex, League
+from database.models import SportIndex, BlobIndex, Games, Country, TeamIndex, League, Sport
 from exept.exeptions import InvalidDateFormatError, SportNotFoundError
 from exept.colors_text import print_error_message
 from service.api_logic.scripts import get_sport_by_name
@@ -172,18 +172,19 @@ from service.api_logic.scripts import apply_filters
 from sqlalchemy.orm import aliased
 
 @handle_exceptions
-def fetch_games(
+def get_games_today(
         session,
-        filters_dto: GamesDTO,
-        limit: Optional[int] = None
+        filters_dto: GamesDTO
 ):
     home_team = aliased(TeamIndex)
     away_team = aliased(TeamIndex)
 
-    # Базовий запит із псевдонімами
     query = (
         session.query(
             Games.game_id,
+            Games.sport_id,
+            Games.league_id,
+            Games.country_id,
             Games.status,
             Games.date,
             Games.time,
@@ -199,9 +200,13 @@ def fetch_games(
         )
         .join(League, Games.league_id == League.league_id)
         .join(Country, Games.country_id == Country.country_id)
+        .join(Sport, Games.sport_id == Sport.sport_id)
         .join(home_team, Games.team_home_id == home_team.team_index_id)
         .join(away_team, Games.team_away_id == away_team.team_index_id)
     )
+    results = query.all()
+    for league in results:
+        print(league)
 
     model_aliases = {
         "games": Games,
@@ -235,13 +240,4 @@ def fetch_games(
         for game in games
     ]
 
-
-
-
-def get_games_today(session, count, dto):
-    news = fetch_games(
-        session,
-        filters_dto=dto,
-    )
-    return news
 
