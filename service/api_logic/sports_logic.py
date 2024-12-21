@@ -1,7 +1,3 @@
-import json
-
-from flask import Response
-
 from database.models import Sport, League
 from api.routes.dto import SportsLeagueDTO, SportsLeagueOutputDTO, SportsOutputDTO
 from exept.handle_exeptions import handle_exceptions

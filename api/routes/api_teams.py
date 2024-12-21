@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from database.session import SessionLocal
-from api.routes.scripts import get_error_response, get_good_response
-from service.api_logic.teams_logic import get_teams, get_teams_sport
+from api.routes.scripts import get_error_response
+from service.api_logic.teams_logic import get_teams, fetch_teams
 from service.implementation.auto_request_api.logic_request_by_react import basketball_players, rugby_teams_statistics
 from api.routes.cache import cache
 from api.routes.dto import TeamsLeagueDTO, TeamsStatisticsOrPlayersDTO
@@ -20,8 +20,8 @@ def handle_db_timeout_error(e):
 def get_teams_endpoint():
     try:
         dto = TeamsLeagueDTO()
-        all_teams = get_teams(session, 9, dto)
-        return get_good_response(all_teams)
+        all_teams = fetch_teams(session, dto)
+        return all_teams
     except Exception as e:
         response = {"error in service": str(e)}
         return get_error_response(response, 500)
@@ -32,8 +32,8 @@ def get_teams_sport_endpoint():
     try:
         data = request.get_json()
         dto = TeamsLeagueDTO(**data)
-        all_teams = get_teams(session, 9, dto)
-        return get_good_response(all_teams)
+        league_teams = fetch_teams(session, dto)
+        return league_teams
     except Exception as e:
         response = {"error in service": str(e)}
         return get_error_response(response, 500)
@@ -45,8 +45,8 @@ def get_teams_statistics_endpoint():
     try:
         data = request.get_json()
         dto = TeamsStatisticsOrPlayersDTO(**data)
-        response = rugby_teams_statistics(dto)
-        return get_good_response(response)
+        team_statistics = rugby_teams_statistics(dto)
+        return team_statistics
     except Exception as e:
         response = {"error in service": str(e)}
         return get_error_response(response, 500)
@@ -57,8 +57,8 @@ def get_players_endpoint():
     try:
         data = request.get_json()
         dto = TeamsStatisticsOrPlayersDTO(**data)
-        response = basketball_players(dto)
-        return get_good_response(response)
+        team_players = basketball_players(dto)
+        return team_players
     except Exception as e:
         response = {"error in service": str(e)}
         return get_error_response(response, 500)

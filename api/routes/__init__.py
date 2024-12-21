@@ -14,7 +14,7 @@ def create_app():
     app.register_blueprint(api_news.news_app, url_prefix='/news')
     app.register_blueprint(api_games.games_app, url_prefix='/games')
     app.register_blueprint(api_sports.sports_app, url_prefix='/sports')
-    app.register_blueprint(api_teams.teams_app, url_prefix='/team')
+    app.register_blueprint(api_teams.teams_app, url_prefix='/teams')
 
 
     return app
