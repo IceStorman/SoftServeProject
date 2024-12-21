@@ -1,46 +1,55 @@
 from database.models import Sport, League
-from exept.colors_text import print_error_message
-from exept.handle_exeptions import handle_exceptions
 from api.routes.dto import SportsLeagueDTO, SportsLeagueOutputDTO, SportsOutputDTO
+from exept.handle_exeptions import handle_exceptions
+from service.api_logic.scripts import apply_filters
+
 
 @handle_exceptions
 def get_all_sports(session):
     sports = session.query(Sport).all()
-    if not sports:
-        print_error_message("No sports found in the database")
-        return [], 204
-
     return [
         SportsOutputDTO(
             id=sport.sport_id,
             sport=sport.sport_name,
             logo=sport.sport_img,
-        ) for sport in sports
-    ], 200
+        ).to_dict() for sport in sports
+    ]
 
 
 @handle_exceptions
-def get_all_leagues_by_sport(session, dto: SportsLeagueDTO):
-    if dto.sport is None:
-        return {"error": "Not param sport_name"}
-    offset = (dto.page - 1) * dto.per_page
-    leagues = (
-        session.query(League)
-        .join(Sport, Sport.sport_id == League.sport_id)
-        .filter(Sport.sport_name == dto.sport)
-        .limit(dto.per_page)
-        .offset(offset)
-        .all()
+def get_all_leagues_by_sport(session, filters_dto: SportsLeagueDTO):
+    query = (
+        session.query(
+            League.sport_id,
+            League.league_id,
+            League.logo,
+            League.name,
+            League.country,
+            League.api_id
+        )
+        .join(Sport, League.sport_id == Sport.sport_id)
     )
-    if not leagues:
-        print_error_message("No leagues found for the sport")
-        return [], 204
+
+    model_aliases = {
+        "leagues": League,
+    }
+
+    query = apply_filters(query, filters_dto.to_dict(), model_aliases)
+
+    offset, limit = filters_dto.get_pagination()
+
+    if offset is not None and limit is not None:
+        query = query.offset(offset).limit(limit)
+
+    leagues = query.all()
+
 
     return [
         SportsLeagueOutputDTO(
             id=league.league_id,
-            sport=league.name,
+            sport=league.sport_id,
             logo=league.logo,
-            name=dto.sport,
-        ) for league in leagues
-    ], 200
+            name=league.name,
+        ).to_dict() for league in leagues
+    ]
+

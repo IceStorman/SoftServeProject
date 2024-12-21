@@ -1,10 +1,11 @@
-from flask import Blueprint, request, jsonify
-from service.api_logic.games_logic import get_stream_info_today, get_stream_info_for_sport, get_games_today
+from flask import Blueprint, request
+
+from api.routes.dto import GamesDTO
+from service.api_logic.games_logic import get_games_today #get_stream_info_today, get_stream_info_for_sport
 from database.session import SessionLocal
 from api.routes.cache import cache
 from api.routes.scripts import get_error_response, get_cache_key, post_cache_key
 from exept.exeptions import DatabaseConnectionError
-from api.routes.dto import GamesDTO
 
 session = SessionLocal()
 games_app = Blueprint('games_app', __name__)
@@ -18,7 +19,7 @@ def handle_db_timeout_error(e):
 
 # @games_app.route('/', methods=['GET'])
 # @cache.cached(60*1.3)
-# def get_stream_info_today1_endpoint():
+# def get_stream_info_today_endpoint():
 #     try:
 #         games = get_stream_info_today(session)
 #         return games
@@ -29,10 +30,10 @@ def handle_db_timeout_error(e):
 #
 # @games_app.route('/<sport_type>', methods=['GET'])
 # @cache.cached(60*1.3, key_prefix=get_cache_key)
-# def get_sport_stream_info_today1_endpoint(sport_type):
+# def get_sport_stream_info_today_endpoint(sport_type):
 #     try:
-#         games = get_stream_info_for_sport(session, sport_type)
-#         return games
+#         sport_games = get_stream_info_for_sport(session, sport_type)
+#         return sport_games
 #     except Exception as e:
 #         response = {"error in service": str(e)}
 #         return get_error_response(response, 500)
@@ -43,9 +44,8 @@ def handle_db_timeout_error(e):
 def get_stream_info_for_main1_endpoint():
     try:
         dto = GamesDTO()
-        games = get_games_today(session, 6, dto)
-        response_data = [game.dict() for game in games]
-        return jsonify(response_data), 200
+        games = get_games_today(session, dto)
+        return games
     except Exception as e:
         response = {"error in service": str(e)}
         return get_error_response(response, 500)
@@ -57,10 +57,8 @@ def get_stream_info_for_main_endpoint():
     try:
         data = request.get_json()
         dto = GamesDTO(**data)
-        games = get_games_today(session, 6, dto)
-        response_data = [game.dict() for game in games]
-
-        return jsonify(response_data), 200
+        games = get_games_today(session, dto)
+        return games
     except Exception as e:
         response = {"error in service": str(e)}
         return get_error_response(response, 500)

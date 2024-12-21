@@ -20,8 +20,8 @@ def handle_db_timeout_error(e):
 @cache.cached(timeout=60*60)
 def get_all_sports_endpoint():
     try:
-        sports = get_all_sports(session)
-        return sports
+        all_sports = get_all_sports(session)
+        return all_sports
     except Exception as e:
         response = {"error in service": str(e)}
         return get_error_response(response, 500)
@@ -32,8 +32,8 @@ def get_all_leagues_endpoint():
     try:
         data = request.get_json()
         dto = SportsLeagueDTO(**data)
-        sports = get_all_leagues_by_sport(session, dto)
-        return sports
+        league_sports = get_all_leagues_by_sport(session, dto)
+        return league_sports
     except Exception as e:
         response = {"error in service": str(e)}
         return get_error_response(response, 500)
