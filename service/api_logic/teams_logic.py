@@ -1,8 +1,8 @@
-from api.routes.dto import TeamsLeagueDTO
+from dto.api_input import TeamsLeagueDTO
 from exept.handle_exeptions import handle_exceptions
 from database.models import TeamIndex, Sport, League, Country
 from service.api_logic.scripts import apply_filters
-from api.routes.dto import TeamsLeagueOutputDTO
+from dto.api_output import TeamsLeagueOutputDTO
 
 
 # NOT WORK NOW ----------------------------------

@@ -1,10 +1,10 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request
 from database.session import SessionLocal
 from api.routes.scripts import get_error_response
 from service.api_logic.teams_logic import get_teams
 from service.implementation.auto_request_api.logic_request_by_react import basketball_players, rugby_teams_statistics
 from api.routes.cache import cache
-from api.routes.dto import TeamsLeagueDTO, TeamsStatisticsOrPlayersDTO
+from dto.api_input import TeamsLeagueDTO, TeamsStatisticsOrPlayersDTO
 from exept.exeptions import DatabaseConnectionError
 
 session = SessionLocal()
@@ -15,6 +15,7 @@ teams_app = Blueprint('teams', __name__)
 def handle_db_timeout_error(e):
     response = {"error in data base": str(e)}
     return get_error_response(response, 503)
+
 
 @teams_app.route("/", methods=['GET'])
 def get_teams_endpoint():

@@ -1,4 +1,5 @@
-from api.routes.dto import GamesDTO, GameOutputDTO
+from dto.api_output import GameOutputDTO
+from dto.api_input import GamesDTO
 from database.models import Games, Country, TeamIndex, League, Sport
 from exept.handle_exeptions import handle_exceptions
 from service.api_logic.scripts import apply_filters
@@ -14,7 +15,7 @@ def get_games_today(
 
     query = (
         session.query(
-            Games.game_id,
+            Games.api_id,
             Games.sport_id,
             Games.league_id,
             Games.country_id,
@@ -53,7 +54,7 @@ def get_games_today(
 
     return [
         GameOutputDTO(
-            game_id=game.game_id,
+            id=game.api_id,
             status=game.status,
             date=game.date,
             time=game.time,

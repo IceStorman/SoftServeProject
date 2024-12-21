@@ -88,7 +88,7 @@ class GamesDTO(BaseModel):
 
 
 class GameOutputDTO(BaseModel):
-    game_id: int
+    id: int
     status: str
     date: str
     time: Optional[str]
@@ -116,6 +116,7 @@ class TeamsLeagueOutputDTO(BaseModel):
     def to_dict(self):
         return dict(self)
 
+
 class SportsOutputDTO(BaseModel):
     id: int
     sport: str
@@ -131,6 +132,15 @@ class SportsLeagueOutputDTO(BaseModel):
     logo: str
     name: str
     count: int
+
+    def to_dict(self):
+        return dict(self)
+
+
+class CountriesOutputDTO(BaseModel):
+    id: Optional[int]
+    flag: Optional[str]
+    name: str
 
     def to_dict(self):
         return dict(self)
