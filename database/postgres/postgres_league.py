@@ -11,7 +11,7 @@ def save_league(league_data, session, sport_id) -> League :
     league_logo = league_data.get('logo')
     league_country_data = league_data.get('country', {})
 
-    if not league_api_id or not league_name:
+    if not league_name:
         return None
 
     country_entry = save_country(league_country_data, session)
@@ -26,7 +26,12 @@ def save_league(league_data, session, sport_id) -> League :
             country=country_entry.country_id if country_entry else None
         )
         session.add(league_entry)
-        session.commit()
+    else:
+        league_entry.name = league_name
+        league_entry.logo = league_logo
+        league_entry.country = country_entry.country_id if country_entry else league_entry.country
+
+    session.commit()
     return league_entry
 
 def save_leagues(json_data: Dict, sport_id, session) -> None:

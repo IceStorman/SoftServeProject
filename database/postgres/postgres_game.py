@@ -32,14 +32,13 @@ def save_games(json_data: Dict, sport_id, session) -> None:
             time = game.get('time')
 
         try:
-            if isinstance(date, str):  # Якщо дата — рядок
-                parsed_date = datetime.fromisoformat(date)  # Розбір ISO 8601 формату
-            elif isinstance(date, datetime):  # Якщо це об'єкт datetime
+            if isinstance(date, str):
+                parsed_date = datetime.fromisoformat(date)
+            elif isinstance(date, datetime):
                 parsed_date = date
             else:
                 raise ValueError("Невідомий формат дати")
 
-            # Форматування дати
             date = parsed_date.strftime('%Y-%m-%d')
         except Exception as e:
             print(f"Помилка обробки дати для гри з ID {api_id}: {e}")
@@ -53,7 +52,7 @@ def save_games(json_data: Dict, sport_id, session) -> None:
         # league --------------------
         league_data = game.get('league')
         if isinstance(league_data, str):
-            league_data = None # чи потрібно зберігати лігу, в якої відомо тільки назву?
+            league_data = {"id": None, "name": league_data, "logo": None, "country": None}
 
         # teams ---------------------
         teams_data = game.get('teams', {})
@@ -90,4 +89,14 @@ def save_games(json_data: Dict, sport_id, session) -> None:
                 date=date
             )
             session.add(game_entry)
-            session.commit()
+        else:
+            game_entry.league_id = league_entry.league_id if league_entry else game_entry.league_id
+            game_entry.country_id = country_entry.country_id if country_entry else game_entry.country_id
+            game_entry.team_away_id = team_away_entry.team_index_id if team_away_entry else game_entry.team_away_id
+            game_entry.team_home_id = team_home_entry.team_index_id if team_home_entry else game_entry.team_home_id
+            game_entry.score_away_team = score_away_data
+            game_entry.score_home_team = score_home_data
+            game_entry.status = status
+            game_entry.time = time
+            game_entry.date = date
+        session.commit()

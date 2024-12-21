@@ -45,6 +45,10 @@ def save_country(country_data: Dict, session) -> Country:
             flag=country_flag
         )
         session.add(country_entry)
-        session.commit()
+    else:
+        country_entry.name = country_name
+        country_entry.code = country_code
+        country_entry.flag = country_flag
+    session.commit()
 
     return country_entry

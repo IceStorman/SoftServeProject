@@ -29,6 +29,11 @@ def save_team(team_data: Dict, session, sport_id):
             country=country_entry.country_id if country_entry else None
         )
         session.add(team_entry)
+    else:
+        team_entry.name = team_name
+        team_entry.logo = team_logo
+        team_entry.country = country_entry.country_id if country_entry else team_entry.country
+
         session.commit()
     return team_entry
 
