@@ -9,11 +9,29 @@ class UniversalResponseDTO(BaseModel):
     country_id: Optional[int] = None
 
 class TeamsLeagueDTO(BaseModel):
-    sport: Optional[Union[int, str]] = None
+    sport_id: Optional[Union[int, str]] = None
     league_id: Optional[int] = None
     country_id: Optional[int] = None
     page: Optional[int] = 1
     per_page: Optional[int] = 9
+
+    def to_dict(self):
+        filters = {}
+        if self.sport_id is not None:
+            filters["games.sport_id"] = self.sport_id
+        if self.league_id is not None:
+            filters["games.league_id"] = self.league_id
+        if self.country_id is not None:
+            filters["games.country_id"] = self.country_id
+        return filters
+
+    def get_pagination(self):
+        if self.page != 0:
+            offset = (self.page - 1) * self.per_page
+            limit = self.per_page
+            return offset, limit
+        else:
+            return None, None
 
 class TeamsStatisticsOrPlayersDTO(BaseModel):
     sport: Optional[Union[int, str]] = None
@@ -103,6 +121,8 @@ class TeamsLeagueOutputDTO(BaseModel):
     league_name: str
     country_name: str
     team_name: str
+    logo: str
+    id: str
 
     def to_dict(self):
         return dict(self)
@@ -120,6 +140,7 @@ class SportsLeagueOutputDTO(BaseModel):
     sport: Optional[int]
     logo: str
     name: str
+    count: int
 
     def to_dict(self):
         return dict(self)

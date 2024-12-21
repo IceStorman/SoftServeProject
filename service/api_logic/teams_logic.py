@@ -3,7 +3,7 @@ from database.azure_blob_storage.save_get_blob import get_all_blob_indexes_from_
 from service.api_logic.scripts import get_sport_by_name
 from api.routes.dto import TeamsLeagueDTO
 from exept.handle_exeptions import handle_exceptions
-from database.models import TeamIndex, Sport
+from database.models import TeamIndex, Sport, League, Country
 from flask import Response
 
 
@@ -67,7 +67,25 @@ def get_teams(
         session,
         filters_dto: TeamsLeagueDTO
 ):
-    query = session.query(TeamIndex)
+    query = (
+        session.query(
+            TeamIndex.league,
+            TeamIndex.team_index_id,
+            TeamIndex.sport_id,
+            TeamIndex.country,
+            TeamIndex.league,
+            TeamIndex.api_id,
+            TeamIndex.logo,
+            TeamIndex.name,
+            TeamIndex.news_id
+        )
+        .join(League, TeamIndex.league == League.league_id)
+        .join(Country, TeamIndex.country == Country.country_id)
+        .join(Sport, TeamIndex.sport_id == Sport.sport_id)
+    )
+    queryr = query.all()
+    for a in queryr:
+        print(a)
 
     model_aliases = {
         "teams": TeamIndex,
@@ -80,12 +98,14 @@ def get_teams(
     if offset is not None and limit is not None:
         query = query.offset(offset).limit(limit)
 
-    games = query.all()
+    teams = query.all()
     return [
         TeamsLeagueOutputDTO(
-            league_name=team.league_name,
-            country_name=team.country_name,
+            league_name=team.league,
+            country_name=team.country,
             team_name=team.name,
+            logo=team.logo,
+            id=team.api_id,
         ).to_dict() for team in teams
     ]
 

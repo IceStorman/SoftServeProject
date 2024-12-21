@@ -1,3 +1,5 @@
+from nltk.sem.chat80 import country
+
 from database.models import Sport, League
 from api.routes.dto import SportsLeagueDTO, SportsLeagueOutputDTO, SportsOutputDTO
 from exept.handle_exeptions import handle_exceptions
@@ -29,6 +31,7 @@ def get_all_leagues_by_sport(session, filters_dto: SportsLeagueDTO):
         )
         .join(Sport, League.sport_id == Sport.sport_id)
     )
+    count = get_leagues_count_by_sport(session, filters_dto.sport_id)
 
     model_aliases = {
         "leagues": League,
@@ -43,13 +46,16 @@ def get_all_leagues_by_sport(session, filters_dto: SportsLeagueDTO):
 
     leagues = query.all()
 
-
     return [
         SportsLeagueOutputDTO(
             id=league.league_id,
             sport=league.sport_id,
             logo=league.logo,
             name=league.name,
+            count=count,
         ).to_dict() for league in leagues
     ]
 
+def get_leagues_count_by_sport(session, sport_id):
+    count = session.query(League).join(Sport, League.sport_id == Sport.sport_id).filter(League.sport_id == sport_id).count()
+    return count
