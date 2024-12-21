@@ -1,4 +1,6 @@
-from pydantic import BaseModel
+from datetime import datetime
+
+from pydantic import BaseModel, Field
 from typing import Optional, Union
 
 
@@ -59,7 +61,7 @@ class GamesDTO(BaseModel):
     league_id: Optional[int] = None
     country_id: Optional[int] = None
     status: Optional[str] = None
-    date: Optional[str] = None
+    date: Optional[str] = Field(default_factory=lambda: datetime.now().strftime('%Y-%m-%d'))
     page: Optional[int] = 0
     per_page: Optional[int] = 9
 
@@ -72,7 +74,7 @@ class GamesDTO(BaseModel):
         if self.country_id is not None:
             filters["games.country_id"] = self.country_id
         if self.date is not None:
-            filters["games.date"] = self.date.strftime('%Y-%m-%d')
+            filters["games.date"] = self.date
         return filters
 
     def get_pagination(self):
