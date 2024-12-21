@@ -4,7 +4,7 @@ from database.session import SessionLocal
 from api.routes.scripts import get_error_response, post_cache_key
 from api.routes.cache import cache
 from exept.exeptions import DatabaseConnectionError
-from api.routes.dto import SportsLeagueDTO
+from dto.api_input import SportsLeagueDTO
 
 session = SessionLocal()
 sports_app = Blueprint('sports', __name__)
@@ -25,6 +25,7 @@ def get_all_sports_endpoint():
     except Exception as e:
         response = {"error in service": str(e)}
         return get_error_response(response, 500)
+
 
 @sports_app.route('/league', methods=['POST'])
 @cache.cached(timeout=60*60, key_prefix=post_cache_key)

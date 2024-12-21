@@ -24,6 +24,7 @@ def get_recent_news_endpoint():
         response = {"error in service": str(e)}
         return get_error_response(response, 500)
 
+
 @news_app.route('/<sport_type>', methods=['GET'])
 @cache.cached(timeout=60*60, key_prefix=get_cache_key)
 def get_sport_news_endpoint(sport_type):

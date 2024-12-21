@@ -1,7 +1,6 @@
-from nltk.sem.chat80 import country
-
 from database.models import Sport, League
-from api.routes.dto import SportsLeagueDTO, SportsLeagueOutputDTO, SportsOutputDTO
+from dto.api_input import SportsLeagueDTO
+from dto.api_output import SportsLeagueOutputDTO, SportsOutputDTO
 from exept.handle_exeptions import handle_exceptions
 from service.api_logic.scripts import apply_filters, get_leagues_count_by_sport
 

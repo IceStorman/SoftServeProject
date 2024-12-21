@@ -1,5 +1,5 @@
 from database.models import Country
-from api.routes.dto import CountriesOutputDTO
+from dto.api_output import CountriesOutputDTO
 from exept.handle_exeptions import handle_exceptions
 
 
