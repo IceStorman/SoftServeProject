@@ -10,7 +10,7 @@
         align-items: center;
         width: 45rem;
         padding: 2vh;
-        background-color: $purple-btn-color;
+        background-color: $special-light-purple;
         border-radius: 1rem;
         font-weight: bold;
 
@@ -45,12 +45,12 @@
                     width: 37rem;
                     height: 2rem;
 
-                    @include custom-form(input, label, 100%, $scroll-track, $purple-btn-color, $main-text-color);
+                    @include custom-form(input, label, 100%, $scroll-hover, $special-light-purple, $scroll-thumb);
                 }
             }
 
             h1 {
-                color: $main-text-color;
+                color: $special-dark-purple;
                 font-size: 3rem;
                 margin: 1vh auto;
             }
@@ -65,7 +65,7 @@
                 align-self: end;
                 font-size: 1.1rem;
                 cursor: pointer;
-                color: $main-text-color;
+                color: $special-dark-purple;
                 transition: all 0.3s ease;
             }
 
