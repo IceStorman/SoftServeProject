@@ -204,9 +204,6 @@ def get_games_today(
         .join(home_team, Games.team_home_id == home_team.team_index_id)
         .join(away_team, Games.team_away_id == away_team.team_index_id)
     )
-    results = query.all()
-    for league in results:
-        print(league)
 
     model_aliases = {
         "games": Games,
