@@ -73,13 +73,13 @@ def search_leagues(session, filters_dto: SearchDTO):
     }
 
     query = apply_filters(query, filters_dto.to_dict(), model_aliases)
+    count = query.count()
 
     offset, limit = filters_dto.get_pagination()
     if offset is not None and limit is not None:
         query = query.offset(offset).limit(limit)
 
     countries = query.all()
-    count = query.count()
 
     return [
         SportsLeagueOutputDTO(
@@ -90,10 +90,6 @@ def search_leagues(session, filters_dto: SearchDTO):
             count=count,
         ).to_dict() for country in countries
     ]
-
-
-
-
 
 
 
