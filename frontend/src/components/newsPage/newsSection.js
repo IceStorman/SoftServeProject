@@ -18,9 +18,12 @@ function NewsSection({text, teams, img, subheading}){
 
             <div className={"sectionContent"}>
 
-                <div className={"imgContainer"}>
-                    <img src={img}/>
-                </div>
+                {img ?
+                    <div className={"imgContainer"}>
+                        <img src={img}/>
+                    </div>
+                : null
+                }
 
                 <p dangerouslySetInnerHTML={{__html: highlightedText}}></p>
 

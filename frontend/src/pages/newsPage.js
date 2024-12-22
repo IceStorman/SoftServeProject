@@ -1,138 +1,73 @@
 import React, {useEffect, useState} from "react";
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import NewsSection from "../components/newsPage/newsSection";
 import axios from "axios";
 import apiEndpoints from "../apiEndpoints";
 import {toast} from "sonner";
 
 function NewsPage(){
+    const navigate = useNavigate();
     const location = useLocation();
     const newsId = location.state || {};
 
-    const [news, setNews] = useState({
-        "title": "How Chris Paul and Victor Wembanyama are evolving together - ESPN",
-        "timestamp": "Nov 21, 2024, 08:00 AM ET",
-        "article": {
-            "section_1": {
-                "heading": null,
-                "content": [
-                    "IT WAS THEfinal minute in the first quarter ofChris Paul's preseason debut against theOrlando Magic, when he lofted a lob to his new partner,Victor Wembanyama, who jammed it home for an alley-oop dunk overMoritz Wagner.",
-                    "Naturally, the crowd of 16,952 at Frost Bank Center lost it, hoping it would be the strongest of precursors.",
-                    "\"Those who know, know that with the talent he has and the amount of attention he garners, there is going to be sometimes where he's actually a decoy,\" Paul said.",
-                    "Paul would know. Name your big. Paul has made them better for nearly two decades. The point guard entered this season having assisted on 715 alley-oop dunks over his career, the most among active players. Wembanyama, meanwhile, ranked third in the league last season in alley-oop dunks, according to Second Spectrum tracking data. He accomplished that featwithouta floor general of Paul's stature.",
-                    "Working with Paul, Tyson Chandler in 2007-08 averaged a career-high 11.8 points.DeAndre Jordanled the league in field goal percentage for five straight seasons (2012-13 to 2016-17) playing alongside Paul.Clint Capelawon the NBA's field goal percentage title in 2017-18 as Paul'sHouston Rocketsteammate, before averaging a career high the following season in scoring.",
-                    "\"He's probably seen everything on the basketball court,\" said Spursinterim coach Mitch Johnson, who is leading the team while Gregg Popovich is recovering from what the team called a \"minor stroke\" suffered on Nov. 2. \"It's hard as a coach because you're trying to talk to everybody at the same time and the game's going on. So, to have someone like Chris, who probably has a better solution than I do, can actually be on the court with the ball, help, or affect that in real time is worth its weight in gold.\"",
-                    "Paul has 20 years of experience in making bigs better, but he's never played with one quite like Wembanyama, the 7-foot-3 phenom once famously described by Paul's friendLeBron Jamesas \"an alien.\" Paul adds the obvious lob threat to Wembanyama's game, but the fit hasn't been as seamless as many around the league expected over the summer, with Wembanyama's ability to score on the perimeter -- and the way opponents are defending that -- adding a complexity to the partnership that the duo is still smoothing out.",
-                    "\"Traditional bigs switching one through five?\" Paul said. \"You've never played with a point guard like me, know what I mean? So, we're constantly doing different things. I've never played with a center that I've set screens for. It's different.\"",
-                    "PAUL FLOATED Alob on a pick-and-roll as Wembanyama cut to the basket in the first quarter of a Nov. 15 game against theLos Angeles Lakers.",
-                    "Bang.",
-                    "A two-handed jam withAustin Reaveshopelessly trailing.",
-                    "The assist was Paul's third of the game and the 12,000th of his 20-year career, making him just the third player to reach that milestone, behind John Stockton and Jason Kidd. Thehistory-making assistcame on the exact kind of play most expected to see frequently when Paul and Wembanyama joined forces in July.",
-                    "Instead, it was the only one of Paul's 11 assists that night that led to a Wembanyama dunk. Meanwhile, three of Paul's team-high 11 assists against the Lakers found Wembanyama for 3-pointers.",
-                    "\"Our first priority is to win games,\" Paul said. \"A lot of people think it's just going to be lob, lob, lob. If the lobs come and we win, so be it. It's going to happen just because he is who he is. There are going to be times when we get open shots, and a lot of times when we do throw it up and he can finish. But we are always going to try to figure it out.\"",
-                    "Paul believes the diversity in Wembanyama's game plays a role in delaying the process of optimizing chemistry between them.",
-                    "\"Some nights, it'll be centers guarding him,\" Paul said. \"Some nights, it'll be small forwards. In this league, you've just got to be able to adapt. That's what he's figuring out and learning.\"",
-                    "There have also been other barriers blocking the process. The 20-year-old took somewhat of a break on the heels of a whirlwind summer, and the club held him out of three of San Antonio's five exhibition outings as Paul missed two preseason matchups.",
-                    "Wembanyama, who has missed the team's past two games with aright knee contusionand has been ruled out for Thursday's game against theUtah Jazz, spent the first few contests of the regular season playing his way back into shape, simultaneously learning the intricacies of playing with an elite point guard such as Paul.",
-                    "\"We share a lot of similarities in our view of basketball,\" Wembanyama said. \"The biggest thing is his knowledge of the pick-and-roll. I'm just trying to apply what he sees and experiment, also telling him what I like. He's telling me what he likes, what we don't like. I think it's a very healthy relationship because we see basketball pretty much the same way.\"",
-                    "Pair a future Hall of Fame point guard with a 7-foot generational talent and watch the alley-oop dunks rain abundantly. The thought seemed a no-brainer when news spread of Paul signing with San Antonio to a one-year deal.",
-                    "\"On paper, it looks like it should work,\" Johnson admitted.",
-                    "Just 13 games into the NBA season, Paul and Wembanyama admit they're still engaged in the learning stage of a partnership that could grow boundlessly as 2024-25 progresses. But Paul has already assisted on 98 of Wembanyama's 295 points in 2024, the most points assisted by one passer to a scorer this season, according to ESPN Research.",
-                    "\"The most important thing is he's willing to tell us things,\" Wembanyama said. \"Every practice, he gives us feedback on what he used to do, how defenses played them usually, how we can get more space. He's approaching this in a very unselfish way.\"",
-                    "WHEN WEMBANYAMA SCOREDhis first career50-point gameduring a 139-130 win on Nov. 13 against theWashington Wizards, 14 of those points came off of Paul assists.",
-                    "But none resulted in a single dunk by the French phenom. He scored 12 of his Paul-assisted points on four of his career-high eight 3-pointers in the contest.",
-                    "\"We want him to shoot those shots,\" forwardJulian Champagniesaid. \"[He's] obviously a special, special player. It's not always going to be in the paint for him. Teams are going to play him differently. Tonight, [it] was the 3. He's not going to post up [Jonas] Valanciunasthe whole game. That's a big body. We want him to keep shooting [3s]. He'll get them. He's 7-5. So, there's really no closeout that's going to get to him.\"",
-                    "It's clear opponents believe in defending Wembanyama physically in or near the paint, a strategy reflected in his shot profile over San Antonio's first 13 games. Rivals routinely beat up and harass Wembanyama near the basket, and Johnson attributes that to the way big men are routinely officiated around the NBA.",
-                    "So, Wembanyama has taken his skill set this season to where it's most effective: the perimeter. Given his athleticism, towering height and length, such an approach would seem counterintuitive. Yet 62.5% of Wembanyama's attempts over San Antonio's first 13 games came on catch-and-shoot opportunities and pull-ups, while 33.2% of his shots came from fewer than 10 feet from the basket.",
-                    "So much for the onslaught of lob dunks -- for now.",
-                    "\"A lob is a dunk, an easy basket,\" Wembanyama said. \"And this is one of the first things that teams are about to guard. So, it's not as easy as it seems to throw lob. But if there is one guy in this league who can throw them, it's probably [Paul].\"",
-                    "Luckily for Wembanyama and the Spurs, history has shown that Paul can dish any variety of passes he chooses. That has led to an interesting combination of connections between the duo, which can often be seen in the postgame locker room chatting about what they saw minutes earlier on the floor.",
-                    "Paul has dished 31 assists to Wembanyama this season with 15 coming on 3-pointers, eight on dunks and four on alley-oop jams. The Paul to Wembanyama connection ranks as the only combo in the NBA in which one player has assisted on at least seven 3-pointers and seven dunks to a single player.",
-                    "And Paul's impact doesn't end with the young Frenchman. Paul has been a veteran presence with Popovich away from the team. And with Wembanyama on the bench Tuesday night, Paul led the Spurs to a win over theOklahoma City Thunder, one of the NBA's top teams. At 7-8, the Spurs still have a lot of work to do to reach the playoffs, but they are well ahead of last year's pace, when they recorded their seventh win on Jan. 12.",
-                    "\"I wish you guys could see the work that goes in, day in and day out,\" Paul said. \"You know how talented he is. But his will and want to get better, his will to want to work on things...the more games we play, I think we'll get more familiar with each other.\""
-                ],
-                "subheadings": []
-            },
-            "section_2": {
-                "heading": null,
-                "content": [
-                    "IT WAS THEfinal minute in the first quarter ofChris Paul's preseason debut against theOrlando Magic, when he lofted a lob to his new partner,Victor Wembanyama, who jammed it home for an alley-oop dunk overMoritz Wagner.",
-                    "Naturally, the crowd of 16,952 at Frost Bank Center lost it, hoping it would be the strongest of precursors.",
-                    "\"Those who know, know that with the talent he has and the amount of attention he garners, there is going to be sometimes where he's actually a decoy,\" Paul said.",
-                    "Paul would know. Name your big. Paul has made them better for nearly two decades. The point guard entered this season having assisted on 715 alley-oop dunks over his career, the most among active players. Wembanyama, meanwhile, ranked third in the league last season in alley-oop dunks, according to Second Spectrum tracking data. He accomplished that featwithouta floor general of Paul's stature.",
-                    "Working with Paul, Tyson Chandler in 2007-08 averaged a career-high 11.8 points.DeAndre Jordanled the league in field goal percentage for five straight seasons (2012-13 to 2016-17) playing alongside Paul.Clint Capelawon the NBA's field goal percentage title in 2017-18 as Paul'sHouston Rocketsteammate, before averaging a career high the following season in scoring.",
-                    "\"He's probably seen everything on the basketball court,\" said Spursinterim coach Mitch Johnson, who is leading the team while Gregg Popovich is recovering from what the team called a \"minor stroke\" suffered on Nov. 2. \"It's hard as a coach because you're trying to talk to everybody at the same time and the game's going on. So, to have someone like Chris, who probably has a better solution than I do, can actually be on the court with the ball, help, or affect that in real time is worth its weight in gold.\"",
-                    "Paul has 20 years of experience in making bigs better, but he's never played with one quite like Wembanyama, the 7-foot-3 phenom once famously described by Paul's friendLeBron Jamesas \"an alien.\" Paul adds the obvious lob threat to Wembanyama's game, but the fit hasn't been as seamless as many around the league expected over the summer, with Wembanyama's ability to score on the perimeter -- and the way opponents are defending that -- adding a complexity to the partnership that the duo is still smoothing out.",
-                    "\"Traditional bigs switching one through five?\" Paul said. \"You've never played with a point guard like me, know what I mean? So, we're constantly doing different things. I've never played with a center that I've set screens for. It's different.\"",
-                    "PAUL FLOATED Alob on a pick-and-roll as Wembanyama cut to the basket in the first quarter of a Nov. 15 game against theLos Angeles Lakers.",
-                    "Bang.",
-                    "A two-handed jam withAustin Reaveshopelessly trailing.",
-                    "The assist was Paul's third of the game and the 12,000th of his 20-year career, making him just the third player to reach that milestone, behind John Stockton and Jason Kidd. Thehistory-making assistcame on the exact kind of play most expected to see frequently when Paul and Wembanyama joined forces in July.",
-                    "Instead, it was the only one of Paul's 11 assists that night that led to a Wembanyama dunk. Meanwhile, three of Paul's team-high 11 assists against the Lakers found Wembanyama for 3-pointers.",
-                    "\"Our first priority is to win games,\" Paul said. \"A lot of people think it's just going to be lob, lob, lob. If the lobs come and we win, so be it. It's going to happen just because he is who he is. There are going to be times when we get open shots, and a lot of times when we do throw it up and he can finish. But we are always going to try to figure it out.\"",
-                    "Paul believes the diversity in Wembanyama's game plays a role in delaying the process of optimizing chemistry between them.",
-                    "\"Some nights, it'll be centers guarding him,\" Paul said. \"Some nights, it'll be small forwards. In this league, you've just got to be able to adapt. That's what he's figuring out and learning.\"",
-                    "There have also been other barriers blocking the process. The 20-year-old took somewhat of a break on the heels of a whirlwind summer, and the club held him out of three of San Antonio's five exhibition outings as Paul missed two preseason matchups.",
-                    "Wembanyama, who has missed the team's past two games with aright knee contusionand has been ruled out for Thursday's game against theUtah Jazz, spent the first few contests of the regular season playing his way back into shape, simultaneously learning the intricacies of playing with an elite point guard such as Paul.",
-                    "\"We share a lot of similarities in our view of basketball,\" Wembanyama said. \"The biggest thing is his knowledge of the pick-and-roll. I'm just trying to apply what he sees and experiment, also telling him what I like. He's telling me what he likes, what we don't like. I think it's a very healthy relationship because we see basketball pretty much the same way.\"",
-                    "Pair a future Hall of Fame point guard with a 7-foot generational talent and watch the alley-oop dunks rain abundantly. The thought seemed a no-brainer when news spread of Paul signing with San Antonio to a one-year deal.",
-                    "\"On paper, it looks like it should work,\" Johnson admitted.",
-                    "Just 13 games into the NBA season, Paul and Wembanyama admit they're still engaged in the learning stage of a partnership that could grow boundlessly as 2024-25 progresses. But Paul has already assisted on 98 of Wembanyama's 295 points in 2024, the most points assisted by one passer to a scorer this season, according to ESPN Research.",
-                    "\"The most important thing is he's willing to tell us things,\" Wembanyama said. \"Every practice, he gives us feedback on what he used to do, how defenses played them usually, how we can get more space. He's approaching this in a very unselfish way.\"",
-                    "WHEN WEMBANYAMA SCOREDhis first career50-point gameduring a 139-130 win on Nov. 13 against theWashington Wizards, 14 of those points came off of Paul assists.",
-                    "But none resulted in a single dunk by the French phenom. He scored 12 of his Paul-assisted points on four of his career-high eight 3-pointers in the contest.",
-                    "\"We want him to shoot those shots,\" forwardJulian Champagniesaid. \"[He's] obviously a special, special player. It's not always going to be in the paint for him. Teams are going to play him differently. Tonight, [it] was the 3. He's not going to post up [Jonas] Valanciunasthe whole game. That's a big body. We want him to keep shooting [3s]. He'll get them. He's 7-5. So, there's really no closeout that's going to get to him.\"",
-                    "It's clear opponents believe in defending Wembanyama physically in or near the paint, a strategy reflected in his shot profile over San Antonio's first 13 games. Rivals routinely beat up and harass Wembanyama near the basket, and Johnson attributes that to the way big men are routinely officiated around the NBA.",
-                    "So, Wembanyama has taken his skill set this season to where it's most effective: the perimeter. Given his athleticism, towering height and length, such an approach would seem counterintuitive. Yet 62.5% of Wembanyama's attempts over San Antonio's first 13 games came on catch-and-shoot opportunities and pull-ups, while 33.2% of his shots came from fewer than 10 feet from the basket.",
-                    "So much for the onslaught of lob dunks -- for now.",
-                    "\"A lob is a dunk, an easy basket,\" Wembanyama said. \"And this is one of the first things that teams are about to guard. So, it's not as easy as it seems to throw lob. But if there is one guy in this league who can throw them, it's probably [Paul].\"",
-                    "Luckily for Wembanyama and the Spurs, history has shown that Paul can dish any variety of passes he chooses. That has led to an interesting combination of connections between the duo, which can often be seen in the postgame locker room chatting about what they saw minutes earlier on the floor.",
-                    "Paul has dished 31 assists to Wembanyama this season with 15 coming on 3-pointers, eight on dunks and four on alley-oop jams. The Paul to Wembanyama connection ranks as the only combo in the NBA in which one player has assisted on at least seven 3-pointers and seven dunks to a single player.",
-                    "And Paul's impact doesn't end with the young Frenchman. Paul has been a veteran presence with Popovich away from the team. And with Wembanyama on the bench Tuesday night, Paul led the Spurs to a win over theOklahoma City Thunder, one of the NBA's top teams. At 7-8, the Spurs still have a lot of work to do to reach the playoffs, but they are well ahead of last year's pace, when they recorded their seventh win on Jan. 12.",
-                    "\"I wish you guys could see the work that goes in, day in and day out,\" Paul said. \"You know how talented he is. But his will and want to get better, his will to want to work on things...the more games we play, I think we'll get more familiar with each other.\""
-                ],
-                "subheadings": ["ja jebav"]
-            }
-        },
-        "images": [
-            "data:image/png;base64,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",
-            "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAOVBMVEUmIiM3MzRwbm+Afn////8VEBEfGhwiHh8iHh8CAAH29faenZ2RkJDi4eLOzc2wsLBTUVJdWlvDwsKJQMPGAAAAAXRSTlP+GuMHfQAAAHxJREFUGJVVz1sOxCAIBVCwwM1tax+z/8UOOJPY+kHkBBFE8DoikGCeugi9Ut3MbL009OqnhiDYUxgAt4zZwveE3euSoXoyoRO+VDLgk6Lhi/9A/E44qS3+FeBabUfBAGH93CYAUaNITOBhdhATvOUTf0CNQjwB5Fz3vf4XZrUGdsEhq3kAAAAASUVORK5CYII="
-        ],
-        "team_names": ["Wembanyama","Champagniesaid", "WEMBANYAMA"],
-        "S_P_O_R_T": "Nba",
-        "sport_type": "Nba"});
+    const [news, setNews] = useState([]);
 
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-
-        const postData = async () => {
+        const fetchNews = async () => {
             try {
-                const res = await axios.post(`${apiEndpoints.url}${apiEndpoints.news.getCurrentNews}`, {newsId});
-                setNews(res.data);
+                setLoading(true);
+
+                const response = await axios.post(
+                    `${apiEndpoints.url}${apiEndpoints.news.getArticle}`,
+                    {
+                        blob_id: newsId,
+                    },
+                    {
+                        headers: { 'Content-Type': 'application/json' },
+                    }
+                );
+
+                setNews(response.data[0].data);
             } catch (error) {
                 toast.error(`:( Troubles With This News Loading: ${error}`);
+            } finally {
+                setLoading(false);
             }
         };
 
-        postData();
+        fetchNews();
     }, []);
 
     return(
+
         <section className={"newsContent"}>
 
-            <h1>{news.title}</h1>
 
-            {Object.entries(news.article).map(([key, value], index) => (
-                <NewsSection
-                    key={key}
-                    text={value.content}
-                    teams={news.team_names}
-                    subheading={value.subheadings}
-                    img={news.images[index]}
-                />
-            ))}
+            {!loading ? (
+                <>
+                    <h1>{news?.title}</h1>
 
-            <h4 className="date">{news.timestamp}</h4>
+                    {news?.article &&
+                        Object.entries(news.article).map(([key, value], index) => (
+                            <NewsSection
+                                key={key}
+                                text={value?.content}
+                                teams={news?.team_names[0]}
+                                subheading={value?.subheadings}
+                                img={news?.images?.[index]}
+                            />
+                        ))}
+
+                    <h4 className="date">{news?.timestamp}</h4>
+                </>
+            ) :
+                (!news?(
+                    navigate("/not-existing")
+                ) : null
+                )
+            }
 
         </section>
 

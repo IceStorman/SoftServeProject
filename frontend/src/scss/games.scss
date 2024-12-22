@@ -19,20 +19,25 @@
         margin: auto 2vh auto 4vh;
     }
 
+    button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    button:hover{
+        transform: scale(1.1);
+        transition: transform 0.3s ease-in-out;
+    }
+
     #rightBtn {
         rotate: 180deg;
         margin: auto 4vh auto 2vh;
     }
-    .active{
-        transform: translate(-50rem);
-    }
-
     .gamesBar {
         display: flex;
         flex-direction: row;
         width: 90%;
         overflow: hidden;
-        transition: transform 0.5s ease-in-out;
 
         .gamesBox {
             display: flex;
@@ -81,6 +86,7 @@
         .activeGames {
             display: flex;
             flex-direction: row;
+            transition: transform 0.5s ease-in-out;
 
             #liveGames {
                 rotate: 180deg;

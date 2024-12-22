@@ -43,13 +43,7 @@ function MainPage() {
         axios.get(`${apiEndpoints.url}${apiEndpoints.games.getGames}`)
             .then(res => {
                 const returnedGames = res.data;
-                let arr = [];
-                returnedGames.forEach(element => {
-                  element.matches.forEach(a => {
-                    arr.push(a);
-                  })
-                });
-                setGames(arr);
+                setGames(returnedGames);
             })
             .catch(error => {
                 toast.error(`:( Troubles With Games Loading: ${error}`);
