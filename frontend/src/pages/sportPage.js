@@ -19,8 +19,6 @@ function SportPage() {
     const sports = stateData.sports;
     const sportId = stateData.sportId;
 
-    const [readyToLoading, setReadyToLoading] = useState(false)
-
     const [rangeScale, setRangeScale] = useState(3)
 
     const [sportNews, setSportNews] = useState([]);
@@ -98,8 +96,6 @@ function SportPage() {
             if (!sports.find(item => item.sport === sportName)) {
                 navigate("/not-existing");
             }
-
-            setReadyToLoading(true);
 
         } else {
             navigate("/not-existing");
