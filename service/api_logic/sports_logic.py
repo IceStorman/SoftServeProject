@@ -1,10 +1,9 @@
-import json
-
-from flask import Response
-
 from database.models import Sport, League
-from api.routes.dto import SportsLeagueDTO, SportsLeagueOutputDTO, SportsOutputDTO
+from dto.api_input import SportsLeagueDTO
+from dto.api_output import SportsLeagueOutputDTO, SportsOutputDTO
 from exept.handle_exeptions import handle_exceptions
+from service.api_logic.scripts import apply_filters, get_leagues_count_by_sport
+
 
 @handle_exceptions
 def get_all_sports(session):
@@ -19,22 +18,40 @@ def get_all_sports(session):
 
 
 @handle_exceptions
-def get_all_leagues_by_sport(session, dto: SportsLeagueDTO):
-    offset = (dto.page - 1) * dto.per_page
-    leagues = (
-        session.query(League)
-        .join(Sport, Sport.sport_id == League.sport_id)
-        .filter(Sport.sport_name == dto.sport)
-        .limit(dto.per_page)
-        .offset(offset)
-        .all()
+def get_all_leagues_by_sport(session, filters_dto: SportsLeagueDTO):
+    query = (
+        session.query(
+            League.sport_id,
+            League.league_id,
+            League.logo,
+            League.name,
+            League.country,
+            League.api_id
+        )
+        .join(Sport, League.sport_id == Sport.sport_id)
     )
+    count = get_leagues_count_by_sport(session, filters_dto.sport_id)
+
+    model_aliases = {
+        "leagues": League,
+    }
+
+    query = apply_filters(query, filters_dto.to_dict(), model_aliases)
+
+    offset, limit = filters_dto.get_pagination()
+
+    if offset is not None and limit is not None:
+        query = query.offset(offset).limit(limit)
+
+    leagues = query.all()
+
     return [
         SportsLeagueOutputDTO(
             id=league.league_id,
             sport=league.sport_id,
             logo=league.logo,
             name=league.name,
+            count=count,
         ).to_dict() for league in leagues
     ]
 
