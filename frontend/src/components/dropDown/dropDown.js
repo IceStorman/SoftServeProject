@@ -10,7 +10,7 @@ function DropDown({setCountry}){
 
 
     function handleClick(e){
-        setCountry(e.target.textContent);
+        setCountry(e.target.id);
         setIsActive(false);
     }
 
@@ -49,12 +49,11 @@ function DropDown({setCountry}){
 
             <div className={`dropMenu ${isActive ? "" : "hidden"}`}>
 
-                <h1 key={-1} onClick={handleClick}>All</h1>
+                <h1 key={-1} id={-1} onClick={handleClick}>All</h1>
 
                 {countries.map((item, index) => {
-                    return <h1 key={index} onClick={handleClick}>{item.name}</h1>
-                })
-                }
+                    return <h1 key={index} id={item.id} onClick={handleClick}>{item.name}</h1>
+                })}
 
             </div>
         </div>

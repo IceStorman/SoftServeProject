@@ -31,7 +31,7 @@ function SportPage() {
     const leaguesPerPage = 9;
 
 
-    const [countryFilter, setCountryFilter] = useState("All");
+    const [countryFilter, setCountryFilter] = useState(-1);
     const [inputValue, setInputValue] = useState('');
     const [searchClicked, setSearchClicked] = useState();
 
