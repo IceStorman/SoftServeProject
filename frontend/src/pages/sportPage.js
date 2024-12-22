@@ -82,7 +82,7 @@ function SportPage() {
             setPrevInputValue(inputValue);
         } catch (error) {
             setPrevCountryFilter(0);
-            setPrevInputValue('');
+            setPrevInputValue(' ');
             setPageCount(0);
             toast.error(`:( Troubles With Leagues Loading: ${error}`);
         }finally {
@@ -114,9 +114,6 @@ function SportPage() {
     }, []);
 
     useEffect(() => {
-
-        console.log(countryFilter)
-        console.log(inputValue)
         if(prevInputValue !== inputValue || prevCountryFilter !== countryFilter){
             handlePageClick({selected: 0});
             setPaginationKey((prevKey) => prevKey + 1);

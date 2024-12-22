@@ -1,6 +1,15 @@
 import React from "react";
 
-function NewsSection({text, img, subheading}){
+function NewsSection({text, teams, img, subheading}){
+
+    const highlightText = (text) => {
+        return teams.reduce((acc, team) => {
+            const regex = new RegExp(`(${team})`, 'gi');
+            return acc.replace(regex, `<span class="highlighted">${team}</span>`);
+        }, text);
+    };
+
+    const highlightedText = highlightText(text.join(' '));
 
     return(
         <section className={"newsSection"}>
@@ -13,7 +22,7 @@ function NewsSection({text, img, subheading}){
                     <img src={img}/>
                 </div>
 
-                <p>{text}</p>
+                <p dangerouslySetInnerHTML={{__html: highlightedText}}></p>
 
             </div>
 
