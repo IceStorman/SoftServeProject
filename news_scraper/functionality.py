@@ -142,10 +142,13 @@ class Article_Scraper(Main_page_sport_parser):
             });
             return imageSources;'''
         )
-        for i,image_source in enumerate(image_sources):
-            if image_source is not None and(i==0 or i%2==0):
-                sep =','
-                images = image_source[:image_source.index(sep)]
+        sep = ','
+        for i, image_source in enumerate(image_sources):
+            if image_source is not None and (i == 0 or i % 2 == 0):
+                try:
+                    images = image_source[:image_source.index(sep)]
+                except ValueError:
+                    images = image_source  
                 article_data['images'].append(images)
 
         driver.quit()
