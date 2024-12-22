@@ -23,6 +23,7 @@ import LeaguePage from "../pages/leaguePage";
 import StreamPage from "../pages/streamPage";
 import NewsPage from "../pages/newsPage";
 import NotExistingPage from "../pages/notExistingPage";
+import ScrollToTop from "../scrollToTop";
 
 function App(){
 
@@ -35,6 +36,7 @@ function App(){
                 v7_relativeSplatPath: true,
                 }}
             >
+                <ScrollToTop />
 
                 <Toaster  position="top-center" expand={true} richColors  />
 
