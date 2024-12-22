@@ -10,11 +10,6 @@ def get_sport_by_name(session, sport_name):
     return sport
 
 
-def get_leagues_count_by_sport(session, sport_id):
-    count = session.query(League).join(Sport, League.sport_id == Sport.sport_id).filter(League.sport_id == sport_id).count()
-    return count
-
-
 def apply_filters(base_query: Query, filters: dict, model_aliases: dict):
     filter_conditions = []
 
