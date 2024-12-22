@@ -64,6 +64,12 @@ class SearchDTO(BaseModel):
             return ' '.join(value.split()).lower()
         return None
 
+    @field_validator("country_id", mode="before")
+    def check_num(cls, value: Optional[int]) -> Optional[int]:
+        if value == 0:
+            return None
+        return value
+
 
 class SportsLeagueDTO(BaseModel):
     sport_id: Optional[int] = None
