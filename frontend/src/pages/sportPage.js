@@ -82,7 +82,7 @@ function SportPage() {
             setPrevInputValue(inputValue);
         } catch (error) {
             setPrevCountryFilter(0);
-            setPrevInputValue('');
+            setPrevInputValue(' ');
             setPageCount(0);
             toast.error(`:( Troubles With Leagues Loading: ${error}`);
         }finally {
