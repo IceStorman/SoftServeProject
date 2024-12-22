@@ -27,15 +27,16 @@ function SportPage() {
 
     const [currentLeagues, setCurrentLeagues] = useState([]);
     const [pageCount, setPageCount] = useState(0);
+    const [paginationKey, setPaginationKey] = useState(0);
     const [currentPage, setCurrentPage] = useState(0);
     const leaguesPerPage = 9;
 
     const [loading, setLoading] = useState(false);
 
-    const [countryFilter, setCountryFilter] = useState('0');
-    const [inputValue, setInputValue] = useState(' ');
+    const [countryFilter, setCountryFilter] = useState(0);
+    const [inputValue, setInputValue] = useState('');
 
-    const [prevCountryFilter, setPrevCountryFilter] = useState('');
+    const [prevCountryFilter, setPrevCountryFilter] = useState();
     const [prevInputValue, setPrevInputValue] = useState('');
 
     const [searchClicked, setSearchClicked] = useState();
@@ -61,15 +62,12 @@ function SportPage() {
         try {
             setLoading(true);
 
-            console.log(sportId);
-            console.log(inputValue);
-            console.log(page);
-
             const response = await axios.post(
                 `${apiEndpoints.url}${apiEndpoints.sports.getLeagueSearch}`,
                 {
                     sport_id: sportId,
-                    letter: inputValue,
+                    country_id: parseInt(countryFilter),
+                    letter: inputValue ? inputValue : ' ',
                     page: page + 1,
                     per_page: leaguesPerPage
                 },
@@ -79,19 +77,15 @@ function SportPage() {
             );
 
             setCurrentLeagues(response.data);
-
-            console.log(response.data)
-
             const totalPosts = response.data[0].count;
-
-            console.log(response.data[0].count)
             setPageCount(Math.ceil(totalPosts / leaguesPerPage));
 
             setPrevCountryFilter(countryFilter);
             setPrevInputValue(inputValue);
         } catch (error) {
-            setPrevCountryFilter('0');
-            setPrevInputValue(' ');
+            setPrevCountryFilter(0);
+            setPrevInputValue('');
+            setPageCount(0);
             toast.error(`:( Troubles With Leagues Loading: ${error}`);
         }finally {
             setLoading(false);
@@ -124,9 +118,12 @@ function SportPage() {
     }, []);
 
     useEffect(() => {
-        if(prevInputValue !== inputValue || prevCountryFilter !== countryFilter){
-            getLeagues(currentPage);
 
+        console.log(countryFilter)
+        console.log(inputValue)
+        if(prevInputValue !== inputValue || prevCountryFilter !== countryFilter){
+            handlePageClick({selected: 0});
+            setPaginationKey((prevKey) => prevKey + 1);
         }
     }, [countryFilter, searchClicked]);
 
@@ -204,6 +201,7 @@ function SportPage() {
                 </section>
 
                 <ReactPaginate
+                    key={paginationKey}
                     breakLabel="..."
                     nextLabel="→"
                     onPageChange={handlePageClick}
