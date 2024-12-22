@@ -114,9 +114,6 @@ function SportPage() {
     }, []);
 
     useEffect(() => {
-
-        console.log(countryFilter)
-        console.log(inputValue)
         if(prevInputValue !== inputValue || prevCountryFilter !== countryFilter){
             handlePageClick({selected: 0});
             setPaginationKey((prevKey) => prevKey + 1);
