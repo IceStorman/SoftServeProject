@@ -1,5 +1,5 @@
 from flask import Blueprint,request
-from service.api_logic.news_logic import get_news_by_count, get_latest_sport_news, get_popular_news, get_news_by_id
+from service.api_logic.news_logic import get_news_by_count, get_latest_sport_news, get_popular_news, get_article_by_id
 from database.session import SessionLocal
 from api.routes.cache import cache
 from api.routes.scripts import get_cache_key, get_error_response
@@ -46,13 +46,13 @@ def get_popular_news_endpoint():
         response = {"error in service": str(e)}
         return get_error_response(response, 500)
     
-@news_app.route('/article', method=['POST'])
+@news_app.route('/article', methods=['POST'])
 def specific_article():
 
     try:
         article = request.get_json()
         news_id=article['blob_id']
-        response = get_news_by_id(news_id, session)
+        response = get_article_by_id(news_id, session)
         return response
     except Exception as e:
         response = {"error in service":  str(e)}
