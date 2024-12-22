@@ -33,7 +33,7 @@ function SportPage() {
     const [loading, setLoading] = useState(false);
 
     const [countryFilter, setCountryFilter] = useState('0');
-    const [inputValue, setInputValue] = useState('');
+    const [inputValue, setInputValue] = useState(' ');
 
     const [prevCountryFilter, setPrevCountryFilter] = useState('');
     const [prevInputValue, setPrevInputValue] = useState('');
@@ -61,8 +61,12 @@ function SportPage() {
         try {
             setLoading(true);
 
+            console.log(sportId);
+            console.log(inputValue);
+            console.log(page);
+
             const response = await axios.post(
-                `${apiEndpoints.url}${apiEndpoints.sports.getLeague}`,
+                `${apiEndpoints.url}${apiEndpoints.sports.getLeagueSearch}`,
                 {
                     sport_id: sportId,
                     letter: inputValue,
@@ -76,12 +80,18 @@ function SportPage() {
 
             setCurrentLeagues(response.data);
 
+            console.log(response.data)
+
             const totalPosts = response.data[0].count;
+
+            console.log(response.data[0].count)
             setPageCount(Math.ceil(totalPosts / leaguesPerPage));
 
             setPrevCountryFilter(countryFilter);
             setPrevInputValue(inputValue);
         } catch (error) {
+            setPrevCountryFilter('0');
+            setPrevInputValue(' ');
             toast.error(`:( Troubles With Leagues Loading: ${error}`);
         }finally {
             setLoading(false);
@@ -116,8 +126,7 @@ function SportPage() {
     useEffect(() => {
         if(prevInputValue !== inputValue || prevCountryFilter !== countryFilter){
             getLeagues(currentPage);
-            console.log(countryFilter);
-            console.log(inputValue);
+
         }
     }, [countryFilter, searchClicked]);
 
