@@ -1,70 +1,64 @@
-import React, { useState } from "react";
-import Games from "./games";
+import React, { useState, useEffect  } from "react";
 import ActiveGames from "./activeGames";
 
 const Slider = ({ games }) => {
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [isClicked, setIsClicked] = useState(false);
-    const itemsPerSlide = 6; 
-  
-    const getVisibleGames = () => {
-      const start = currentIndex * itemsPerSlide;
-      const end = start + itemsPerSlide;
-      return games.slice(start, end);
-    };
+  const [visibleGames, setVisibleGames] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0); 
+  const [clickCount, setClickCount] = useState(0); 
+  const [translateValue, setTranslateValue] = useState(0); 
+  const itemsPerSlide = 8;
+
+  useEffect(() => {
+    setVisibleGames(games.slice(0, itemsPerSlide)); 
+  }, [games]);
   
     const onNext = () => {
-      setCurrentIndex((prevIndex) =>
-        (prevIndex + 1) * itemsPerSlide >= games.length ? 0 : prevIndex + 1
-      );
-      setIsClicked(true);
+
+      if (clickCount % 2 === 0) {
+        const nextIndex = currentIndex + itemsPerSlide;
+  
+        if (nextIndex < games.length) {
+          setVisibleGames((prevVisibleGames) => [
+            ...prevVisibleGames,
+            ...games.slice(nextIndex, nextIndex + itemsPerSlide),
+          ]);
+          setCurrentIndex(nextIndex);
+        }
+      }
+  
+      setTranslateValue((prevTranslate) => prevTranslate - 50);
+      setClickCount((prevCount) => prevCount + 1);
+      
     };
   
     const onPrev = () => {
-      setCurrentIndex((prevIndex) =>
-        prevIndex === 0 ? Math.floor(games.length / itemsPerSlide) - 1 : prevIndex - 1
-      );
+      if (translateValue === 0) return; 
+      setTranslateValue((prevTranslate) => prevTranslate + 50);
+      setCurrentIndex((prevIndex) => (prevIndex === 0 ? 0 : prevIndex - 1));
     };
 
     return (
         <section className="games">
         
-        <button onClick={onPrev}></button>
+        <button onClick={onPrev} disabled={translateValue === 0}></button>
         
-        <div className={isClicked ? 'gamesBar active' : 'gamesBar'}>
+        <div className='gamesBar'>
         
-            <div className="activeGames">
+            <div className='activeGames'
+            style={{ transform: `translate(${translateValue}rem)` }}>
+            
                 <h2 id="liveGames">Активні</h2>
         
-                {getVisibleGames().map((item, index) => (
+                {visibleGames.map((item, index) => (
                <ActiveGames
                     key={index}
-                    logoHome = {item?.teams?.home?.logo}
-                    logoAway = {item?.teams?.away?.logo}
-                    scoreHome = {item?.scores?.home}
-                    scoreAway = {item?.scores?.away}
-                    league = {item?.league?.logo}
+                    logoHome = {item?.home_team_logo}
+                    logoAway = {item?.away_team_logo}
+                    scoreHome = {item?.home_score}
+                    scoreAway = {item?.away_score}
+                    league = {item?.league_logo}
                 />
             ))}
-
-            </div>
-           
-            <div className="scheduledGames">
-           
-               {/*  <div id="plannedGames">
-                    <h2>MNS</h2>
-                    <h2>00</h2>
-                </div>
-           
-               {getVisibleGames().map((item, index) => (
-               <Games
-                    key={index}
-                    logoHome = {item?.teams?.home?.logo}
-                    logoAway = {item?.teams?.away?.logo}
-                    league = {item?.league?.logo}
-                    time = {item?.time}
-                /> 
-            ))} */}
 
             </div>
         
