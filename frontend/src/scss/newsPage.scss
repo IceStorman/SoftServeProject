@@ -50,6 +50,7 @@
       }
 
       .highlighted{
+        color: $scroll-track;
         text-decoration: underline;
         text-decoration-color: $scroll-track;
         text-decoration-thickness: 0.2rem;
