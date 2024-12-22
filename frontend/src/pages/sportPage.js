@@ -30,16 +30,21 @@ function SportPage() {
     const [currentPage, setCurrentPage] = useState(0);
     const leaguesPerPage = 9;
 
+    const [loading, setLoading] = useState(false);
 
-    const [countryFilter, setCountryFilter] = useState(0);
+    const [countryFilter, setCountryFilter] = useState('0');
     const [inputValue, setInputValue] = useState('');
+
+    const [prevCountryFilter, setPrevCountryFilter] = useState('');
+    const [prevInputValue, setPrevInputValue] = useState('');
+
     const [searchClicked, setSearchClicked] = useState();
 
 
     const handlePageClick = (event) => {
         const selectedPage = event.selected;
         setCurrentPage(selectedPage);
-        getTeams(selectedPage);
+        getLeagues(selectedPage);
     };
 
     function handleSearchClick() {
@@ -52,14 +57,15 @@ function SportPage() {
         }
     };
 
-
-    const getTeams = async (page) => {
+    const getLeagues = async (page) => {
         try {
+            setLoading(true);
 
             const response = await axios.post(
                 `${apiEndpoints.url}${apiEndpoints.sports.getLeague}`,
                 {
                     sport_id: sportId,
+                    letter: inputValue,
                     page: page + 1,
                     per_page: leaguesPerPage
                 },
@@ -69,13 +75,18 @@ function SportPage() {
             );
 
             setCurrentLeagues(response.data);
+
             const totalPosts = response.data[0].count;
             setPageCount(Math.ceil(totalPosts / leaguesPerPage));
+
+            setPrevCountryFilter(countryFilter);
+            setPrevInputValue(inputValue);
         } catch (error) {
             toast.error(`:( Troubles With Leagues Loading: ${error}`);
+        }finally {
+            setLoading(false);
         }
     };
-
 
     useEffect(() => {
         if (Array.isArray(sports) && sports.length > 0) {
@@ -103,10 +114,12 @@ function SportPage() {
     }, []);
 
     useEffect(() => {
-        getTeams(currentPage);
-        console.log(countryFilter);
-        console.log(inputValue);
-    }, [countryFilter, searchClicked, currentPage]);
+        if(prevInputValue !== inputValue || prevCountryFilter !== countryFilter){
+            getLeagues(currentPage);
+            console.log(countryFilter);
+            console.log(inputValue);
+        }
+    }, [countryFilter, searchClicked]);
 
     return(
         <section className={"sportPage"}>
@@ -151,7 +164,7 @@ function SportPage() {
 
                         <label>Search league</label>
 
-                        <button onClick={handleSearchClick}>
+                        <button onClick={handleSearchClick} disabled={loading}>
                             <i className="fa-solid fa-magnifying-glass"></i>
                         </button>
 

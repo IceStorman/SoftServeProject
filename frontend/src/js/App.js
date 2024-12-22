@@ -23,7 +23,7 @@ import LeaguePage from "../pages/leaguePage";
 import StreamPage from "../pages/streamPage";
 import NewsPage from "../pages/newsPage";
 import NotExistingPage from "../pages/notExistingPage";
-import ScrollToTop from "../scrollToTop";
+import ScrollToTop from "../components/scrollToTop";
 
 function App(){
 
