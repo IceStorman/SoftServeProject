@@ -54,7 +54,9 @@ function App(){
 
                     <Route path="/sport/:sportName" element={<SportPage />} />
 
-                    <Route path="/league/:leagueName" element={<LeaguePage />} />
+                    <Route path="/sport/:sportName/league/:leagueName" element={<LeaguePage />} />
+
+                    <Route path="/sport/:sportName/news/:id" element={<NewsPage />} />
 
                     <Route path="/stream" element={<StreamPage />} />
 
