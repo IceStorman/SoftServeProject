@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from "react";
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import NewsSection from "../components/newsPage/newsSection";
 import axios from "axios";
 import apiEndpoints from "../apiEndpoints";
 import {toast} from "sonner";
 
 function NewsPage(){
+    const navigate = useNavigate();
     const location = useLocation();
     const newsId = location.state || {};
 
@@ -61,7 +62,12 @@ function NewsPage(){
 
                     <h4 className="date">{news?.timestamp}</h4>
                 </>
-            ) : null}
+            ) :
+                (!news?(
+                    navigate("/not-existing")
+                ) : null
+                )
+            }
 
         </section>
 
