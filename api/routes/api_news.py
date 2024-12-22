@@ -50,7 +50,7 @@ def get_popular_news_endpoint():
 def specific_article():
 
     try:
-        article = request.getjson()
+        article = request.get_json()
         news_id=article['blob_id']
         response = get_news_by_id(news_id, session)
         return response

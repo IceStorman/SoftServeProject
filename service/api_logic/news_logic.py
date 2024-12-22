@@ -38,8 +38,8 @@ def get_popular_news(count: int, session):
     return json_news(news)
 
 @handle_exceptions
-def get_news_by_id(blob_id: str, session):
-    news = fetch_news(session, filters=[News.blob_id == blob_id], limit=1)
+def get_article_by_id(blob_id: str, session):
+    news = fetch_news(session, filters=[News.blob_id == blob_id]).first()
     if news:
         return json_news(news)
     else:
