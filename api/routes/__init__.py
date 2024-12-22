@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_cors import CORS
-from api.routes import api_news, api_games, api_sports, api_teams
+from api.routes import api_news, api_games, api_sports, api_teams, api_countries
 from api.routes.cache import cache
 
 # Ініціалізація додатку
@@ -14,7 +14,9 @@ def create_app():
     app.register_blueprint(api_news.news_app, url_prefix='/news')
     app.register_blueprint(api_games.games_app, url_prefix='/games')
     app.register_blueprint(api_sports.sports_app, url_prefix='/sports')
-    app.register_blueprint(api_teams.teams_app, url_prefix='/team')
+    app.register_blueprint(api_teams.teams_app, url_prefix='/teams')
+    app.register_blueprint(api_countries.countries_app, url_prefix='/countries')
+
 
 
     return app
@@ -23,5 +25,4 @@ def create_app():
 app = create_app()
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=True)
-    #app.run(host='0.0.0.0', port=5001, debug=False)
 

@@ -347,15 +347,3 @@ def get_news_by_count(count: int, session) -> str:
         return handle_no_records_message("No news was found in the database.")
     return json.dumps(fetch_blob_data(news_records), ensure_ascii=False)
 
-
-test_json1 = {
-
-    "title": "nba la la la",
-    "body": "ля ля ля",
-    "file": {
-        "name": "malicious",
-    },
-    "sport": "nba",
-    "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKnWDXTdQP2z1f9xcf5VLdAaifmIWCWQO6JQ&s"
-}
-blob_save_news(test_json1)
