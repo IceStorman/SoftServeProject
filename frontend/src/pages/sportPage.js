@@ -57,6 +57,10 @@ function SportPage() {
     };
 
     const getLeagues = async (page) => {
+
+        setPrevCountryFilter(countryFilter);
+        setPrevInputValue(inputValue);
+
         try {
             setLoading(true);
 
@@ -77,12 +81,7 @@ function SportPage() {
             setCurrentLeagues(response.data);
             const totalPosts = response.data[0].count;
             setPageCount(Math.ceil(totalPosts / leaguesPerPage));
-
-            setPrevCountryFilter(countryFilter);
-            setPrevInputValue(inputValue);
         } catch (error) {
-            setPrevCountryFilter(0);
-            setPrevInputValue(' ');
             setPageCount(0);
             toast.error(`:( Troubles With Leagues Loading: ${error}`);
         }finally {
