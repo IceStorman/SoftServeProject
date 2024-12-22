@@ -62,6 +62,7 @@ class SearchDTO(BaseModel):
     def clean_letter(cls, value: Optional[str]) -> Optional[str]:
         if value and isinstance(value, str):
             return ' '.join(value.split()).lower()
+        return None
 
 
 class SportsLeagueDTO(BaseModel):
