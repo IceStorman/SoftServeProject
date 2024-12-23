@@ -1,6 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.by import By
 import time
 
 
@@ -20,6 +21,8 @@ try:
 
     
     time.sleep(5)
+
+    driver.find_elemens(By)
 finally:
  
     driver.quit()
