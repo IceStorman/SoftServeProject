@@ -6,6 +6,9 @@ from database.azure_blob_storage.save_get_blob import blob_save_specific_api, ge
 from database.session import SessionLocal
 from typing import Dict
 
+from service.implementation.auto_request_api.sport_data_managers.sport_consts import get_host
+
+
 class AbstractSportDataManager:
     api_data: Dict[str, str]
 
@@ -16,6 +19,7 @@ class AbstractSportDataManager:
 
     def __init__(self, new_data_object: BaseDTO, new_sport_name: str):
         self._sport_name = new_sport_name
+        self._host = get_host(self._sport_name)
 
     def main_request(self, host, url, blob_name) -> Dict[str, str]:
         global current_key_index, account_url
