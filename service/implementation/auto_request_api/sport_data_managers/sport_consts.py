@@ -1,6 +1,7 @@
+from typing import Optional
 
 
-def get_team_statistics_url(sport_name: str, team_id: int, league_id: int):
+def get_team_statistics_url(sport_name: str, team_id: Optional[int], league_id: Optional[int]):
     match sport_name:
         case "Afl":
             return f"https://v1.afl.api-sports.io/teams/statistics?id={team_id}&season=2023"
@@ -15,7 +16,7 @@ def get_team_statistics_url(sport_name: str, team_id: int, league_id: int):
         case "Volleyball":
             return f"https://v1.volleyball.api-sports.io/teams/statistics?season=2024&team={team_id}&league={league_id}"
 
-def get_team_statistics_index(sport_name: str, team_id: int, league_id: int):
+def get_team_statistics_index(sport_name: str, team_id: Optional[int], league_id: Optional[int]):
     match sport_name:
         case "Afl":
             return f"teams/statistics?id={team_id}&season=2023"

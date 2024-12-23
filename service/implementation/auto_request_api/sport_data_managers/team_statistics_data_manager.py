@@ -7,9 +7,9 @@ from service.implementation.auto_request_api.sport_data_managers.abstract_sport_
 
 
 class TeamStatisticsDataManager(AbstractSportDataManager):
-    _sport_id: Optional[int] = None
-    _team_id: Optional[int] = None
-    _league_id: Optional[int] = None
+    _sport_id: Optional[int]
+    _team_id: Optional[int]
+    _league_id: Optional[int]
 
     def __init__(self, team_statistics_data: TeamsStatisticsOrPlayersDTO, new_sport_name):
         super().__init__(team_statistics_data, new_sport_name)
