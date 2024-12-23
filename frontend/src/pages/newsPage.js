@@ -6,7 +6,7 @@ import apiEndpoints from "../apiEndpoints";
 import {toast} from "sonner";
 
 function NewsPage(){
-    const {id} = useParams();
+    const {sportName,id} = useParams();
     const navigate = useNavigate();
     const location = useLocation();
     const newsId = location.state || id;
@@ -16,6 +16,7 @@ function NewsPage(){
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
+
         const fetchNews = async () => {
             try {
                 setLoading(true);
@@ -29,6 +30,10 @@ function NewsPage(){
                         headers: { 'Content-Type': 'application/json' },
                     }
                 );
+
+                if(response.data[0].S_P_O_R_T === sportName) {
+                    navigate("/not-existing")
+                }
 
                 setNews(response.data[0].data);
             } catch (error) {
