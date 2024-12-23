@@ -1,14 +1,16 @@
 import React, {useEffect, useState} from "react";
-import {useLocation, useNavigate} from "react-router-dom";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 import NewsSection from "../components/newsPage/newsSection";
 import axios from "axios";
 import apiEndpoints from "../apiEndpoints";
 import {toast} from "sonner";
 
 function NewsPage(){
+    const {id} = useParams();
     const navigate = useNavigate();
     const location = useLocation();
-    const newsId = location.state || {};
+    console.log(id)
+    const newsId = location.state || {id};
 
     const [news, setNews] = useState([]);
 
@@ -47,25 +49,26 @@ function NewsPage(){
 
         <section className={"newsContent"}>
 
-
             {!loading ? (
-                <>
-                    <h1>{news?.title}</h1>
+                    <>
+                        <h1>{news?.title}</h1>
 
-                    {news?.article &&
-                        Object.entries(news.article).map(([key, value], index) => (
-                            <NewsSection
-                                key={key}
-                                text={value?.content}
-                                teams={news?.team_names[0]}
-                                subheading={value?.subheadings}
-                                img={news?.images?.[index]}
-                            />
-                        ))}
+                        {news?.article &&
+                            Object.entries(news.article).map(([key, value], index) => (
+                                <NewsSection
+                                    key={key}
+                                    text={value?.content}
+                                    teams={news?.team_names[0]}
+                                    subheading={value?.subheadings}
+                                    img={news?.images?.[index]}
+                                />
+                            ))
+                        }
 
-                    <h4 className="date">{news?.timestamp}</h4>
-                </>
-            ) : null
+                        <h4 className="date">{news?.timestamp}</h4>
+                    </>
+                ) :
+                <div className="loader"></div>
             }
 
         </section>

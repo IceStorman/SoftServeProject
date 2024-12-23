@@ -17,7 +17,12 @@ function MainPage() {
     const [sports, setSport] = useState([]);
     const [games, setGames] = useState([]);
 
+    const [loading, setLoading] = useState(false)
+
     useEffect(() => {
+
+        setLoading(true)
+
         axios.get(`${apiEndpoints.url}${apiEndpoints.news.getRecent}`)
             .then(res => {
                 const returnedNews = res.data;
@@ -25,7 +30,8 @@ function MainPage() {
             })
             .catch(error => {
                 toast.error(`:( Troubles With News Loading: ${error}`);
-            });
+            })
+
     }, []);
 
     useEffect(() => {
@@ -50,11 +56,18 @@ function MainPage() {
             });
     }, []);
 
+    useEffect(() => {
+        (news.length > 0 || sports.length > 0 || games.length) ? setLoading(false)
+        : setTimeout(() => {
+            setLoading(false);
+        }, 2000)
+    }, [news.length, sports.length, games.length]);
+
     return(
 
         <>
 
-            <Slider games={games} />
+            <Slider games={games}/>
 
             <section className="container">
 
@@ -74,10 +87,12 @@ function MainPage() {
                                     sport={item.data?.S_P_O_R_T}
                                 />
                             ))
-                            :
-                            <div className={"noItems"}>
-                                <h1>no latest news were found :(</h1>
-                            </div>
+                            : (loading === false) ?
+                                (
+                                    <div className={"noItems"}>
+                                        <h1>no latest news were found :(</h1>
+                                    </div>
+                                ) : null
                     }
 
                 </section>
@@ -106,7 +121,7 @@ function MainPage() {
 
                 <section className="navSports">
 
-                    {sports.map((item, index)=>(
+                    {sports.map((item, index) => (
                         <SportBtn
                             key={index}
                             sport={item.sport}
@@ -119,6 +134,15 @@ function MainPage() {
                 </section>
 
             </section>
+
+            {loading === true ?
+                (
+                    <>
+                        <div className={"loader-background"}></div>
+                        <div className="loader"></div>
+                    </>
+                ) : null
+            }
 
         </>
     );

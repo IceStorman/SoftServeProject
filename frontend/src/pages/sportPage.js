@@ -16,8 +16,10 @@ function SportPage() {
 
     const location = useLocation();
     const stateData = location.state || {};
-    const sports = stateData.sports;
     const sportId = stateData.sportId;
+
+
+    const [sports, setSport] = useState([]);
 
     const [rangeScale, setRangeScale] = useState(3)
 
@@ -90,18 +92,6 @@ function SportPage() {
     };
 
     useEffect(() => {
-        if (Array.isArray(sports) && sports.length > 0) {
-
-            if (!sports.find(item => item.sport === sportName)) {
-                navigate("/not-existing");
-            }
-
-        } else {
-            navigate("/not-existing");
-        }
-    }, [sports, sportName]);
-
-    useEffect(() => {
         axios.get(`${apiEndpoints.url}${apiEndpoints.news.getSport}${sportName}`)
             .then(res => {
                 const returnedNews = res.data;
@@ -118,6 +108,29 @@ function SportPage() {
             setPaginationKey((prevKey) => prevKey + 1);
         }
     }, [countryFilter, searchClicked]);
+
+    useEffect(() => {
+        axios.get(`${apiEndpoints.url}${apiEndpoints.sports.getAll}`)
+        .then(res => {
+            const returnedSports = res.data;
+
+            if (Array.isArray(returnedSports) && returnedSports.length > 0 && loading === false) {
+
+                if (!returnedSports.find(item => item.sport === sportName)) {
+                    navigate("/not-existing");
+                }
+
+            } else {
+                navigate("/not-existing");
+            }
+
+            setSport(returnedSports);
+        })
+        .catch(error => {
+            toast.error(`:( Troubles With Sports Loading: ${error}`);
+        });
+
+    }, [sports, sportName]);
 
     return(
         <section className={"sportPage"}>

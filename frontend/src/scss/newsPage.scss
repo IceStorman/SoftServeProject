@@ -3,6 +3,7 @@
   flex-direction: column;
   gap: 1rem;
   width: 75%;
+  min-height: 70vh;
   margin: 4vh auto;
   background-color: $special-light-purple;
   border-radius: 0.5rem;
@@ -57,5 +58,4 @@
       }
     }
   }
-
 }
