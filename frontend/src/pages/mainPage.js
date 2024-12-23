@@ -87,10 +87,12 @@ function MainPage() {
                                     sport={item.data?.S_P_O_R_T}
                                 />
                             ))
-                            :
-                            <div className={"noItems"}>
-                                <h1>no latest news were found :(</h1>
-                            </div>
+                            : (loading === false) ?
+                                (
+                                    <div className={"noItems"}>
+                                        <h1>no latest news were found :(</h1>
+                                    </div>
+                                ) : null
                     }
 
                 </section>
