@@ -57,11 +57,11 @@ function MainPage() {
     }, []);
 
     useEffect(() => {
-        (news.length > 0) ? setLoading(false)
+        (news.length > 0 || sports.length > 0 || games.length) ? setLoading(false)
         : setTimeout(() => {
             setLoading(false);
         }, 2000)
-    }, [news.length]);
+    }, [news.length, sports.length, games.length]);
 
     return(
 
