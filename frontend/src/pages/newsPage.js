@@ -47,25 +47,26 @@ function NewsPage(){
 
         <section className={"newsContent"}>
 
-
             {!loading ? (
-                <>
-                    <h1>{news?.title}</h1>
+                    <>
+                        <h1>{news?.title}</h1>
 
-                    {news?.article &&
-                        Object.entries(news.article).map(([key, value], index) => (
-                            <NewsSection
-                                key={key}
-                                text={value?.content}
-                                teams={news?.team_names[0]}
-                                subheading={value?.subheadings}
-                                img={news?.images?.[index]}
-                            />
-                        ))}
+                        {news?.article &&
+                            Object.entries(news.article).map(([key, value], index) => (
+                                <NewsSection
+                                    key={key}
+                                    text={value?.content}
+                                    teams={news?.team_names[0]}
+                                    subheading={value?.subheadings}
+                                    img={news?.images?.[index]}
+                                />
+                            ))
+                        }
 
-                    <h4 className="date">{news?.timestamp}</h4>
-                </>
-            ) : null
+                        <h4 className="date">{news?.timestamp}</h4>
+                    </>
+                ) :
+                <div className="loader"></div>
             }
 
         </section>
