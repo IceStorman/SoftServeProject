@@ -114,9 +114,9 @@ function SportPage() {
         .then(res => {
             const returnedSports = res.data;
 
-            if (Array.isArray(returnedSports) && returnedSports.length > 0 && loading === false) {
+            if (returnedSports.length > 0) {
 
-                if (!returnedSports.find(item => item.sport === sportName)) {
+                if ((returnedSports.find(item => item.sport === sportName) === undefined) || returnedSports.find(item => item.sport === sportName).sport !== sportName) {
                     navigate("/not-existing");
                 }
 
@@ -130,7 +130,7 @@ function SportPage() {
             toast.error(`:( Troubles With Sports Loading: ${error}`);
         });
 
-    }, [sports, sportName]);
+    }, [sportName]);
 
     return(
         <section className={"sportPage"}>
