@@ -31,6 +31,9 @@ function NewsPage(){
 
                 setNews(response.data[0].data);
             } catch (error) {
+                if(news.length === 0) {
+                    navigate("/not-existing")
+                }
                 toast.error(`:( Troubles With This News Loading: ${error}`);
             } finally {
                 setLoading(false);
@@ -62,11 +65,7 @@ function NewsPage(){
 
                     <h4 className="date">{news?.timestamp}</h4>
                 </>
-            ) :
-                (!news?(
-                    navigate("/not-existing")
-                ) : null
-                )
+            ) : null
             }
 
         </section>
