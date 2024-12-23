@@ -31,8 +31,10 @@ function NewsPage(){
                     }
                 );
 
-                if(response.data[0].S_P_O_R_T === sportName) {
-                    navigate("/not-existing")
+                if(sportName !== undefined){
+                    if(response.data[0].data.S_P_O_R_T !== sportName) {
+                        navigate("/not-existing")
+                    }
                 }
 
                 setNews(response.data[0].data);
