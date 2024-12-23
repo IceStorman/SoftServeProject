@@ -31,7 +31,7 @@ fix_hairline=True)
 games = get_games_today(session=session)
 
 future_games = [
-    f"{game['home_team_name']} vs {game['away_team_name']}" 
+    f"{game['home_team_name']} vs {game['away_team_name']} {game['date']}" 
     for game in games if game['status'] == 'Not Started'
 ]
 
