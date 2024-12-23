@@ -28,8 +28,10 @@ class TeamsLeagueDTO(BaseModel):
         else:
             return None, None
 
+class BaseDTO(BaseModel):
+    pass
 
-class TeamsStatisticsOrPlayersDTO(BaseModel):
+class TeamsStatisticsOrPlayersDTO(BaseDTO):
     sport_id: Optional[int] = None
     team_id: Optional[int] = None
     league_id: Optional[int] = None
