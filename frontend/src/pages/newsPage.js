@@ -9,8 +9,7 @@ function NewsPage(){
     const {id} = useParams();
     const navigate = useNavigate();
     const location = useLocation();
-    console.log(id)
-    const newsId = location.state || {id};
+    const newsId = location.state || id;
 
     const [news, setNews] = useState([]);
 
