@@ -1,14 +1,16 @@
 import React, {useEffect, useState} from "react";
-import {useLocation, useNavigate} from "react-router-dom";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 import NewsSection from "../components/newsPage/newsSection";
 import axios from "axios";
 import apiEndpoints from "../apiEndpoints";
 import {toast} from "sonner";
 
 function NewsPage(){
+    const {id} = useParams();
     const navigate = useNavigate();
     const location = useLocation();
-    const newsId = location.state || {};
+    console.log(id)
+    const newsId = location.state || {id};
 
     const [news, setNews] = useState([]);
 
