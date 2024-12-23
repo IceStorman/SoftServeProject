@@ -6,7 +6,6 @@ from sqlalchemy.sql.expression import ClauseElement
 from exept.handle_exeptions import handle_exceptions
 from service.api_logic.scripts import get_sport_by_name
 
-@handle_exceptions
 def fetch_news(session, order_by: ClauseElement = None, limit: int = None, filters=None):
     query = session.query(News)
     if filters:
@@ -32,13 +31,25 @@ def get_latest_sport_news(count: int, sport_name: str, session):
     news = fetch_news(session, order_by=News.save_at.desc(), limit=count, filters=filters)
     return json_news(news)
 
+
 @handle_exceptions
 def get_popular_news(count: int, session):
     news = fetch_news(session, order_by=News.interest_rate.desc(), limit=count)
     return json_news(news)
 
-
 @handle_exceptions
+def get_news_by_id(blob_id: str, session):
+    news = fetch_news(session, filters=[News.blob_id == blob_id], limit=1)
+    if news:
+        return json_news(news)
+    else:
+        return Response(
+            json.dumps({"error": "News not found"}, ensure_ascii=False),
+            content_type='application/json; charset=utf-8',
+            status=404
+        )
+
+
 def json_news(news_records):
     all_results = []
     for news_record in news_records:
@@ -47,9 +58,7 @@ def json_news(news_records):
             "blob_id": news_record.blob_id,
             "data": data
         })
-
     return Response(
         json.dumps(all_results, ensure_ascii=False),
         content_type='application/json; charset=utf-8',
-        status=200
     )

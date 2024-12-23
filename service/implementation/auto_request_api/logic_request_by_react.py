@@ -1,9 +1,9 @@
 import requests
 from datetime import datetime
-from service.implementation.auto_request_api.logic_auto_request import current_key_index, token_usage, api_key
+from service.implementation.auto_request_api.logic_auto_request import token_usage, api_key
 from database.azure_blob_storage.save_get_blob import blob_save_specific_api, get_all_blob_indexes_from_db, get_blob_data_for_all_sports
 from database.session import SessionLocal
-from api.routes.dto import UniversalResponseDTO
+from dto.api_input import TeamsStatisticsOrPlayersDTO
 from typing import Dict
 
 
@@ -239,7 +239,7 @@ def baseball_teams_statistics(api_data: Dict[str, str]) -> Dict[str, str]:
         return {"error": str(e)}
 
 
-def basketball_players(dto: UniversalResponseDTO)  -> Dict[str, str]:
+def basketball_players(dto: TeamsStatisticsOrPlayersDTO)  -> Dict[str, str]:
     team_id = dto.team_id
     if not team_id:
         return {"error": "Missing or invalid parameter: 'team_id' required."}
@@ -461,7 +461,7 @@ def nfl_injuries_players(api_data: Dict[str, str]) -> Dict[str, str]:
         return {"error": str(e)}
 
 
-def rugby_teams_statistics(dto: UniversalResponseDTO) -> Dict[str, str]:
+def rugby_teams_statistics(dto: TeamsStatisticsOrPlayersDTO) -> Dict[str, str]:
     team_id = dto.team_id
     league_id = dto.league_id
     if not team_id or not league_id:

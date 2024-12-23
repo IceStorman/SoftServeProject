@@ -1,6 +1,7 @@
-from database.models import Sport, Games, League, Country, TeamIndex
+from database.models import Sport, League
 from exept.exeptions import SportNotFoundError
-from api.routes.dto import UniversalResponseDTO
+from sqlalchemy.orm import Query
+from sqlalchemy import and_
 
 def get_sport_by_name(session, sport_name):
     sport = session.query(Sport).filter(Sport.sport_name == sport_name).first()
@@ -9,37 +10,28 @@ def get_sport_by_name(session, sport_name):
     return sport
 
 
-#-------------------------------------
+def apply_filters(base_query: Query, filters: dict, model_aliases: dict):
+    filter_conditions = []
 
-# def apply_filters(query, dto: BaseModel):
-#     filters = []
-#     for field, value in dto.dict(exclude_unset=True).items():
-#         if value is not None:
-#             column = getattr(dto.__class__, field, None)
-#             if column:
-#                 filters.append(getattr(column, "name") == value)
-#     if filters:
-#         query = query.filter(*filters)
-#
-#     return query
+    for key, value in filters.items():
+        if "." in key:
+            table_name, column_name = key.split(".")
+            model = model_aliases.get(table_name, None)
+            if model is None:
+                raise ValueError(f"Model alias '{table_name}' not in model_aliases.")
 
-
-
-from sqlalchemy.orm import Query
-from typing import Type
-from pydantic import BaseModel
-from database.models.base import Base
-
-def apply_filters(query, model: Type[Base], dto: BaseModel):
-    filters = []
-    for field, value in dto.dict(exclude_unset=True).items():
-        if value is not None:
-            column = getattr(model, field, None)
-            if column:
-                filters.append(column == value)
+            column = getattr(model, column_name, None)
+            if column is not None:
+                filter_conditions.append(column == value)
             else:
-                raise ValueError(f"Field '{field}' not found in model '{model.__name__}'")
-    if filters:
-        query = query.filter(*filters)
+                raise ValueError(f"Column '{column_name}' not in model '{table_name}'.")
+        else:
+            raise ValueError(f"Filter format '{key}' not correct. Use 'table.column'.")
 
-    return query
+    if filter_conditions:
+        base_query = base_query.filter(and_(*filter_conditions))
+
+    return base_query
+
+
+

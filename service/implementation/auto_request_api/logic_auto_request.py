@@ -3,6 +3,8 @@ from dotenv import load_dotenv
 import requests
 from datetime import datetime
 from typing import Dict
+from sqlalchemy import text
+from database.session import SessionLocal
 from database.azure_blob_storage.save_get_blob import blob_autosave_api
 
 load_dotenv()
@@ -267,7 +269,7 @@ apis = [
         "index": "teams",
         "url": "https://v1.rugby.api-sports.io/teams?country=Argentina&league=1&season=2022",
         "host": "v1.rugby.api-sports.io",
-        "frequency": 0.1683
+        "frequency": 683
     },
     {
         "name": "rugby",
@@ -312,6 +314,7 @@ token_usage = {
     "nfl": 0,
     "rugby": 0
 }
+
 def auto_request_system(api: Dict[str, str]) -> None:
     try:
         global current_key_index
@@ -334,3 +337,12 @@ def auto_request_system(api: Dict[str, str]) -> None:
         print(f"Error while making a request to {api['name']}: {e}")
     except Exception as e:
         print(f"General error while saving data for {api['name']}: {e}")
+
+
+def keep_db_alive():
+    try:
+        with SessionLocal() as session:
+            session.execute(text("SELECT 1"))
+            print("Database connection is alive.")
+    except Exception as e:
+        print(f"Error keeping database connection alive: {e}")
