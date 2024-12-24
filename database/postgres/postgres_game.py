@@ -1,7 +1,7 @@
 from typing import Dict
 from datetime import datetime
 from database.models import Games
-from database.postgres.postgres_country import extract_country, save_country
+from database.postgres.postgres_country import save_country
 from database.postgres.postgres_team import save_team
 from database.postgres.postgres_league import save_league
 
@@ -22,7 +22,7 @@ def save_games(json_data: Dict, sport_id, session) -> None:
             date = game.get('date')
             status = game.get('status')
 
-        country_data = extract_country(game, "country")
+        country_data = game.get("location").get("country") if "location" in game else game.get("country")
 
         # (date) & time -----------
         if isinstance(date, dict):

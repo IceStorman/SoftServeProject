@@ -1,7 +1,7 @@
 from typing import Dict
 from database.models import Country
 
-def extract_country(data: dict, key: str = "country") -> dict:
+"""def extract_country(data: dict, key: str = "country") -> dict:
     if not isinstance(data, (dict, list)):
         return None
 
@@ -19,7 +19,7 @@ def extract_country(data: dict, key: str = "country") -> dict:
             if result is not None:
                 return result
 
-    return None
+    return None"""
 
 def save_country(country_data: Dict, session) -> Country:
     if not country_data:
@@ -36,7 +36,7 @@ def save_country(country_data: Dict, session) -> Country:
     if not country_name:
         return None
 
-    country_entry = session.query(Country).filter_by(api_id=country_api_id).first()
+    country_entry = session.query(Country).filter_by(name=country_name).first()
     if not country_entry:
         country_entry = Country(
             api_id=country_api_id,
@@ -46,7 +46,7 @@ def save_country(country_data: Dict, session) -> Country:
         )
         session.add(country_entry)
     else:
-        country_entry.name = country_name
+        country_entry.api_id = country_api_id
         country_entry.code = country_code
         country_entry.flag = country_flag
     session.commit()
