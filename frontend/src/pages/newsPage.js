@@ -43,13 +43,18 @@ function NewsPage(){
                     navigate("/not-existing")
                 }
                 toast.error(`:( Troubles With This News Loading: ${error}`);
-            } finally {
-                setLoading(false);
             }
         };
 
         fetchNews();
     }, []);
+
+    useEffect(() => {
+        (news.length > 0) ? setLoading(false)
+            : setTimeout(() => {
+                setLoading(false);
+            }, 2000)
+    }, [news.length]);
 
     return(
 
@@ -74,7 +79,10 @@ function NewsPage(){
                         <h4 className="date">{news?.timestamp}</h4>
                     </>
                 ) :
-                <div className="loader"></div>
+                <>
+                    <div className={"loader-background"}></div>
+                    <div className="loader"></div>
+                </>
             }
 
         </section>

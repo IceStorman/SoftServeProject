@@ -86,8 +86,6 @@ function SportPage() {
         } catch (error) {
             setPageCount(0);
             toast.error(`:( Troubles With Leagues Loading: ${error}`);
-        }finally {
-            setLoading(false);
         }
     };
 
@@ -132,6 +130,13 @@ function SportPage() {
 
     }, [sportName]);
 
+    useEffect(() => {
+        (sportNews.length > 0 || currentLeagues.length > 0) ? setLoading(false)
+            : setTimeout(() => {
+                setLoading(false);
+            }, 2000)
+    }, [sportNews.length, currentLeagues.length]);
+
     return(
         <section className={"sportPage"}>
 
@@ -152,10 +157,12 @@ function SportPage() {
                             id={item.blob_id}
                         />
                     ))
-                    :
-                    <div className={"noItems"}>
-                        <h1>no {sportName} news were found :(</h1>
-                    </div>
+                    : (loading === false) ?
+                        (
+                            <div className={"noItems"}>
+                                <h1>no {sportName} news were found :(</h1>
+                            </div>
+                        ) : null
                 }
 
             </section>
@@ -219,6 +226,16 @@ function SportPage() {
                 />
 
             </section>
+
+
+            {loading === true ?
+                (
+                    <>
+                        <div className={"loader-background"}></div>
+                        <div className="loader"></div>
+                    </>
+                ) : null
+            }
 
         </section>
     );
