@@ -21,7 +21,7 @@ def save_api_data(json_data: Dict, sport_name: str ) -> None:
         entity = json_data.get("get")
         if entity == "teams":
             save_teams(json_data, sport_id, session)
-            if sport_name == "mma":
+            if sport_name == "mma" or sport_name == "formula-1":
                 save_leagues(json_data, sport_id, session)
 
         elif entity == "leagues":
