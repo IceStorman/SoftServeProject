@@ -50,42 +50,54 @@ function NewsPage(){
     }, []);
 
     useEffect(() => {
-        (news.length > 0) ? setLoading(false)
+        (news?.title) ? setLoading(false)
             : setTimeout(() => {
                 setLoading(false);
             }, 2000)
-    }, [news.length]);
+    }, [news]);
 
     return(
+        <>
+            <section className={"newsContent"}>
+                {!(news.length === 0) ? (
 
-        <section className={"newsContent"}>
-
-            {!loading ? (
-                    <>
-                        <h1>{news?.title}</h1>
-
-                        {news?.article &&
-                            Object.entries(news.article).map(([key, value], index) => (
-                                <NewsSection
-                                    key={key}
-                                    text={value?.content}
-                                    teams={news?.team_names[0]}
-                                    subheading={value?.subheadings}
-                                    img={news?.images?.[index]}
-                                />
-                            ))
-                        }
-
-                        <h4 className="date">{news?.timestamp}</h4>
-                    </>
-                ) :
                 <>
-                    <div className={"loader-background"}></div>
-                    <div className="loader"></div>
+                    <h1>{news?.title}</h1>
+
+                    {news?.article &&
+                        Object.entries(news.article).map(([key, value], index) => (
+                            <NewsSection
+                                key={key}
+                                text={value?.content}
+                                teams={news?.team_names[0]}
+                                subheading={value?.subheadings}
+                                img={news?.images?.[index]}
+                            />
+                        ))
+                    }
+
+                    <h4 className="date">{news?.timestamp}</h4>
                 </>
+                ) : (loading === false) ?
+                    (
+                        <div className={"noItems"}>
+                            <h1>no such news was found :(</h1>
+                        </div>
+                    ) : null
+                }
+
+            </section>
+
+            {loading === true ?
+                (
+                    <>
+                        <div className={"loader-background"}></div>
+                        <div className="loader"></div>
+                    </>
+                ) : null
             }
 
-        </section>
+        </>
 
     );
 }
