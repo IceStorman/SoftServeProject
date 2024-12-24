@@ -10,8 +10,6 @@ from service.implementation.auto_request_api.sport_data_managers.sport_consts im
 
 
 class AbstractSportDataManager:
-    api_data: Dict[str, str]
-
     _sport_name: str
     _host: str
 

@@ -32,7 +32,7 @@ class BaseDTO(BaseModel):
     pass
 
 class TeamsStatisticsOrPlayersDTO(BaseDTO):
-    sport_id: Optional[int] = None
+    sport_id: Optional[str] = None
     team_id: Optional[int] = None
     league_id: Optional[int] = None
 
