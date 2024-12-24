@@ -61,15 +61,16 @@ def search_leagues(session, filters_dto: SearchDTO):
     query = (
         session.query(League)
         .join(Sport, League.sport_id == Sport.sport_id)
-        .join(Country, League.country == Country.api_id)
+        .join(Country, League.country == Country.country_id)
         .filter(
             func.lower(League.name)
             .like(f"{filters_dto.letter}%")
         )
     )
-
+   
     model_aliases = {
         "leagues": League,
+        "countries": Country,
     }
 
     query = apply_filters(query, filters_dto.to_dict(), model_aliases)
