@@ -8,8 +8,7 @@ from database.session import SessionLocal
 from database.azure_blob_storage.save_get_blob import blob_autosave_api
 
 load_dotenv()
-api_key = [os.getenv("APIKEY"), "API_KEY_2", "API_KEY_3"]
-current_key_index = 0
+api_key = [os.getenv("APIKEY3"), os.getenv("APIKEY2"), os.getenv("APIKEY1")]
 
 apis = [
     {
@@ -301,33 +300,31 @@ apis = [
     },
 ]
 token_usage = {
-    "football": 0,
-    "basketball": 0,
-    "volleyball": 0,
-    "afl": 0,
-    "baseball": 0,
-    "formula-1": 0,
-    "handball": 0,
-    "hockey": 0,
-    "mma": 0,
-    "nba": 0,
-    "nfl": 0,
-    "rugby": 0
+    "football": { "current_key_index": 0 , "count": 0 },
+    "basketball": { "current_key_index": 0 , "count": 0 },
+    "volleyball": { "current_key_index": 0 , "count": 0 },
+    "afl": { "current_key_index": 0 , "count": 0 },
+    "baseball": { "current_key_index": 0 , "count": 0 },
+    "formula-1": { "current_key_index": 0 , "count": 0 },
+    "handball": { "current_key_index": 0 , "count": 0 },
+    "hockey": { "current_key_index": 0 , "count": 0 },
+    "mma": { "current_key_index": 0 , "count": 0 },
+    "nba": { "current_key_index": 0 , "count": 0 },
+    "nfl": { "current_key_index": 0 , "count": 0 },
+    "rugby": { "current_key_index": 0 , "count": 0 },
 }
 
 def auto_request_system(api: Dict[str, str]) -> None:
     try:
-        global current_key_index
-        print(f"Making a request for {api['name']}, {api['index']}")
         today = datetime.now().strftime('%Y-%m-%d')
         url_with_date = api["url"].replace("DATE", today)
-        if token_usage[api['name']] >= 99:
-            current_key_index = (current_key_index + 1) % len(api_key)
-            token_usage[api['name']] = 0
-        token_usage[api['name']] += 1
+        if token_usage[api['name']]["count"] >= 99:
+            token_usage[api['name']]["current_key_index"] = (token_usage[api['name']]["current_key_index"] + 1) % len(api_key)
+            token_usage[api['name']]["count"] = 0
+        token_usage[api['name']]["count"] += 1
         headers = {
             'x-rapidapi-host': api["host"],
-            'x-rapidapi-key': api_key[current_key_index]
+            'x-rapidapi-key': api_key[token_usage[api['name']]["current_key_index"]]
         }
         response = requests.get(url_with_date, headers=headers, timeout=10)
         response.raise_for_status()

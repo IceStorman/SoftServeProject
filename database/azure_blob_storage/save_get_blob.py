@@ -29,13 +29,13 @@ sastokens_dict = {
 }
 
 img = {
-    "football": "https://www.api-football.com/public/img/home1/hero-banner.png",
+    "football": "https://images.vexels.com/media/users/3/234566/isolated/preview/a66aee6975507c1c26fd158989ab53f9-man-soccer-kicking-football-flat.png?w=360",
     "nba": "https://api-sports.io/assets/img/news/min-nba.png",
     "mma": "https://www.api-football.com/public/img/home1/mma-logo.png",
     "hockey": "https://www.api-football.com/public/img/home1/hockey-logo.png",
     "afl": "https://www.api-football.com/public/img/home1/afl-logo.png",
     "baseball": "https://www.api-football.com/public/img/home1/baseball-logo.png",
-    "basketball": "https://api-sports.io/assets/img/news/basket-player.png",
+    "basketball": "https://cdni.iconscout.com/illustration/premium/thumb/man-who-is-dribbling-a-basketball-illustration-download-in-svg-png-gif-file-formats--dribble-skills-drills-sports-activities-pack-games-illustrations-8022188.png?f=webp",
     "formula-1": "https://www.api-football.com/public/img/news/f1-mini.png",
     "nfl": "https://www.api-football.com/public/img/home1/nfl-logo.png",
     "rugby": "https://www.api-football.com/public/img/home1/rugby-logo.png",
