@@ -1,11 +1,11 @@
 import React from "react";
 
 function NewsSection({text, teams, img, subheading}){
-
+    
     const highlightText = (text) => {
         return teams.reduce((acc, team) => {
             const regex = new RegExp(` (${team}) `, 'gi');
-            return acc.replace(regex, `<span class="highlighted">${team}</span>`);
+            return acc.replace(regex, ` <span class="highlighted">${team}</span> `);
         }, text);
     };
 
