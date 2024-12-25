@@ -28,12 +28,11 @@ def get_teams(
          .join(Country, TeamIndex.country == Country.country_id)
          .join(Sport, TeamIndex.sport_id == Sport.sport_id)
     )
-    queryr = query.all()
-    for a in queryr:
-        print(a)
 
     model_aliases = {
         "teams": TeamIndex,
+        "countries": Country,
+        "leagues": League,
     }
 
     query = apply_filters(query, filters_dto.to_dict(), model_aliases)

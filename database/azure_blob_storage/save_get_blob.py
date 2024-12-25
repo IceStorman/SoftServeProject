@@ -29,13 +29,13 @@ sastokens_dict = {
 }
 
 img = {
-    "football": "https://www.api-football.com/public/img/home1/hero-banner.png",
+    "football": "https://images.vexels.com/media/users/3/234566/isolated/preview/a66aee6975507c1c26fd158989ab53f9-man-soccer-kicking-football-flat.png?w=360",
     "nba": "https://api-sports.io/assets/img/news/min-nba.png",
     "mma": "https://www.api-football.com/public/img/home1/mma-logo.png",
     "hockey": "https://www.api-football.com/public/img/home1/hockey-logo.png",
     "afl": "https://www.api-football.com/public/img/home1/afl-logo.png",
     "baseball": "https://www.api-football.com/public/img/home1/baseball-logo.png",
-    "basketball": "https://api-sports.io/assets/img/news/basket-player.png",
+    "basketball": "https://cdni.iconscout.com/illustration/premium/thumb/man-who-is-dribbling-a-basketball-illustration-download-in-svg-png-gif-file-formats--dribble-skills-drills-sports-activities-pack-games-illustrations-8022188.png?f=webp",
     "formula-1": "https://www.api-football.com/public/img/news/f1-mini.png",
     "nfl": "https://www.api-football.com/public/img/home1/nfl-logo.png",
     "rugby": "https://www.api-football.com/public/img/home1/rugby-logo.png",
@@ -180,6 +180,33 @@ def blob_get_news(news_index: str) -> dict:
         return json_data
     except Exception as e:
         return {"error": str(e)}
+    
+def blob_get_specific_article(session, index_id: int) -> dict:
+    try:
+    
+        blob_index = get_specific_blob_index_from_db(session, index_id)
+        if not blob_index:
+            raise ValueError(f"Blob with index ID {index_id} not found in the database.")
+
+       
+        sport_index = session.query(SportIndex).filter_by(index_id=blob_index.sports_index_id).first()
+        if not sport_index:
+            raise ValueError(f"SportIndex for blob index ID {index_id} not found.")
+
+       
+        sport = session.query(Sport).filter_by(sport_id=sport_index.sport_id).first()
+        if not sport:
+            raise ValueError(f"Sport for sport index ID {sport_index.index_id} not found.")
+
+       
+        data = blob_get_data(blob_index.filename, sport.sport_name.lower())
+        if "error" in data:
+            raise ValueError(f"Error retrieving blob data: {data['error']}")
+
+        return data
+    except Exception as e:
+        print_error_message(f"Error retrieving specific article: {e}")
+        return {"error": str(e)}
 
 
 def save_blob_indexes_to_db(selected_sport: str, blob_name: str, session) -> None:
@@ -212,6 +239,9 @@ def get_all_blob_indexes_from_db(session, pattern: str):
     blob_indexes = session.query(BlobIndex).filter(BlobIndex.filename.like(f"%{pattern}%")).all()
     return blob_indexes
 
+def get_specific_blob_index_from_db(session, index_id:int):
+    index = session.query(BlobIndex).filter(BlobIndex.blob_id == index_id).first()
+    return index
 
 def get_blob_data_for_all_sports(session, blob_indexes):
     all_results = []
