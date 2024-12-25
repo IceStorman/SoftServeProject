@@ -13,7 +13,7 @@ sport_urls = {
    ' main_baseball_url' : 'https://www.espn.com/mlb/',
     'main_hockey_url' : 'https://www.espn.com/nhl/',
     'main_mma_url' : 'https://www.espn.com/mma/',
-    'main_nba_url' : 'https://www.espn.com/nba/',
+    'main_basketball_url' : 'https://www.espn.com/nba/',
     'main_nfl_url' : 'https://www.espn.com/nfl/',
     'main_rugby_url' : 'https://www.espn.com/rugby/',
 }

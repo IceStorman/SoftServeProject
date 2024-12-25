@@ -3,6 +3,7 @@ from exept.exeptions import SportNotFoundError
 from sqlalchemy.orm import Query
 from sqlalchemy import and_
 
+
 def get_sport_by_name(session, sport_name):
     sport = session.query(Sport).filter(Sport.sport_name == sport_name).first()
     if not sport:
@@ -14,6 +15,9 @@ def get_sport_index_by_name(session, sport_name):
     if not sport:
         raise SportNotFoundError(sport_name)
     return sport.sport_id
+
+
+
 
 
 def apply_filters(base_query: Query, filters: dict, model_aliases: dict):
