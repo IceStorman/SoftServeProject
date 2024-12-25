@@ -41,6 +41,8 @@ def get_games_today(
 
     model_aliases = {
         "games": Games,
+        "countries": Country,
+        "leagues": League,
     }
 
     query = apply_filters(query, filters_dto.to_dict(), model_aliases)
