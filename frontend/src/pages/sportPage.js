@@ -131,102 +131,108 @@ function SportPage() {
     }, [sportName]);
 
     useEffect(() => {
-        (sportNews.length > 0 || currentLeagues.length > 0) ? setLoading(false)
-            : setTimeout(() => {
-                setLoading(false);
-            }, 2000)
-    }, [sportNews.length, currentLeagues.length]);
+        (loading === false) ? setLoading(false) :
+        (
+            (sportNews.length > 0 || currentLeagues.length > 0) ? setLoading(false)
+                : setTimeout(() => {
+                    setLoading(false);
+                }, 2000)
+        )
+    }, [sportNews.length, currentLeagues.length, loading]);
 
     return(
-        <section className={"sportPage"}>
+        <>
 
-            <h1 className={"sportTitle"}>{ sportName }</h1>
+            <section className={"sportPage"}>
 
-            <section className={"news"}>
+                <h1 className={"sportTitle"}>{ sportName }</h1>
 
-                {
-                !(sportNews.length === 0) ?
-                    sportNews.map((item, index) => (
-                        <SportNews
-                            key={index}
-                            title={item.data?.title}
-                            text={item.data?.timestamp}
-                            sport={sportName}
-                            img={item.data?.images[0]}
-                            side={index%2 === 0 ? "right" : "left"}
-                            id={item.blob_id}
-                        />
-                    ))
-                    : (loading === false) ?
-                        (
-                            <div className={"noItems"}>
-                                <h1>no {sportName} news were found :(</h1>
-                            </div>
-                        ) : null
-                }
-
-            </section>
-
-            <section className={"leaguesBlock"}>
-
-                <section className={"leaguesFilter"}>
-
-                    <div className={"leaguesSearch"}>
-
-                        <input
-                            type={"search"}
-                            placeholder={" "}
-                            onChange={(e) => setInputValue(e.target.value)}
-                            onKeyDown={handleKeyDown}
-                        ></input>
-
-                        <label>Search league</label>
-
-                        <button onClick={handleSearchClick} disabled={loading}>
-                            <i className="fa-solid fa-magnifying-glass"></i>
-                        </button>
-
-                    </div>
-
-                    <DropDown
-                        setCountry={setCountryFilter}
-                    />
-
-                </section>
-
-                <section className={"iconsBlock"}>
+                <section className={"news"}>
 
                     {
-                        !(currentLeagues.length === 0) ?
-                        currentLeagues.map((item, index) => (
-                        <LeagueBtn
-                            key={index}
-                            name={item?.name}
-                            logo={item?.team?.logo || item?.logo}
-                        /> ))
-                        :
-                        <div className={"noItems"}>
-                            <h1>no leagues were found :(</h1>
-                        </div>
+                        !(sportNews.length === 0) ?
+                            sportNews.map((item, index) => (
+                                <SportNews
+                                    key={index}
+                                    title={item.data?.title}
+                                    text={item.data?.timestamp}
+                                    sport={sportName}
+                                    img={item.data?.images[0]}
+                                    side={index%2 === 0 ? "right" : "left"}
+                                    id={item.blob_id}
+                                />
+                            ))
+                            : (loading === false) ?
+                                (
+                                    <div className={"noItems"}>
+                                        <h1>no {sportName} news were found :(</h1>
+                                    </div>
+                                ) : null
                     }
 
                 </section>
 
-                <ReactPaginate
-                    key={paginationKey}
-                    breakLabel="..."
-                    nextLabel="→"
-                    onPageChange={handlePageClick}
-                    pageRangeDisplayed={rangeScale}
-                    pageCount={pageCount}
-                    previousLabel="←"
-                    renderOnZeroPageCount={null}
-                    activeClassName="activePaginationPane"
-                    containerClassName="pagination"
-                />
+                <section className={"leaguesBlock"}>
+
+                    <section className={"leaguesFilter"}>
+
+                        <div className={"leaguesSearch"}>
+
+                            <input
+                                type={"search"}
+                                placeholder={" "}
+                                onChange={(e) => setInputValue(e.target.value)}
+                                onKeyDown={handleKeyDown}
+                            ></input>
+
+                            <label>Search league</label>
+
+                            <button onClick={handleSearchClick} disabled={loading}>
+                                <i className="fa-solid fa-magnifying-glass"></i>
+                            </button>
+
+                        </div>
+
+                        <DropDown
+                            setCountry={setCountryFilter}
+                        />
+
+                    </section>
+
+                    <section className={"iconsBlock"}>
+
+                        {
+                            !(currentLeagues.length === 0) ?
+                                currentLeagues.map((item, index) => (
+                                    <LeagueBtn
+                                        key={index}
+                                        name={item?.name}
+                                        logo={item?.team?.logo || item?.logo}
+                                    /> ))
+                                :
+                                <div className={"noItems"}>
+                                    <h1>no leagues were found :(</h1>
+                                </div>
+                        }
+
+                    </section>
+
+                    <ReactPaginate
+                        key={paginationKey}
+                        breakLabel="..."
+                        nextLabel="→"
+                        onPageChange={handlePageClick}
+                        pageRangeDisplayed={rangeScale}
+                        pageCount={pageCount}
+                        previousLabel="←"
+                        renderOnZeroPageCount={null}
+                        activeClassName="activePaginationPane"
+                        containerClassName="pagination"
+                    />
+
+                </section>
 
             </section>
-
 
             {loading === true ?
                 (
@@ -236,8 +242,7 @@ function SportPage() {
                     </>
                 ) : null
             }
-
-        </section>
+        </>
     );
 }
 
