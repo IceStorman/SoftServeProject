@@ -9,7 +9,7 @@ scheduler2 = BackgroundScheduler()
 executor = ThreadPoolExecutor(max_workers=3)
 
 for api in apis:
-    print(f"Додаємо завдання для {api['name']}, |||  {api['index']} з частотою {api['frequency']} хвилин.")
+    print(f"Work with {api['name']}, |||  {api['index']} with frequency {api['frequency']} minutes.")
     scheduler1.add_job(
         auto_request_system,
         'interval',

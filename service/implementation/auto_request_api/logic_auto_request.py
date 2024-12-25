@@ -8,7 +8,18 @@ from database.session import SessionLocal
 from database.azure_blob_storage.save_get_blob import blob_autosave_api
 
 load_dotenv()
-api_key = [os.getenv("APIKEY3"), os.getenv("APIKEY2"), os.getenv("APIKEY1")]
+api_key = [
+    os.getenv("APIKEY1"),
+    os.getenv("APIKEY2"),
+    os.getenv("APIKEY3"),
+    os.getenv("APIKEY4"),
+    os.getenv("APIKEY5"),
+    os.getenv("APIKEY6"),
+    os.getenv("APIKEY7"),
+    os.getenv("APIKEY8"),
+    os.getenv("APIKEY9"),
+    os.getenv("APIKEY10"),
+]
 
 apis = [
     {
@@ -156,7 +167,7 @@ apis = [
         "index": "games",
         "url": "https://v1.handball.api-sports.io/games?date=DATE",
         "host": "v1.handball.api-sports.io",
-        "frequency": 3.5
+        "frequency": 3
     },
     {
         "name": "hockey",
