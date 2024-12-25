@@ -105,9 +105,9 @@ class GamesDTO(BaseModel):
         if self.sport_id is not None:
             filters["games.sport_id"] = self.sport_id
         if self.league_id is not None:
-            filters["leagues.api_id"] = self.league_id
+            filters["games.league_id"] = self.league_id
         if self.country_id is not None:
-            filters["countries.api_id"] = self.country_id
+            filters["games.country_id"] = self.country_id
         if self.date is not None:
             filters["games.date"] = self.date
         return filters
