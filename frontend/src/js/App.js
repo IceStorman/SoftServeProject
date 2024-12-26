@@ -1,13 +1,9 @@
-import React, {
-    useEffect,
-    useState
-} from "react";
+import React from "react";
 import {
     BrowserRouter as Router,
     Routes,
     Route,
-    Navigate,
-    Link
+    Navigate
 } from "react-router-dom";
 import {Toaster} from "sonner";
 

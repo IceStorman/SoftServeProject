@@ -3,9 +3,9 @@ import React from "react";
 function NewsSection({text, teams, img, subheading}){
     
     const highlightText = (text) => {
-        return teams.reduce((acc, team) => {
+        return teams.reduce((item, team) => {
             const regex = new RegExp(` (${team}) `, 'gi');
-            return acc.replace(regex, ` <span class="highlighted">${team}</span> `);
+            return item.replace(regex, ` <span class="highlighted">${team}</span> `);
         }, text);
     };
 
@@ -20,7 +20,7 @@ function NewsSection({text, teams, img, subheading}){
 
                 {img ?
                     <div className={"imgContainer"}>
-                        <img src={img}/>
+                        <img src={img} alt={subheading}/>
                     </div>
                 : null
                 }

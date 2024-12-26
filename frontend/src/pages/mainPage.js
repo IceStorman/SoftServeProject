@@ -1,5 +1,4 @@
-import React, {useState, useEffect, createContext, useContext} from "react";
-import { Link } from "react-router-dom";
+import React, {useState, useEffect} from "react";
 import axios from 'axios';
 
 import apiEndpoints from "../apiEndpoints";
@@ -8,7 +7,7 @@ import News from "../components/mainPage/news.js"
 import SportBtn from "../components/mainPage/sportBtn"
 import Slider from "../components/games/slider.js";
 import {toast} from "sonner";
-import footer from "../components/footer";
+import NoItems from "../components/NoItems";
 
 function MainPage() {
     const [loginStatus,setLoginStatus]=useState(false)
@@ -71,7 +70,7 @@ function MainPage() {
 
             <section className="container">
 
-                <section className={`news ${loginStatus ? "narrow" : "wide wrapedNews"}`}>
+                <section className={`news ${loginStatus ? "narrow" : "wide wrappedNews"}`}>
 
                     <h1 className="newsTitle">НОВИНИ</h1>
 
@@ -89,9 +88,10 @@ function MainPage() {
                             ))
                             : (loading === false) ?
                                 (
-                                    <div className={"noItems"}>
-                                        <h1>no latest news were found :(</h1>
-                                    </div>
+                                    <NoItems
+                                        key={1}
+                                        text={"No latest news were found"}
+                                    />
                                 ) : null
                     }
 
