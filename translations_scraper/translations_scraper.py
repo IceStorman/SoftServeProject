@@ -57,9 +57,9 @@ def search_game_links(driver, future_games):
 
             game_info = {
                 "urls": urls,
-                "start_time": 0,  # Замініть на вашу логіку для заповнення start_time
-                "status": False,  # Замініть на вашу логіку для заповнення status
-                "sport_id": 0     # Замініть на вашу логіку для заповнення sport_id
+                "start_time": 0,  
+                "status": False,  
+                "sport_id": 0     
             }
 
             game_data.append(game_info)
