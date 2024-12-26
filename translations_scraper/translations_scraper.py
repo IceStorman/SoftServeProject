@@ -8,10 +8,12 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium_stealth import stealth
 from service.api_logic.streams_logic import save_json_stream_to_db
+from service.api_logic.scripts import get_sport_index_by_name
+from tempfile import TemporaryDirectory
+import os
 
 
-def initialize_session():
-    return SessionLocal()
+
 
 def configure_driver():
     options = Options()
@@ -35,8 +37,7 @@ def configure_driver():
     )
     return driver
 
-def fetch_games_today(session):
-    return get_games_today(session=session)
+
 
 def filter_future_games(games):
     return [
@@ -46,17 +47,37 @@ def filter_future_games(games):
 
 def search_game_links(driver, future_games):
     base_url = "https://www.google.com/search"
-    for game in future_games:
-        search_url = f"{base_url}?q={game.replace(' ', '+')}+watch"
-        links = driver.find_elements(By.CLASS_NAME, 'LC20lb MBeuO DKV0Md')[:3]
-        print(f"Links for {game}: {links}")
+    game_data = []
+
+    with TemporaryDirectory() as temp_dir:
+        for index, game in enumerate(future_games):
+            search_url = f"{base_url}?q={game.replace(' ', '+')}+watch"
+            links_elements = driver.find_elements(By.CLASS_NAME, 'LC20lb MBeuO DKV0Md')[:3]
+            urls = [link.get_attribute('href') for link in links_elements]
+
+            game_info = {
+                "urls": urls,
+                "start_time": 0,  # Замініть на вашу логіку для заповнення start_time
+                "status": False,  # Замініть на вашу логіку для заповнення status
+                "sport_id": 0     # Замініть на вашу логіку для заповнення sport_id
+            }
+
+            game_data.append(game_info)
+
+            json_file_path = os.path.join(temp_dir, f"game_{index + 1}.json")
+            with open(json_file_path, 'w', encoding='utf-8') as json_file:
+                json.dump(game_info, json_file, ensure_ascii=False, indent=4)
+
+            print(f"Game data for '{game}' saved to: {json_file_path}")
+
+    return game_data
 
 def main():
-    session = initialize_session()
+    session = SessionLocal()
     driver = configure_driver()
 
     try:
-        games = fetch_games_today(session)
+        games = get_games_today(session)
         future_games = filter_future_games(games)
         print(f"Future games: {future_games}")
         
