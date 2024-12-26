@@ -16,21 +16,21 @@ def fetch_streams(session, order_by: ClauseElement = None, limit: int = None, fi
 
 @handle_exceptions
 def get_streams_by_count(session, count:int):
-    streams = fetch_streams(session, order_by=Stream.save_at.desc(), limit=count)
+    streams = fetch_streams(session, order_by=Stream.start_time.desc(), limit=count)
     return json_streams(streams)
 
 @handle_exceptions
 def get_latest_sport_streams(session, count:int, sport_name:str):
     sport = get_sport_index_by_name(session, sport_name)
     filters = [Stream.sport_id == sport.sport_id]
-    streams = fetch_streams(session, order_by=Stream.save_at.desc(), limit=count, filters=filters)
+    streams = fetch_streams(session, order_by=Stream.start_time.desc(), limit=count, filters=filters)
     return json_streams(streams)
 
 @handle_exceptions
 def get_streams_of_sport(session, sport_name:str):
     sport = get_sport_index_by_name(session, sport_name)
     filters = [Stream.sport_id == sport.sport_id]
-    streams = fetch_streams(session, order_by=Stream.save_at.desc(), filters=filters)
+    streams = fetch_streams(session, order_by=Stream.start_time.desc(), filters=filters)
     return json_streams(streams)
 
 
