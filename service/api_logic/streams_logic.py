@@ -14,6 +14,26 @@ def fetch_streams(session, order_by: ClauseElement = None, limit: int = None, fi
         query = query.limit(limit)
     return query.all()
 
+
+@handle_exceptions
+def save_json_stream_to_db(session, streams_data):
+    streams_list = json.loads(streams_data) if isinstance(streams_data, str) else streams_data
+
+    for stream_data in streams_list:
+        stream = Stream(
+                stream_id=stream_data["stream_id"],
+                stream_url=stream_data["stream_url"],
+                start_time=stream_data["start_time"],
+                status=stream_data["status"],
+                sport_id=stream_data["sport_id"],
+        )
+
+        session.merge(stream)  
+    session.commit()
+
+
+
+
 @handle_exceptions
 def get_streams_by_count(session, count:int):
     streams = fetch_streams(session, order_by=Stream.start_time.desc(), limit=count)
