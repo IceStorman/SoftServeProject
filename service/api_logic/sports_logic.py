@@ -60,13 +60,13 @@ def search_leagues(filters_dto: dict, pagination: Pagination):
     }
 
     query = apply_filters(query, filters_dto, model_aliases)
+    count = query.count()
 
     offset, limit = pagination.get_pagination()
     if offset is not None and limit is not None:
         query = query.offset(offset).limit(limit)
 
     countries = query.all()
-    count = len(countries)
 
     schema = SportsLeagueOutput(many=True)
     leagues = schema.dump(countries)
