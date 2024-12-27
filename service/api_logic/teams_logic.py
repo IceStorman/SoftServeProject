@@ -1,4 +1,5 @@
 from dto.api_input import TeamsLeagueDTO
+from dto.pagination import Pagination
 from exept.handle_exeptions import handle_exceptions
 from database.models import TeamIndex, Sport, League, Country
 from service.api_logic.scripts import apply_filters
@@ -11,7 +12,8 @@ session = SessionLocal()
 
 @handle_exceptions
 def get_teams(
-        filters_dto: TeamsLeagueDTO
+        filters_dto: dict,
+        pagination: Pagination
 ):
     query = (
         session.query(TeamIndex)
@@ -26,10 +28,9 @@ def get_teams(
         "leagues": League,
     }
 
-    query = apply_filters(query, filters_dto.to_dict(), model_aliases)
+    query = apply_filters(query, filters_dto, model_aliases)
 
-    offset, limit = filters_dto.get_pagination()
-
+    offset, limit = pagination.get_pagination()
     if offset is not None and limit is not None:
         query = query.offset(offset).limit(limit)
 

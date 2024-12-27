@@ -1,5 +1,6 @@
 from flask import Blueprint, request
 from dto.api_input import GamesDTO
+from dto.pagination import Pagination
 from service.api_logic.games_logic import get_games_today
 from api.routes.cache import cache
 from api.routes.scripts import  post_cache_key
@@ -16,12 +17,14 @@ def handle_db_timeout_error(e):
     return response
 
 
-@games_app.route('/today', methods=['GET'])
+@games_app.route('/today', methods=['POST'])
 @cache.cached(CACHE_TIMEOUT_SECONDS)
 def get_stream_info_endpoint():
     try:
-        dto = GamesDTO()
-        games = get_games_today(dto)
+        data = request.get_json()
+        dto = GamesDTO().load(data)
+        pagination = Pagination(**data)
+        games = get_games_today(dto, pagination)
         return games
     except Exception as e:
         get_error_response(e)
@@ -32,8 +35,9 @@ def get_stream_info_endpoint():
 def get_stream_info_with_filters_endpoint():
     try:
         data = request.get_json()
-        dto = GamesDTO(**data)
-        games = get_games_today(dto)
+        dto = GamesDTO().load(data)
+        pagination = Pagination(**data)
+        games = get_games_today(dto, pagination)
         return games
     except Exception as e:
         get_error_response(e)

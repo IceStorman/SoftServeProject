@@ -5,6 +5,7 @@ from api.routes.scripts import post_cache_key
 from api.routes.cache import cache
 from exept.exeptions import DatabaseConnectionError
 from dto.api_input import SportsLeagueDTO, SearchDTO
+from dto.pagination import Pagination
 
 sports_app = Blueprint('sports', __name__)
 
@@ -30,8 +31,9 @@ def get_all_sports_endpoint():
 def get_all_leagues_endpoint():
     try:
         data = request.get_json()
-        dto = SportsLeagueDTO(**data)
-        league_sports = get_all_leagues_by_sport(dto)
+        dto = SportsLeagueDTO().load(data)
+        pagintion = Pagination(**data)
+        league_sports = get_all_leagues_by_sport(dto, pagintion)
         return league_sports
     except Exception as e:
         get_error_response(e)
@@ -41,8 +43,9 @@ def get_all_leagues_endpoint():
 def search_countries():
     try:
         data = request.get_json()
-        dto = SearchDTO(**data)
-        leagues = search_leagues(dto)
+        dto = SearchDTO().load(data)
+        pagintion = Pagination(**data)
+        leagues = search_leagues(dto, pagintion)
         return leagues
     except Exception as e:
         get_error_response(e)

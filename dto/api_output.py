@@ -1,5 +1,3 @@
-from pydantic import BaseModel
-from typing import Optional
 from marshmallow import Schema, fields
 
 
@@ -43,4 +41,3 @@ class CountriesOutput(Schema):
     id = fields.Int(attribute="api_id")
     flag = fields.Str()
     name = fields.Str()
-

@@ -1,7 +1,7 @@
 from sqlalchemy import func
 from database.models import Sport, League, Country
-from dto.api_input import SearchDTO, SportsLeagueDTO
 from dto.api_output import SportsLeagueOutput, SportsOutput
+from dto.pagination import Pagination
 from exept.handle_exeptions import handle_exceptions
 from service.api_logic.scripts import apply_filters
 from database.session import SessionLocal
@@ -16,7 +16,7 @@ def get_all_sports():
 
 
 @handle_exceptions
-def get_all_leagues_by_sport(filters_dto: SportsLeagueDTO):
+def get_all_leagues_by_sport(filters_dto: dict, pagination: Pagination):
     query = (
         session.query(League)
         .join(Sport, League.sport_id == Sport.sport_id)
@@ -26,9 +26,9 @@ def get_all_leagues_by_sport(filters_dto: SportsLeagueDTO):
         "leagues": League,
     }
 
-    query = apply_filters(query, filters_dto.to_dict(), model_aliases)
+    query = apply_filters(query, filters_dto, model_aliases)
 
-    offset, limit = filters_dto.get_pagination()
+    offset, limit = pagination.get_pagination()
     if offset is not None and limit is not None:
         query = query.offset(offset).limit(limit)
 
@@ -43,14 +43,14 @@ def get_all_leagues_by_sport(filters_dto: SportsLeagueDTO):
 
 
 @handle_exceptions
-def search_leagues(filters_dto: SearchDTO):
+def search_leagues(filters_dto: dict, pagination: Pagination):
     query = (
         session.query(League)
         .join(Sport, League.sport_id == Sport.sport_id)
         .join(Country, League.country == Country.country_id)
         .filter(
             func.lower(League.name)
-            .like(f"{filters_dto.letter}%")
+            .like(f"{filters_dto.get('letter', '')}%")
         )
     )
    
@@ -59,9 +59,9 @@ def search_leagues(filters_dto: SearchDTO):
         "countries": Country,
     }
 
-    query = apply_filters(query, filters_dto.to_dict(), model_aliases)
+    query = apply_filters(query, filters_dto, model_aliases)
 
-    offset, limit = filters_dto.get_pagination()
+    offset, limit = pagination.get_pagination()
     if offset is not None and limit is not None:
         query = query.offset(offset).limit(limit)
 

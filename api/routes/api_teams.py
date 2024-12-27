@@ -1,4 +1,5 @@
 from flask import Blueprint, request
+from dto.pagination import Pagination
 from exept.handle_exeptions import get_error_response
 from service.api_logic.teams_logic import get_teams
 from service.implementation.auto_request_api.logic_request_by_react import basketball_players, rugby_teams_statistics
@@ -18,22 +19,13 @@ def handle_db_timeout_error(e):
     return response
 
 
-@teams_app.route("/", methods=['GET'])
-def get_teams_endpoint():
-    try:
-        dto = TeamsLeagueDTO()
-        all_teams = get_teams(dto)
-        return all_teams
-    except Exception as e:
-        get_error_response(e)
-
-
 @teams_app.route("/league", methods=['POST'])
 def get_teams_sport_endpoint():
     try:
         data = request.get_json()
-        dto = TeamsLeagueDTO(**data)
-        league_teams = get_teams(dto)
+        dto = TeamsLeagueDTO().load(data)
+        pagination = Pagination(**data)
+        league_teams = get_teams(dto, pagination)
         return league_teams
     except Exception as e:
         get_error_response(e)
@@ -44,7 +36,7 @@ def get_teams_sport_endpoint():
 def get_teams_statistics_endpoint():
     try:
         data = request.get_json()
-        dto = TeamsStatisticsOrPlayersDTO(**data)
+        dto = TeamsStatisticsOrPlayersDTO().load(data)
         data_manager = TeamStatisticsDataManager(dto, dto.sport_id)
         team_statistics = data_manager.get_teams_statistics()
         return team_statistics

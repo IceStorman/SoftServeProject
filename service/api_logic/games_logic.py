@@ -1,6 +1,7 @@
 from dto.api_output import GameOutput
 from dto.api_input import GamesDTO
 from database.models import Games, Country, TeamIndex, League, Sport
+from dto.pagination import Pagination
 from exept.handle_exeptions import handle_exceptions
 from service.api_logic.scripts import apply_filters
 from sqlalchemy.orm import aliased
@@ -10,7 +11,8 @@ session = SessionLocal()
 
 @handle_exceptions
 def get_games_today(
-        filters_dto: GamesDTO
+        filters_dto: dict,
+        pagination: Pagination
 ):
     home_team = aliased(TeamIndex)
     away_team = aliased(TeamIndex)
@@ -39,10 +41,9 @@ def get_games_today(
         "leagues": League,
     }
 
-    query = apply_filters(query, filters_dto.to_dict(), model_aliases)
+    query = apply_filters(query, filters_dto, model_aliases)
 
-    offset, limit = filters_dto.get_pagination()
-
+    offset, limit = pagination.get_pagination()
     if offset is not None and limit is not None:
         query = query.offset(offset).limit(limit)
 
