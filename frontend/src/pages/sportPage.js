@@ -67,8 +67,8 @@ function SportPage() {
             const response = await axios.post(
                 `${apiEndpoints.url}${apiEndpoints.sports.getLeagueSearch}`,
                 {
-                    sport_id: sportId,
-                    country_id: parseInt(countryFilter),
+                    leagues__sport_id: sportId,
+                    countries__country_id: parseInt(countryFilter),
                     letter: inputValue ? inputValue : ' ',
                     page: page + 1,
                     per_page: leaguesPerPage
@@ -78,8 +78,8 @@ function SportPage() {
                 }
             );
 
-            setCurrentLeagues(response.data);
-            const totalPosts = response.data[0].count;
+            setCurrentLeagues(response.data.leagues);
+            const totalPosts = response.data.count;
             setPageCount(Math.ceil(totalPosts / leaguesPerPage));
         } catch (error) {
             setPageCount(0);
