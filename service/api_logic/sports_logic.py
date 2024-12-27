@@ -8,7 +8,6 @@ from database.session import SessionLocal
 
 session = SessionLocal()
 
-
 @handle_exceptions
 def get_all_sports():
     sports = session.query(Sport).all()
@@ -19,14 +18,7 @@ def get_all_sports():
 @handle_exceptions
 def get_all_leagues_by_sport(filters_dto: SportsLeagueDTO):
     query = (
-        session.query(
-            League.sport_id,
-            League.league_id,
-            League.logo,
-            League.name,
-            League.country,
-            League.api_id
-        )
+        session.query(League)
         .join(Sport, League.sport_id == Sport.sport_id)
     )
 

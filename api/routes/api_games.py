@@ -27,7 +27,7 @@ def get_stream_info_endpoint():
         get_error_response(e)
 
 
-@games_app.route('/filter', methods=['POST'])
+@games_app.route('/specific', methods=['POST'])
 @cache.cached(CACHE_TIMEOUT_SECONDS, key_prefix=post_cache_key)
 def get_stream_info_with_filters_endpoint():
     try:

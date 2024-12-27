@@ -17,15 +17,7 @@ def get_games_today(
 
     query = (
         session.query(
-            Games.api_id,
-            Games.sport_id,
-            Games.league_id,
-            Games.country_id,
-            Games.status,
-            Games.date,
-            Games.time,
-            Games.score_away_team,
-            Games.score_home_team,
+            Games,
             League.name.label("league_name"),
             League.logo.label("league_logo"),
             Country.name.label("country_name"),

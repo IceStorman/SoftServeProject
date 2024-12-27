@@ -14,17 +14,7 @@ def get_teams(
         filters_dto: TeamsLeagueDTO
 ):
     query = (
-        session.query(
-            TeamIndex.league,
-            TeamIndex.team_index_id,
-            TeamIndex.sport_id,
-            TeamIndex.country,
-            TeamIndex.league,
-            TeamIndex.api_id,
-            TeamIndex.logo,
-            TeamIndex.name,
-            TeamIndex.news_id
-        )
+        session.query(TeamIndex)
          .join(League, TeamIndex.league == League.league_id)
          .join(Country, TeamIndex.country == Country.country_id)
          .join(Sport, TeamIndex.sport_id == Sport.sport_id)
