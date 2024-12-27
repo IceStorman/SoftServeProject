@@ -1,10 +1,10 @@
 from flask import Blueprint, request
-from service.api_logic.sports_logic import get_all_sports, get_all_leagues_by_sport
+from service.api_logic.sports_logic import get_all_sports, get_all_leagues_by_sport, search_leagues
 from database.session import SessionLocal
 from api.routes.scripts import get_error_response, post_cache_key
 from api.routes.cache import cache
 from exept.exeptions import DatabaseConnectionError
-from dto.api_input import SportsLeagueDTO
+from dto.api_input import SportsLeagueDTO, SearchDTO
 
 session = SessionLocal()
 sports_app = Blueprint('sports', __name__)
@@ -35,6 +35,19 @@ def get_all_leagues_endpoint():
         dto = SportsLeagueDTO(**data)
         league_sports = get_all_leagues_by_sport(session, dto)
         return league_sports
+
+    except Exception as e:
+        response = {"error in service": str(e)}
+        return get_error_response(response, 500)
+
+
+@sports_app.route('/league/search', methods=['POST'])
+def search_countries():
+    try:
+        data = request.get_json()
+        dto = SearchDTO(**data)
+        leagues = search_leagues(session, dto)
+        return leagues
     except Exception as e:
         response = {"error in service": str(e)}
         return get_error_response(response, 500)

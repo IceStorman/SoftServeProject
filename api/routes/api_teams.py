@@ -6,6 +6,8 @@ from service.implementation.auto_request_api.logic_request_by_react import baske
 from api.routes.cache import cache
 from dto.api_input import TeamsLeagueDTO, TeamsStatisticsOrPlayersDTO
 from exept.exeptions import DatabaseConnectionError
+from service.implementation.auto_request_api.sport_data_managers.team_statistics_data_manager import \
+    TeamStatisticsDataManager
 
 session = SessionLocal()
 teams_app = Blueprint('teams', __name__)
@@ -41,12 +43,13 @@ def get_teams_sport_endpoint():
 
 
 @teams_app.route('/statistics', methods=['POST'])
-@cache.cached(timeout=60*1.3)
+#@cache.cached(timeout=60*1.3)
 def get_teams_statistics_endpoint():
     try:
         data = request.get_json()
         dto = TeamsStatisticsOrPlayersDTO(**data)
-        team_statistics = rugby_teams_statistics(dto)
+        data_manager = TeamStatisticsDataManager(dto, dto.sport_id)
+        team_statistics = data_manager.get_teams_statistics()
         return team_statistics
     except Exception as e:
         response = {"error in service": str(e)}

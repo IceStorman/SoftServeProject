@@ -10,11 +10,6 @@ def get_sport_by_name(session, sport_name):
     return sport
 
 
-def get_leagues_count_by_sport(session, sport_id):
-    count = session.query(League).join(Sport, League.sport_id == Sport.sport_id).filter(League.sport_id == sport_id).count()
-    return count
-
-
 def apply_filters(base_query: Query, filters: dict, model_aliases: dict):
     filter_conditions = []
 
@@ -37,6 +32,13 @@ def apply_filters(base_query: Query, filters: dict, model_aliases: dict):
         base_query = base_query.filter(and_(*filter_conditions))
 
     return base_query
+
+    for key, value in filters.items():
+        if "." in key:
+            table_name, column_name = key.split(".")
+            model = model_aliases.get(table_name, None)
+            if model is None:
+                raise ValueError(f"Model alias '{table_name}' not in model_aliases.")
 
 
 

@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, request
 from service.api_logic.countries_logic import get_countries
 from database.session import SessionLocal
 from api.routes.scripts import get_error_response
@@ -22,3 +22,15 @@ def get_countries_endpoint():
     except Exception as e:
         response = {"error in service": str(e)}
         return get_error_response(response, 500)
+
+
+@countries_app.route('/search', methods=['GET'])
+def search_countries():
+    try:
+        query = request.args.get('q', '').lower()
+        result = search_countries(session, query)
+        return result
+    except Exception as e:
+        response = {"error in service": str(e)}
+        return get_error_response(response, 500)
+

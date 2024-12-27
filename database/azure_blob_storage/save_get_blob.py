@@ -4,7 +4,6 @@ from typing import Dict
 import os
 from dotenv import load_dotenv
 from datetime import datetime, timezone
-
 from database.models import BlobIndex, News, Sport, SportIndex, TeamIndex
 from database.session import SessionLocal
 from exept.colors_text import print_error_message, print_good_message
@@ -137,6 +136,11 @@ def check_json(json_data):
     return True
 
 
+def sanitize_name(name):
+    name = re.sub(r'[^a-zA-Z0-9а-яА-Я]', '-', name)
+    name = re.sub(r'_{2,}', '_', name)
+    return name.lower()
+
 def blob_save_news(json_data: Dict[str, Dict[str, str]]) -> None:
     if check_json(json_data):
         print_good_message("All good in file.")
@@ -144,7 +148,7 @@ def blob_save_news(json_data: Dict[str, Dict[str, str]]) -> None:
         key = sastokens_dict["news"]
         blob_service_client = BlobServiceClient(account_url=account_url, credential=key)
         container_client = blob_service_client.get_container_client("news")
-        blob_name = f"{name.replace(' ', '_').lower()}.json"
+        blob_name = f"{sanitize_name(name)}.json"
         blob_client = container_client.get_blob_client(blob_name)
         blob_client.upload_blob(json.dumps(json_data), overwrite=True)
         with SessionLocal() as session:
@@ -175,6 +179,33 @@ def blob_get_news(news_index: str) -> dict:
         json_data = json.loads(blob_data.readall())
         return json_data
     except Exception as e:
+        return {"error": str(e)}
+    
+def blob_get_specific_article(session, index_id: int) -> dict:
+    try:
+    
+        blob_index = get_specific_blob_index_from_db(session, index_id)
+        if not blob_index:
+            raise ValueError(f"Blob with index ID {index_id} not found in the database.")
+
+       
+        sport_index = session.query(SportIndex).filter_by(index_id=blob_index.sports_index_id).first()
+        if not sport_index:
+            raise ValueError(f"SportIndex for blob index ID {index_id} not found.")
+
+       
+        sport = session.query(Sport).filter_by(sport_id=sport_index.sport_id).first()
+        if not sport:
+            raise ValueError(f"Sport for sport index ID {sport_index.index_id} not found.")
+
+       
+        data = blob_get_data(blob_index.filename, sport.sport_name.lower())
+        if "error" in data:
+            raise ValueError(f"Error retrieving blob data: {data['error']}")
+
+        return data
+    except Exception as e:
+        print_error_message(f"Error retrieving specific article: {e}")
         return {"error": str(e)}
 
 
@@ -208,6 +239,9 @@ def get_all_blob_indexes_from_db(session, pattern: str):
     blob_indexes = session.query(BlobIndex).filter(BlobIndex.filename.like(f"%{pattern}%")).all()
     return blob_indexes
 
+def get_specific_blob_index_from_db(session, index_id:int):
+    index = session.query(BlobIndex).filter(BlobIndex.blob_id == index_id).first()
+    return index
 
 def get_blob_data_for_all_sports(session, blob_indexes):
     all_results = []
@@ -255,7 +289,7 @@ def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
         for team_name in json_data["team_names"]:
             team_index = TeamIndex(
                 news_id=news_index.news_id,
-                team_name=team_name
+                name=team_name
             )
             session.add(team_index)
 
@@ -299,7 +333,7 @@ def handle_no_records_message(message: str) -> str:
 def get_news_by_teams(count: int, team_names: list[str], session) -> str:
     team_news_ids = (
         session.query(TeamIndex.news_id)
-        .filter(TeamIndex.team_name.in_(team_names))
+        .filter(TeamIndex.name.in_(team_names))
         .distinct()
         .all()
     )
@@ -346,4 +380,3 @@ def get_news_by_count(count: int, session) -> str:
     if not news_records:
         return handle_no_records_message("No news was found in the database.")
     return json.dumps(fetch_blob_data(news_records), ensure_ascii=False)
-
