@@ -1,6 +1,7 @@
 from datetime import datetime
 from pydantic import BaseModel, Field, field_validator
 from typing import Optional
+from dto.pagination import Pagination
 
 
 class TeamsLeagueDTO(BaseModel):
@@ -21,12 +22,8 @@ class TeamsLeagueDTO(BaseModel):
         return filters
 
     def get_pagination(self):
-        if self.page != 0:
-            offset = (self.page - 1) * self.per_page
-            limit = self.per_page
-            return offset, limit
-        else:
-            return None, None
+        pagination = Pagination(page=self.page, per_page=self.per_page)
+        return pagination.get_pagination()
 
 
 class TeamsStatisticsOrPlayersDTO(BaseModel):
@@ -51,12 +48,8 @@ class SearchDTO(BaseModel):
         return filters
 
     def get_pagination(self):
-        if self.page != 0:
-            offset = (self.page - 1) * self.per_page
-            limit = self.per_page
-            return offset, limit
-        else:
-            return None, None
+        pagination = Pagination(page=self.page, per_page=self.per_page)
+        return pagination.get_pagination()
 
     @field_validator("letter", mode="before")
     def clean_letter(cls, value: Optional[str]) -> Optional[str]:
@@ -65,7 +58,7 @@ class SearchDTO(BaseModel):
         return None
 
     @field_validator("country_id", mode="before")
-    def check_num(cls, value: Optional[int]) -> Optional[int]:
+    def check_num_country_id(cls, value: Optional[int]) -> Optional[int]:
         if value == 0:
             return None
         return value
@@ -83,12 +76,8 @@ class SportsLeagueDTO(BaseModel):
         return filters
 
     def get_pagination(self):
-        if self.page != 0:
-            offset = (self.page - 1) * self.per_page
-            limit = self.per_page
-            return offset, limit
-        else:
-            return None, None
+        pagination = Pagination(page=self.page, per_page=self.per_page)
+        return pagination.get_pagination()
 
 
 class GamesDTO(BaseModel):
@@ -113,11 +102,7 @@ class GamesDTO(BaseModel):
         return filters
 
     def get_pagination(self):
-        if self.page != 0:
-            offset = (self.page - 1) * self.per_page
-            limit = self.per_page
-            return offset, limit
-        else:
-            return None, None
+        pagination = Pagination(page=self.page, per_page=self.per_page)
+        return pagination.get_pagination()
 
 

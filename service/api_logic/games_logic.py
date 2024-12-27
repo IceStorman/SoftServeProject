@@ -1,13 +1,15 @@
-from dto.api_output import GameOutputDTO
+from dto.api_output import GameOutput
 from dto.api_input import GamesDTO
 from database.models import Games, Country, TeamIndex, League, Sport
 from exept.handle_exeptions import handle_exceptions
 from service.api_logic.scripts import apply_filters
 from sqlalchemy.orm import aliased
+from database.session import SessionLocal
+
+session = SessionLocal()
 
 @handle_exceptions
 def get_games_today(
-        session,
         filters_dto: GamesDTO
 ):
     home_team = aliased(TeamIndex)
@@ -53,24 +55,7 @@ def get_games_today(
         query = query.offset(offset).limit(limit)
 
     games = query.all()
-
-    return [
-        GameOutputDTO(
-            id=game.api_id,
-            status=game.status,
-            date=game.date,
-            time=game.time,
-            league_name=game.league_name,
-            league_logo=game.league_logo,
-            country_name=game.country_name,
-            home_team_name=game.home_team_name,
-            home_team_logo=game.home_team_logo,
-            away_team_name=game.away_team_name,
-            away_team_logo=game.away_team_logo,
-            home_score=game.score_home_team,
-            away_score=game.score_away_team,
-        ).to_dict()
-        for game in games
-    ]
+    schema = GameOutput(many=True)
+    return schema.dump(games)
 
 

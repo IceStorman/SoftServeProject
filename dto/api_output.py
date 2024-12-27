@@ -1,61 +1,45 @@
 from pydantic import BaseModel
 from typing import Optional
+from marshmallow import Schema, fields
 
 
-class GameOutputDTO(BaseModel):
-    id: int
-    status: str
-    date: str
-    time: Optional[str]
-    league_name: str
-    league_logo: str
-    country_name: str
-    home_team_name: str
-    home_team_logo: str
-    away_team_name: str
-    away_team_logo: str
-    home_score: Optional[int] = None
-    away_score: Optional[int] = None
-
-    def to_dict(self):
-        return dict(self)
+class GameOutput(Schema):
+    id = fields.Int(attribute="api_id")
+    status = fields.Str()
+    date = fields.Str()
+    time = fields.Str()
+    league_name = fields.Str()
+    league_logo = fields.Str()
+    country_name = fields.Str()
+    home_team_name = fields.Str()
+    home_team_logo = fields.Str()
+    away_team_name = fields.Str()
+    away_team_logo = fields.Str()
+    home_score: fields.Int(attribute="score_home_team")
+    away_score: fields.Int(attribute="score_away_team")
 
 
-class TeamsLeagueOutputDTO(BaseModel):
-    league_name:  Optional[str]
-    country_name:  Optional[str]
-    team_name: str
-    logo: str
-    id: str
-
-    def to_dict(self):
-        return dict(self)
+class TeamsLeagueOutput(Schema):
+    league_name = fields.Str(attribute="league")
+    country_name = fields.Str(attribute="country")
+    team_name = fields.Str(attribute="name")
+    logo = fields.Str()
+    id = fields.Str(attribute="api_id")
 
 
-class SportsOutputDTO(BaseModel):
-    id: int
-    sport: str
-    logo: str
-
-    def to_dict(self):
-        return dict(self)
+class SportsOutput(Schema):
+    id = fields.Int(attribute="sport_id")
+    sport = fields.Str(attribute="sport_name")
+    logo = fields.Str(attribute="sport_img")
 
 
-class SportsLeagueOutputDTO(BaseModel):
-    id: int
-    sport: Optional[int]
-    logo: str
-    name: str
-    count: int
+class SportsLeagueOutput(Schema):
+    id = fields.Int(attribute="league_id")
+    sport = fields.Int(attribute="sport_id")
+    logo = fields.Str()
+    name = fields.Str()
 
-    def to_dict(self):
-        return dict(self)
-
-
-class CountriesOutputDTO(BaseModel):
-    id: Optional[int]
-    flag: Optional[str]
-    name: str
-
-    def to_dict(self):
-        return dict(self)
+class CountriesOutput(Schema):
+    id = fields.Int(attribute="api_id")
+    flag = fields.Str()
+    name = fields.Str()

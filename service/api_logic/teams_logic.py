@@ -2,14 +2,15 @@ from dto.api_input import TeamsLeagueDTO
 from exept.handle_exeptions import handle_exceptions
 from database.models import TeamIndex, Sport, League, Country
 from service.api_logic.scripts import apply_filters
-from dto.api_output import TeamsLeagueOutputDTO
+from dto.api_output import TeamsLeagueOutput
+from database.session import SessionLocal
 
+session = SessionLocal()
 
 # NOT WORK NOW ----------------------------------
 
 @handle_exceptions
 def get_teams(
-        session,
         filters_dto: TeamsLeagueDTO
 ):
     query = (
@@ -43,16 +44,8 @@ def get_teams(
         query = query.offset(offset).limit(limit)
 
     teams = query.all()
-    return [
-        TeamsLeagueOutputDTO(
-            league_name=team.league,
-            country_name=team.country,
-            team_name=team.name,
-            logo=team.logo,
-            id=team.api_id,
-        ).to_dict() for team in teams
-    ]
-
+    schema = TeamsLeagueOutput(many=True)
+    return schema.dump(teams)
 
 
 
