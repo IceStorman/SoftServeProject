@@ -1,15 +1,15 @@
 import requests
 from datetime import datetime
-from service.implementation.auto_request_api.logic_auto_request import current_key_index, token_usage, api_key
+from service.implementation.auto_request_api.logic_auto_request import token_usage, api_key
 from database.azure_blob_storage.save_get_blob import blob_save_specific_api, get_all_blob_indexes_from_db, get_blob_data_for_all_sports
 from database.session import SessionLocal
-from api.routes.dto import TeamsStatisticsOrPlayersDTO
+from dto.api_input import TeamsStatisticsOrPlayersDTO
 from typing import Dict
 
 
 def main_request(host, name, url, blob_name):
     global current_key_index, account_url
-    today = datetime.now().strftime('%Y-%m-%d')
+
     if token_usage[name] >= 99:
         current_key_index = (current_key_index + 1) % len(api_key)
         token_usage[name] = 0

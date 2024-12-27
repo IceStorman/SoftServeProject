@@ -5,7 +5,7 @@ function SportNews({title, text, img, side, sport}){
 
     return (
         <>
-            <div className="sportNewsBox">
+            <div className="newsBox">
 
                 {side === "left" ? (<img src={img} alt={sport}/>) : null}
 

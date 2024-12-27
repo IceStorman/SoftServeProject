@@ -1,13 +1,10 @@
-from flask import jsonify, request
+from flask import jsonify
 from flask import request
 import hashlib
 import json
 
 def get_error_response(e, status_code):
     return jsonify(e), status_code
-
-def get_good_response(result):
-    return result, 200
 
 
 def get_cache_key():

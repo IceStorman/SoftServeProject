@@ -1,9 +1,9 @@
 import React from "react";
 
-function Team({name, logo}){
+function TeamsBtn({name, logo}){
 
     return (
-        <div className={"team"}>
+        <div className={"iconsBlockElement"} >
 
             <img src={logo} alt={name}/>
 
@@ -11,4 +11,4 @@ function Team({name, logo}){
     );
 }
 
-export default Team;
+export default TeamsBtn;
