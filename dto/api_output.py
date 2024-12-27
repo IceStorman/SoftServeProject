@@ -43,3 +43,4 @@ class CountriesOutput(Schema):
     id = fields.Int(attribute="api_id")
     flag = fields.Str()
     name = fields.Str()
+

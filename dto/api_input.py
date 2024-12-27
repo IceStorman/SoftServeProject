@@ -106,5 +106,3 @@ class GamesDTO(BaseModel):
     def get_pagination(self):
         pagination = Pagination(page=self.page, per_page=self.per_page)
         return pagination.get_pagination()
-
-
