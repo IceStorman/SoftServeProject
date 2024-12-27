@@ -78,8 +78,18 @@ function SportPage() {
                 }
             );
 
+            const responseForCount = await axios.post(
+                `${apiEndpoints.url}${apiEndpoints.sports.getLeagueSearch}`,
+                {
+                    leagues__sport_id: sportId
+                },
+                {
+                    headers: { 'Content-Type': 'application/json' },
+                }
+            );
+
             setCurrentLeagues(response.data.leagues);
-            const totalPosts = response.data.count;
+            const totalPosts = responseForCount.data.count;
             setPageCount(Math.ceil(totalPosts / leaguesPerPage));
         } catch (error) {
             setPageCount(0);
