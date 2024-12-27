@@ -1,0 +1,86 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Sports League API",
+    "description": "API for searching sports leagues",
+    "version": "1.0.0"
+  },
+  "schemes": ["http"],
+  "paths": {
+    "/sports/league/search": {
+      "post": {
+        "summary": "Search for sports leagues",
+        "operationId": "searchLeagues",
+        "tags": ["Leagues"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "leagues__sport_id": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "countries__country_id": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "letter": {
+                  "type": "string",
+                  "example": "A"
+                },
+                "page": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "per_page": {
+                  "type": "integer",
+                  "example": 10
+                }
+              },
+              "additionalProperties": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful search response",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "example": 123
+                  },
+                  "sport": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "logo": {
+                    "type": "string",
+                    "example": "https://example.com/logo.png"
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "Premier League"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    }
+  }
+}
