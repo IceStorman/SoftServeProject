@@ -45,7 +45,7 @@ def filter_future_games(games):
         for game in games if game['status'] == 'Not Started'
     ]
 
-def search_game_links(driver, future_games):
+def search_game_links(driver, future_games, games_today):
     base_url = "https://www.google.com/search"
     game_data = []
 
@@ -55,11 +55,25 @@ def search_game_links(driver, future_games):
             links_elements = driver.find_elements(By.CLASS_NAME, 'LC20lb MBeuO DKV0Md')[:3]
             urls = [link.get_attribute('href') for link in links_elements]
 
+            matching_game = next(
+                (g for g in games_today if f"{g['home_team_name']} vs {g['away_team_name']} {g['date']}" == game),
+                None
+            )
+            
+            start_time = matching_game['time'] if matching_game else "Unknown"
+
+            sport_id = "unknown"
+            if matching_game:
+                logo_url = matching_game.get("away_team_logo", "")
+                if logo_url:
+                    sport_id = logo_url.split(".io/")[1].split("/teams")[0]
+
+
             game_info = {
                 "urls": urls,
-                "start_time": 0,  
+                "start_time": start_time,
                 "status": False,  
-                "sport_id": 0     
+                "sport_id": sport_id
             }
 
             game_data.append(game_info)
@@ -79,7 +93,6 @@ def main():
     try:
         games = get_games_today(session)
         future_games = filter_future_games(games)
-        print(f"Future games: {future_games}")
         
         search_game_links(driver, future_games)
     finally:
