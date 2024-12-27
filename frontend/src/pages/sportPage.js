@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {useLocation, useNavigate, useParams} from "react-router-dom";
-import axios, {spread} from "axios";
+import axios from "axios";
 import ReactPaginate from 'react-paginate';
 import {toast} from "sonner";
 
@@ -9,6 +9,7 @@ import apiEndpoints from "../apiEndpoints";
 import SportNews from "../components/sportPage/sportNews";
 import LeagueBtn from "../components/sportPage/leagueBtn";
 import DropDown from "../components/dropDown/dropDown";
+import NoItems from "../components/NoItems";
 
 function SportPage() {
     const {sportName} = useParams();
@@ -17,9 +18,6 @@ function SportPage() {
     const location = useLocation();
     const stateData = location.state || {};
     const sportId = stateData.sportId;
-
-
-    const [sports, setSport] = useState([]);
 
     const [rangeScale, setRangeScale] = useState(3)
 
@@ -33,19 +31,19 @@ function SportPage() {
 
     const [loading, setLoading] = useState(false);
 
-    const [countryFilter, setCountryFilter] = useState(0);
+    const [countryFilter, setCountryFilter] = useState('0');
     const [inputValue, setInputValue] = useState('');
 
-    const [prevCountryFilter, setPrevCountryFilter] = useState();
+    const [prevCountryFilter, setPrevCountryFilter] = useState('');
     const [prevInputValue, setPrevInputValue] = useState('');
 
-    const [searchClicked, setSearchClicked] = useState();
+    const [searchClicked, setSearchClicked] = useState(false);
 
 
     const handlePageClick = (event) => {
         const selectedPage = event.selected;
         setCurrentPage(selectedPage);
-        getLeagues(selectedPage);
+        getLeagues(currentPage);
     };
 
     function handleSearchClick() {
@@ -69,8 +67,8 @@ function SportPage() {
             const response = await axios.post(
                 `${apiEndpoints.url}${apiEndpoints.sports.getLeagueSearch}`,
                 {
-                    sport_id: sportId,
-                    country_id: parseInt(countryFilter),
+                    leagues__sport_id: sportId,
+                    countries__country_id: parseInt(countryFilter),
                     letter: inputValue ? inputValue : ' ',
                     page: page + 1,
                     per_page: leaguesPerPage
@@ -80,8 +78,8 @@ function SportPage() {
                 }
             );
 
-            setCurrentLeagues(response.data);
-            const totalPosts = response.data[0].count;
+            setCurrentLeagues(response.data.leagues);
+            const totalPosts = response.data.count;
             setPageCount(Math.ceil(totalPosts / leaguesPerPage));
         } catch (error) {
             setPageCount(0);
@@ -101,13 +99,6 @@ function SportPage() {
     }, []);
 
     useEffect(() => {
-        if(prevInputValue !== inputValue || prevCountryFilter !== countryFilter){
-            handlePageClick({selected: 0});
-            setPaginationKey((prevKey) => prevKey + 1);
-        }
-    }, [countryFilter, searchClicked]);
-
-    useEffect(() => {
         axios.get(`${apiEndpoints.url}${apiEndpoints.sports.getAll}`)
         .then(res => {
             const returnedSports = res.data;
@@ -121,14 +112,19 @@ function SportPage() {
             } else {
                 navigate("/not-existing");
             }
-
-            setSport(returnedSports);
         })
         .catch(error => {
             toast.error(`:( Troubles With Sports Loading: ${error}`);
         });
 
     }, [sportName]);
+
+    useEffect(() => {
+        if(prevInputValue !== inputValue || prevCountryFilter !== countryFilter){
+            handlePageClick({selected: 0});
+            setPaginationKey((prevKey) => prevKey + 1);
+        }
+    }, [countryFilter, searchClicked]);
 
     useEffect(() => {
         (loading === false) ? setLoading(false) :
@@ -164,9 +160,10 @@ function SportPage() {
                             ))
                             : (loading === false) ?
                                 (
-                                    <div className={"noItems"}>
-                                        <h1>no {sportName} news were found :(</h1>
-                                    </div>
+                                    <NoItems
+                                        key={1}
+                                        text={`No ${sportName} news were found`}
+                                    />
                                 ) : null
                     }
 
@@ -209,10 +206,10 @@ function SportPage() {
                                         name={item?.name}
                                         logo={item?.team?.logo || item?.logo}
                                     /> ))
-                                :
-                                <div className={"noItems"}>
-                                    <h1>no leagues were found :(</h1>
-                                </div>
+                                : <NoItems
+                                    key={1}
+                                    text={`No ${sportName} leagues were found`}
+                                />
                         }
 
                     </section>

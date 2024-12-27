@@ -9,7 +9,7 @@ from typing import Dict
 
 def main_request(host, name, url, blob_name):
     global current_key_index, account_url
-    today = datetime.now().strftime('%Y-%m-%d')
+
     if token_usage[name] >= 99:
         current_key_index = (current_key_index + 1) % len(api_key)
         token_usage[name] = 0

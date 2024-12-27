@@ -35,6 +35,7 @@ def get_all_leagues_endpoint():
         dto = SportsLeagueDTO(**data)
         league_sports = get_all_leagues_by_sport(session, dto)
         return league_sports
+
     except Exception as e:
         response = {"error in service": str(e)}
         return get_error_response(response, 500)

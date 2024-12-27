@@ -4,6 +4,7 @@ import NewsSection from "../components/newsPage/newsSection";
 import axios from "axios";
 import apiEndpoints from "../apiEndpoints";
 import {toast} from "sonner";
+import NoItems from "../components/NoItems";
 
 function NewsPage(){
     const {sportName,id} = useParams();
@@ -80,9 +81,10 @@ function NewsPage(){
                 </>
                 ) : (loading === false) ?
                     (
-                        <div className={"noItems"}>
-                            <h1>no such news was found :(</h1>
-                        </div>
+                        <NoItems
+                            key={1}
+                            text={"no such news was found"}
+                        />
                     ) : null
                 }
 

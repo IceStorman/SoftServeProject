@@ -16,6 +16,7 @@ def get_countries(session):
     ]
 
 
+
 @handle_exceptions
 def search_countries(session, query):
     countries = session.query(Country).filter(
@@ -28,3 +29,4 @@ def search_countries(session, query):
             name=country.name,
         ).to_dict() for country in countries
     ]
+

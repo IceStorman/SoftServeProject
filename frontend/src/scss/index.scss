@@ -76,17 +76,19 @@ $scroll-track: #f9eaff;
     }
 }
 
-@import "header.scss";
-@import "games.scss";
+@import "header";
+@import "games";
 @import "news";
 @import "sportsBtn";
-@import "footer.scss";
+@import "footer";
 @import "sportPage";
 @import "sign";
-@import "iconsBlock.scss";
-@import "stream.scss";
-@import "newsPage.scss";
+@import "iconsBlock";
+@import "stream";
+@import "newsPage";
 @import "notExistingPage";
+@import "noItems";
+@import "loader";
 
 @font-face {
     font-family: 'RubikBubbles';
@@ -128,55 +130,4 @@ body {
     gap: 3rem;
     margin-bottom: 4vh;
 
-}
-
-.noItems{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 80%;
-    height: 25rem;
-    text-transform: capitalize;
-    font-size: 3rem;
-    color: $special-dark-purple;
-    margin: auto;
-}
-
-.loader-background{
-    position: fixed;
-    width: 100%;
-    height: 100vh;
-    opacity: 0.7;
-    background-color: grey;
-}
-
-.loader {
-    position: fixed;
-    align-self: center;
-    width: 10vh;
-    height: 2vh;
-    top: 50%;
-    border-radius: 5rem;
-    color: #514b82;
-    border: 0.4vh solid;
-    overflow: hidden;
-}
-
-.loader::before {
-    content: "";
-    position: absolute;
-    margin: 0.2vh;
-    width: 1.75vh;
-    top: 0;
-    bottom: 0;
-    left: -2vh;
-    border-radius: inherit;
-    background: currentColor;
-    box-shadow: -1vh 0 1.2vh 0.3vh currentColor;
-    clip-path: polygon(0 5%, 100% 0,100% 100%,0 95%,-3vh 50%);
-    animation: l14 1s infinite linear;
-}
-
-@keyframes l14 {
-    100% {left: calc(100% + 2vh)}
 }

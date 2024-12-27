@@ -32,6 +32,7 @@ def get_all_leagues_by_sport(session, filters_dto: SportsLeagueDTO):
         .join(Sport, League.sport_id == Sport.sport_id)
     )
 
+
     model_aliases = {
         "leagues": League,
     }
