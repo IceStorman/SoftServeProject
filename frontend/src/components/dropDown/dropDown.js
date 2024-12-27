@@ -49,7 +49,7 @@ function DropDown({setCountry}){
 
             <div className={`dropMenu ${isActive ? "" : "hidden"}`}>
 
-                <h1 key={-1} id={'0'} onClick={handleClick}>All</h1>
+                <h1 key={-1} id={''} onClick={handleClick}>All</h1>
 
                 {countries.map((item, index) => {
                     return <h1 key={index} id={item.id} onClick={handleClick}>{item.name}</h1>

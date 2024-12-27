@@ -31,10 +31,10 @@ function SportPage() {
 
     const [loading, setLoading] = useState(false);
 
-    const [countryFilter, setCountryFilter] = useState('0');
+    const [countryFilter, setCountryFilter] = useState();
     const [inputValue, setInputValue] = useState('');
 
-    const [prevCountryFilter, setPrevCountryFilter] = useState('');
+    const [prevCountryFilter, setPrevCountryFilter] = useState(0);
     const [prevInputValue, setPrevInputValue] = useState('');
 
     const [searchClicked, setSearchClicked] = useState(false);
@@ -69,7 +69,7 @@ function SportPage() {
                 {
                     leagues__sport_id: sportId,
                     countries__country_id: parseInt(countryFilter),
-                    letter: inputValue ? inputValue : ' ',
+                    letter: inputValue,
                     page: page + 1,
                     per_page: leaguesPerPage
                 },
