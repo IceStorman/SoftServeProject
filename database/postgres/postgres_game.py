@@ -2,7 +2,7 @@ from typing import Dict
 from datetime import datetime
 from database.models import Games
 from database.postgres.postgres_country import save_country
-from database.postgres.postgres_team import save_team
+
 from database.postgres.postgres_league import save_league
 
 def save_games(json_data: Dict, sport_id, session) -> None:
@@ -70,8 +70,8 @@ def save_games(json_data: Dict, sport_id, session) -> None:
 
         league_entry = save_league(league_data, session, sport_id) if league_data else None
         country_entry = save_country(country_data, session) if country_data else None
-        team_away_entry = save_team(team_away_data, session, sport_id)
-        team_home_entry = save_team(team_home_data, session, sport_id)
+        team_away_entry = None #save_team(team_away_data, session, sport_id)
+        team_home_entry = None #save_team(team_home_data, session, sport_id)
 
         game_entry = session.query(Games).filter_by(api_id=api_id, sport_id=sport_id).first()
         if not game_entry:

@@ -1,9 +1,12 @@
 from database.session import SessionLocal
-from database.models import Sport
+from database.models import Sport, TeamIndex
 from typing import Dict
-from database.postgres.postgres_team import save_teams
 from database.postgres.postgres_league import save_leagues
 from database.postgres.postgres_game import save_games
+
+TEAMS = 'teams'
+LEAGUES = 'leagues'
+GAMES = ["games", "fixtures", "fights", "races", "competitions"]
 
 def save_api_data(json_data: Dict, sport_name: str ) -> None:
     session = SessionLocal()
@@ -19,15 +22,18 @@ def save_api_data(json_data: Dict, sport_name: str ) -> None:
             sport_id = sport_entry.sport_id
 
         entity = json_data.get("get")
-        if entity == "teams":
-            save_teams(json_data, sport_id, session)
-            if sport_name == "mma" or sport_name == "formula-1":
-                save_leagues(json_data, sport_id, session)
+        json_data = json_data.get("response", [])
 
-        elif entity == "leagues":
+        if entity == TEAMS:
+            for team in json_data:
+                TeamIndex(team, sport_id).save()
+                '''                save_teams(json_data, sport_id, session)
+            if sport_name == "mma" or sport_name == "formula-1":
+                save_leagues(json_data, sport_id, session)'''
+        elif entity == LEAGUES:
             save_leagues(json_data, sport_id, session)
 
-        elif entity in ["games", "fixtures", "fights", "races", "competitions"]:
+        elif entity in GAMES:
             save_games(json_data, sport_id, session)
 
     except Exception as e:

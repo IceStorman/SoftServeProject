@@ -1,6 +1,6 @@
 from typing import Dict
 from database.models import League
-from database.postgres.postgres_country import save_country
+# from database.postgres.postgres_country import save_country
 
 def save_league(league_data, session, sport_id) -> League :
     if not league_data:
@@ -14,7 +14,7 @@ def save_league(league_data, session, sport_id) -> League :
     if not league_name:
         return None
 
-    country_entry = save_country(league_country_data, session)
+    country_entry = None #save_country(league_country_data, session)
     league_entry = session.query(League).filter_by(api_id=league_api_id, sport_id=sport_id).first()
 
     if not league_entry:
