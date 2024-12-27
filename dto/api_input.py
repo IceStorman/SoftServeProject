@@ -25,9 +25,11 @@ class TeamsLeagueDTO(BaseModel):
         pagination = Pagination(page=self.page, per_page=self.per_page)
         return pagination.get_pagination()
 
+class BaseDTO(BaseModel):
+    pass
 
-class TeamsStatisticsOrPlayersDTO(BaseModel):
-    sport_id: Optional[int] = None
+class TeamsStatisticsOrPlayersDTO(BaseDTO):
+    sport_id: Optional[str] = None
     team_id: Optional[int] = None
     league_id: Optional[int] = None
 

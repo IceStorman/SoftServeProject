@@ -19,6 +19,7 @@ import SignInPage from "../pages/signInPage";
 import MainPage from "../pages/mainPage";
 import ForgotPasswordPage from "../pages/forgotPasswordPage";
 import SportPage from "../pages/sportPage";
+import LeaguePage from "../pages/leaguePage";
 
 function App(){
 
@@ -45,6 +46,8 @@ function App(){
                     <Route path="/reset-password" element={<ForgotPasswordPage />} />
 
                     <Route path="/sport/:sportName" element={<SportPage />} />
+
+                    <Route path="/league/:leagueName" element={<LeaguePage />} />
 
                     <Route path="*" element={<Navigate to="/" />} />
 
