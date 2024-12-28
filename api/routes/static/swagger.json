@@ -5,13 +5,17 @@
     "description": "API for searching sports leagues",
     "version": "1.0.0"
   },
-  "schemes": ["http"],
+  "schemes": [
+    "http"
+  ],
   "paths": {
     "/sports/league/search": {
       "post": {
         "summary": "Search for sports leagues",
         "operationId": "searchLeagues",
-        "tags": ["Leagues"],
+        "tags": [
+          "Leagues"
+        ],
         "parameters": [
           {
             "in": "body",
@@ -40,8 +44,7 @@
                   "type": "integer",
                   "example": 10
                 }
-              },
-              "additionalProperties": true
+              }
             }
           }
         ],
@@ -81,6 +84,220 @@
           }
         }
       }
+    },
+    "/countries/": {
+      "get": {
+        "summary": "Retrieve a list of countries",
+        "operationId": "getCountries",
+        "tags": [
+          "Countries"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response with the list of countries",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "United States"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/games/specific": {
+      "post": {
+        "summary": "Retrieve stream information with filters",
+        "operationId": "getStreamInfoWithFilters",
+        "tags": [
+          "Games"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "games__sport_id": {
+                  "type": "integer",
+                  "required": false,
+                  "example": 1,
+                  "description": "Sport ID to filter games"
+                },
+                "games__league_id": {
+                  "type": "integer",
+                  "required": false,
+                  "example": 101,
+                  "description": "League ID to filter games"
+                },
+                "games__country_id": {
+                  "type": "integer",
+                  "required": false,
+                  "example": 20,
+                  "description": "Country ID to filter games"
+                },
+                "page": {
+                  "type": "integer",
+                  "required": false,
+                  "example": 1,
+                  "description": "Pagination page number"
+                },
+                "per_page": {
+                  "type": "integer",
+                  "required": false,
+                  "example": 10,
+                  "description": "Number of items per page"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response with games stream information",
+            "examples": {
+              "application/json": {
+                "data": [
+                  {
+                    "game_id": 12345,
+                    "sport_id": 1,
+                    "league_id": 101,
+                    "country_id": 20,
+                    "status": "live",
+                    "date": "2024-12-28",
+                    "home_team": "Team A",
+                    "away_team": "Team B",
+                    "score": "2-1",
+                    "stream_url": "https://example.com/stream/12345"
+                  },
+                  {
+                    "game_id": 12346,
+                    "sport_id": 1,
+                    "league_id": 102,
+                    "country_id": 30,
+                    "status": "finished",
+                    "date": "2024-12-28",
+                    "home_team": "Team C",
+                    "away_team": "Team D",
+                    "score": "1-1",
+                    "stream_url": "https://example.com/stream/12346"
+                  }
+                ],
+                "pagination": {
+                  "current_page": 1,
+                  "total_pages": 5,
+                  "per_page": 10,
+                  "total_items": 50
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "examples": {
+              "application/json": {
+                "error": "Invalid input data"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "examples": {
+              "application/json": {
+                "error": "Internal server error. Please try again later."
+              }
+            }
+          }
+        }
+      }
+    },
+      "/news/recent": {
+      "get": {
+        "summary": "Get recent news",
+        "operationId": "getRecentNews",
+        "tags": ["News"],
+        "responses": {
+          "200": {
+            "description": "List of recent news",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "Breaking News: Major Sports Event"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Details about the major sports event that just happened."
+                  },
+                  "publication_date": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2024-12-28T12:30:00Z"
+                  },
+                  "link": {
+                    "type": "string",
+                    "example": "https://example.com/news/1"
+                  },
+                  "image": {
+                    "type": "string",
+                    "example": "https://example.com/images/news1.jpg"
+                  }
+                }
+              }
+            },
+            "examples": {
+              "application/json": [
+                {
+                  "id": 1,
+                  "title": "Breaking News: Major Sports Event",
+                  "description": "Details about the major sports event that just happened.",
+                  "publication_date": "2024-12-28T12:30:00Z",
+                  "link": "https://example.com/news/1",
+                  "image": "https://example.com/images/news1.jpg"
+                },
+                {
+                  "id": 2,
+                  "title": "Update: Championship Finals",
+                  "description": "Highlights from the recent championship finals.",
+                  "publication_date": "2024-12-28T14:00:00Z",
+                  "link": "https://example.com/news/2",
+                  "image": "https://example.com/images/news2.jpg"
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
     }
   }
 }
+
+
