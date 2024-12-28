@@ -174,36 +174,37 @@
               "application/json": {
                 "data": [
                   {
-                    "game_id": 12345,
-                    "sport_id": 1,
-                    "league_id": 101,
-                    "country_id": 20,
+                    "id": 12345,
+                    "league_name": "League Ko-ko",
+                    "country_name": "USA",
                     "status": "live",
                     "date": "2024-12-28",
-                    "home_team": "Team A",
-                    "away_team": "Team B",
-                    "score": "2-1",
+                    "time": "17:00",
+                    "home_team_name": "Team A",
+                    "home_team_logo": "https://example.com/logo/12345",
+                    "away_team_name": "Team B",
+                    "away_team_logo": "https://example.com/logo/12345",
+                    "home_score": 2,
+                    "away_score": 1,
                     "stream_url": "https://example.com/stream/12345"
                   },
                   {
-                    "game_id": 12346,
-                    "sport_id": 1,
-                    "league_id": 102,
-                    "country_id": 30,
-                    "status": "finished",
+                     "id": 12346,
+                    "league_name": "League A",
+                    "country_name": "Nigeria",
+                    "status": "finish",
                     "date": "2024-12-28",
-                    "home_team": "Team C",
-                    "away_team": "Team D",
-                    "score": "1-1",
+                    "time": "19:00",
+                    "home_team_name": "Team Nigeria",
+                    "home_team_logo": "https://example.com/logo/12346",
+                    "away_team_name": "Team Naggets",
+                    "away_team_logo": "https://example.com/logo/12346",
+                    "home_score": 4,
+                    "away_score": 0,
                     "stream_url": "https://example.com/stream/12346"
-                  }
+                   }
                 ],
-                "pagination": {
-                  "current_page": 1,
-                  "total_pages": 5,
-                  "per_page": 10,
-                  "total_items": 50
-                }
+                "count": 2
               }
             }
           },
