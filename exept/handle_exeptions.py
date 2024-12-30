@@ -1,8 +1,9 @@
 from functools import wraps
+from flask import jsonify
 from pydantic import ValidationError
 from sqlalchemy.exc import OperationalError
 from exept.exeptions import SoftServeException, DatabaseConnectionError
-from api.routes.scripts import get_error_response
+
 
 def handle_exceptions(func):
     @wraps(func)
@@ -14,14 +15,17 @@ def handle_exceptions(func):
         except SoftServeException as e:
             return e.get_response()
         except ValidationError as e:
-            response = {"error in validation": str(e)}
-            return get_error_response(response, 400)
+            get_error_response(e)
         except Exception as e:
-            response = {"error in service": str(e)}
-            return get_error_response(response, 500)
+            get_error_response(e)
         return result
 
     return wrapper
+
+
+def get_error_response(e):
+    response = {"error in service": str(e)}
+    return jsonify(response)
 
 
 
