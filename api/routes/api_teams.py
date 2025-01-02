@@ -8,6 +8,7 @@ from dto.api_input import TeamsLeagueDTO, TeamsStatisticsOrPlayersDTO
 from exept.exeptions import DatabaseConnectionError
 from service.implementation.auto_request_api.sport_data_managers.team_statistics_data_manager import \
     TeamStatisticsDataManager
+from service.implementation.auto_request_api.sport_data_managers.teams_data_manager import TeamsDataManager
 
 CACHE_TEAMS = 60*1.3
 teams_app = Blueprint('teams', __name__)
@@ -37,7 +38,7 @@ def get_teams_statistics_endpoint():
     try:
         data = request.get_json()
         dto = TeamsStatisticsOrPlayersDTO().load(data)
-        data_manager = TeamStatisticsDataManager(dto, dto.sport_id)
+        data_manager = TeamStatisticsDataManager(dto)
         team_statistics = data_manager.get_teams_statistics()
         return team_statistics
     except Exception as e:
@@ -54,5 +55,16 @@ def get_players_endpoint():
     except Exception as e:
         get_error_response(e)
 
+@teams_app.route('/teams', methods=['POST'])
+def get_teams_endpoint():
+    try:
+        data = request.get_json()
+        dto = TeamsLeagueDTO(data)
+
+        data_manager = TeamsDataManager(dto)
+
+        return data_manager.get_data()
+    except Exception as e:
+        get_error_response(e)
 
 
