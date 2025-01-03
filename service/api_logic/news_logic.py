@@ -1,12 +1,13 @@
 import json
-from flask import jsonify, Response
-from database.models import News, Sport
+from flask import Response
+from database.models import News
 from database.azure_blob_storage.save_get_blob import blob_get_news
-from exept.colors_text import print_error_message
 from sqlalchemy.sql.expression import ClauseElement
-from exept.exeptions import SportNotFoundError, BlobFetchError
+from exept.handle_exeptions import handle_exceptions
 from service.api_logic.scripts import get_sport_by_name
-from api.routes.scripts import get_error_response
+from database.session import SessionLocal
+
+session = SessionLocal()
 
 def fetch_news(session, order_by: ClauseElement = None, limit: int = None, filters=None):
     query = session.query(News)
@@ -19,43 +20,43 @@ def fetch_news(session, order_by: ClauseElement = None, limit: int = None, filte
     return query.all()
 
 
-def get_news_by_count(count: int, session):
+@handle_exceptions
+def get_news_by_count(count: int):
     news = fetch_news(session, order_by=News.save_at.desc(), limit=count)
     return json_news(news)
 
 
-def get_latest_sport_news(count: int, sport_name: str, session):
-    try:
-        sport = get_sport_by_name(session, sport_name)
-    except SportNotFoundError as e:
-        print_error_message({"error": e.message})
-        return get_error_response({"error": e.message },404)
+@handle_exceptions
+def get_latest_sport_news(count: int, sport_name: str):
+    sport = get_sport_by_name(session, sport_name)
+
     filters = [News.sport_id == sport.sport_id]
     news = fetch_news(session, order_by=News.save_at.desc(), limit=count, filters=filters)
     return json_news(news)
 
 
-def get_popular_news(count: int, session):
+@handle_exceptions
+def get_popular_news(count: int):
     news = fetch_news(session, order_by=News.interest_rate.desc(), limit=count)
     return json_news(news)
+
+@handle_exceptions
+def get_news_by_id(blob_id: str):
+    news = fetch_news(session, filters=[News.blob_id == blob_id], limit=1)
+    if news:
+        return json_news(news)
+
 
 
 def json_news(news_records):
     all_results = []
     for news_record in news_records:
-        try:
-            data = blob_get_news(news_record.blob_id)
-            all_results.append({
-                "blob_id": news_record.blob_id,
-                "data": data
-            })
-        except BlobFetchError as e:
-            print_error_message({"error": e.message})
-            return get_error_response({"error": e.message },502)
-    #return json.dumps(all_results, ensure_ascii=False)
-    #return jsonify(all_results), 200
+        data = blob_get_news(news_record.blob_id)
+        all_results.append({
+            "blob_id": news_record.blob_id,
+            "data": data
+        })
     return Response(
         json.dumps(all_results, ensure_ascii=False),
         content_type='application/json; charset=utf-8',
-        status=200
     )
