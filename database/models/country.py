@@ -6,3 +6,4 @@ class Country(Base):
     flag = Column(String)
     name = Column(String)
     code = Column(String)
+    api_id = Column(Integer)
