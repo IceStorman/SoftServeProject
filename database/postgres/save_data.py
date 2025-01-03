@@ -137,8 +137,8 @@ def save_country_and_get_id(country_entry, country_dal: CountryDAL) -> int:
                                  code=country_entry.get('code'),
                                  flag=country_entry.get('flag'),
                                  api_id=country_entry.get('id'))
-    country_dal.save_country(country_dto)
-    return country_dal.get_country_by_name(country_dto.name).country_id
+
+    return country_dal.save_country(country_dto)
 
 def process_entity_teams(json_data, sport_id: int, country_dal: CountryDAL, session: SessionLocal):
     team_dal = TeamDAL(session)
