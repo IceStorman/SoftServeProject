@@ -1,0 +1,213 @@
+.sportPage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+
+    .sportTitle {
+        margin: 1rem 0;
+        text-transform: capitalize;
+        font-size: 3rem;
+        letter-spacing: 0.5rem;
+    }
+
+    .news {
+        width: 80%;
+        background-color: $special-light-purple;
+        border-radius: 0.5rem;
+        margin-top: 0;
+
+        .newsBox {
+            flex-direction: row;
+            justify-content: space-evenly;
+            width: 120rem;
+            max-width: 95%;
+            margin: 1rem auto 0;
+            color: $special-dark-purple;
+            overflow: visible;
+
+            .newsInsight {
+                width: 55%;
+            }
+
+            h4, h1 {
+                margin: 0 0.5rem 0 2rem;
+                align-self: end;
+            }
+
+            h4{
+                color: $scroll-hover;
+            }
+
+            img {
+                width: 50rem;
+                max-width: 45%;
+            }
+
+            .leftPlaceData {
+                align-self: start;
+            }
+        }
+
+        hr {
+            margin: 0 auto 1rem;
+            border: 0.1vh solid white;
+            width: 95%;
+        }
+
+        .newsBox:hover{
+
+            img{
+                transform: scale(1.02);
+            }
+        }
+    }
+
+    .leaguesBlock {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 80%;
+
+        .leaguesFilter {
+            display: flex;
+            flex-direction: row;
+            align-self: start;
+            margin: 2rem auto 0;
+            gap: 2rem;
+            width: 100%;
+
+            .leaguesSearch {
+                position: relative;
+                width: 17.3rem;
+                height: 2rem;
+
+                button {
+                    position: absolute;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    justify-self: end;
+                    width: 2rem;
+                    height: 2rem;
+                    font-size: 1.3rem;
+                    top: 0;
+                    right: 0;
+                    background-color: $main-background-color;
+                    border: 0.2rem solid $special-dark-purple;
+                    border-radius: 0.5rem;
+                    cursor: pointer;
+                    transition: transform 0.3s ease;
+                }
+
+                button:hover{
+                    transform: scale(1.05);
+                }
+
+                @include custom-form(input, label, 15rem, $special-dark-purple, $main-background-color, #5a5a5a);
+            }
+        }
+
+        .leaguesCountry {
+            all: unset;
+            width: 10rem;
+
+            button {
+                all: unset;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 10rem;
+                height: 2rem;
+                font-size: 1rem;
+                background-color: $special-dark-purple;
+                border-top-left-radius: 0.5rem;
+                border-top-right-radius: 0.5rem;
+                color: $main-text-color;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+
+            .contentCover{
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100vh;
+            }
+
+            .dropMenu {
+                width: 10rem;
+                max-height: 20rem;
+                position: absolute;
+                overflow-y: scroll;
+                overflow-x: hidden;
+
+                h1 {
+                    display: flex;
+                    justify-content: center;
+                    background-color: $purple-btn-color;
+                    width: 100%;
+                    padding: 0.2rem 0;
+                    color: $main-text-color;
+                    box-sizing: border-box;
+                    border: 0.1rem solid $special-dark-purple;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                }
+
+                @include scrollbar-style;
+            }
+
+            button:hover, h1:hover{
+                font-size: 1.1rem;
+                color: $scroll-track;
+            }
+
+            .inActiveDrop {
+                border-radius: 0.5rem;
+            }
+        }
+
+    }
+
+    .pagination {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        list-style: none;
+        padding: 0;
+        margin-bottom: 1rem;
+
+        li {
+            a {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                text-decoration: none;
+                background-color: $purple-btn-color;
+                color: $main-text-color;
+                border-radius: 50%;
+                cursor: pointer;
+                margin: 0 0.5rem;
+                font-size: 1.75rem;
+                font-weight: bolder;
+                width: 2.5rem;
+                height: 2.5rem;
+                transition: transform 0.1s ease;
+            }
+
+            a:hover {
+                color: $special-dark-purple;
+                transform: scale(1.1);
+            }
+        }
+    }
+
+    .activePaginationPane {
+        a {
+            border: solid 0.3rem #2BA36C;
+            border-radius: 50%;
+        }
+    }
+}

@@ -1,10 +1,9 @@
 import React, {useEffect, useState} from "react";
-import LeagueBtn from "../components/sportPage/leagueBtn";
 import ReactPaginate from "react-paginate";
 import {useParams} from "react-router-dom";
 import axios from "axios";
 import apiEndpoints from "../apiEndpoints";
-import {toast, Toaster} from "sonner";
+import {toast} from "sonner";
 import TeamsBtn from "../components/LeaguePage/teamsBtn";
 
 function LeaguePage(){
@@ -49,7 +48,6 @@ function LeaguePage(){
 
     return(
         <>
-            <Toaster  position="top-center" expand={true} richColors  />
 
             <section className={"sportTeams"}>
 

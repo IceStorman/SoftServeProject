@@ -1,0 +1,35 @@
+footer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: auto;
+    width: 100%;
+    background-color: $special-dark-purple;
+    color: $main-text-color;
+
+    button {
+        all: unset;
+        display: flex;
+        justify-content: center;
+        width: 3rem;
+        height: 3rem;
+        font-size: 3rem;
+        margin: auto 2rem;
+        cursor: pointer;
+        background-color: $purple-btn-color;
+        border-radius: 0.5rem;
+        padding: 0.8vh;
+        transition: all 0.3s ease;
+    }
+
+    button:hover{
+        transform: scale(1.05);
+    }
+
+    .footerInfo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: auto;
+    }
+}

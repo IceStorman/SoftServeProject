@@ -7,13 +7,13 @@ function scrollTop(){
     });
 }
 
-function footer(){
+function Footer(){
 
     return (
         <footer>
 
             <button className={"scrollBtn"} onClick={scrollTop}>
-                <i className="fa fa-solid fa-arrow-up fa-10x"></i>
+                <i className="fa fa-solid fa-arrow-up"></i>
             </button>
 
             <div className={"footerInfo"}>
@@ -26,4 +26,4 @@ function footer(){
     );
 }
 
-export default footer;
+export default Footer;
