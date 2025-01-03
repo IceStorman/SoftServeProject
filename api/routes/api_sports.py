@@ -35,7 +35,6 @@ def get_all_leagues_endpoint():
         pagintion = Pagination(**data)
         league_sports = get_all_leagues_by_sport(dto, pagintion)
         return league_sports
-
     except Exception as e:
         get_error_response(e)
 

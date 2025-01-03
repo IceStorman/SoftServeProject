@@ -22,7 +22,6 @@ def get_all_leagues_by_sport(filters_dto: dict, pagination: Pagination):
         .join(Sport, League.sport_id == Sport.sport_id)
     )
 
-
     model_aliases = {
         "leagues": League,
     }

@@ -14,7 +14,6 @@ def get_countries():
     return schema.dump(countries)
 
 
-
 @handle_exceptions
 def search_countries(query):
     countries = session.query(Country).filter(
