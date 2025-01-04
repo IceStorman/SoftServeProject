@@ -45,12 +45,7 @@ def get_news_by_id(blob_id: str):
     news = fetch_news(session, filters=[News.blob_id == blob_id], limit=1)
     if news:
         return json_news(news)
-    else:
-        return Response(
-            json.dumps({"error": "News not found"}, ensure_ascii=False),
-            content_type='application/json; charset=utf-8',
-            status=404
-        )
+
 
 
 def json_news(news_records):
