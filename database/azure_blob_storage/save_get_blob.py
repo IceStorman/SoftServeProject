@@ -284,10 +284,11 @@ def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
         print_good_message(f"The news item '{blob_name}' is saved in the database.")
         session.commit()
         teams = session.query(TeamIndex).all()
-        team_dict = {team.name.lower(): team.team_index_id for team in teams}
+        team_dict = {team.name: team.team_index_id for team in teams}
 
         for team_name in json_data["team_names"]:
-            team_index_id = team_dict.get(team_name.lower(), None)
+            team_index_id = team_dict.get(team_name, None)
+            print(team_index_id, "*"*40)
 
             team_index = TeamInNews(
                 news_id=news_index.news_id,
