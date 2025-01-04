@@ -206,10 +206,11 @@ function SportPage() {
                                         name={item?.name}
                                         logo={item?.team?.logo || item?.logo}
                                     /> ))
-                                : <NoItems
-                                    key={1}
-                                    text={`No ${sportName} leagues were found`}
-                                />
+                                : (loading === false) ?
+                                    (<NoItems
+                                        key={1}
+                                        text={`No ${sportName} leagues were found`}
+                                    />) : null
                         }
 
                     </section>
