@@ -47,12 +47,5 @@ def apply_filters(base_query: Query, filters: dict, model_aliases: dict):
 
     return base_query
 
-    for key, value in filters.items():
-        if "." in key:
-            table_name, column_name = key.split(".")
-            model = model_aliases.get(table_name, None)
-            if model is None:
-                raise ValueError(f"Model alias '{table_name}' not in model_aliases.")
-
 
 

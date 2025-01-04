@@ -44,10 +44,12 @@ function DropDown({setCountry}){
     }
 
     return(
-        <div className={"leaguesCountry"} ref={dropdownRef}>
+        <div className={"leaguesCountry"}>
             <button className={`dropButton ${isActive ? "" : "inActiveDrop"}`} onClick={handleMenu}>Country</button>
 
-            <div className={`dropMenu ${isActive ? "" : "hidden"}`}>
+            <div className={`contentCover ${isActive ? "" : "hidden"}`}></div>
+
+            <div className={`dropMenu ${isActive ? "" : "hidden"}`} ref={dropdownRef}>
 
                 <h1 key={-1} id={''} onClick={handleClick}>All</h1>
 
