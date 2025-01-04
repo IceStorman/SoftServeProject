@@ -4,7 +4,7 @@ from typing import Dict
 import os
 from dotenv import load_dotenv
 from datetime import datetime, timezone
-from database.models import BlobIndex, News, Sport, SportIndex, TeamIndex
+from database.models import BlobIndex, News, Sport, SportIndex, TeamIndex, TeamInNews
 from database.session import SessionLocal
 from exept.colors_text import print_error_message, print_good_message
 import re
@@ -283,11 +283,16 @@ def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
         session.add(news_index)
         print_good_message(f"The news item '{blob_name}' is saved in the database.")
         session.commit()
+        teams = session.query(TeamIndex).all()
+        team_dict = {team.name.lower(): team.team_index_id for team in teams}
 
         for team_name in json_data["team_names"]:
-            team_index = TeamIndex(
+            team_index_id = team_dict.get(team_name.lower(), None)
+
+            team_index = TeamInNews(
                 news_id=news_index.news_id,
-                name=team_name
+                name=team_name,
+                team_index_id=team_index_id
             )
             session.add(team_index)
 
