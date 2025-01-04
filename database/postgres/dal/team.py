@@ -21,12 +21,10 @@ class TeamDAL:
 
     def create_team(self, team_dto: TeamDTO) -> TeamIndex:
         new_team_index = TeamIndex(
-            news_id=team_dto.news_id,
             sport_id=team_dto.sport_id,
             name=team_dto.name,
             logo=team_dto.logo,
             api_id=team_dto.api_id,
-            country=team_dto.country,
             league=team_dto.league
         )
         self.db_session.add(new_team_index)

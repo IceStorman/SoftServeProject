@@ -6,4 +6,4 @@ class Players(Base): # For players in formula-1 and mma
     name = Column(String)
     logo = Column(String)
     team_index_id = Column(ForeignKey('TeamIndex.team_index_id'))
-    sport_id = Column(ForeignKey('Sport.sport_id'))
+    sport_id = Column(ForeignKey('Sports.sport_id'))
