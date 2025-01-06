@@ -11,21 +11,20 @@ class TeamDAL:
         for team in team_dto_list:
             self.save_team(team)
 
-    def save_team(self, team_dto: TeamDTO):
+    def save_team(self, team_dto: TeamDTO) -> int:
         team_entry = self.get_team_by_api_id_and_sport_id(team_dto.api_id, team_dto.sport_id)
         if team_entry:
-            self.update_team(team_entry.team_index_id, team_dto)
+            team_entry = self.update_team(team_entry.team_index_id, team_dto)
         else:
-            self.create_team(team_dto)
+            team_entry = self.create_team(team_dto)
+        return team_entry.team_index_id
 
     def create_team(self, team_dto: TeamDTO) -> TeamIndex:
         new_team_index = TeamIndex(
-            news_id=team_dto.news_id,
             sport_id=team_dto.sport_id,
             name=team_dto.name,
             logo=team_dto.logo,
             api_id=team_dto.api_id,
-            country=team_dto.country,
             league=team_dto.league
         )
         self.db_session.add(new_team_index)

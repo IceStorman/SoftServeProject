@@ -3,8 +3,12 @@ import {useParams} from "react-router-dom";
 import SportNews from "../components/sportPage/sportNews";
 import axios from "axios";
 import apiEndpoints from "../apiEndpoints";
-import Team from "../components/sportPage/team";
+import LeagueBtn from "../components/sportPage/leagueBtn";
 import ReactPaginate from 'react-paginate';
+import {toast, Toaster} from "sonner";
+import {Link} from "react-router-dom";
+import Dropdown from 'react-bootstrap/Dropdown';
+
 
 function SportPage(){
     const { sportName  } = useParams();
@@ -12,23 +16,23 @@ function SportPage(){
     const [rangeScale ,setRangeScale]= useState(3)
 
     const [sportNews, setSportNews] = useState([]);
-    const [teams, setTeams] = useState([]);
+    const [leagues, setLeagues] = useState([]);
 
-    const [currentTeams, setCurrentTeams] = useState([]);
+    const [currentLeagues, setCurrentLeagues] = useState([]);
     const [pageCount, setPageCount] = useState(0);
-    const teemsPerPage = 9;
+    const leaguesPerPage = 9;
 
-    const [teamOffset, setTeamOffset] = useState(0);
+    const [leaguesOffset, setLeaguesOffset] = useState(0);
 
     useEffect(() => {
-        const endOffset = teamOffset + teemsPerPage;
-        setCurrentTeams(teams.slice(teamOffset, endOffset));
-        setPageCount(Math.ceil(teams.length / teemsPerPage));
-    }, [teamOffset, teams]);
+        const endOffset = leaguesOffset + leaguesPerPage;
+        setCurrentLeagues(leagues.slice(leaguesOffset, endOffset));
+        setPageCount(Math.ceil(leagues.length / leaguesPerPage));
+    }, [leaguesOffset, leagues]);
 
     const handlePageClick = (event) => {
-        const newOffset = (event.selected * teemsPerPage) % teams.length;
-        setTeamOffset(newOffset);
+        const newOffset = (event.selected * leaguesPerPage) % leagues.length;
+        setLeaguesOffset(newOffset);
     };
 
 
@@ -39,7 +43,7 @@ function SportPage(){
                 setSportNews(returnedNews);
             })
             .catch(error => {
-                alert(`There was an error getting news :(\n${error}`);
+                toast.error(`:( Troubles With News Loading: ${error}`);
             });
     }, []);
 
@@ -50,21 +54,23 @@ function SportPage(){
                 res.data.forEach((sport) =>{
                     if(sport?.sport === sportName) {
                         returnedTeams = sport?.team
-                        setTeams(returnedTeams);
+                        setLeagues(returnedTeams);
                     }
                 })
             })
             .catch(error => {
-                alert(`There was an error getting teams :(\n${error}`);
+                toast.error(`:( Troubles With Leagues Loading: ${error}`);
             });
     }, []);
 
     return(
         <section className={"sportPage"}>
 
+            <Toaster  position="top-center" expand={true} richColors  />
+
             <h1 className={"sportTitle"}>{ sportName }</h1>
 
-            <section className={"sportNews"}>
+            <section className={"news"}>
 
                 {sportNews.map((item, index) => (
 
@@ -81,29 +87,49 @@ function SportPage(){
 
             </section>
 
-            <section className={"sportTeams"}>
+            <section className={"leaguesBlock"}>
 
-                {currentTeams.map((item, index) =>(
-                    <Team
-                        key={index}
-                        name={item?.name}
-                        logo={item?.team?.logo || item?.logo}
-                    />
-                ))}
+                <section className={"leaguesFilter"}>
+
+                    <input className={"leaguesSearch"} type={"search"}></input>
+
+                    <Dropdown className={"leaguesCountry"}>
+                        <Dropdown.Toggle variant="success" id="dropdown-basic">
+                            Country
+                        </Dropdown.Toggle>
+
+                        <Dropdown.Menu>
+                            <Dropdown.Item href="#/action-1">Ukraine</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+
+                </section>
+
+                <section className={"iconsBlock"}>
+
+                    {currentLeagues.map((item, index) => (
+                        <LeagueBtn
+                            key={index}
+                            name={item?.name}
+                            logo={item?.team?.logo || item?.logo}
+                        />
+                    ))}
+
+                </section>
+
+                <ReactPaginate
+                    breakLabel="..."
+                    nextLabel="→"
+                    onPageChange={handlePageClick}
+                    pageRangeDisplayed={rangeScale}
+                    pageCount={pageCount}
+                    previousLabel="←"
+                    renderOnZeroPageCount={null}
+                    activeClassName="activePaginationPane"
+                    containerClassName="pagination"
+                />
 
             </section>
-
-            <ReactPaginate
-                breakLabel="..."
-                nextLabel="→"
-                onPageChange={handlePageClick}
-                pageRangeDisplayed={rangeScale}
-                pageCount={pageCount}
-                previousLabel="←"
-                renderOnZeroPageCount={null}
-                activeClassName="activePaginationPane"
-                containerClassName="pagination"
-            />
 
         </section>
     );

@@ -29,7 +29,7 @@ def save_api_data(json_data: Dict, sport_name: str ) -> None:
         country_dal = CountryDAL(session)
 
         if entity == TEAMS:
-            process_entity_teams(json_data, sport_id, country_dal, session)
+            process_entity_teams(json_data, sport_id, session)
             if sport_name in SPORT_TO_SAVE_TEAM_AS_LEAGUE:
                 process_entity_leagues(json_data, sport_id, country_dal, session)
 
@@ -92,7 +92,7 @@ def save_api_data(json_data: Dict, sport_name: str ) -> None:
                 if teams_data:
                     team_away_data = teams_data.get('away', {}) or teams_data.get('visitors', {})
                     team_home_data = teams_data.get('home', {})
-                    process_entity_teams([team_away_data, team_home_data], sport_id, country_dal, session)
+                    process_entity_teams([team_away_data, team_home_data], sport_id, session)
                     team_away_id = team_dal.get_team_by_name_and_sport_id(team_away_data.get('name'), sport_id).team_index_id
                     team_home_id = team_dal.get_team_by_name_and_sport_id(team_home_data.get('name'), sport_id).team_index_id
 
@@ -137,19 +137,17 @@ def save_country_and_get_id(country_entry, country_dal: CountryDAL) -> int:
                                  code=country_entry.get('code'),
                                  flag=country_entry.get('flag'),
                                  api_id=country_entry.get('id'))
-    country_dal.save_country(country_dto)
-    return country_dal.get_country_by_name(country_dto.name).country_id
+    country_dto.name=country_dto.name.replace('-',' ')
+    return country_dal.save_country(country_dto)
 
-def process_entity_teams(json_data, sport_id: int, country_dal: CountryDAL, session: SessionLocal):
+def process_entity_teams(json_data, sport_id: int, session: SessionLocal):
     team_dal = TeamDAL(session)
     team_dto_list = []
     for team in json_data:
-        country_id = save_country_and_get_id(team.get('country'), country_dal)
         team_dto = TeamDTO(sport_id=sport_id,
                            name=team.get('name'),
                            logo=team.get('logo'),
-                           api_id=team.get('id'),
-                           country=country_id)
+                           api_id=team.get('id'))
         team_dto_list.append(team_dto)
     team_dal.save_teams(team_dto_list)
 

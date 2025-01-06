@@ -7,14 +7,13 @@ class CountryDAL:
     def __init__(self, db_session: Session):
         self.db_session = db_session
 
-
-# + implement a fancy algorythm
-    def save_country(self, country_dto: CountryDTO):
+    def save_country(self, country_dto: CountryDTO) -> int:
         country_entry = self.get_country_by_name(country_dto.name)
         if country_entry:
-            self.update_country(country_entry.country_id, country_dto)
+            country_entry = self.update_country(country_entry.country_id, country_dto)
         else:
-            self.create_country(country_dto)
+            country_entry = self.create_country(country_dto)
+        return country_entry.country_id
 
     def create_country(self, country_dto: CountryDTO) -> Country:
         new_country = Country(
@@ -30,6 +29,7 @@ class CountryDAL:
 
     def get_country_by_name(self, country_name: str):
         return self.db_session.query(Country).filter_by(name=country_name).first()
+
 
     def get_country_by_id(self, country_id: int) -> Optional[Country]:
         return self.db_session.query(Country).filter_by(country_id = country_id).first()

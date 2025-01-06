@@ -11,12 +11,13 @@ class LeagueDAL:
         for league in league_dto_list:
             self.save_league(league)
 
-    def save_league(self, league_dto: LeagueDTO):
+    def save_league(self, league_dto: LeagueDTO) -> int:
         league_entry = self.get_league_by_api_id_and_sport_id(league_dto.api_id, league_dto.sport_id)
         if league_entry:
-            self.update_league(league_entry.league_id, league_dto)
+            league_entry = self.update_league(league_entry.league_id, league_dto)
         else:
-            self.create_league(league_dto)
+            league_entry = self.create_league(league_dto)
+        return league_entry.league_id
 
     def create_league(self, league_dto: LeagueDTO) -> League:
         new_league = League(

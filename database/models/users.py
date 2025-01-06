@@ -6,6 +6,4 @@ class User(Base):
     username = Column(String)
     email = Column(String)
     password_hash = Column(String)
-    sport_pref_key = Column(Integer)
-    club_pref_key = Column(Integer)
     #theme = Column(String)

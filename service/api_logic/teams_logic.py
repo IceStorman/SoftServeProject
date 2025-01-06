@@ -1,34 +1,43 @@
-import json
-from database.azure_blob_storage.save_get_blob import get_all_blob_indexes_from_db, get_blob_data_for_all_sports
+from dto.api_input import TeamsLeagueDTO
+from dto.pagination import Pagination
+from exept.handle_exeptions import handle_exceptions
+from database.models import TeamIndex, Sport, League, Country
+from service.api_logic.scripts import apply_filters
+from dto.api_output import TeamsLeagueOutput
+from database.session import SessionLocal
 
-TEAMS_JSON = "teams.json"
-TEAM_KEY = "team"
-DATA_KEY = "data"
-SPORT_KEY = "sport"
-RESPONSE_KEY = "response"
+session = SessionLocal()
 
-def get_teams(session):
-    blob_indexes = get_all_blob_indexes_from_db(session, TEAMS_JSON)
-    result = get_blob_data_for_all_sports(session, blob_indexes)
-    data = json.loads(result)
-    filtered_data = []
+# NOT WORK NOW ----------------------------------
 
-    for teams_data in data:
-        processed_data = process_blob_data(teams_data)
-        if processed_data:
-            filtered_data.append(processed_data)
-    return filtered_data, 200
+@handle_exceptions
+def get_teams(
+        filters_dto: dict,
+        pagination: Pagination
+):
+    query = (
+        session.query(TeamIndex)
+         .join(League, TeamIndex.league == League.league_id)
+         .join(Country, TeamIndex.country == Country.country_id)
+         .join(Sport, TeamIndex.sport_id == Sport.sport_id)
+    )
+
+    model_aliases = {
+        "teams": TeamIndex,
+        "countries": Country,
+        "leagues": League,
+    }
+
+    query = apply_filters(query, filters_dto, model_aliases)
+
+    offset, limit = pagination.get_pagination()
+    if offset is not None and limit is not None:
+        query = query.offset(offset).limit(limit)
+
+    teams = query.all()
+    schema = TeamsLeagueOutput(many=True)
+    return schema.dump(teams)
 
 
-def process_blob_data(sport_data):
-    blob_name = sport_data.get("blob_name")
-    team = sport_data.get(DATA_KEY, {}).get(RESPONSE_KEY, [])
-    sport = sport_data.get(SPORT_KEY)
-    if team:
-        return {
-            "sport": sport,
-            #"blob_name": blob_name,
-            TEAM_KEY: team,
-        }
 
-    return None
+

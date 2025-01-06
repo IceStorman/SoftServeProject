@@ -12,12 +12,13 @@ class GameDAL:
             self.save_game(game)
 
 
-    def save_game(self, game_dto: GameDTO):
+    def save_game(self, game_dto: GameDTO) -> int:
         game_entry = self.get_game_by_game_id_and_api_id(game_dto.game_id, game_dto.api_id)
         if game_entry:
-            self.update_game(game_dto.game_id, game_dto)
+            game_entry = self.update_game(game_dto.game_id, game_dto)
         else:
-            self.create_game(game_dto)
+            game_entry = self.create_game(game_dto)
+        return game_entry.game_id
 
     def create_game(self, games_dto: GameDTO) -> Games:
         new_game = Games(
