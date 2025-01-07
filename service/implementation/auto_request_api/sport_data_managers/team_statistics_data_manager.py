@@ -12,16 +12,16 @@ class TeamStatisticsDataManager(AbstractSportDataManager):
     _team_id: Optional[int]
     _league_id: Optional[int]
 
-    def __init__(self, team_statistics_data: TeamsStatisticsOrPlayersDTO):
+    def __init__(self, team_statistics_data: Dict):
         super().__init__(team_statistics_data)
 
-        self._sport_id = team_statistics_data.sport_id
+        self._sport_id = team_statistics_data.get("sport_id")
         self._host = get_host(self._sport_id)
 
         self._sport_name = get_sport_name(self._sport_id)
 
-        self._team_id = team_statistics_data.team_id
-        self._league_id = team_statistics_data.league_id
+        self._team_id = team_statistics_data.get("team_id")
+        self._league_id = team_statistics_data.get("league_id")
         print(f"host: {self._host} sport id: {self._sport_id} | team id: {self._team_id} | league id: {self._league_id}")
 
     def get_teams_statistics(self) -> Dict[str, str]:
