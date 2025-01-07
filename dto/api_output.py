@@ -38,6 +38,6 @@ class SportsLeagueOutput(Schema):
     name = fields.Str()
 
 class CountriesOutput(Schema):
-    id = fields.Int(attribute="api_id")
+    id = fields.Int(attribute="country_id")
     flag = fields.Str()
     name = fields.Str()

@@ -1,20 +1,20 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
-function header(){
+function Header(){
 
     return (
 
         <header>
-            <Link className="title" to={"/"}>
+            <NavLink className="title" to={"/"}>
                 <span className="red">КУЙ</span>Sport
-            </Link>
+            </NavLink>
 
             <div className="navMenu">
 
-                <Link to={""}>Трансляції</Link>
-                <Link to={""}>Розклад подій</Link>
-                <Link className="signLink" to={"/sign-in"}>Вхід</Link>
+                <NavLink to={"/stream"} className={({ isActive }) => (isActive ? 'activePage' : '')}>Трансляції</NavLink>
+                <NavLink to={"/hui"} className={({ isActive }) => (isActive ? 'activePage' : '')}>Розклад подій</NavLink>
+                <NavLink className="signLink" to={"/sign-in"}>Вхід</NavLink>
 
             </div>
 
@@ -23,4 +23,4 @@ function header(){
     );
 }
 
-export default header;
+export default Header;
