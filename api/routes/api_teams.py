@@ -59,10 +59,9 @@ def get_players_endpoint():
 def get_teams_endpoint():
     try:
         data = request.get_json()
-        dto = TeamsLeagueDTO(data)
+        dto = TeamsLeagueDTO().load(data)
 
         data_manager = TeamsDataManager(dto)
-
         return data_manager.get_data()
     except Exception as e:
         get_error_response(e)

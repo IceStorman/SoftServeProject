@@ -26,15 +26,6 @@ class TeamsLeagueDTO(BaseDTO):
     page = fields.Int(required=False, missing=0)
     per_page = fields.Int(required=False, missing=0)
 
-    def __init__(self, data: Dict[str, int]):
-        super().__init__()
-
-        self.teams__sport_id = data.get('teams__sport_id') if data.get('teams__sport_id') > 0 else None
-        self.leagues__api_id = data.get('leagues__api_id') if data.get('leagues__api_id') > 0 else None
-        self.countries__api_id = data.get('countries__api_id') if data.get('countries__api_id') > 0 else None
-        self.page = data.get('page') if data.get('page') > 0 else None
-        self.per_page = data.get('per_page') if data.get('per_page') > 0 else None
-
 class TeamsStatisticsOrPlayersDTO(BaseDTO):
     sport_id = fields.Int(required=False, missing=None)
     team_id = fields.Int(required=False, missing=None)

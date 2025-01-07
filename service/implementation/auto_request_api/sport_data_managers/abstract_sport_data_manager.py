@@ -16,9 +16,10 @@ class AbstractSportDataManager:
     _sport_name: str
 
     _data_object: BaseDTO
+    _data_dict: Dict
 
     def __init__(self, new_data: Dict):
-        pass
+        self._data_dict = new_data
 
     def main_request(self, host, name, url, blob_name):
         headers = {
