@@ -61,30 +61,3 @@ def get_host(sport_id: int):
             return "v1.mma.api-sports.io"
         case 12:
             return "v1.american-football.api-sports.io"
-
-def get_sport_name(sport_id: int):
-    match sport_id:
-        case 1:
-            return "formula-1"
-        case 2:
-            return "nba"
-        case 3:
-            return "hockey"
-        case 4:
-            return "volleyball"
-        case 5:
-            return "afl"
-        case 6:
-            return "rugby"
-        case 7:
-            return "handball"
-        case 8:
-            return "football"
-        case 9:
-            return "baseball"
-        case 10:
-            return "basketball"
-        case 11:
-            return "mma"
-        case 12:
-            return "nfl"

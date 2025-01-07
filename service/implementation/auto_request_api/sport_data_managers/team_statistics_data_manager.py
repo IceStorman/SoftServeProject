@@ -2,7 +2,7 @@ from typing import Dict, Optional
 
 from dto.api_input import TeamsStatisticsOrPlayersDTO
 from service.implementation.auto_request_api.sport_data_managers.sport_consts import get_team_statistics_url, \
-    get_team_statistics_index, get_host, get_sport_name
+    get_team_statistics_index, get_host
 from service.implementation.auto_request_api.sport_data_managers.abstract_sport_data_manager import \
     AbstractSportDataManager
 
@@ -17,8 +17,6 @@ class TeamStatisticsDataManager(AbstractSportDataManager):
 
         self._sport_id = team_statistics_data.get("sport_id")
         self._host = get_host(self._sport_id)
-
-        self._sport_name = get_sport_name(self._sport_id)
 
         self._team_id = team_statistics_data.get("team_id")
         self._league_id = team_statistics_data.get("league_id")

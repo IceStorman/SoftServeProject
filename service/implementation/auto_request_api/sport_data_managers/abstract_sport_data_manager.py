@@ -8,7 +8,7 @@ from typing import Dict
 from datetime import datetime
 from database.models import Sport
 
-from service.implementation.auto_request_api.sport_data_managers.sport_consts import get_host, get_sport_name
+from service.implementation.auto_request_api.sport_data_managers.sport_consts import get_host
 
 
 class AbstractSportDataManager:
@@ -20,6 +20,18 @@ class AbstractSportDataManager:
 
     def __init__(self, new_data: Dict):
         self._data_dict = new_data
+
+        query = (
+            SessionLocal().query(
+                Sport.sport_id,
+                Sport.sport_name
+            )
+            .filter(Sport.sport_id == new_data.get("sport_id"))
+        )
+
+        ix = query.first()
+        if ix is not None:
+            self._sport_name = ix.sport_name
 
     def main_request(self, host, name, url, blob_name):
         headers = {

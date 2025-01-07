@@ -23,7 +23,7 @@ class TeamsDataManager(AbstractSportDataManager):
         self._leagues__api_id = data_manager.get("leagues__api_id")
         self._host = get_host(self._teams__sport_id)
 
-        self._sport_name = get_sport_name(self._teams__sport_id)
+        #self._sport_name = get_sport_name(self._teams__sport_id)
 
         self._countries__api_id = data_manager.get("countries__api_id")
         self._page = data_manager.get("page")
