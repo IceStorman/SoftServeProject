@@ -8,8 +8,6 @@ from database.session import SessionLocal
 
 session = SessionLocal()
 
-# NOT WORK NOW ----------------------------------
-
 @handle_exceptions
 def get_teams(
         filters_dto: dict,
@@ -18,9 +16,11 @@ def get_teams(
     query = (
         session.query(TeamIndex)
          .join(League, TeamIndex.league == League.league_id)
-         .join(Country, TeamIndex.country == Country.country_id)
          .join(Sport, TeamIndex.sport_id == Sport.sport_id)
     )
+    a = query.all()
+    for p in a:
+        print(p)
 
     model_aliases = {
         "teams": TeamIndex,
