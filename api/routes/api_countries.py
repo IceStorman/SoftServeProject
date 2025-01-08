@@ -34,4 +34,4 @@ def search_countries_endpoint(query):
         return result
     except Exception as e:
         api_routes_logger.error(f"Error in GET /: {str(e)}")
-        return get_error_response(e)
+        get_error_response(e)
