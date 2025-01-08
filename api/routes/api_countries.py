@@ -22,6 +22,7 @@ def get_countries_endpoint():
         countries = get_countries()
         return countries
     except Exception as e:
+        api_routes_logger.error(f"Error in GET /: {str(e)}")
         get_error_response(e)
 
 
@@ -32,4 +33,5 @@ def search_countries_endpoint(query):
         result = search_countries(query.lower())
         return result
     except Exception as e:
+        api_routes_logger.error(f"Error in GET /: {str(e)}")
         return get_error_response(e)

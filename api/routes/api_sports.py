@@ -29,6 +29,7 @@ def get_all_sports_endpoint():
         all_sports = get_all_sports()
         return all_sports
     except Exception as e:
+        api_routes_logger.error(f"Error in GET /: {str(e)}")
         get_error_response(e)
 
 
@@ -43,6 +44,7 @@ def get_all_leagues_endpoint():
         league_sports = get_all_leagues_by_sport(dto, pagintion)
         return league_sports
     except Exception as e:
+        api_routes_logger.error(f"Error in GET /: {str(e)}")
         get_error_response(e)
 
 
@@ -56,5 +58,6 @@ def search_countries():
         leagues = search_leagues(dto, pagintion)
         return leagues
     except Exception as e:
+        api_routes_logger.error(f"Error in GET /: {str(e)}")
         get_error_response(e)
 

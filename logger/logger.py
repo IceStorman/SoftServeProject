@@ -13,7 +13,7 @@ def get_logger(name, log_file, level=logging.INFO):
     logger = logging.getLogger(name)
 
     if not logger.hasHandlers():
-        handler = logging.FileHandler(log_file_path)
+        handler = logging.FileHandler(log_file_path, mode='w')
         formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(funcName)s - %(message)s")
         handler.setFormatter(formatter)
         logger.addHandler(handler)

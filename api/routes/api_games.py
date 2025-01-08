@@ -33,6 +33,7 @@ def get_stream_info_endpoint():
         games = get_games_today(dto, pagination)
         return games
     except Exception as e:
+        api_routes_logger.error(f"Error in GET /: {str(e)}")
         get_error_response(e)
 
 
@@ -47,4 +48,5 @@ def get_stream_info_with_filters_endpoint():
         games = get_games_today(dto, pagination)
         return games
     except Exception as e:
+        api_routes_logger.error(f"Error in GET /: {str(e)}")
         get_error_response(e)

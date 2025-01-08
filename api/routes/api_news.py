@@ -28,6 +28,7 @@ def get_recent_news_endpoint():
         recent_news = get_news_by_count(COUNT_NEWS)
         return recent_news
     except Exception as e:
+        api_routes_logger.error(f"Error in GET /: {str(e)}")
         get_error_response(e)
 
 
@@ -39,6 +40,7 @@ def get_sport_news_endpoint(sport_type):
         sport_news = get_latest_sport_news(COUNT_NEWS, sport_type)
         return sport_news
     except Exception as e:
+        api_routes_logger.error(f"Error in GET /: {str(e)}")
         get_error_response(e)
 
 
@@ -50,6 +52,7 @@ def get_popular_news_endpoint():
         popular_news = get_popular_news(COUNT_NEWS)
         return popular_news
     except Exception as e:
+        api_routes_logger.error(f"Error in GET /: {str(e)}")
         get_error_response(e)
 
 
@@ -63,6 +66,7 @@ def specific_article():
         response = get_news_by_id(news_id)
         return response
     except Exception as e:
+        api_routes_logger.error(f"Error in GET /: {str(e)}")
         get_error_response(e)
 
 

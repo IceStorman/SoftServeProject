@@ -35,6 +35,7 @@ def get_teams_sport_endpoint():
         league_teams = get_teams(dto, pagination)
         return league_teams
     except Exception as e:
+        api_routes_logger.error(f"Error in GET /: {str(e)}")
         get_error_response(e)
 
 
@@ -49,6 +50,7 @@ def get_teams_statistics_endpoint():
         team_statistics = data_manager.get_teams_statistics()
         return team_statistics
     except Exception as e:
+        api_routes_logger.error(f"Error in GET /: {str(e)}")
         get_error_response(e)
 
 
@@ -61,6 +63,7 @@ def get_players_endpoint():
         team_players = basketball_players(dto)
         return team_players
     except Exception as e:
+        api_routes_logger.error(f"Error in GET /: {str(e)}")
         get_error_response(e)
 
 
