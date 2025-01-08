@@ -8,8 +8,6 @@ from database.session import SessionLocal
 
 session = SessionLocal()
 
-# NOT WORK NOW ----------------------------------
-
 @handle_exceptions
 def get_teams(
         filters_dto: dict,
@@ -20,6 +18,9 @@ def get_teams(
          .join(League, TeamIndex.league == League.league_id)
          .join(Sport, TeamIndex.sport_id == Sport.sport_id)
     )
+    a = query.all()
+    for p in a:
+        print(p)
 
     model_aliases = {
         "teams": TeamIndex,
@@ -29,9 +30,9 @@ def get_teams(
 
     query = apply_filters(query, filters_dto, model_aliases)
 
-    # offset, limit = pagination.get_pagination()
-    # if offset is not None and limit is not None:
-    #     query = query.offset(offset).limit(limit)
+    offset, limit = pagination.get_pagination()
+    if offset is not None and limit is not None:
+        query = query.offset(offset).limit(limit)
 
     teams = query.all()
     schema = TeamsLeagueOutput(many=True)

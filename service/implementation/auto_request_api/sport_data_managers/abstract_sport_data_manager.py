@@ -7,7 +7,7 @@ from database.session import SessionLocal
 from typing import Dict
 from datetime import datetime
 from database.models import Sport
-
+from database.postgres.save_data import save_api_data
 from service.implementation.auto_request_api.sport_data_managers.sport_consts import get_host
 
 
@@ -41,16 +41,11 @@ class AbstractSportDataManager:
         response = requests.get(url, headers=headers)
         response.raise_for_status()
         json_data = response.json()
+        print(json_data)
+        print(name)
         if "teams/teams" in blob_name:
-            query = (
-                SessionLocal.query(
-                    Sport.sport_id,
-                    Sport.sport_name
-                )
-                .filter(Sport.sport_name == blob_name)
-            )
-            ix = query.first()
-
+            save_api_data(json_data, name)
+            return json_data
         blob_save_specific_api(name, blob_name, json_data)
         return json_data
 

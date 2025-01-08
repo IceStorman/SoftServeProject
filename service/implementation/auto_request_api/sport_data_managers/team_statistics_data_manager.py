@@ -1,5 +1,7 @@
 from typing import Dict, Optional
-
+from database.postgres.dal.sport import SportDAL
+from database.models import Sport
+from database.session import SessionLocal
 from dto.api_input import TeamsStatisticsOrPlayersDTO
 from service.implementation.auto_request_api.sport_data_managers.sport_consts import get_team_statistics_url, \
     get_team_statistics_index, get_host
@@ -15,7 +17,18 @@ class TeamStatisticsDataManager(AbstractSportDataManager):
     def __init__(self, team_statistics_data: Dict):
         super().__init__(team_statistics_data)
 
-        self._sport_id = team_statistics_data.get("sport_id")
+        #self._sport_id = team_statistics_data.get("sport_id")
+        query = (
+            SessionLocal().query(
+                Sport.sport_id,
+                Sport.sport_name
+            )
+            .filter(Sport.sport_id == team_statistics_data.get("sport_id"))
+        )
+
+        ix = query.first()
+        if ix is not None:
+            self._sport_id = ix.sport_name
         self._host = get_host(self._sport_id)
 
         self._team_id = team_statistics_data.get("team_id")
