@@ -50,7 +50,7 @@ THREAT_LEVELS = {
 }
 SUSPICIOUS_PATTERNS = [
     r"<script.*?>.*?</script>",  # Вбудовані скрипти
-    r"data:[^;]+;base64,",  # Base64-кодовані файли
+    #r"data:[^;]+;base64,",  # Base64-кодовані файли
     r"\.exe|\.bat|\.sh|\.py"  # Небезпечні розширення
 ]
 
@@ -272,7 +272,7 @@ def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
         if existing_news:
             print_error_message(f"News '{blob_name}' already exists in the database.")
             return
-        sport = session.query(Sport).filter_by(sport_name=json_data["sport"]).first()
+        sport = session.query(Sport).filter_by(sport_name=json_data["S_P_O_R_T"]).first()
         if not sport:
             return
         news_index = News(
