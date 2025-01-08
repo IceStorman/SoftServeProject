@@ -5,12 +5,9 @@ from api.routes.cache import cache
 from api.routes.scripts import get_cache_key
 from exept.handle_exeptions import get_error_response
 from exept.exeptions import DatabaseConnectionError
+from api.routes.api_routes_logging import setup_logger
 
-logging.basicConfig(
-    filename="appRoute.log",
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(funcName)s - %(message)s"
-)
+setup_logger()
 
 news_app = Blueprint('news', __name__)
 COUNT_NEWS = 5

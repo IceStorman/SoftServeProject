@@ -7,12 +7,9 @@ from api.routes.cache import cache
 from exept.exeptions import DatabaseConnectionError
 from dto.api_input import SportsLeagueDTO, SearchDTO
 from dto.pagination import Pagination
+from api.routes.api_routes_logging import setup_logger
 
-logging.basicConfig(
-    filename="appRoute.log",
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(funcName)s - %(message)s"
-)
+setup_logger()
 
 sports_app = Blueprint('sports', __name__)
 

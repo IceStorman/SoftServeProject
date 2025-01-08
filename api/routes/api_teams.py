@@ -9,12 +9,9 @@ from dto.api_input import TeamsLeagueDTO, TeamsStatisticsOrPlayersDTO
 from exept.exeptions import DatabaseConnectionError
 from service.implementation.auto_request_api.sport_data_managers.team_statistics_data_manager import \
     TeamStatisticsDataManager
+from api.routes.api_routes_logging import setup_logger
 
-logging.basicConfig(
-    filename="appRoute.log",
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(funcName)s - %(message)s"
-)
+setup_logger()
 
 CACHE_TEAMS = 60*1.3
 teams_app = Blueprint('teams', __name__)

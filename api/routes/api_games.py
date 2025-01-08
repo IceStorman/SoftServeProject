@@ -7,12 +7,9 @@ from api.routes.cache import cache
 from api.routes.scripts import  post_cache_key
 from exept.exeptions import DatabaseConnectionError
 from exept.handle_exeptions import get_error_response
+from api.routes.api_routes_logging import setup_logger
 
-logging.basicConfig(
-    filename="appRoute.log",
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(funcName)s - %(message)s"
-)
+setup_logger()
 
 CACHE_TIMEOUT_SECONDS = 60 * 1.3
 games_app = Blueprint('games_app', __name__)

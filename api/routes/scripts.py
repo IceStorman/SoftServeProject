@@ -2,12 +2,9 @@ import logging
 from flask import jsonify, request
 import hashlib
 import json
+from api.routes.api_routes_logging import setup_logger
 
-logging.basicConfig(
-    filename="appRoute.log",
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(funcName)s - %(message)s"
-)
+setup_logger()
 
 
 def get_cache_key():

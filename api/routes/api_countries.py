@@ -3,12 +3,9 @@ from flask import Blueprint, request
 from service.api_logic.countries_logic import get_countries, search_countries
 from exept.exeptions import DatabaseConnectionError
 from exept.handle_exeptions import get_error_response
+from api.routes.api_routes_logging import setup_logger
 
-logging.basicConfig(
-    filename="appRoute.log",
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(funcName)s - %(message)s"
-)
+setup_logger()
 
 countries_app = Blueprint('countries_app', __name__)
 
