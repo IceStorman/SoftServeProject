@@ -1,13 +1,19 @@
 import logging
 import functools
+import os
 from flask import request
 
-
 def get_logger(name, log_file, level=logging.INFO):
+    log_directory = os.path.join(os.path.dirname(__file__), "logs")
+
+    os.makedirs(log_directory, exist_ok=True)
+
+    log_file_path = os.path.join(log_directory, log_file)
+
     logger = logging.getLogger(name)
 
     if not logger.hasHandlers():
-        handler = logging.FileHandler(log_file)
+        handler = logging.FileHandler(log_file_path)
         formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(funcName)s - %(message)s")
         handler.setFormatter(formatter)
         logger.addHandler(handler)
