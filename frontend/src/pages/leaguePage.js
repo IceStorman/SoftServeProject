@@ -6,6 +6,7 @@ import apiEndpoints from "../apiEndpoints";
 import {toast} from "sonner";
 import LeagueBtn from "../components/sportPage/leagueBtn";
 import NoItems from "../components/NoItems";
+import TeamsBtn from "../components/LeaguePage/teamsBtn";
 
 function LeaguePage(){
     const { leagueName  } = useParams();
@@ -56,8 +57,8 @@ function LeaguePage(){
             const response = await axios.post(
                 `${apiEndpoints.url}${apiEndpoints.teams.getAll}`,
                 {
-                    sport_id: sportId,
-                    league_id: leagueId,
+                    teams__sport_id: sportId,
+                    leagues__api_id: leagueId,
                     letter: inputValue,
                     page: page + 1,
                     per_page: teamsPerPage
@@ -68,6 +69,7 @@ function LeaguePage(){
             );
 
             setCurrentTeams(response.data.teams);
+            console.log(response.data.teams);
             const totalPosts = response.data.count;
             setPageCount(Math.ceil(totalPosts / teamsPerPage));
         } catch (error) {
@@ -94,17 +96,29 @@ function LeaguePage(){
         }
     }, [searchClicked]);
 
+    useEffect(() => {
+        (loading === false) ? setLoading(false) :
+            (
+                (currentTeams.length > 0) ? setLoading(false)
+                    : setTimeout(() => {
+                        setLoading(false);
+                    }, 2000)
+            )
+    }, [loading]);
+
+
 
     return(
         <>
             <section className={"leaguePage"}>
+
+                <h1 className={"sportTitle"}>{leagueName}</h1>
 
                 <section className={"itemsPaginationBlock"}>
 
                     <section className={"filter"}>
 
                         <div className={"itemSearch"}>
-
                             <input
                                 type={"search"}
                                 placeholder={" "}
@@ -117,7 +131,6 @@ function LeaguePage(){
                             <button onClick={handleSearchClick} disabled={loading}>
                                 <i className="fa-solid fa-magnifying-glass"></i>
                             </button>
-
                         </div>
 
 
@@ -126,23 +139,25 @@ function LeaguePage(){
                     <section className={"iconsBlock"}>
 
                         {
-                            !(currentTeams.length === 0) ?
+                            (currentTeams && currentTeams.length !== 0) ?
                                 currentTeams.map((item, index) => (
-                                    <LeagueBtn
+                                    <TeamsBtn
                                         key={index}
-                                        name={item?.name}
+                                        team_name={item?.team_name}
                                         logo={item?.logo}
+                                        sportId={sportId}
                                     />))
                                 : (loading === false) ?
                                     (<NoItems
                                         key={1}
-                                        text={`No ${sportId} teams were found`}
+                                        text={`No ${leagueName} teams were found`}
                                     />) : null
                         }
 
                     </section>
 
-                    <ReactPaginate
+                    {pageCount > 1 && (
+                        <ReactPaginate
                         key={paginationKey}
                         breakLabel="..."
                         nextLabel="→"
@@ -153,10 +168,20 @@ function LeaguePage(){
                         renderOnZeroPageCount={null}
                         activeClassName="activePaginationPane"
                         containerClassName="pagination"
-                    />
+                    />)}
 
                 </section>
+
             </section>
+
+            {loading === true ?
+                (
+                    <>
+                        <div className={"loader-background"}></div>
+                        <div className="loader"></div>
+                    </>
+                ) : null
+            }
         </>
     );
 }

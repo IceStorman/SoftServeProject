@@ -217,6 +217,7 @@ function SportPage() {
 
                     </section>
 
+                    {pageCount > 1 && (
                     <ReactPaginate
                         key={paginationKey}
                         breakLabel="..."
@@ -228,7 +229,7 @@ function SportPage() {
                         renderOnZeroPageCount={null}
                         activeClassName="activePaginationPane"
                         containerClassName="pagination"
-                    />
+                    />)}
 
                 </section>
 

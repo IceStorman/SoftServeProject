@@ -32,8 +32,11 @@ def apply_filters(base_query: Query, filters: dict, model_aliases: dict):
                 raise ValueError(f"Column '{column_name}' not in model '{table_name}'.")
         else:
             continue
+        for a in filter_conditions:
+            print(a.compile(compile_kwargs={"literal_binds": True}))
     if filter_conditions:
         base_query = base_query.filter(and_(*filter_conditions))
+        print(base_query)
 
     return base_query
 

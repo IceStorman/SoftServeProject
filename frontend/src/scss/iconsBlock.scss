@@ -32,3 +32,44 @@
         }
     }
 }
+
+
+.pagination {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    list-style: none;
+    padding: 0;
+    margin-bottom: 1rem;
+
+    li {
+        a {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            background-color: $purple-btn-color;
+            color: $main-text-color;
+            border-radius: 50%;
+            cursor: pointer;
+            margin: 0 0.5rem;
+            font-size: 1.75rem;
+            font-weight: bolder;
+            width: 2.5rem;
+            height: 2.5rem;
+            transition: transform 0.1s ease;
+        }
+
+        a:hover {
+            color: $special-dark-purple;
+            transform: scale(1.1);
+        }
+    }
+}
+
+.activePaginationPane {
+    a {
+        border: solid 0.3rem #2BA36C;
+        border-radius: 50%;
+    }
+}

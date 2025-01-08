@@ -1,14 +1,15 @@
 import React from "react";
 import {Link, useParams} from "react-router-dom";
 
-function TeamsBtn({name, logo}){
-    const {teamName} = useParams
+function TeamsBtn({team_name, teamId, sportId, logo}){
+    const {sportName} = useParams
     return (
-        <Link className={"iconsBlockElement"} to={`/sport/${sportName}/teamName/${name}`} >
+        <div className={"iconsBlockElement"}>
 
-            <img src={logo} alt={name}/>
+            <img src={logo} alt={team_name}/>
+            <p>{team_name}</p>
 
-        </Link>
+        </div>
     );
 }
 
