@@ -141,7 +141,7 @@ function SportPage() {
 
             <section className={"sportPage"}>
 
-                <h1 className={"sportTitle"}>{ sportName }</h1>
+                <h1 className={"sportTitle"}>{sportName}</h1>
 
                 <section className={"news"}>
 
@@ -154,7 +154,7 @@ function SportPage() {
                                     text={item.data?.timestamp}
                                     sport={sportName}
                                     img={item.data?.images[0]}
-                                    side={index%2 === 0 ? "right" : "left"}
+                                    side={index % 2 === 0 ? "right" : "left"}
                                     id={item.blob_id}
                                 />
                             ))
@@ -169,11 +169,11 @@ function SportPage() {
 
                 </section>
 
-                <section className={"leaguesBlock"}>
+                <section className={"itemsPaginationBlock"}>
 
-                    <section className={"leaguesFilter"}>
+                    <section className={"filter"}>
 
-                        <div className={"leaguesSearch"}>
+                        <div className={"itemSearch"}>
 
                             <input
                                 type={"search"}
@@ -203,13 +203,16 @@ function SportPage() {
                                 currentLeagues.map((item, index) => (
                                     <LeagueBtn
                                         key={index}
-                                        name={item?.name}
-                                        logo={item?.team?.logo || item?.logo}
-                                    /> ))
-                                : <NoItems
-                                    key={1}
-                                    text={`No ${sportName} leagues were found`}
-                                />
+                                        leagueName={item?.name}
+                                        leagueId={item?.id}
+                                        sportId={item?.sport}
+                                        logo={item?.logo}
+                                    />))
+                                : (loading === false) ?
+                                    (<NoItems
+                                        key={1}
+                                        text={`No ${sportName} leagues were found`}
+                                    />) : null
                         }
 
                     </section>
