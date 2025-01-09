@@ -41,4 +41,3 @@ def get_teams(
 
 
 
-
