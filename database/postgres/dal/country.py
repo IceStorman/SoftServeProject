@@ -8,7 +8,7 @@ class CountryDAL:
         self.db_session = db_session
 
     def save_country(self, country_dto: CountryDTO) -> int:
-        country_entry = self.get_country_by_name(country_dto.name.replace("-"," "))
+        country_entry = self.get_country_by_name(country_dto.name)
         if country_entry:
             country_entry = self.update_country(country_entry.country_id, country_dto)
         else:

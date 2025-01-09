@@ -15,6 +15,15 @@ def get_sport_by_name(session, sport_name):
         raise SportNotFoundError(sport_name)
     return sport
 
+def get_sport_index_by_name(session, sport_name):
+    sport = session.query(Sport).filter(Sport.sport_name == sport_name).first()
+    if not sport:
+        raise SportNotFoundError(sport_name)
+    return sport.sport_id
+
+
+
+
 
 @log_function_call(api_logic_logger)
 def apply_filters(base_query: Query, filters: dict, model_aliases: dict):

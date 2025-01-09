@@ -4,12 +4,10 @@ from typing import Dict
 
 class TeamDTO(BaseModel):
     team_index_id: Optional[int] = Field(None)
-    news_id: Optional[int] = Field(None)
     sport_id: int = Field(...)
     name: str = Field(...)
     logo: Optional[str] = Field(None)
     api_id: Optional[int] = Field(None)
-    country: Optional[int] = Field(None)
     league: Optional[int] = Field(None)
 
     class Config:
