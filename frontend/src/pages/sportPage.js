@@ -9,7 +9,10 @@ import apiEndpoints from "../apiEndpoints";
 import SportNews from "../components/sportPage/sportNews";
 import LeagueBtn from "../components/sportPage/leagueBtn";
 import DropDown from "../components/dropDown/dropDown";
+import ItemList from "../components/itemsList/itemsList";
 import NoItems from "../components/NoItems";
+import SearchWithFilter from "../components/searchFilter/searchFilterBtn";
+
 
 function SportPage() {
     const {sportName} = useParams();
@@ -171,65 +174,33 @@ function SportPage() {
 
                 <section className={"itemsPaginationBlock"}>
 
-                    <section className={"filter"}>
-
-                        <div className={"itemSearch"}>
-
-                            <input
-                                type={"search"}
-                                placeholder={" "}
-                                onChange={(e) => setInputValue(e.target.value)}
-                                onKeyDown={handleKeyDown}
-                            ></input>
-
-                            <label>Search league</label>
-
-                            <button onClick={handleSearchClick} disabled={loading}>
-                                <i className="fa-solid fa-magnifying-glass"></i>
-                            </button>
-
-                        </div>
-
-                        <DropDown
-                            setCountry={setCountryFilter}
-                        />
-
-                    </section>
-
-                    <section className={"iconsBlock"}>
-
-                        {
-                            !(currentLeagues.length === 0) ?
-                                currentLeagues.map((item, index) => (
-                                    <LeagueBtn
-                                        key={index}
-                                        leagueName={item?.name}
-                                        leagueId={item?.id}
-                                        sportId={item?.sport}
-                                        logo={item?.logo}
-                                    />))
-                                : (loading === false) ?
-                                    (<NoItems
-                                        key={1}
-                                        text={`No ${sportName} leagues were found`}
-                                    />) : null
+                    <SearchWithFilter
+                        setInputValue={setInputValue}
+                        loading={loading}
+                        placeholder={"Search league"}
+                        additionalComponent={
+                            <DropDown setCountry={setCountryFilter} />
                         }
+                    />
 
-                    </section>
-
-                    {pageCount > 1 && (
-                    <ReactPaginate
-                        key={paginationKey}
-                        breakLabel="..."
-                        nextLabel="→"
-                        onPageChange={handlePageClick}
-                        pageRangeDisplayed={rangeScale}
+                    <ItemList
+                        items={currentLeagues}
+                        renderItem={(item, index) => (
+                            <LeagueBtn
+                                key={index}
+                                leagueName={item?.name}
+                                leagueId={item?.id}
+                                sportId={item?.sport}
+                                logo={item?.logo}
+                            />
+                        )}
+                        noItemsText={`No ${sportName} leagues were found`}
                         pageCount={pageCount}
-                        previousLabel="←"
-                        renderOnZeroPageCount={null}
-                        activeClassName="activePaginationPane"
-                        containerClassName="pagination"
-                    />)}
+                        onPageChange={handlePageClick}
+                        rangeScale={rangeScale}
+                        loading={loading}
+                        paginationKey={paginationKey}
+                    />
 
                 </section>
 

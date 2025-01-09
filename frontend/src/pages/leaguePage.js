@@ -5,8 +5,10 @@ import axios from "axios";
 import apiEndpoints from "../apiEndpoints";
 import {toast} from "sonner";
 import LeagueBtn from "../components/sportPage/leagueBtn";
-import NoItems from "../components/NoItems";
+import ItemList from "../components/itemsList/itemsList";
 import TeamsBtn from "../components/LeaguePage/teamsBtn";
+import SearchWithFilter from "../components/searchFilter/searchFilterBtn";
+
 
 function LeaguePage(){
     const { leagueName  } = useParams();
@@ -78,16 +80,6 @@ function LeaguePage(){
         }
     };
 
-    useEffect(() => {
-        console.log("Sport ID:", sportId);
-        console.log("League ID:", leagueId);
-        if (!sportId || !leagueId) {
-            toast.error("Missing sport or league ID.");
-            navigate("/not-existing");
-            return;
-        }
-        getTeams(0);
-    }, [sportId, leagueName]);
 
     useEffect(() => {
         if(prevInputValue !== inputValue){
@@ -116,59 +108,29 @@ function LeaguePage(){
 
                 <section className={"itemsPaginationBlock"}>
 
-                    <section className={"filter"}>
+                    <SearchWithFilter
+                        setInputValue={setInputValue}
+                        loading={loading}
+                        placeholder="Search teams"
+                    />
 
-                        <div className={"itemSearch"}>
-                            <input
-                                type={"search"}
-                                placeholder={" "}
-                                onChange={(e) => setInputValue(e.target.value)}
-                                onKeyDown={handleKeyDown}
-                            ></input>
-
-                            <label>Search league</label>
-
-                            <button onClick={handleSearchClick} disabled={loading}>
-                                <i className="fa-solid fa-magnifying-glass"></i>
-                            </button>
-                        </div>
-
-
-                    </section>
-
-                    <section className={"iconsBlock"}>
-
-                        {
-                            (currentTeams && currentTeams.length !== 0) ?
-                                currentTeams.map((item, index) => (
-                                    <TeamsBtn
-                                        key={index}
-                                        team_name={item?.team_name}
-                                        logo={item?.logo}
-                                        sportId={sportId}
-                                    />))
-                                : (loading === false) ?
-                                    (<NoItems
-                                        key={1}
-                                        text={`No ${leagueName} teams were found`}
-                                    />) : null
-                        }
-
-                    </section>
-
-                    {pageCount > 1 && (
-                        <ReactPaginate
-                        key={paginationKey}
-                        breakLabel="..."
-                        nextLabel="→"
-                        onPageChange={handlePageClick}
-                        pageRangeDisplayed={rangeScale}
+                    <ItemList
+                        items={currentTeams}
+                        renderItem={(item, index) => (
+                            <TeamsBtn
+                                key={index}
+                                team_name={item?.team_name}
+                                logo={item?.logo}
+                                sportId={sportId}
+                            />
+                        )}
+                        noItemsText={`No ${leagueName} teams were found`}
                         pageCount={pageCount}
-                        previousLabel="←"
-                        renderOnZeroPageCount={null}
-                        activeClassName="activePaginationPane"
-                        containerClassName="pagination"
-                    />)}
+                        onPageChange={handlePageClick}
+                        rangeScale={rangeScale}
+                        loading={loading}
+                        paginationKey={paginationKey}
+                    />
 
                 </section>
 
