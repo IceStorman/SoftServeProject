@@ -31,6 +31,12 @@ def get_games_today(
             home_team.logo.label("home_team_logo"),
             away_team.name.label("away_team_name"),
             away_team.logo.label("away_team_logo"),
+            Games.score_home_team,
+            Games.score_away_team,
+            Games.status,
+            Games.time,
+            Games.date,
+            Games.api_id
         )
         .join(League, Games.league_id == League.league_id)
         .join(Country, Games.country_id == Country.country_id)
@@ -55,6 +61,7 @@ def get_games_today(
         api_logic_logger.warning("No pagination applied. Query might return too many results or impact performance.")
 
     games = query.all()
+
     schema = GameOutput(many=True)
     return schema.dump(games)
 
