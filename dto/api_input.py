@@ -21,7 +21,6 @@ class TeamsLeagueDTO(BaseDTO):
     teams__sport_id = fields.Int(required=False, missing=None)
     leagues__api_id = fields.Int(required=False, missing=None)
     countries__api_id = fields.Int(required=False, missing=None)
-    letter = fields.Str(required=False, missing="")
     page = fields.Int(required=False, missing=0)
     per_page = fields.Int(required=False, missing=0)
 
