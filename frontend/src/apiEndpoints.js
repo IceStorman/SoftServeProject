@@ -24,6 +24,11 @@ const apiEndpoints = {
 
     countries:{
         getAll: 'countries'
+    },
+
+    stream:{
+        getAll: 'streams/all',
+        getInfo: 'streams/info'
     }
 };
 
