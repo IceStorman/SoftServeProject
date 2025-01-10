@@ -28,12 +28,8 @@ def log_function_call(logger):
         def wrapper(*args, **kwargs):
             try:
                 json_data = request.get_json(silent=True)
-                logger.info(f"Call of {func.__name__}() з args={args}, kwargs={kwargs}, json_data={json_data}")
-
-                result = func(*args, **kwargs)
-
-                logger.info(f"Result of {func.__name__}() = {result}")
-                return result
+                logger.info(f"Call of {func.__name__}()  args={args}, kwargs={kwargs}, json_data={json_data}")
+                logger.debug(f"{func.__name__}() json_data={json_data}")
             except Exception as e:
                 logger.error(f"Error in {func.__name__}(): {str(e)}")
                 raise
