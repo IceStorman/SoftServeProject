@@ -17,22 +17,10 @@ def fetch_news(session, order_by: ClauseElement = None, limit: int = None, filte
     query = session.query(News)
     if filters:
         query = query.filter(*filters)
-        api_logic_logger.info(f"Filters: {filters} applied")
-    else:
-        api_logic_logger.warning(f"Filters weren't applied. It returned {filters}")
-
     if order_by is not None:
         query = query.order_by(order_by)
-        api_logic_logger.info(f"Order: {order_by} applied")
-    else:
-        api_logic_logger.warning(f"Order wasn't applied. It returned {order_by}")
-
     if limit is not None:
         query = query.limit(limit)
-        api_logic_logger.info(f"Limit: {limit} applied")
-    else:
-        api_logic_logger.warning(f"Limit wasn't applied. It returned {limit}")
-
     return query.all()
 
 

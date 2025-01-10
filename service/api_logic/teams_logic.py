@@ -41,9 +41,6 @@ def get_teams(
     offset, limit = pagination.get_pagination()
     if offset is not None and limit is not None:
         query = query.offset(offset).limit(limit)
-        api_logic_logger.info(f"Applying pagination: offset={offset}, limit={limit}")
-    else:
-        api_logic_logger.warning("No pagination applied. Query might return too many results or impact performance.")
 
     teams = query.all()
     schema = TeamsLeagueOutput(many=True)
