@@ -1,8 +1,8 @@
 from marshmallow import Schema, fields
-
+from database.models import Games
 
 class GameOutput(Schema):
-    id = fields.Int(attribute="api_id")
+    id = fields.Int()
     status = fields.Str()
     date = fields.Str()
     time = fields.Str()
@@ -13,8 +13,8 @@ class GameOutput(Schema):
     home_team_logo = fields.Str()
     away_team_name = fields.Str()
     away_team_logo = fields.Str()
-    home_score: fields.Int(attribute="score_home_team")
-    away_score: fields.Int(attribute="score_away_team")
+    home_score = fields.Int(attribute="score_home_team")
+    away_score = fields.Int(attribute="score_away_team")
 
 
 class TeamsLeagueOutput(Schema):

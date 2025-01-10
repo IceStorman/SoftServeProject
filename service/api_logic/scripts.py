@@ -4,8 +4,11 @@ from database.models import Sport, League
 from exept.exeptions import SportNotFoundError
 from sqlalchemy.orm import Query
 from sqlalchemy import and_
+from logger.logger import get_logger, log_function_call
 
+api_logic_logger = get_logger("api_logic_logger", "api_logic.log")
 
+@log_function_call(api_logic_logger)
 def get_sport_by_name(session, sport_name):
     sport = session.query(Sport).filter(Sport.sport_name == sport_name).first()
     if not sport:
@@ -22,6 +25,7 @@ def get_sport_index_by_name(session, sport_name):
 
 
 
+@log_function_call(api_logic_logger)
 def apply_filters(base_query: Query, filters: dict, model_aliases: dict):
     filter_conditions = []
 
@@ -44,6 +48,9 @@ def apply_filters(base_query: Query, filters: dict, model_aliases: dict):
             continue
     if filter_conditions:
         base_query = base_query.filter(and_(*filter_conditions))
+        api_logic_logger.info(f"These filter conditions were used: {filter_conditions}")
+    else:
+        api_logic_logger.warning(f"Filter conditions: {filter_conditions} weren't applied")
 
     return base_query
 

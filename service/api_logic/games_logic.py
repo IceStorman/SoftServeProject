@@ -6,10 +6,14 @@ from exept.handle_exeptions import handle_exceptions
 from service.api_logic.scripts import apply_filters
 from sqlalchemy.orm import aliased
 from database.session import SessionLocal
+from logger.logger import get_logger, log_function_call
+
+api_logic_logger = get_logger("api_logic_logger", "api_logic.log")
 
 session = SessionLocal()
 
 @handle_exceptions
+@log_function_call(api_logic_logger)
 def get_games_today(
         filters_dto: dict,
         pagination: Pagination
@@ -27,6 +31,12 @@ def get_games_today(
             home_team.logo.label("home_team_logo"),
             away_team.name.label("away_team_name"),
             away_team.logo.label("away_team_logo"),
+            Games.score_home_team,
+            Games.score_away_team,
+            Games.status,
+            Games.time,
+            Games.date,
+            Games.api_id
         )
         .join(League, Games.league_id == League.league_id)
         .join(Country, Games.country_id == Country.country_id)
@@ -48,6 +58,7 @@ def get_games_today(
         query = query.offset(offset).limit(limit)
 
     games = query.all()
+
     schema = GameOutput(many=True)
     return schema.dump(games)
 
