@@ -5,7 +5,8 @@ const apiEndpoints = {
         getRecent: 'news/recent',
         getSport: 'news/',
         getArticle: 'news/article',
-        getCurrentNews: ''
+        getCurrentNews: '',
+        likeArticle: 'like',
     },
 
     sports:{
