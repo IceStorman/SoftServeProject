@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const VideoPlayer = ({ youtubeLinks = [], otherLinks = [], matchInfo = {} }) => {
+const VideoPlayer = ({ youtubeLinks = [], otherLinks = [], matchInfo = {}, whoPlay }) => {
     const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
 
     const handleVideoSwitch = (index) => {
@@ -10,6 +10,9 @@ const VideoPlayer = ({ youtubeLinks = [], otherLinks = [], matchInfo = {} }) => 
 
     return (
         <div className="ramka">
+            <div className="whoPlay">
+                <h2>{whoPlay}</h2>
+            </div>
             <div className="videoPlayer">
 
                 <div className="youtubePlayer">
