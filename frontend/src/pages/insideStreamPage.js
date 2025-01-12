@@ -11,6 +11,7 @@ function InsideStreamPage() {
     const navigate = useNavigate();
     const location = useLocation();
     const streamId = location.state || id;
+    const [game, setGame] = useState([]);
 
     const [stream, setStream] = useState([]);
 
@@ -56,11 +57,16 @@ function InsideStreamPage() {
     //     fetchStreams();
     // }, []);
 
-    function getYouTubeEmbedUrl(url) {
-        const regex = /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-        const match = url.match(regex);
-        return match ? `https://www.youtube.com/embed/${match[1]}` : null;
-    }
+    // useEffect(() => {
+    //     axios.get(`${apiEndpoints.url}${apiEndpoints.games.getThisGame}`)
+    //         .then(res => {
+    //             const returnedGames = res.data;
+    //             setGame(returnedGames);
+    //         })
+    //         .catch(error => {
+    //             toast.error(`:( Troubles With Games Loading: ${error}`);
+    //         });
+    // }, []);
 
     useEffect(() => {
         (stream?.url) ? setLoading(false)
@@ -73,6 +79,14 @@ function InsideStreamPage() {
         <>
 
             <VideoPlayer
+                game={{
+                    name1: "Nuggets",
+                    name2: "Lakers",
+                    score1: 93,
+                    score2: 15,
+                    logo1: "https://upload.wikimedia.org/wikipedia/ru/2/21/Denver_Nuggets.png",
+                    logo2: "https://cdn.nba.com/teams/legacy/www.nba.com/lakers/sites/lakers/files/ts_180804logo.jpg"
+                }}
                 youtubeLinks={["dQw4w9WgXcQ", "3JZ_D3ELwOQ", "UGSanw1wTlY", "UGSanw1wTlY", "UGSanw1wTlY"
                     , "UGSanw1wTlY", "UGSanw1wTlY", "UGSanw1wTlY"]}
                 otherLinks={[

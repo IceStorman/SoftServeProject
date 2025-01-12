@@ -20,7 +20,8 @@ const apiEndpoints = {
     },
     
     games:{
-        getGames: 'games/'
+        getGames: 'games/',
+        getThisGame: 'games/this'
     },
 
     countries:{

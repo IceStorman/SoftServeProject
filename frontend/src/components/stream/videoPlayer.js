@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const VideoPlayer = ({ youtubeLinks = [], otherLinks = [], matchInfo = {}, whoPlay }) => {
+const VideoPlayer = ({game, youtubeLinks = [], otherLinks = [], matchInfo = {} }) => {
     const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
 
     const handleVideoSwitch = (index) => {
@@ -8,11 +8,26 @@ const VideoPlayer = ({ youtubeLinks = [], otherLinks = [], matchInfo = {}, whoPl
     };
 
 
+
+
     return (
         <div className="ramka">
             <div className="whoPlay">
-                <h2>{whoPlay}</h2>
+                <h1>{game.name1} VS {game.name2}</h1>
+                <div className="teams">
+                    <div className="team">
+                        <img src={game.logo1} alt={`${game.name1} logo`}/>
+                    </div>
+                    <div className="score">
+                        {game.score1} : {game.score2}
+                    </div>
+                    <div className="team">
+                        <img src={game.logo2} alt={`${game.name2} logo`}/>
+                    </div>
+                </div>
             </div>
+
+
             <div className="videoPlayer">
 
                 <div className="youtubePlayer">
@@ -49,17 +64,17 @@ const VideoPlayer = ({ youtubeLinks = [], otherLinks = [], matchInfo = {}, whoPl
 
                 <div className="partnerLinks">
                     <h2>Or watch on our partners:</h2>
-                        <div className="linksContainer">
+                    <div className="linksContainer">
 
-                            {otherLinks.map((link, index) => (
-                                <a href={link.url} target="_blank" rel="noopener noreferrer">
-                                    <div className="partnerLink">
-                                        {link.name || `Partner ${index + 1}`}
-                                    </div>
-                                </a>
+                        {otherLinks.map((link, index) => (
+                            <a href={link.url} target="_blank" rel="noopener noreferrer">
+                                <div className="partnerLink">
+                                    {link.name || `Partner ${index + 1}`}
+                                </div>
+                            </a>
 
-                            ))}
-                        </div>
+                        ))}
+                    </div>
                 </div>
             </div>
             <div className="textInfo">
