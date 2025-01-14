@@ -109,3 +109,9 @@
         }
     }
 }
+
+input,
+select {
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+}
