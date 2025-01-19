@@ -34,8 +34,8 @@ def get_streams_today(filters_dto:dict,
             StreamsStatus.status_id,
             StatusesAlias.status_name
         )
-        .join(StreamsStatus, Stream.stream_id == StreamsStatus.stream_id, isouter=True)
-        .join(StatusesAlias, StreamsStatus.status_id == StatusesAlias.status_id, isouter=True)
+        .join(StreamsStatus, Stream.stream_id == StreamsStatus.stream_id)
+        .join(StatusesAlias, StreamsStatus.status_id == StatusesAlias.status_id)
     )
 
 @handle_exceptions
