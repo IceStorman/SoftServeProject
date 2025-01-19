@@ -3,7 +3,6 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 import apiEndpoints from "../apiEndpoints";
 import {toast} from "sonner";
-import NewsPage from "./newsPage";
 import VideoPlayer from "../components/stream/videoPlayer";
 
 function InsideStreamPage() {
@@ -16,7 +15,9 @@ function InsideStreamPage() {
     const [stream, setStream] = useState([]);
 
     const [loading, setLoading] = useState(false);
-    //
+
+    // NOW NOT WORKING, BECAUSE NOT EXIST API ENDPOINTS
+
     // useEffect(() => {
     //
     //     const fetchStreams = async () => {
@@ -56,7 +57,7 @@ function InsideStreamPage() {
     //
     //     fetchStreams();
     // }, []);
-
+    //
     // useEffect(() => {
     //     axios.get(`${apiEndpoints.url}${apiEndpoints.games.getThisGame}`)
     //         .then(res => {
@@ -77,6 +78,8 @@ function InsideStreamPage() {
 
     return(
         <>
+
+            {/* TEST EXAMPLE WHAT INFO WILL BE HERE, WHILE I HAVEN'T API LOGIC */}
 
             <VideoPlayer
                 game={{
@@ -111,6 +114,15 @@ function InsideStreamPage() {
                         ", а не спить як нормальні люди. Тільки сьгодні і тільки у нас!"
                 }}
             />
+
+            {/* FINAL VARIANT */}
+
+            {/*<VideoPlayer*/}
+            {/*    game={data.game}*/}
+            {/*    youtubeLinks={data.youtubeLinks}*/}
+            {/*    otherLinks={data.otherLinks}*/}
+            {/*    matchInfo={data.matchInfo}*/}
+            {/*/>*/}
 
 
     </>
