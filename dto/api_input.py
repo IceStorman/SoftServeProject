@@ -56,7 +56,13 @@ class GamesDTO(BaseDTO):
 
 
 class NewsDTO(BaseDTO):
-    pass
+    news__news_id = fields.Int(required=False, missing=None)
+    news__sport_id = fields.Int(required=False, missing=None)
+    news__interest_rate = fields.Int(required=False, missing=None)
+
+    
+
+
 class StreamsDTO(BaseDTO):
     streams__stream_id = fields.Int(required=False, missing = None)
     streams__stream_url = fields.Str(required=False, missing=None)
