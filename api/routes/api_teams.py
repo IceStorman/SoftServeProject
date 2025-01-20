@@ -35,7 +35,7 @@ def get_teams_sport_endpoint():
 
 
 @teams_app.route('/statistics', methods=['POST'])
-@cache.cached(timeout=CACHE_TEAMS)
+#@cache.cached(timeout=CACHE_TEAMS)
 def get_teams_statistics_endpoint():
     try:
         data = request.get_json()
@@ -54,7 +54,7 @@ def get_players_endpoint():
     try:
         data = request.get_json()
         dto = TeamsStatisticsOrPlayersDTO(**data)
-        
+
         team_players = basketball_players(dto)
 
         return team_players
