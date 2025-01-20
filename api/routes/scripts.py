@@ -2,9 +2,9 @@ import logging
 from flask import request
 import hashlib
 import json
-from logger.logger import get_logger
+from logger.logger import Logger
 
-api_routes_logger = get_logger("api_routes_loger", "api_routes.log")
+api_routes_logger = Logger("api_routes_logger", "api_routes_logger.log")
 
 
 def get_cache_key():

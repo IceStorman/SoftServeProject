@@ -3,9 +3,9 @@ from flask import Blueprint, request
 from service.api_logic.countries_logic import get_countries, search_countries
 from exept.exeptions import DatabaseConnectionError
 from exept.handle_exeptions import get_error_response
-from logger.logger import get_logger, log_function_call
+from logger.logger import Logger
 
-api_routes_logger = get_logger("api_routes_loger", "api_routes.log")
+api_routes_logger = Logger("api_routes_logger", "api_routes_logger.log")
 
 countries_app = Blueprint('countries_app', __name__)
 
@@ -16,7 +16,7 @@ def handle_db_timeout_error(e):
     return response
 
 @countries_app.route('/', methods=['GET'])
-@log_function_call(api_routes_logger)
+@api_routes_logger.log_function_call()
 def get_countries_endpoint():
     try:
         countries = get_countries()
@@ -27,7 +27,7 @@ def get_countries_endpoint():
 
 
 @countries_app.route('/search/<query>', methods=['GET'])
-@log_function_call(api_routes_logger)
+@api_routes_logger.log_function_call()
 def search_countries_endpoint(query):
     try:
         result = search_countries(query.lower())

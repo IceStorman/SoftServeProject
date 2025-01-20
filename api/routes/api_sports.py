@@ -7,9 +7,9 @@ from api.routes.cache import cache
 from exept.exeptions import DatabaseConnectionError
 from dto.api_input import SportsLeagueDTO, SearchDTO
 from dto.pagination import Pagination
-from logger.logger import get_logger, log_function_call
+from logger.logger import Logger
 
-api_routes_logger = get_logger("api_routes_loger", "api_routes.log")
+api_routes_logger = Logger("api_routes_logger", "api_routes_logger.log")
 
 sports_app = Blueprint('sports', __name__)
 
@@ -23,7 +23,7 @@ def handle_db_timeout_error(e):
 
 @sports_app.route('/all', methods=['GET'])
 @cache.cached(timeout=60*60)
-@log_function_call(api_routes_logger)
+@api_routes_logger.log_function_call()
 def get_all_sports_endpoint():
     try:
         all_sports = get_all_sports()
@@ -35,7 +35,7 @@ def get_all_sports_endpoint():
 
 @sports_app.route('/league', methods=['POST'])
 @cache.cached(timeout=60*60, key_prefix=post_cache_key)
-@log_function_call(api_routes_logger)
+@api_routes_logger.log_function_call()
 def get_all_leagues_endpoint():
     try:
         data = request.get_json()
@@ -49,7 +49,7 @@ def get_all_leagues_endpoint():
 
 
 @sports_app.route('/league/search', methods=['POST'])
-@log_function_call(api_routes_logger)
+@api_routes_logger.log_function_call()
 def search_countries():
     try:
         data = request.get_json()

@@ -6,14 +6,14 @@ from exept.handle_exeptions import handle_exceptions
 from service.api_logic.scripts import apply_filters
 from sqlalchemy.orm import aliased
 from database.session import SessionLocal
-from logger.logger import get_logger, log_function_call
+from logger.logger import Logger
 
-api_logic_logger = get_logger("api_logic_logger", "api_logic.log")
+api_logic_logger = Logger("api_logic_logger", "api_logic_logger.log")
 
 session = SessionLocal()
 
 @handle_exceptions
-@log_function_call(api_logic_logger)
+@api_logic_logger.log_function_call()
 def get_games_today(
         filters_dto: dict,
         pagination: Pagination

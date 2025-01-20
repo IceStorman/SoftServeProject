@@ -9,9 +9,9 @@ from dto.api_input import TeamsLeagueDTO, TeamsStatisticsOrPlayersDTO
 from exept.exeptions import DatabaseConnectionError
 from service.implementation.auto_request_api.sport_data_managers.team_statistics_data_manager import \
     TeamStatisticsDataManager
-from logger.logger import get_logger, log_function_call
+from logger.logger import Logger
 
-api_routes_logger = get_logger("api_routes_loger", "api_routes.log")
+api_routes_logger = Logger("api_routes_logger", "api_routes_logger.log")
 
 
 CACHE_TEAMS = 60*1.3
@@ -26,7 +26,7 @@ def handle_db_timeout_error(e):
 
 
 @teams_app.route("/league", methods=['POST'])
-@log_function_call(api_routes_logger)
+@api_routes_logger.log_function_call()
 def get_teams_sport_endpoint():
     try:
         data = request.get_json()
@@ -41,7 +41,7 @@ def get_teams_sport_endpoint():
 
 @teams_app.route('/statistics', methods=['POST'])
 @cache.cached(timeout=CACHE_TEAMS)
-@log_function_call(api_routes_logger)
+@api_routes_logger.log_function_call()
 def get_teams_statistics_endpoint():
     try:
         data = request.get_json()
@@ -55,7 +55,7 @@ def get_teams_statistics_endpoint():
 
 
 @teams_app.route('/players', methods=['POST'])
-@log_function_call(api_routes_logger)
+@api_routes_logger.log_function_call()
 def get_players_endpoint():
     try:
         data = request.get_json()

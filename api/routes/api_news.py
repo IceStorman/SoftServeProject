@@ -5,15 +5,15 @@ from api.routes.cache import cache
 from api.routes.scripts import get_cache_key
 from exept.handle_exeptions import get_error_response
 from exept.exeptions import DatabaseConnectionError
-from logger.logger import get_logger, log_function_call
+from logger.logger import Logger
 
-api_routes_logger = get_logger("api_routes_loger", "api_routes.log")
+api_routes_logger = Logger("api_routes_logger", "api_routes_logger.log")
 
 news_app = Blueprint('news', __name__)
 COUNT_NEWS = 5
 
 @news_app.errorhandler(DatabaseConnectionError)
-@log_function_call(api_routes_logger)
+@api_routes_logger.log_function_call()
 def handle_db_timeout_error(e):
     api_routes_logger.error(f"Database error: {str(e)}")
     response = {"error in data base": str(e)}
@@ -22,7 +22,7 @@ def handle_db_timeout_error(e):
 
 @news_app.route('/recent', methods=['GET'])
 @cache.cached(timeout=60*60)
-@log_function_call(api_routes_logger)
+@api_routes_logger.log_function_call()
 def get_recent_news_endpoint():
     try:
         recent_news = get_news_by_count(COUNT_NEWS)
@@ -34,7 +34,7 @@ def get_recent_news_endpoint():
 
 @news_app.route('/<sport_type>', methods=['GET'])
 @cache.cached(timeout=60*60, key_prefix=get_cache_key)
-@log_function_call(api_routes_logger)
+@api_routes_logger.log_function_call()
 def get_sport_news_endpoint(sport_type):
     try:
         sport_news = get_latest_sport_news(COUNT_NEWS, sport_type)
@@ -46,7 +46,7 @@ def get_sport_news_endpoint(sport_type):
 
 @news_app.route('/popular', methods=['GET'])
 @cache.cached(timeout=60*3)
-@log_function_call(api_routes_logger)
+@api_routes_logger.log_function_call()
 def get_popular_news_endpoint():
     try:
         popular_news = get_popular_news(COUNT_NEWS)
@@ -57,7 +57,7 @@ def get_popular_news_endpoint():
 
 
 @news_app.route('/article', methods=['POST'])
-@log_function_call(api_routes_logger)
+@api_routes_logger.log_function_call()
 def specific_article():
 
     try:

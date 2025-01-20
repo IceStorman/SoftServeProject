@@ -7,9 +7,9 @@ from api.routes.cache import cache
 from api.routes.scripts import  post_cache_key
 from exept.exeptions import DatabaseConnectionError
 from exept.handle_exeptions import get_error_response
-from logger.logger import get_logger, log_function_call
+from logger.logger import Logger
 
-api_routes_logger = get_logger("api_routes_loger", "api_routes.log")
+api_routes_logger = Logger("api_routes_logger", "api_routes_logger.log")
 
 CACHE_TIMEOUT_SECONDS = 60 * 1.3
 games_app = Blueprint('games_app', __name__)
@@ -24,7 +24,7 @@ def handle_db_timeout_error(e):
 
 @games_app.route('/today', methods=['POST'])
 @cache.cached(CACHE_TIMEOUT_SECONDS)
-@log_function_call(api_routes_logger)
+@api_routes_logger.log_function_call()
 def get_stream_info_endpoint():
     try:
         data = request.get_json()
@@ -39,7 +39,7 @@ def get_stream_info_endpoint():
 
 @games_app.route('/specific', methods=['POST'])
 @cache.cached(CACHE_TIMEOUT_SECONDS, key_prefix=post_cache_key)
-@log_function_call(api_routes_logger)
+@api_routes_logger.log_function_call()
 def get_stream_info_with_filters_endpoint():
     try:
         data = request.get_json()

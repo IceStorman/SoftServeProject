@@ -5,17 +5,17 @@ from database.models import TeamIndex, Sport, League, Country
 from service.api_logic.scripts import apply_filters
 from dto.api_output import TeamsLeagueOutput
 from database.session import SessionLocal
-from logger.logger import get_logger, log_function_call
+from logger.logger import Logger
 from sqlalchemy import func
 
-api_logic_logger = get_logger("api_logic_logger", "api_logic.log")
+api_logic_logger = Logger("api_logic_logger", "api_logic_logger.log")
 
 session = SessionLocal()
 
 # NOT WORK NOW ----------------------------------
 
 @handle_exceptions
-@log_function_call(api_logic_logger)
+@api_logic_logger.log_function_call()
 def get_teams(
         filters_dto: dict,
         pagination: Pagination
