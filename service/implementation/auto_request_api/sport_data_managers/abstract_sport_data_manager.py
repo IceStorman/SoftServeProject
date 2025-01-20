@@ -6,7 +6,7 @@ from database.azure_blob_storage.save_get_blob import blob_save_specific_api, ge
 from database.session import SessionLocal
 from typing import Dict
 from datetime import datetime
-from database.models import Sport
+from database.models.sports import Sport
 from database.postgres.save_data import save_api_data
 from service.implementation.auto_request_api.sport_data_managers.sport_consts import get_host
 
@@ -28,10 +28,12 @@ class AbstractSportDataManager:
             )
             .filter(Sport.sport_id == new_data.get("sport_id"))
         )
-
-        ix = query.first()
+        print(query)
+        ix = query.all()
         if ix is not None:
+            print(ix.sport_name)
             self._sport_name = ix.sport_name
+        print(self._sport_name)
 
     def main_request(self, host, name, url, blob_name):
         headers = {
