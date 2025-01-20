@@ -1,77 +1,149 @@
 import React, {useEffect, useState} from "react";
 import ReactPaginate from "react-paginate";
-import {useParams} from "react-router-dom";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
 import apiEndpoints from "../apiEndpoints";
 import {toast} from "sonner";
+import LeagueBtn from "../components/sportPage/leagueBtn";
+import ItemList from "../components/itemsList/itemsList";
 import TeamsBtn from "../components/LeaguePage/teamsBtn";
+import SearchWithFilter from "../components/searchFilter/searchFilterBtn";
+
 
 function LeaguePage(){
     const { leagueName  } = useParams();
 
-    const [rangeScale ,setRangeScale]= useState(3)
+    const location = useLocation();
+    const navigate = useNavigate();
 
-    const [teams, setTeams] = useState([]);
+    const [rangeScale ,setRangeScale]= useState(3)
+    const stateData = location.state || {};
+    const leagueId = stateData.leagueId;
+    const sportId = stateData.sportId;
 
     const [currentTeams, setCurrentTeams] = useState([]);
     const [pageCount, setPageCount] = useState(0);
-    const teemsPerPage = 9;
+    const [paginationKey, setPaginationKey] = useState(0);
+    const [currentPage, setCurrentPage] = useState(0);
+    const teamsPerPage = 9;
 
-    const [teamOffset, setTeamOffset] = useState(0);
 
-    useEffect(() => {
-        const endOffset = teamOffset + teemsPerPage;
-        setCurrentTeams(teams.slice(teamOffset, endOffset));
-        setPageCount(Math.ceil(teams.length / teemsPerPage));
-    }, [teamOffset, teams]);
+    const [loading, setLoading] = useState(false);
+    const [inputValue, setInputValue] = useState('');
+    const [prevInputValue, setPrevInputValue] = useState('');
+    const [searchClicked, setSearchClicked] = useState(false);
+
 
     const handlePageClick = (event) => {
-        const newOffset = (event.selected * teemsPerPage) % teams.length;
-        setTeamOffset(newOffset);
+        const selectedPage = event.selected;
+        setCurrentPage(selectedPage);
+        getTeams(selectedPage);
     };
 
+    function handleSearchClick() {
+        setSearchClicked((prev) => !prev);
+    }
+
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            handleSearchClick();
+        }
+    };
+    const getTeams = async (page) => {
+
+        setPrevInputValue(inputValue);
+
+        try {
+            setLoading(true);
+
+            const response = await axios.post(
+                `${apiEndpoints.url}${apiEndpoints.teams.getAll}`,
+                {
+                    teams__sport_id: sportId,
+                    leagues__api_id: leagueId,
+                    letter: inputValue,
+                    page: page + 1,
+                    per_page: teamsPerPage
+                },
+                {
+                    headers: { 'Content-Type': 'application/json' },
+                }
+            );
+
+            setCurrentTeams(response.data.teams);
+            console.log(response.data.teams);
+            const totalPosts = response.data.count;
+            setPageCount(Math.ceil(totalPosts / teamsPerPage));
+        } catch (error) {
+            setPageCount(0);
+            toast.error(`:( Troubles With Leagues Loading: ${error}`);
+        }
+    };
+
+
     useEffect(() => {
-        axios.get(`${apiEndpoints.url}${apiEndpoints.team.getAll}`)
-            .then(res => {
-                let returnedTeams = res.data;
-                res.data.forEach((league) =>{
-                    if(league?.sport === leagueName) {
-                        returnedTeams = league?.team
-                        setTeams(returnedTeams);
-                    }
-                })
-            })
-            .catch(error => {
-                toast.error(`:( Troubles With Teams Loading ${error}`);
-            });
-    }, []);
+        if(prevInputValue !== inputValue){
+            handlePageClick({selected: 0});
+            setPaginationKey((prevKey) => prevKey + 1);
+        }
+    }, [searchClicked]);
+
+    useEffect(() => {
+        (loading === false) ? setLoading(false) :
+            (
+                (currentTeams.length > 0) ? setLoading(false)
+                    : setTimeout(() => {
+                        setLoading(false);
+                    }, 2000)
+            )
+    }, [loading]);
+
+
 
     return(
         <>
+            <section className={"leaguePage"}>
 
-            <section className={"sportTeams"}>
+                <h1 className={"sportTitle"}>{leagueName}</h1>
 
-                {currentTeams.map((item, index) => (
-                    <TeamsBtn
-                        key={index}
-                        name={item?.name}
-                        logo={item?.team?.logo || item?.logo}
+                <section className={"itemsPaginationBlock"}>
+
+                    <SearchWithFilter
+                        setInputValue={setInputValue}
+                        loading={loading}
+                        placeholder="Search teams"
                     />
-                ))}
+
+                    <ItemList
+                        items={currentTeams}
+                        renderItem={(item, index) => (
+                            <TeamsBtn
+                                key={index}
+                                team_name={item?.team_name}
+                                logo={item?.logo}
+                                sportId={sportId}
+                            />
+                        )}
+                        noItemsText={`No ${leagueName} teams were found`}
+                        pageCount={pageCount}
+                        onPageChange={handlePageClick}
+                        rangeScale={rangeScale}
+                        loading={loading}
+                        paginationKey={paginationKey}
+                    />
+
+                </section>
 
             </section>
 
-            <ReactPaginate
-                breakLabel="..."
-                nextLabel="→"
-                onPageChange={handlePageClick}
-                pageRangeDisplayed={rangeScale}
-                pageCount={pageCount}
-                previousLabel="←"
-                renderOnZeroPageCount={null}
-                activeClassName="activePaginationPane"
-                containerClassName="pagination"
-            />
+            {loading === true ?
+                (
+                    <>
+                        <div className={"loader-background"}></div>
+                        <div className="loader"></div>
+                    </>
+                ) : null
+            }
         </>
     );
 }
