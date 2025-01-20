@@ -1,14 +1,16 @@
 import logging
 import functools
 import os
-from flask import request
 from logging.handlers import RotatingFileHandler
+
+
 class Logger:
-    def __init__(self, name, log_file, level=logging.INFO, max_size_mb=20):
+    def __init__(self, name, log_file, level=logging.INFO, max_size_mb=20, backup_count=1):
         self.name = name
         self.log_file = log_file
         self.level = level
         self.max_size = max_size_mb * 1024 * 1024
+        self.backup_count = backup_count
         self.logger = self._create_logger()
 
     def _create_logger(self):
@@ -19,25 +21,17 @@ class Logger:
         logger = logging.getLogger(self.name)
 
         if not logger.hasHandlers():
-            handler = logging.FileHandler(log_file_path, mode='a')
-            handler.addFilter(self.SizeFilter(log_file_path, self.max_size))
+            handler = RotatingFileHandler(
+                log_file_path,
+                maxBytes=self.max_size,
+                backupCount=self.backup_count
+            )
             formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
             handler.setFormatter(formatter)
             logger.addHandler(handler)
             logger.setLevel(self.level)
 
         return logger
-
-    class SizeFilter(logging.Filter):
-        def __init__(self, log_file_path, max_size):
-            self.log_file_path = log_file_path
-            self.max_size = max_size
-
-        def filter(self, record):
-            if os.path.exists(self.log_file_path):
-                if os.path.getsize(self.log_file_path) >= self.max_size:
-                    os.remove(self.log_file_path)
-            return True
 
     def log_function_call(self):
         def decorator(func):
