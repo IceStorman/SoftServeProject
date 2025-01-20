@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Dict
 
 from database.models import Sport
 from database.session import SessionLocal
@@ -14,38 +14,35 @@ class TeamsDataManager(AbstractSportDataManager):
     _teams__sport_id: Optional[int]
     _leagues__api_id: Optional[int]
     _countries__api_id: Optional[int]
-    _page: Optional[int]
-    _per_page: Optional[int]
+    _page_number: Optional[int]
+    _elements_per_page: Optional[int]
 
-    def __init__(self, data_manager):
-        super().__init__(data_manager)
+    def __init__(self, new_data: Dict):
+        super().__init__(new_data)
         query = (
             SessionLocal().query(
                 Sport.sport_id,
                 Sport.sport_name
             )
-            .filter(Sport.sport_id == data_manager.get("teams__sport_id"))
+            .filter(Sport.sport_id == new_data.get("teams__sport_id"))
         )
 
         ix = query.first()
         if ix is not None:
             self._teams__sport_id = ix.sport_name
-        #self._teams__sport_id = data_manager.get("teams__sport_id")
-        self._leagues__api_id = data_manager.get("leagues__api_id")
-        self._host = get_host(self._teams__sport_id)
 
-        #self._sport_name = get_sport_name(self._teams__sport_id)
+        self._leagues__api_id = new_data.get("leagues__api_id")
+        self._host = get_host(self._sport_name)
 
-        #self._countries__api_id = data_manager.get("countries__api_id")
-        self._page = data_manager.get("page")
-        self._per_page = data_manager.get("per_page")
+        self._page_number = new_data.get("page")
+        self._elements_per_page = new_data.get("per_page")
 
     def get_teams_data(self, pagination):
-        index = get_team_index(self._teams__sport_id, self._leagues__api_id)
+        index = get_team_index(self._sport_name, self._leagues__api_id)
         result = get_teams(self._data_dict, pagination)
         if result:
             return result
-        url_first = get_host(self._teams__sport_id)
+        url_first = get_host(self._sport_name)
         url = "https://"+url_first+"/"+index.replace("teams/","")
         try:
             team = self.main_request(self._host, self._teams__sport_id, url, index)

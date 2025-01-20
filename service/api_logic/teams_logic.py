@@ -18,8 +18,8 @@ def get_teams(
          .join(League, TeamIndex.league == League.league_id)
          .join(Sport, TeamIndex.sport_id == Sport.sport_id)
     )
-    a = query.all()
-    for p in a:
+    content_data = query.all()
+    for p in content_data:
         print(p)
 
     model_aliases = {

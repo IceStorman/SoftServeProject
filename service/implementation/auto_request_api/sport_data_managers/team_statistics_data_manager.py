@@ -17,7 +17,6 @@ class TeamStatisticsDataManager(AbstractSportDataManager):
     def __init__(self, team_statistics_data: Dict):
         super().__init__(team_statistics_data)
 
-        #self._sport_id = team_statistics_data.get("sport_id")
         query = (
             SessionLocal().query(
                 Sport.sport_id,
