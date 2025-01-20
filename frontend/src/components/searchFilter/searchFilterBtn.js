@@ -1,14 +1,26 @@
 import React from "react";
 
 function SearchWithFilter({
-      handleSearchClick,
-      handleKeyDown,
+      setSearchClicked,
+      inputValue,
       setInputValue,
       loading,
       placeholder = " ",
       additionalComponent = null
   })
 {
+
+    function handleSearchClick() {
+        setSearchClicked((prev) => !prev);
+    }
+
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            handleSearchClick();
+        }
+    };
+
+
     return (
 
         <section className={"filter"}>
