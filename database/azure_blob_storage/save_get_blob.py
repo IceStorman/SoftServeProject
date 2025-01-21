@@ -4,7 +4,7 @@ from typing import Dict
 import os
 from dotenv import load_dotenv
 from datetime import datetime, timezone
-from database.models import BlobIndex, News, Sport, SportIndex, TeamIndex
+from database.models import BlobIndex, News, Sport, SportIndex, TeamIndex, TeamInNews
 from database.session import SessionLocal
 from exept.colors_text import print_error_message, print_good_message
 import re
@@ -274,6 +274,7 @@ def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
         if existing_news:
             print_error_message(f"News '{blob_name}' already exists in the database.")
             return
+        print(json_data["team_names"])
         sport = session.query(Sport).filter_by(sport_name=json_data["S_P_O_R_T"]).first()
         if not sport:
             return
@@ -285,13 +286,30 @@ def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
         session.add(news_index)
         print_good_message(f"The news item '{blob_name}' is saved in the database.")
         session.commit()
-
-        for team_name in json_data["team_names"]:
-            team_index = TeamIndex(
-                news_id=news_index.news_id,
-                name=team_name
-            )
-            session.add(team_index)
+        teams = session.query(TeamIndex).all()
+        team_dict = {team.name: team.team_index_id for team in teams}
+        teams = json_data["team_names"]
+        print(teams)
+        for team_name in teams:
+            if isinstance(team_name, list):
+                for name in team_name:
+                    team_index_id = team_dict.get(name, None)
+                    if team_index_id is not None:
+                        team_index = TeamInNews(
+                            news_id=news_index.news_id,
+                            name=name,
+                            team_index_id=team_index_id
+                        )
+                        session.add(team_index)
+            else:
+                team_index_id = team_dict.get(team_name, None)
+                if team_index_id is not None:
+                    team_index = TeamInNews(
+                        news_id=news_index.news_id,
+                        name=team_name,
+                        team_index_id=team_index_id
+                    )
+                    session.add(team_index)
 
         session.commit()
     except Exception as e:
