@@ -29,7 +29,7 @@ class TeamsDataManager(AbstractSportDataManager):
 
         ix = query.first()
         if ix is not None:
-            self._teams__sport_id = ix.sport_name
+            self._sport_name = ix.sport_name
 
         self._leagues__api_id = new_data.get("leagues__api_id")
         self._host = get_host(self._sport_name)
@@ -45,7 +45,7 @@ class TeamsDataManager(AbstractSportDataManager):
         url_first = get_host(self._sport_name)
         url = "https://"+url_first+"/"+index.replace("teams/","")
         try:
-            team = self.main_request(self._host, self._teams__sport_id, url, index)
+            team = self.main_request(self._host, self._sport_name, url, index)
             return team
         except Exception as e:
             return {"error": str(e)}

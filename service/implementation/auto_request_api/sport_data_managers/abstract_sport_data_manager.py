@@ -29,11 +29,9 @@ class AbstractSportDataManager:
             .filter(Sport.sport_id == new_data.get("sport_id"))
         )
         print(query)
-        ix = query.all()
+        ix = query.first()
         if ix is not None:
-            print(ix.sport_name)
             self._sport_name = ix.sport_name
-        print(self._sport_name)
 
     def main_request(self, host, name, url, blob_name):
         headers = {

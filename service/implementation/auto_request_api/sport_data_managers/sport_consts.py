@@ -16,15 +16,17 @@ class SportType(Enum):
 
 def get_sport_type(sport_id: str) -> Optional[SportType]:
     try:
-        return SportType(sport_id.replace("-", "_").lower())
+        sport_name = sport_id.replace('_', '-').lower()
+        sport_type = SportType(sport_name)
+        return sport_type
     except ValueError:
         print(f"Invalid sport_id: {sport_id}")
         return None
 
 def get_team_statistics_url(sport_id: str, team_id: Optional[int], league_id: Optional[int]):
-    print("Getting team statistics url")
+    sport_type = get_sport_type(sport_id)
 
-    match get_sport_type(sport_id):
+    match sport_type:
         case SportType.handball:
             return f"https://v1.handball.api-sports.io/teams/statistics?season=2024&team={team_id}&league={league_id}"
         case SportType.hockey:
@@ -39,9 +41,9 @@ def get_team_statistics_url(sport_id: str, team_id: Optional[int], league_id: Op
             return f"https://v1.volleyball.api-sports.io/teams/statistics?season=2024&team={team_id}&league={league_id}"
 
 def get_team_statistics_index(sport_id: str, team_id: Optional[int], league_id: Optional[int]):
-    print("Getting team statistics index")
+    sport_type = get_sport_type(sport_id)
 
-    match get_sport_type(sport_id):
+    match sport_type:
         case SportType.handball:
             return f"teams/statistics?season=2024&team={team_id}&league={league_id}"
         case SportType.hockey:
@@ -66,10 +68,11 @@ def get_team_index(sport_id: str, league_id: Optional[int]):
         case _:
             return f"teams/teams?season=2023&league={league_id}"
 
-def get_host(sport_id: str):
+def get_host(sport_id: str) -> Optional[str]:
     print("Getting host")
 
-    match get_sport_type(sport_id):
+    sport_type = get_sport_type(sport_id)
+    match sport_type:
         case SportType.formula_1:
             return "v1.formula-1.api-sports.io"
         case SportType.hockey:

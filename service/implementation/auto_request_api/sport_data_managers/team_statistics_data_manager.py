@@ -17,22 +17,10 @@ class TeamStatisticsDataManager(AbstractSportDataManager):
     def __init__(self, team_statistics_data: Dict):
         super().__init__(team_statistics_data)
 
-        query = (
-            SessionLocal().query(
-                Sport.sport_id,
-                Sport.sport_name
-            )
-            .filter(Sport.sport_id == team_statistics_data.get("sport_id"))
-        )
-
-        ix = query.first()
-        if ix is not None:
-            self._sport_id = ix.sport_name
         self._host = get_host(self._sport_name)
 
         self._team_id = team_statistics_data.get("team_id")
         self._league_id = team_statistics_data.get("league_id")
-        print(f"host: {self._host} sport id: {self._sport_id} | team id: {self._team_id} | league id: {self._league_id}")
 
     def get_teams_statistics(self) -> Dict[str, str]:
         url = get_team_statistics_url(self._sport_name, self._team_id, self._league_id)
