@@ -1,123 +1,75 @@
 from datetime import datetime
-from pydantic import BaseModel, Field, field_validator
-from typing import Optional
+from marshmallow import Schema, fields, pre_load
 
 
-class TeamsLeagueDTO(BaseModel):
-    sport_id: Optional[int] = None
-    league_id: Optional[int] = None
-    country_id: Optional[int] = None
-    page: Optional[int] = 0
-    per_page: Optional[int] = 9
+class BaseDTO(Schema):
+    @pre_load
+    def check_min_value(self, data, **kwargs):
+        for field in data:
+            if isinstance(data[field], int) and data[field] < 0:
+                data[field] = None
+        return data
 
-    def to_dict(self):
-        filters = {}
-        if self.sport_id is not None:
-            filters["teams.sport_id"] = self.sport_id
-        if self.league_id is not None:
-            filters["leagues.api_id"] = self.league_id
-        if self.country_id is not None:
-            filters["countries.api_id"] = self.country_id
-        return filters
-
-    def get_pagination(self):
-        if self.page != 0:
-            offset = (self.page - 1) * self.per_page
-            limit = self.per_page
-            return offset, limit
-        else:
-            return None, None
+    @pre_load
+    def clean_letter(self, data, **kwargs):
+        if 'letter' in data and data['letter']:
+            data['letter'] = ' '.join(data['letter'].split()).lower()
+        return data
 
 
-class TeamsStatisticsOrPlayersDTO(BaseModel):
-    sport_id: Optional[int] = None
-    team_id: Optional[int] = None
-    league_id: Optional[int] = None
+class TeamsLeagueDTO(BaseDTO):
+    teams__sport_id = fields.Int(required=False, missing=None)
+    leagues__api_id = fields.Int(required=False, missing=None)
+    countries__api_id = fields.Int(required=False, missing=None)
+    page = fields.Int(required=False, missing=0)
+    per_page = fields.Int(required=False, missing=0)
 
 
-class SearchDTO(BaseModel):
-    sport_id: Optional[int] = None
-    country_id: Optional[int] = None
-    letter: Optional[str] = None
-    page: Optional[int] = 0
-    per_page: Optional[int] = 9
-
-    def to_dict(self):
-        filters = {}
-        if self.sport_id is not None:
-            filters["leagues.sport_id"] = self.sport_id
-        if self.country_id is not None:
-            filters["countries.api_id"] = self.country_id
-        return filters
-
-    def get_pagination(self):
-        if self.page != 0:
-            offset = (self.page - 1) * self.per_page
-            limit = self.per_page
-            return offset, limit
-        else:
-            return None, None
-
-    @field_validator("letter", mode="before")
-    def clean_letter(cls, value: Optional[str]) -> Optional[str]:
-        if value and isinstance(value, str):
-            return ' '.join(value.split()).lower()
-        return None
-
-    @field_validator("country_id", mode="before")
-    def check_num(cls, value: Optional[int]) -> Optional[int]:
-        if value == 0:
-            return None
-        return value
+class TeamsStatisticsOrPlayersDTO(BaseDTO):
+    sport_id = fields.Str(required=False, missing=None)
+    team_id = fields.Int(required=False, missing=None)
+    league_id = fields.Int(required=False, missing=None)
 
 
-class SportsLeagueDTO(BaseModel):
-    sport_id: Optional[int] = None
-    page: Optional[int] = 0
-    per_page: Optional[int] = 9
-
-    def to_dict(self):
-        filters = {}
-        if self.sport_id is not None:
-            filters["leagues.sport_id"] = self.sport_id
-        return filters
-
-    def get_pagination(self):
-        if self.page != 0:
-            offset = (self.page - 1) * self.per_page
-            limit = self.per_page
-            return offset, limit
-        else:
-            return None, None
+class SearchDTO(BaseDTO):
+    leagues__sport_id = fields.Int(required=False, missing=None)
+    countries__country_id = fields.Int(required=False, missing=None)
+    letter = fields.Str(required=False, missing="")
+    page = fields.Int(required=False, missing=0)
+    per_page = fields.Int(required=False, missing=0)
 
 
-class GamesDTO(BaseModel):
-    sport_id: Optional[int] = None
-    league_id: Optional[int] = None
-    country_id: Optional[int] = None
-    status: Optional[str] = None
-    date: Optional[str] = Field(default_factory=lambda: datetime.now().strftime('%Y-%m-%d'))
-    page: Optional[int] = 0
-    per_page: Optional[int] = 9
+class SportsLeagueDTO(BaseDTO):
+    leagues__sport_id = fields.Int(required=False, missing=None)
+    page = fields.Int(required=False, missing=0)
+    per_page = fields.Int(required=False, missing=0)
 
-    def to_dict(self):
-        filters = {}
-        if self.sport_id is not None:
-            filters["games.sport_id"] = self.sport_id
-        if self.league_id is not None:
-            filters["leagues.api_id"] = self.league_id
-        if self.country_id is not None:
-            filters["countries.api_id"] = self.country_id
-        if self.date is not None:
-            filters["games.date"] = self.date
-        return filters
 
-    def get_pagination(self):
-        if self.page != 0:
-            offset = (self.page - 1) * self.per_page
-            limit = self.per_page
-            return offset, limit
-        else:
-            return None, None
+class GamesDTO(BaseDTO):
+    games__sport_id = fields.Int(required=False, missing=None)
+    games__league_id = fields.Int(required=False, missing=None)
+    games__country_id = fields.Int(required=False, missing=None)
+    status = fields.Str(required=False, missing=None)
+    games__date = fields.Date(required=False, missing=datetime.now().strftime('%Y-%m-%d'))
+    page = fields.Int(required=False, missing=0)
+    per_page = fields.Int(required=False, missing=0)
+
+
+class NewsDTO(BaseDTO):
+    news__news_id = fields.Int(required=False, missing=None)
+    news__sport_id = fields.Int(required=False, missing=None)
+    news__interest_rate = fields.Int(required=False, missing=None)
+
+    
+
+
+class StreamsDTO(BaseDTO):
+    streams__stream_id = fields.Int(required=False, missing = None)
+    streams__stream_url = fields.Str(required=False, missing=None)
+    streams__start_time = fields.Int(required=False, missing=None)#don't know if it is correct
+    streams__sport_id = fields.Int(required=False, missing=None)
+
+
+
 
 

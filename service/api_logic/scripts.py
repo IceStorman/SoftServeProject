@@ -1,3 +1,5 @@
+from marshmallow import Schema
+
 from database.models import Sport, League
 from exept.exeptions import SportNotFoundError
 from sqlalchemy.orm import Query
@@ -24,20 +26,22 @@ def apply_filters(base_query: Query, filters: dict, model_aliases: dict):
     filter_conditions = []
 
     for key, value in filters.items():
-        if "." in key:
-            table_name, column_name = key.split(".")
+        if "__" in key:
+            if value is None:
+                continue
+            table_name, column_name = key.split("__")
             model = model_aliases.get(table_name, None)
             if model is None:
                 raise ValueError(f"Model alias '{table_name}' not in model_aliases.")
 
             column = getattr(model, column_name, None)
+
             if column is not None:
                 filter_conditions.append(column == value)
             else:
                 raise ValueError(f"Column '{column_name}' not in model '{table_name}'.")
         else:
-            raise ValueError(f"Filter format '{key}' not correct. Use 'table.column'.")
-
+            continue
     if filter_conditions:
         base_query = base_query.filter(and_(*filter_conditions))
 

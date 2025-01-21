@@ -7,8 +7,21 @@ from sqlalchemy import text
 from database.session import SessionLocal
 from database.azure_blob_storage.save_get_blob import blob_autosave_api
 
+from database.postgres import save_api_data
+
 load_dotenv()
-api_key = [os.getenv("APIKEY3"), os.getenv("APIKEY2"), os.getenv("APIKEY1")]
+api_key = [
+    os.getenv("APIKEY1"),
+    os.getenv("APIKEY2"),
+    os.getenv("APIKEY3"),
+    os.getenv("APIKEY4"),
+    os.getenv("APIKEY5"),
+    os.getenv("APIKEY6"),
+    os.getenv("APIKEY7"),
+    os.getenv("APIKEY8"),
+    os.getenv("APIKEY9"),
+    os.getenv("APIKEY10"),
+]
 
 apis = [
     {
@@ -156,7 +169,7 @@ apis = [
         "index": "games",
         "url": "https://v1.handball.api-sports.io/games?date=DATE",
         "host": "v1.handball.api-sports.io",
-        "frequency": 3.5
+        "frequency": 3
     },
     {
         "name": "hockey",
@@ -329,7 +342,9 @@ def auto_request_system(api: Dict[str, str]) -> None:
         response = requests.get(url_with_date, headers=headers, timeout=10)
         response.raise_for_status()
         json_data = response.json()
-        blob_autosave_api(json_data, api)
+        #blob_autosave_api(json_data, api)
+
+        save_api_data(json_data, api['name'])
     except requests.exceptions.RequestException as e:
         print(f"Error while making a request to {api['name']}: {e}")
     except Exception as e:

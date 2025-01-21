@@ -1,29 +1,25 @@
-from dto.api_output import GameOutputDTO
+from dto.api_output import GameOutput
 from dto.api_input import GamesDTO
 from database.models import Games, Country, TeamIndex, League, Sport
+from dto.pagination import Pagination
 from exept.handle_exeptions import handle_exceptions
 from service.api_logic.scripts import apply_filters
 from sqlalchemy.orm import aliased
+from database.session import SessionLocal
+
+session = SessionLocal()
 
 @handle_exceptions
 def get_games_today(
-        session,
-        filters_dto: GamesDTO
+        filters_dto: dict,
+        pagination: Pagination
 ):
     home_team = aliased(TeamIndex)
     away_team = aliased(TeamIndex)
 
     query = (
         session.query(
-            Games.api_id,
-            Games.sport_id,
-            Games.league_id,
-            Games.country_id,
-            Games.status,
-            Games.date,
-            Games.time,
-            Games.score_away_team,
-            Games.score_home_team,
+            Games,
             League.name.label("league_name"),
             League.logo.label("league_logo"),
             Country.name.label("country_name"),
@@ -45,32 +41,14 @@ def get_games_today(
         "leagues": League,
     }
 
-    query = apply_filters(query, filters_dto.to_dict(), model_aliases)
+    query = apply_filters(query, filters_dto, model_aliases)
 
-    offset, limit = filters_dto.get_pagination()
-
+    offset, limit = pagination.get_pagination()
     if offset is not None and limit is not None:
         query = query.offset(offset).limit(limit)
 
     games = query.all()
-
-    return [
-        GameOutputDTO(
-            id=game.api_id,
-            status=game.status,
-            date=game.date,
-            time=game.time,
-            league_name=game.league_name,
-            league_logo=game.league_logo,
-            country_name=game.country_name,
-            home_team_name=game.home_team_name,
-            home_team_logo=game.home_team_logo,
-            away_team_name=game.away_team_name,
-            away_team_logo=game.away_team_logo,
-            home_score=game.score_home_team,
-            away_score=game.score_away_team,
-        ).to_dict()
-        for game in games
-    ]
+    schema = GameOutput(many=True)
+    return schema.dump(games)
 
 

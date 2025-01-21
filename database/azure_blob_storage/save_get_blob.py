@@ -30,7 +30,6 @@ sastokens_dict = {
 
 img = {
     "football": "https://images.vexels.com/media/users/3/234566/isolated/preview/a66aee6975507c1c26fd158989ab53f9-man-soccer-kicking-football-flat.png?w=360",
-    "nba": "https://api-sports.io/assets/img/news/min-nba.png",
     "mma": "https://www.api-football.com/public/img/home1/mma-logo.png",
     "hockey": "https://www.api-football.com/public/img/home1/hockey-logo.png",
     "afl": "https://www.api-football.com/public/img/home1/afl-logo.png",
