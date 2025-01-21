@@ -1,5 +1,5 @@
 import React from "react";
-import {Link, Route, Router, Routes} from "react-router-dom";
+import {Link} from "react-router-dom";
 
 function SignUpPage(){
 

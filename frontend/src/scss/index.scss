@@ -1,0 +1,135 @@
+$main-background-color: #D3D9E9;
+$special-dark-purple: #31293F;
+$special-light-purple: #A6A9C8;
+$special-red: #B82426;
+$main-text-color: #D3D9E9;
+$purple-btn-color: #796EA8;
+$special-grey: #818398;
+$scroll-hover: #4a4453;
+$scroll-thumb: #60566f;
+$scroll-track: #f9eaff;
+
+@mixin scrollbar-style {
+
+    &::-webkit-scrollbar {
+        width: 0.6rem;
+    }
+
+    &::-webkit-scrollbar-track {
+        background:  $scroll-track;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: $scroll-thumb;
+        border-radius: 0.3rem;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background: $scroll-hover;
+    }
+}
+
+@mixin custom-form($customInput, $customLabel, $inputWidth, $borderAndTextColor, $backgroundColor, $labelColor){
+
+    #{$customInput} {
+        width: $inputWidth;
+        height: 2rem;
+        padding: 0 0.2rem;
+        border: 0.2rem solid $borderAndTextColor;
+        background-color: $backgroundColor;
+        color: $borderAndTextColor;
+        border-radius: 0.5rem;
+        outline: none;
+        font-size: 1rem;
+        font-weight: bold;
+    }
+
+    #{$customLabel} {
+        position: absolute;
+        pointer-events: none;
+        font-size: 1rem;
+        top: 20%;
+        left: 0.55rem;
+        color: $labelColor;
+        transition: all 0.1s linear;
+    }
+
+    #{$customInput}:focus ~ #{$customLabel},
+    #{$customInput}:not(:placeholder-shown) ~ #{$customLabel} {
+        top: -0.6rem;
+        left: 0.6rem;
+        font-size: 0.8rem;
+        background-color: $backgroundColor;
+        color: $borderAndTextColor;
+        padding: 0 0.3rem;
+        margin: 0;
+    }
+
+    #{$customInput}:hover ~ #{$customLabel},
+    #{$customInput}:focus ~ #{$customLabel} {
+        transform: scale(1.05);
+    }
+
+    #{$customInput}::-webkit-search-cancel-button {
+        -webkit-appearance: none;
+        appearance: none;
+    }
+}
+
+@import "header";
+@import "games";
+@import "news";
+@import "sportsBtn";
+@import "footer";
+@import "sportPage";
+@import "sign";
+@import "iconsBlock";
+@import "stream";
+@import "newsPage";
+@import "notExistingPage";
+@import "noItems";
+@import "loader";
+@import "searchSportPage";
+@import "leaguePage";
+
+@font-face {
+    font-family: 'RubikBubbles';
+    src: url('./fonts/RubikBubbles-Regular.ttf') format('woff2');
+}
+
+@font-face {
+    font-family: 'Merriweather';
+    src: url('./fonts/Merriweather-Black.ttf') format('woff2');
+}
+
+#root{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    width: 100%;
+    font-family: "Merriweather";
+    background-color: $main-background-color;
+
+    @include scrollbar-style;
+}
+
+.hidden{
+    display: none;
+}
+
+.container{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 3rem;
+    margin-bottom: 4vh;
+
+}

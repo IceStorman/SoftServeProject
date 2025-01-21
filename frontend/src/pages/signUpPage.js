@@ -14,10 +14,53 @@ function SignUpPage(){
                         <h1>Реєстрація</h1>
 
                         <div className={"inputBox"}>
-                            <input id={"nameInputSignUo"} className={"nameInput"} type={"text"} placeholder={"Нік нейм"}/>
-                            <input id={"emailInputSignUp"} className={"emailInput"} type={"email"} placeholder={"Email"}/>
-                            <input id={"passwordInputSignUp"} className={"passwordInput"} placeholder={"Пароль"} type={"password"}/>
-                            <input id={"passwordConfirmSignUp"} className={"passwordInput"} placeholder={"Повторити пароль"} type={"password"}/>
+
+                            <div className={"inputBoxField"}>
+
+                                <input
+                                    id={"nameInputSignUo"}
+                                    className={"nameInput"}
+                                    type={"text"}
+                                    placeholder={" "}
+                                />
+                                <label>Нік нейм</label>
+
+                            </div>
+                            <div className={"inputBoxField"}>
+
+                                <input
+                                    id={"emailInputSignUp"}
+                                    className={"emailInput"}
+                                    type={"email"}
+                                    placeholder={" "}
+                                />
+                                <label>Email</label>
+
+                            </div>
+                            <div className={"inputBoxField"}>
+
+                                <input
+                                    id={"passwordInputSignUp"}
+                                    className={"passwordInput"}
+                                    type={"password"}
+                                    placeholder={" "}
+                                />
+                                <label>Пароль</label>
+
+                            </div>
+                            <div className={"inputBoxField"}>
+
+                                <input
+                                    id={"passwordConfirmSignUp"}
+                                    className={"passwordInput"}
+                                    type={"password"}
+                                    placeholder={" "}
+                                />
+                                <label>Повторити пароль</label>
+
+                            </div>
+
+
                         </div>
 
                         <Link to={"/reset-password"}>Забули пароль?</Link>
