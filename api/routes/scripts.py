@@ -2,6 +2,7 @@ from flask import jsonify
 from flask import request
 import hashlib
 import json
+xuy=0
 
 def get_cache_key():
    sport_type = request.view_args.get('sport_type')
