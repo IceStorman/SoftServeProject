@@ -7,6 +7,7 @@ from exept.handle_exeptions import handle_exceptions
 from service.api_logic.scripts import get_sport_index_by_name
 from dto.pagination import Pagination
 from sqlalchemy.orm import aliased
+import datetime
 
 def fetch_streams(session, order_by: ClauseElement = None, limit: int = None, filters=None):
     query = session.query(Stream)
@@ -20,23 +21,34 @@ def fetch_streams(session, order_by: ClauseElement = None, limit: int = None, fi
 
 
 @handle_exceptions
-def get_streams_today(filters_dto:dict,
-                      pagination: Pagination,
-                      session):
+def get_streams_today(pagination, session):
+
     StreamsStatus = aliased(Streams_Status)
-    StatusesAlias = aliased(Statuses)
+
+
     query = (
         session.query(
             Stream.stream_id,
             Stream.stream_url,
             Stream.start_time,
             Stream.sport_id,
-            StreamsStatus.status_id,
-            StatusesAlias.status_name
+            StreamsStatus.status_id
         )
         .join(StreamsStatus, Stream.stream_id == StreamsStatus.stream_id)
-        .join(StatusesAlias, StreamsStatus.status_id == StatusesAlias.status_id)
     )
+
+    today_start = datetime.combine(datetime.date.today(), datetime.min.time())
+    today_end = datetime.combine(datetime.date.today(), datetime.max.time())
+    query = query.filter(
+        Stream.start_time.between(today_start.timestamp(), today_end.timestamp())
+    )
+
+
+    if pagination:
+        query = query.offset(pagination.offset).limit(pagination.limit)
+
+    return query.all()
+
 
 @handle_exceptions
 def save_json_stream_to_streams_table(session, streams_data):
