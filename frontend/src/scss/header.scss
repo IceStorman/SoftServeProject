@@ -1,0 +1,56 @@
+header {
+    width: 100%;
+    height: 5.5rem;
+    background-color: $special-dark-purple;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+    overflow: hidden;
+
+    .red {
+        color: $special-red;
+    }
+
+    .title {
+        margin: auto 4vh auto;
+        text-decoration: none;
+        font-size: 4rem;
+        color: $main-text-color;
+        font-family: "RubikBubbles";
+    }
+
+    a{
+        transition: transform 0.3s ease;
+    }
+
+    a:hover{
+        transform: scale(1.03);
+
+    }
+
+    .navMenu {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 2rem;
+        font-size: 2.5rem;
+        margin-right: 1rem;
+
+        a {
+            text-decoration: none;
+            color: $main-text-color;
+        }
+
+        .signLink {
+            background-color: $purple-btn-color;
+            border-radius: 0.6rem;
+            padding: 0.5rem 1.6rem;
+        }
+
+        .activePage{
+            color: $scroll-track;
+            text-decoration: underline;
+        }
+    }
+}

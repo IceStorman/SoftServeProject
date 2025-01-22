@@ -1,9 +1,12 @@
 import React from "react";
+import {Link} from "react-router-dom";
 
-function News({title, text, img,sport}){
+
+function News({title, date, img, sport, id}){
 
     return (
-        <div className="newsBox">
+
+        <Link className="newsBox" to={`/news/${id}`} state={ id }>
 
             <img src={img} alt={sport}/>
 
@@ -11,13 +14,13 @@ function News({title, text, img,sport}){
 
                 <h1>{title}</h1>
 
-                <h4 className="date">{text}</h4>
+                <h4 className="date">{date}</h4>
 
             </div>
 
             <hr/>
 
-        </div>
+        </Link>
     );
 }
 

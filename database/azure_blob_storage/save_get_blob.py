@@ -22,7 +22,6 @@ sastokens_dict = {
     "handball": os.getenv("SASHANDBALL"),
     "hockey": os.getenv("SASHOCKEY"),
     "mma": os.getenv("SASMMA"),
-    "nba":  os.getenv("SASNBA"),
     "nfl": os.getenv("SASNFL"),
     "rugby": os.getenv("SASRUGBY"),
     "news": os.getenv("SASNEWS"),

@@ -1,0 +1,65 @@
+.sportPage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+
+    .sportTitle {
+        margin: 1rem 0;
+        text-transform: capitalize;
+        font-size: 3rem;
+        letter-spacing: 0.5rem;
+    }
+
+    .news {
+        width: 80%;
+        background-color: $special-light-purple;
+        border-radius: 0.5rem;
+        margin-top: 0;
+
+        .newsBox {
+            flex-direction: row;
+            justify-content: space-evenly;
+            width: 120rem;
+            max-width: 95%;
+            margin: 1rem auto 0;
+            color: $special-dark-purple;
+            overflow: visible;
+
+            .newsInsight {
+                width: 55%;
+            }
+
+            h4, h1 {
+                margin: 0 0.5rem 0 2rem;
+                align-self: end;
+            }
+
+            h4{
+                color: $scroll-hover;
+            }
+
+            img {
+                width: 50rem;
+                max-width: 45%;
+            }
+
+            .leftPlaceData {
+                align-self: start;
+            }
+        }
+
+        hr {
+            margin: 0 auto 1rem;
+            border: 0.1vh solid white;
+            width: 95%;
+        }
+
+        .newsBox:hover{
+
+            img{
+                transform: scale(1.02);
+            }
+        }
+    }
+}

@@ -1,0 +1,117 @@
+.news {
+    flex-wrap: wrap;
+    align-content: flex-start;
+    align-items: end;
+    gap: 0.2rem 2rem;
+    margin: 4vh 0 0;
+    padding: 0 0 0.4rem;
+    background-color: white;
+    border-top-left-radius: 3vh;
+    border-top-right-radius: 3vh;
+    overflow: hidden;
+
+    &.narrow {
+        width: 30%;
+    }
+
+    &.wide {
+        width: 60%;
+    }
+
+    .newsBox {
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        width: 32rem;
+        max-width: 95%;
+        margin: 0 auto;
+        overflow: hidden;
+        cursor: pointer;
+        text-decoration: none;
+
+        .newsInsight {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            word-break: break-word;
+        }
+
+        h4, h1 {
+            text-decoration: none;
+            margin: 0;
+            text-align: justify;
+        }
+
+        h1{
+            color: $special-dark-purple;
+        }
+
+        h4 {
+            color: $special-grey;
+            align-self: end;
+            white-space: pre-wrap;
+            word-break: normal;
+        }
+
+        img {
+            max-height: 50rem;
+            width: 100%;
+            margin: 0.5rem auto;
+            border-radius: 1em;
+            transition: transform 0.3s ease;
+        }
+    }
+
+    .newsBox:hover{
+
+        img {
+            transform: scale(1.05);
+        }
+
+        h1{
+            text-decoration: underline;
+            text-decoration-thickness: 3px;
+            text-decoration-color: $purple-btn-color;;
+        }
+    }
+
+    &.wrappedNews {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+
+        .newsBox {
+            width: 32rem;
+            margin: 0;
+
+            img {
+                width: 95%;
+            }
+
+            hr {
+                width: 98%;
+            }
+        }
+    }
+
+    .newsTitle {
+        width: 100%;
+        text-align: center;
+        margin: 0;
+        background-color: $special-dark-purple;
+        color: $main-text-color;
+        border-top-left-radius: 3vh;
+        border-top-right-radius: 3vh;
+        font-size: 4vh;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    hr {
+        align-self: center;
+        border: 0.2vh solid $special-grey;
+        width: 100%;
+    }
+}

@@ -1,13 +1,13 @@
-import React, {useState, useEffect, createContext, useContext} from "react";
-import { Link } from "react-router-dom";
+import React, {useState, useEffect} from "react";
 import axios from 'axios';
-import { Toaster, toast } from 'sonner'
 
 import apiEndpoints from "../apiEndpoints";
 
 import News from "../components/mainPage/news.js"
 import SportBtn from "../components/mainPage/sportBtn"
 import Slider from "../components/games/slider.js";
+import {toast} from "sonner";
+import NoItems from "../components/NoItems";
 
 function MainPage() {
     const [loginStatus,setLoginStatus]=useState(false)
@@ -16,7 +16,12 @@ function MainPage() {
     const [sports, setSport] = useState([]);
     const [games, setGames] = useState([]);
 
+    const [loading, setLoading] = useState(false)
+
     useEffect(() => {
+
+        setLoading(true)
+
         axios.get(`${apiEndpoints.url}${apiEndpoints.news.getRecent}`)
             .then(res => {
                 const returnedNews = res.data;
@@ -24,7 +29,8 @@ function MainPage() {
             })
             .catch(error => {
                 toast.error(`:( Troubles With News Loading: ${error}`);
-            });
+            })
+
     }, []);
 
     useEffect(() => {
@@ -42,42 +48,52 @@ function MainPage() {
         axios.get(`${apiEndpoints.url}${apiEndpoints.games.getGames}`)
             .then(res => {
                 const returnedGames = res.data;
-                let arr = [];
-                returnedGames.forEach(element => {
-                  element.matches.forEach(a => {
-                    arr.push(a);
-                  })
-                });
-                setGames(arr);
+                setGames(returnedGames);
             })
             .catch(error => {
                 toast.error(`:( Troubles With Games Loading: ${error}`);
             });
     }, []);
 
+    useEffect(() => {
+        (news.length > 0 || sports.length > 0 || games.length) ? setLoading(false)
+        : setTimeout(() => {
+            setLoading(false);
+        }, 2000)
+    }, [news.length, sports.length, games.length]);
+
     return(
 
         <>
 
-            <Toaster  position="top-center" expand={true} richColors  />
-
-            <Slider games={games} />
+            <Slider games={games}/>
 
             <section className="container">
 
-                <section className={`news ${loginStatus ? "narrow" : "wide wrapedNews"}`}>
+                <section className={`news ${loginStatus ? "narrow" : "wide wrappedNews"}`}>
 
                     <h1 className="newsTitle">НОВИНИ</h1>
 
-                    {news.map((item, index) => (
-                        <News
-                            key={index}
-                            title={item.data?.title}
-                            text={item.data?.timestamp}
-                            img={item.data?.images[0]}
-                            sport={item.data?.S_P_O_R_T}
-                        />
-                    ))}
+                    {
+                        !(news.length === 0) ?
+                            news.map((item, index) => (
+                                <News
+                                    key={index}
+                                    id={item.blob_id}
+                                    title={item.data?.title}
+                                    date={item.data?.timestamp}
+                                    img={item.data?.images[0]}
+                                    sport={item.data?.S_P_O_R_T}
+                                />
+                            ))
+                            : (loading === false) ?
+                                (
+                                    <NoItems
+                                        key={1}
+                                        text={"No latest news were found"}
+                                    />
+                                ) : null
+                    }
 
                 </section>
 
@@ -105,17 +121,28 @@ function MainPage() {
 
                 <section className="navSports">
 
-                    {sports.map((item, index)=>(
+                    {sports.map((item, index) => (
                         <SportBtn
                             key={index}
-                            sport={item.sport_name}
-                            img={item.sport_img}
+                            sport={item.sport}
+                            sportId={item.id}
+                            img={item.logo}
+                            sports={sports}
                         />
                     ))}
 
                 </section>
 
             </section>
+
+            {loading === true ?
+                (
+                    <>
+                        <div className={"loader-background"}></div>
+                        <div className="loader"></div>
+                    </>
+                ) : null
+            }
 
         </>
     );
