@@ -88,6 +88,27 @@ def upgrade() -> None:
     FOR EACH ROW
     EXECUTE FUNCTION update_status_on_end();
     """)
+
+    op.execute("""
+    CREATE OR REPLACE FUNCTION delete_old_streams()
+    RETURNS TRIGGER AS $$
+    BEGIN
+        DELETE FROM Streams_Status
+        WHERE stream_id = OLD.stream_id;
+
+        DELETE FROM Streams
+        WHERE stream_id = OLD.stream_id;
+
+        RETURN OLD;
+    END;
+    $$ LANGUAGE plpgsql;
+
+    CREATE TRIGGER delete_streams_after_day_trigger
+    AFTER UPDATE OF start_time ON Streams
+    FOR EACH ROW
+    WHEN (NEW.start_time + INTERVAL '1 day' <= NOW())
+    EXECUTE FUNCTION delete_old_streams();
+    """)
     # ### end Alembic commands ###
 
 
@@ -103,4 +124,7 @@ def downgrade() -> None:
     
     op.execute("DROP TRIGGER IF EXISTS update_status_on_end_trigger ON Streams;")
     op.execute("DROP FUNCTION IF EXISTS update_status_on_end;")
+    
+    op.execute("DROP TRIGGER IF EXISTS delete_streams_after_day_trigger ON Streams;")
+    op.execute("DROP FUNCTION IF EXISTS delete_old_streams;")
     # ### end Alembic commands ###
