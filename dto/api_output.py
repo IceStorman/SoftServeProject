@@ -42,10 +42,6 @@ class CountriesOutput(Schema):
     flag = fields.Str()
     name = fields.Str()
 
-class MessageDTO(Schema):
-    msg = fields.Str()
-    status = fields.Str()
-
 class OutPutUser(Schema):
     username = fields.Str(required=True)
     email = fields.Str(required=True)
