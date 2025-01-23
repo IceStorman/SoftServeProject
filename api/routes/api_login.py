@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from dto.api_input import CreateAccountDTO
+from dto.api_input import InputUserDTO
 from exept.exeptions import DatabaseConnectionError
 from exept.handle_exeptions import get_error_response
 from logger.logger import Logger
@@ -23,7 +23,7 @@ def handle_db_timeout_error(e):
 def create_account_endpoint(service: UserService = Provide[Container.user_service]):
     try:
         data = request.get_json()
-        dto = CreateAccountDTO().load(data)
+        dto = InputUserDTO().load(data)
 
         result = service.create_user(dto["email"], dto["username"], dto["password_hash"])
 
