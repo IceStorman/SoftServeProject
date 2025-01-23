@@ -66,7 +66,7 @@ def specific_article():
         response = get_news_by_id(news_id)
         return response
     except Exception as e:
-        api_routes_logger.error(f"Error in GET /: {str(e)}")
+        api_routes_logger.error(f"Error in POST /: {str(e)}")
         get_error_response(e)
 
 

@@ -56,3 +56,7 @@ class GamesDTO(BaseDTO):
     per_page = fields.Int(required=False, missing=0)
 
 
+class CreateAccountDTO(BaseDTO):
+    username = fields.Str(required=True)
+    email = fields.Str(required=True)
+    password_hash = fields.Str(required=True)

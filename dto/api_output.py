@@ -41,3 +41,7 @@ class CountriesOutput(Schema):
     id = fields.Int(attribute="country_id")
     flag = fields.Str()
     name = fields.Str()
+
+class MessageDTO(Schema):
+    msg = fields.Str()
+    status = fields.Str()
