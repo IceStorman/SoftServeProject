@@ -27,6 +27,13 @@ def get_error_response(e):
     response = {"error in service": str(e)}
     return jsonify(response)
 
+def get_error_reset_password():
+    response = {"message": "Invalid or expired token"}
+    return jsonify(response), 400
+
+def get_good_reset_password():
+    response = {"message": "Success password rest"}
+    return jsonify(response), 200
 
 
 

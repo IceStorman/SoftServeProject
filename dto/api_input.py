@@ -60,3 +60,12 @@ class InputUserDTO(BaseDTO):
     username = fields.Str(required=True)
     email = fields.Str(required=True)
     password_hash = fields.Str(required=True)
+
+
+class ResetPasswordDTO(BaseDTO):
+    email = fields.Str(required=True)
+
+
+class NewPasswordDTO(BaseDTO):
+    new_password = fields.Str(required=True)
+    email = fields.Str(required=True)

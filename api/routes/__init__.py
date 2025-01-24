@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 from flask_cors import CORS
 from api.container.container import Container
@@ -6,9 +7,15 @@ from api.routes.cache import cache
 from flask_swagger_ui import get_swaggerui_blueprint
 from flask_sqlalchemy import SQLAlchemy
 from database.session import DATABASE_URL
+from flask_mail import Mail
+from flask_jwt_extended import JWTManager, create_access_token
+from itsdangerous import URLSafeTimedSerializer, BadSignature
 
 
 db = SQLAlchemy()
+mail = Mail()
+jwt = JWTManager()
+
 
 def create_app():
     app = Flask(__name__, static_folder='static')
@@ -16,13 +23,23 @@ def create_app():
 
     app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
     db.init_app(app)
 
     app.config['CACHE_TYPE'] = 'SimpleCache'
     app.config['JSON_AS_ASCII'] = False
     app.config['CACHE_DEFAULT_TIMEOUT'] = 60*5
     cache.init_app(app)
+
+    app.secret_key = "SECRET_KEY"
+    app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+    app.config['MAIL_PORT'] = 587
+    app.config['MAIL_USE_TLS'] = True
+    app.config['MAIL_USE_SSL'] = False
+    app.config['MAIL_USERNAME'] = 'q.sport.news@gmail.com'
+    app.config['MAIL_PASSWORD'] = 'jjrc siyp trnq tzcp'
+    mail.init_app(app)
+    jwt.init_app(app)
+
     SWAGGER_URL = '/swagger'
     API_URL = '/static/swagger.json'
 

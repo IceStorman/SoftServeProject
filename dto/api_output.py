@@ -1,5 +1,4 @@
 from marshmallow import Schema, fields
-from database.models import Games
 
 class GameOutput(Schema):
     id = fields.Int()
@@ -45,3 +44,6 @@ class CountriesOutput(Schema):
 class OutPutUser(Schema):
     username = fields.Str(required=True)
     email = fields.Str(required=True)
+
+
+

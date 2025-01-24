@@ -1,7 +1,7 @@
 from flask import Blueprint, request
-from dto.api_input import InputUserDTO
+from dto.api_input import InputUserDTO, ResetPasswordDTO, NewPasswordDTO
 from exept.exeptions import DatabaseConnectionError
-from exept.handle_exeptions import get_error_response
+from exept.handle_exeptions import get_error_response, get_error_reset_password, get_good_reset_password
 from logger.logger import Logger
 from dependency_injector.wiring import inject, Provide
 from service.api_logic.login_logic import UserService
@@ -17,6 +17,7 @@ def handle_db_timeout_error(e):
     response = {"error in data base": str(e)}
     return response
 
+
 @login_app.route('/sing_up', methods=['POST'])
 @inject
 @api_routes_logger.log_function_call()
@@ -31,3 +32,41 @@ def create_account_endpoint(service: UserService = Provide[Container.user_servic
     except Exception as e:
         api_routes_logger.error(f"Error in POST /: {str(e)}")
         get_error_response(e)
+
+
+@login_app.route('/reset-password-request', methods=['POST'])
+@inject
+@api_routes_logger.log_function_call()
+def request_password_reset(service: UserService = Provide[Container.user_service]):
+    try:
+        data = request.get_json()
+        dto = ResetPasswordDTO().load(data)
+        result = service.request_password_reset(dto["email"])
+        return result
+
+    except Exception as e:
+        api_routes_logger.error(f"Error in POST /: {str(e)}")
+        get_error_response(e)
+
+@login_app.route('/reset-password/<token>', methods=['GET','POST'])
+@inject
+@api_routes_logger.log_function_call()
+def reset_password(token, service: UserService = Provide[Container.user_service]):
+    try:
+        if request.method == "GET":
+            user_data = service.confirm_token(token)
+            print(user_data)
+            if not user_data:
+                return get_error_reset_password()
+            return user_data
+
+        if request.method == "POST":
+            data = request.get_json()
+            dto = NewPasswordDTO().load(data)
+            service.reset_user_password(dto["email"], dto["new_password"])
+            return get_good_reset_password()
+    except Exception as e:
+        api_routes_logger.error(f"Error in POST /: {str(e)}")
+        get_error_response(e)
+
+
