@@ -1,7 +1,6 @@
 import json
 from database.models.streams import Stream
 from database.models.streams_status import Streams_Status
-from database.models.statuses import Statuses
 from sqlalchemy.sql.expression import ClauseElement
 from exept.handle_exeptions import handle_exceptions
 from service.api_logic.scripts import get_sport_index_by_name
@@ -110,7 +109,6 @@ def json_streams(session):
             "stream_id":stream.stream_id,
             "stream_url":stream.stream_url,
             "start_time":stream.start_time,
-            "status":stream.status,
             "sport_id":stream.sport_id
         })
     return json.dumps(streams_data, ensure_ascii=False)
