@@ -3,6 +3,7 @@ from flask import request
 import hashlib
 import json
 
+
 def get_cache_key():
    sport_type = request.view_args.get('sport_type')
    return f"sport_stream_{sport_type}"
