@@ -8,6 +8,7 @@ from selenium_stealth import stealth
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
+from service.api_logic.games_logic import get_games_today
 
 
 def configure_driver():
@@ -97,7 +98,7 @@ def main():
 
     try:
         
-        from service.api_logic.games_logic import get_games_today
+        
         games_today = get_games_today(session)
         future_games = filter_future_games(games_today)
 
@@ -107,7 +108,7 @@ def main():
         
         save_stream_data(session, game_data)
 
-        print("Дані про трансляції успішно збережено!")
+
     finally:
         driver.quit()
         session.close()
