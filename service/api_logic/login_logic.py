@@ -4,6 +4,7 @@ from itsdangerous import URLSafeTimedSerializer
 from dto.api_output import OutPutUser
 from database.models import User
 from exept.handle_exeptions import handle_exceptions
+from werkzeug.security import generate_password_hash
 from logger.logger import Logger
 
 api_logic_logger = Logger("api_logic_logger", "api_logic_logger.log")
@@ -21,7 +22,9 @@ class UserService:
         if existing_user:
             return OutPutUser().dump(existing_user)
 
-        new_user = User(email=email_front, username=username_front, password_hash=password_front)
+        hashed_password = generate_password_hash(password_front)
+
+        new_user = User(email=email_front, username=username_front, password_hash=hashed_password)
         self.user_dal.create_user(new_user)
 
         return OutPutUser().dump(new_user)
