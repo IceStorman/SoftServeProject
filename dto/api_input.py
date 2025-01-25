@@ -69,3 +69,7 @@ class ResetPasswordDTO(BaseDTO):
 class NewPasswordDTO(BaseDTO):
     new_password = fields.Str(required=True)
     email = fields.Str(required=True)
+
+class InputUserLoginDTO(BaseDTO):
+    email_or_username = fields.Str(required=True)
+    password_hash = fields.Str(required=True)

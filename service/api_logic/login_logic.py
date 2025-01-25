@@ -26,7 +26,7 @@ class UserService:
         salt = bcrypt.gensalt()
         hashed_password = bcrypt.hashpw(password_front.encode('utf-8'), salt)
 
-        new_user = User(email=email_front, username=username_front, password_hash=hashed_password)
+        new_user = User(email=email_front, username=username_front, password_hash=hashed_password.decode('utf-8'))
         self.user_dal.create_user(new_user)
 
         return OutPutUser().dump(new_user)
@@ -71,3 +71,16 @@ class UserService:
             return False
         user = self.user_dal.get_user_by_email(email)
         return OutPutUser().dump(user)
+
+    def log_in(self, email_or_username: str, password: str):
+
+        user = self.user_dal.get_user_by_email_or_username_and_password(email_or_username, password)
+
+        if user:
+            token = self.generate_auth_token(user)
+            return {"message": "Успішний вхід", "token": token}
+
+        return {"error": "Невірні облікові дані"}
+
+    def generate_auth_token(self, user):
+        return self.s.dumps(user.email, salt="user-auth-token")

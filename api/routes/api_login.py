@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from dto.api_input import InputUserDTO, ResetPasswordDTO, NewPasswordDTO
+from dto.api_input import InputUserDTO, ResetPasswordDTO, NewPasswordDTO, InputUserLoginDTO
 from exept.exeptions import DatabaseConnectionError
 from exept.handle_exeptions import get_error_response, get_error_reset_password, get_good_reset_password
 from logger.logger import Logger
@@ -68,5 +68,26 @@ def reset_password(token, service: UserService = Provide[Container.user_service]
     except Exception as e:
         api_routes_logger.error(f"Error in POST /: {str(e)}")
         get_error_response(e)
+
+@login_app.route('/login', methods=['POST'])
+@inject
+@api_routes_logger.log_function_call()
+def log_in(service: UserService = Provide[Container.user_service]):
+    try:
+        data = request.get_json()
+
+        dto = InputUserLoginDTO().load(data)
+        email_or_username = dto['email_or_username']
+        password = dto['password_hash']
+
+        if not email_or_username or not password:
+            return {"error": "Необхідно вказати email або username і пароль"}, 400
+
+        result = service.log_in(email_or_username, password)
+        return result
+
+    except Exception as e:
+        api_routes_logger.error(f"Error in POST /login: {str(e)}")
+        return get_error_response(e)
 
 
