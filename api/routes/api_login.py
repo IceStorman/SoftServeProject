@@ -7,7 +7,7 @@ from dependency_injector.wiring import inject, Provide
 from service.api_logic.login_logic import UserService
 from api.container.container import Container
 from flask_jwt_extended import JWTManager,create_access_token, set_access_cookies, unset_jwt_cookies
-from datetime import datetime
+from datetime import timedelta
 
 
 api_routes_logger = Logger("api_routes_logger", "api_routes_logger.log")
@@ -17,7 +17,7 @@ login_app_config = {
     'JWT_SECRET_KEY': 'your_secret_key',
     'JWT_TOKEN_LOCATION': ['cookies'],
     'JWT_COOKIE_SECURE': False,  
-    'JWT_ACCESS_TOKEN_EXPIRES': datetime.timedelta(hours=3)
+    'JWT_ACCESS_TOKEN_EXPIRES': timedelta(hours=3)
     }
 login_app.config.update(login_app_config)
 
