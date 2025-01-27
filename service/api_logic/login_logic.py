@@ -9,6 +9,20 @@ from logger.logger import Logger
 
 api_logic_logger = Logger("api_logic_logger", "api_logic_logger.log")
 
+def message_to_user_gmail(user: User, reset_url):
+    return  f"""
+            Dear {user.username},
+
+            You have requested to reset your password. To do so, click the following link:
+
+            {reset_url}
+
+            If you did not request a password reset, please ignore this email or contact support.
+
+            Best regards,
+            Your QSport team
+            """
+
 
 @handle_exceptions
 @api_logic_logger.log_function_call()
@@ -48,10 +62,7 @@ class UserService:
                 sender=current_app.config['MAIL_USERNAME'],
                 recipients=[user.email]
             )
-            msg.body = f'''To reset your password, visit the following link:
-                        {reset_url}
-                        If you did not make this request, please ignore this email. 222
-                        '''
+            msg.body = message_to_user_gmail(user, reset_url)
             current_app.extensions['mail'].send(msg)
             return {"msg": "Success"}
         except Exception as e:
