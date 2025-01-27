@@ -28,7 +28,7 @@ class AbstractSportDataManager:
             )
             .filter(Sport.sport_id == new_data.get("sport_id"))
         )
-        print(query)
+
         ix = query.first()
         if ix is not None:
             self._sport_name = ix.sport_name
@@ -41,8 +41,7 @@ class AbstractSportDataManager:
         response = requests.get(url, headers=headers)
         response.raise_for_status()
         json_data = response.json()
-        print(json_data)
-        print(name)
+
         if "teams/teams" in blob_name:
             save_api_data(json_data, name)
             return json_data
