@@ -13,15 +13,7 @@ from datetime import timedelta
 api_routes_logger = Logger("api_routes_logger", "api_routes_logger.log")
 
 login_app = Blueprint('login_app', __name__)
-login_app_config = {
-    'JWT_SECRET_KEY': 'your_secret_key',
-    'JWT_TOKEN_LOCATION': ['cookies'],
-    'JWT_COOKIE_SECURE': False,  
-    'JWT_ACCESS_TOKEN_EXPIRES': timedelta(hours=3)
-    }
-login_app.config.update(login_app_config)
 
-jwt = JWTManager(login_app)
 
 @login_app.errorhandler(DatabaseConnectionError)
 def handle_db_timeout_error(e):
@@ -79,7 +71,7 @@ def reset_password(token, service: UserService = Provide[Container.user_service]
             service.reset_user_password(dto["email"], dto["new_password"])
 
             
-            user = service.user_dal.get_user_by_email(dto["email"])  
+            user = service.user.get_user_by_email(dto["email"])  
             if user:
                 new_jwt = create_access_token(identity=user.email)  
                 return jsonify({"msg": "Пароль змінено успішно", "token": new_jwt})

@@ -10,6 +10,7 @@ from database.session import DATABASE_URL
 from flask_mail import Mail
 from flask_jwt_extended import JWTManager, create_access_token
 from itsdangerous import URLSafeTimedSerializer, BadSignature
+from datetime import timedelta
 
 
 
@@ -42,6 +43,11 @@ def create_app():
     app.config['MAIL_USERNAME'] = 'q.sport.news@gmail.com'
     app.config['MAIL_PASSWORD'] = 'jjrc siyp trnq tzcp'
     mail.init_app(app)
+    
+    app.config['JWT_SECRET_KEY'] = 'your_secret_key'
+    app.config['JWT_TOKEN_LOCATION'] = ['cookies']
+    app.config['JWT_COOKIE_SECURE'] = False
+    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=3)
     jwt.init_app(app)
 
     SWAGGER_URL = '/swagger'
