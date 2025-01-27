@@ -6,10 +6,21 @@ from logger.logger import Logger
 from dependency_injector.wiring import inject, Provide
 from service.api_logic.login_logic import UserService
 from api.container.container import Container
+from flask_jwt_extended import JWTManager,create_access_token, set_access_cookies, unset_jwt_cookies
+from datetime import datetime
 
 api_routes_logger = Logger("api_routes_logger", "api_routes_logger.log")
 
 login_app = Blueprint('login_app', __name__)
+login_app_config = {
+    'JWT_SECRET_KEY': 'your_secret_key',
+    'JWT_TOKEN_LOCATION': ['cookies'],
+    'JWT_COOKIE_SECURE': False,  
+    'JWT_ACCESS_TOKEN_EXPIRES': datetime.timedelta(hours=3)
+    }
+login_app.config.update(login_app_config)
+
+jwt = JWTManager(login_app)
 
 @login_app.errorhandler(DatabaseConnectionError)
 def handle_db_timeout_error(e):
@@ -83,11 +94,23 @@ def log_in(service: UserService = Provide[Container.user_service]):
         if not email_or_username or not password:
             return {"error": "Необхідно вказати email або username і пароль"}, 400
 
-        result = service.log_in(email_or_username, password)
-        return result
+        user = service.log_in(email_or_username, password)
+
+        if not user:
+            return {"error": "Невірний email/username або пароль"}, 401
+
+        access_token = create_access_token(identity={'id': user.id, 'email': user.email})
+
+        response = {"message": "Успішний вхід", "user": {"id": user.id, "email": user.email}}
+        response_obj = request.get_json(response)
+
+        set_access_cookies(response_obj, access_token)
+
+        return response_obj
 
     except Exception as e:
         api_routes_logger.error(f"Error in POST /login: {str(e)}")
         return get_error_response(e)
+
 
 
