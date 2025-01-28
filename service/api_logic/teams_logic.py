@@ -12,8 +12,6 @@ api_logic_logger = Logger("api_logic_logger", "api_logic_logger.log")
 
 session = SessionLocal()
 
-# NOT WORK NOW ----------------------------------
-
 @handle_exceptions
 @api_logic_logger.log_function_call()
 def get_teams(
@@ -29,6 +27,9 @@ def get_teams(
          #    .like(f"{filters_dto.get('letter', '')}%")
          # )
     )
+    content_data = query.all()
+    for p in content_data:
+        print(p)
 
     model_aliases = {
         "teams": TeamIndex,

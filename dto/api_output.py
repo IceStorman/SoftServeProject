@@ -19,7 +19,6 @@ class GameOutput(Schema):
 
 class TeamsLeagueOutput(Schema):
     league_name = fields.Str(attribute="league")
-    country_name = fields.Str(attribute="country")
     team_name = fields.Str(attribute="name")
     logo = fields.Str()
     id = fields.Str(attribute="api_id")
