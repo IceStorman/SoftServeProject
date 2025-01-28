@@ -5,10 +5,14 @@ from dto.pagination import Pagination
 from exept.handle_exeptions import handle_exceptions
 from service.api_logic.scripts import apply_filters
 from database.session import SessionLocal
+from logger.logger import Logger
+
+api_logic_logger = Logger("api_logic_logger", "api_logic_logger.log")
 
 session = SessionLocal()
 
 @handle_exceptions
+@api_logic_logger.log_function_call()
 def get_all_sports():
     sports = session.query(Sport).all()
     schema = SportsOutput(many=True)
@@ -16,6 +20,7 @@ def get_all_sports():
 
 
 @handle_exceptions
+@api_logic_logger.log_function_call()
 def get_all_leagues_by_sport(filters_dto: dict, pagination: Pagination):
     query = (
         session.query(League)
@@ -43,6 +48,7 @@ def get_all_leagues_by_sport(filters_dto: dict, pagination: Pagination):
 
 
 @handle_exceptions
+@api_logic_logger.log_function_call()
 def search_leagues(filters_dto: dict, pagination: Pagination):
     query = (
         session.query(League)
