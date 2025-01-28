@@ -1,25 +1,27 @@
-import os
 from flask import Flask
 from flask_cors import CORS
 from api.container.container import Container
-from api.routes import api_news, api_games, api_sports, api_teams, api_countries, api_login
+from api.routes import (
+    api_news,
+    api_games,
+    api_sports,
+    api_teams,
+    api_countries,
+    api_login,
+    api_user_preferences
+)
 from api.routes.cache import cache
 from flask_swagger_ui import get_swaggerui_blueprint
 from flask_sqlalchemy import SQLAlchemy
 from database.session import DATABASE_URL
 from flask_mail import Mail
-from flask_jwt_extended import JWTManager, create_access_token
-from itsdangerous import URLSafeTimedSerializer, BadSignature
+from flask_jwt_extended import JWTManager
 from datetime import timedelta
-
 
 
 db = SQLAlchemy()
 mail = Mail()
 jwt = JWTManager()
-
-
-
 
 
 def create_app():
@@ -68,6 +70,8 @@ def create_app():
     app.register_blueprint(api_teams.teams_app, url_prefix='/teams')
     app.register_blueprint(api_countries.countries_app, url_prefix='/countries')
     app.register_blueprint(api_login.login_app, url_prefix='/login')
+    app.register_blueprint(api_user_preferences.preferences_app, url_prefix='/preferences')
+
 
 
     app.container = Container()

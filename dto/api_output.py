@@ -45,5 +45,6 @@ class OutPutUser(Schema):
     username = fields.Str(required=True)
     email = fields.Str(required=True)
 
-
+class OutputPreferences(Schema):
+    sports_id = fields.Str(required=True)
 
