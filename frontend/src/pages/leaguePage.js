@@ -5,7 +5,10 @@ import axios from "axios";
 import apiEndpoints from "../apiEndpoints";
 import {toast} from "sonner";
 import LeagueBtn from "../components/sportPage/leagueBtn";
-import NoItems from "../components/NoItems";
+import ItemList from "../components/itemsList/itemsList";
+import TeamsBtn from "../components/LeaguePage/teamsBtn";
+import SearchWithFilter from "../components/searchFilter/searchFilterBtn";
+
 
 function LeaguePage(){
     const { leagueName  } = useParams();
@@ -56,8 +59,8 @@ function LeaguePage(){
             const response = await axios.post(
                 `${apiEndpoints.url}${apiEndpoints.teams.getAll}`,
                 {
-                    sport_id: sportId,
-                    league_id: leagueId,
+                    teams__sport_id: sportId,
+                    leagues__api_id: leagueId,
                     letter: inputValue,
                     page: page + 1,
                     per_page: teamsPerPage
@@ -68,6 +71,7 @@ function LeaguePage(){
             );
 
             setCurrentTeams(response.data.teams);
+            console.log(response.data.teams);
             const totalPosts = response.data.count;
             setPageCount(Math.ceil(totalPosts / teamsPerPage));
         } catch (error) {
@@ -76,16 +80,6 @@ function LeaguePage(){
         }
     };
 
-    useEffect(() => {
-        console.log("Sport ID:", sportId);
-        console.log("League ID:", leagueId);
-        if (!sportId || !leagueId) {
-            toast.error("Missing sport or league ID.");
-            navigate("/not-existing");
-            return;
-        }
-        getTeams(0);
-    }, [sportId, leagueName]);
 
     useEffect(() => {
         if(prevInputValue !== inputValue){
@@ -94,69 +88,62 @@ function LeaguePage(){
         }
     }, [searchClicked]);
 
+    useEffect(() => {
+        (loading === false) ? setLoading(false) :
+            (
+                (currentTeams.length > 0) ? setLoading(false)
+                    : setTimeout(() => {
+                        setLoading(false);
+                    }, 2000)
+            )
+    }, [loading]);
+
+
 
     return(
         <>
             <section className={"leaguePage"}>
 
+                <h1 className={"sportTitle"}>{leagueName}</h1>
+
                 <section className={"itemsPaginationBlock"}>
 
-                    <section className={"filter"}>
+                    <SearchWithFilter
+                        setInputValue={setInputValue}
+                        loading={loading}
+                        placeholder="Search teams"
+                    />
 
-                        <div className={"itemSearch"}>
-
-                            <input
-                                type={"search"}
-                                placeholder={" "}
-                                onChange={(e) => setInputValue(e.target.value)}
-                                onKeyDown={handleKeyDown}
-                            ></input>
-
-                            <label>Search league</label>
-
-                            <button onClick={handleSearchClick} disabled={loading}>
-                                <i className="fa-solid fa-magnifying-glass"></i>
-                            </button>
-
-                        </div>
-
-
-                    </section>
-
-                    <section className={"iconsBlock"}>
-
-                        {
-                            !(currentTeams.length === 0) ?
-                                currentTeams.map((item, index) => (
-                                    <LeagueBtn
-                                        key={index}
-                                        name={item?.name}
-                                        logo={item?.logo}
-                                    />))
-                                : (loading === false) ?
-                                    (<NoItems
-                                        key={1}
-                                        text={`No ${sportId} teams were found`}
-                                    />) : null
-                        }
-
-                    </section>
-
-                    <ReactPaginate
-                        key={paginationKey}
-                        breakLabel="..."
-                        nextLabel="→"
-                        onPageChange={handlePageClick}
-                        pageRangeDisplayed={rangeScale}
+                    <ItemList
+                        items={currentTeams}
+                        renderItem={(item, index) => (
+                            <TeamsBtn
+                                key={index}
+                                team_name={item?.team_name}
+                                logo={item?.logo}
+                                sportId={sportId}
+                            />
+                        )}
+                        noItemsText={`No ${leagueName} teams were found`}
                         pageCount={pageCount}
-                        previousLabel="←"
-                        renderOnZeroPageCount={null}
-                        activeClassName="activePaginationPane"
-                        containerClassName="pagination"
+                        onPageChange={handlePageClick}
+                        rangeScale={rangeScale}
+                        loading={loading}
+                        paginationKey={paginationKey}
                     />
 
                 </section>
+
             </section>
+
+            {loading === true ?
+                (
+                    <>
+                        <div className={"loader-background"}></div>
+                        <div className="loader"></div>
+                    </>
+                ) : null
+            }
         </>
     );
 }

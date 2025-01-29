@@ -10,6 +10,7 @@ def handle_exceptions(func):
     def wrapper(*args, **kwargs):
         try:
             result = func(*args, **kwargs)
+            return result
         except OperationalError:
             raise DatabaseConnectionError
         except SoftServeException as e:
@@ -18,7 +19,6 @@ def handle_exceptions(func):
             get_error_response(e)
         except Exception as e:
             get_error_response(e)
-        return result
 
     return wrapper
 
@@ -26,6 +26,10 @@ def handle_exceptions(func):
 def get_error_response(e):
     response = {"error in service": str(e)}
     return jsonify(response)
+
+def get_error_reset_password():
+    response = {"message": "Invalid or expired token"}
+    return jsonify(response), 400
 
 
 

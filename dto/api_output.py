@@ -1,8 +1,7 @@
 from marshmallow import Schema, fields
 
-
 class GameOutput(Schema):
-    id = fields.Int(attribute="api_id")
+    id = fields.Int()
     status = fields.Str()
     date = fields.Str()
     time = fields.Str()
@@ -13,8 +12,8 @@ class GameOutput(Schema):
     home_team_logo = fields.Str()
     away_team_name = fields.Str()
     away_team_logo = fields.Str()
-    home_score: fields.Int(attribute="score_home_team")
-    away_score: fields.Int(attribute="score_away_team")
+    home_score = fields.Int(attribute="score_home_team")
+    away_score = fields.Int(attribute="score_away_team")
 
 
 class TeamsLeagueOutput(Schema):
@@ -40,3 +39,13 @@ class CountriesOutput(Schema):
     id = fields.Int(attribute="country_id")
     flag = fields.Str()
     name = fields.Str()
+
+class OutPutUser(Schema):
+    username = fields.Str(required=True)
+    email = fields.Str(required=True)
+
+class OutputPreferences(Schema):
+    sports_id = fields.Str(required=True)
+    sport_name = fields.Str(required=True)
+    sport_img = fields.Str(required=True)
+

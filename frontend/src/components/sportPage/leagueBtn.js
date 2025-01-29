@@ -7,7 +7,7 @@ function LeagueBtn({leagueName, logo, leagueId, sportId}){
     return (
         <Link className={"iconsBlockElement"} to={`/sport/${sportName}/league/${leagueName}`} state={{leagueId, sportId}}>
 
-            <img src={logo} alt={leagueName}/>
+                <img src={logo} alt={leagueName}/>
 
         </Link>
     );

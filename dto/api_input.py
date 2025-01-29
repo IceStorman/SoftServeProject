@@ -23,6 +23,7 @@ class TeamsLeagueDTO(BaseDTO):
     teams__sport_id = fields.Int(required=False, missing=None)
     leagues__api_id = fields.Int(required=False, missing=None)
     countries__api_id = fields.Int(required=False, missing=None)
+    letter = fields.Str(required=False, missing="")
     page = fields.Int(required=False, missing=0)
     per_page = fields.Int(required=False, missing=0)
 
@@ -56,3 +57,30 @@ class GamesDTO(BaseDTO):
     per_page = fields.Int(required=False, missing=0)
 
 
+class InputUserDTO(BaseDTO):
+    username = fields.Str(required=True)
+    email = fields.Str(required=True)
+    password_hash = fields.Str(required=True)
+
+
+class ResetPasswordDTO(BaseDTO):
+    email = fields.Str(required=True)
+
+
+class NewPasswordDTO(BaseDTO):
+    new_password = fields.Str(required=True)
+    email = fields.Str(required=True)
+
+
+class InputUserLoginDTO(BaseDTO):
+    email_or_username = fields.Str(required=True)
+    password_hash = fields.Str(required=True)
+
+
+class InputUserPreferencesDTO(BaseDTO):
+    preferences = fields.List(fields.Int, required=True)
+    user_id = fields.Int(required=False, missing=None)
+
+
+class InputGetUserPreferencesDTO(BaseDTO):
+    user_id = fields.Int(required=False, missing=None)
