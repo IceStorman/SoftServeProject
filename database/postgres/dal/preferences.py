@@ -18,7 +18,8 @@ class PreferencesDAL:
             self.session.query(
                 UserPreference.users_id,
                 UserPreference.sports_id,
-                Sport.sport_name
+                Sport.sport_name,
+                Sport.sport_img
             )
             .join(Sport, UserPreference.sports_id == Sport.sport_id)
             .filter(UserPreference.users_id == user_id)

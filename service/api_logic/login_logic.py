@@ -6,34 +6,10 @@ from database.models import User
 from exept.handle_exeptions import handle_exceptions
 import bcrypt
 from logger.logger import Logger
+from jinja2 import Environment, FileSystemLoader
+import os
 
 api_logic_logger = Logger("api_logic_logger", "api_logic_logger.log")
-
-def message_to_user_gmail(user: User, reset_url):
-    return  f"""
-    <html>
-        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f9f9f9; padding: 20px;">
-            <div style="max-width: 600px; margin: 0 auto; background: white; border: 1px solid #ddd; border-radius: 10px; padding: 20px;">
-                <h2 style="color: #4CAF50; text-align: center;">Password Reset Request</h2>
-                <p>Dear <strong>{user.username}</strong>,</p>
-                <p>You have requested to reset your password. To do so, click the button below:</p>
-                <div style="text-align: center; margin: 20px 0;">
-                    <a href="{reset_url}" style="display: inline-block; background-color: #4CAF50; color: white; text-decoration: none; padding: 10px 20px; border-radius: 5px; font-size: 16px;">Reset Your Password</a>
-                </div>
-                <p>If the button above doesn't work, copy and paste the following link into your browser:</p>
-                <p style="word-break: break-word;">
-                    <a href="{reset_url}" style="color: #4CAF50;">{reset_url}</a>
-                </p>
-                <p>If you did not request a password reset, please ignore this email or contact support.</p>
-                <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
-                <p style="text-align: center; color: #777; font-size: 12px;">
-                    Best regards,<br>
-                    <strong>Your QSport Team</strong>
-                </p>
-            </div>
-        </body>
-    </html>
-    """
 
 
 @handle_exceptions
@@ -67,13 +43,20 @@ class UserService:
 
         return self.send_reset_email(existing_user, token)
 
+    def message_to_user_gmail(self, user: User, reset_url):
+        template_dir = os.path.join(os.path.dirname(__file__), "templates")
+        env = Environment(loader=FileSystemLoader(template_dir))
+        template = env.get_template("reset_password_email.html")
+
+        return template.render(username=user.username, reset_url=reset_url)
+
     def send_reset_email(self, user: User, token: str):
         reset_url = url_for('login_app.reset_password', token=token, _external=True)
         msg = Message(
             'Password Reset Request',
             sender=current_app.config['MAIL_USERNAME'],
             recipients=[user.email],
-            html=message_to_user_gmail(user, reset_url)
+            html=self.message_to_user_gmail(user, reset_url)
         )
         current_app.extensions['mail'].send(msg)
         return {"msg": "Success"}
