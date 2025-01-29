@@ -88,7 +88,7 @@ class UserService:
             token = self.generate_auth_token(user)
             return {"message": "Success", "token": token}
 
-        return {"error": "Pshol nahui"} #Тарас сказав
+        return {"error": "Incorrect data"} #Тарас сказав
 
     def generate_auth_token(self, user):
         return self.serializer.dumps(user.email, salt="user-auth-token")
