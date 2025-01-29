@@ -22,7 +22,7 @@ def handle_db_timeout_error(e):
     return response
 
 
-@login_app.route('/sing_up', methods=['POST'])
+@login_app.route('/sign_up', methods=['POST'])
 @inject
 @api_routes_logger.log_function_call()
 def create_account_endpoint(service: UserService = Provide[Container.user_service]):
