@@ -8,6 +8,7 @@ import bcrypt
 from logger.logger import Logger
 from jinja2 import Environment, FileSystemLoader
 import os
+from flask_jwt_extended import create_access_token
 
 api_logic_logger = Logger("api_logic_logger", "api_logic_logger.log")
 
@@ -70,6 +71,8 @@ class UserService:
         if not user:
             return
         self.user_dal.update_user_password(user, new_password)
+        new_jwt = create_access_token(identity=user.email)
+        return new_jwt
 
     def confirm_token(self, token: str, expiration=3600):
         try:

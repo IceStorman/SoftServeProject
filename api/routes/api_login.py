@@ -66,14 +66,14 @@ def reset_password(token, service: UserService = Provide[Container.user_service]
         if request.method == "POST":
             data = request.get_json()
             dto = NewPasswordDTO().load(data)
-            service.reset_user_password(dto["email"], dto["new_password"])
+            token = service.reset_user_password(dto["email"], dto["new_password"])
 
-            user = service.user.get_user_by_email(dto["email"])
-            if user:
-                new_jwt = create_access_token(identity=user.email)
-                return jsonify({"msg": "Пароль змінено успішно", "token": new_jwt})
+            # user = service.user.get_user_by_email(dto["email"])
+            # if user:
+            #     new_jwt = create_access_token(identity=user.email)
+            #     return jsonify({"msg": "Пароль змінено успішно", "token": new_jwt})
 
-            return {"msg": "Success"}
+            return token
 
     except Exception as e:
         api_routes_logger.error(f"Error in POST /: {str(e)}")
