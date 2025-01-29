@@ -86,31 +86,9 @@ class UserService:
 
         if user:
             token = self.generate_auth_token(user)
-            return {"message": "Успішний вхід", "token": token}
+            return {"message": "Success", "token": token}
 
-        return {"error": "Невірні облікові дані"}
+        return {"error": "Pshol nahui"} #Тарас сказав
 
     def generate_auth_token(self, user):
         return self.serializer.dumps(user.email, salt="user-auth-token")
-
-    def add_preferences(self, user_id, preferences):
-        if not user_id or not isinstance(preferences, list):
-            return None
-        self.preferences_dal.delete_all_preferences(user_id)
-        self.preferences_dal.add_preferences(user_id, preferences)
-        return {"msg": "Success"}
-
-    def get_user_preferences(self, user_id):
-        prefs = self.preferences_dal.get_user_preferences(user_id)
-        shema = OutputPreferences(many=True).dump(prefs)
-
-        return shema
-
-    def get_all_preferences(self):
-        return self.preferences_dal.get_all_preferences()
-
-    def delete_preferences(self, user_id, preferences):
-        if not user_id or not isinstance(preferences, list):
-            return None
-        self.preferences_dal.delete_preferences(user_id, preferences)
-        return {"msg": "Success"}
