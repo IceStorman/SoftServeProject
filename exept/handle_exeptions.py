@@ -10,6 +10,7 @@ def handle_exceptions(func):
     def wrapper(*args, **kwargs):
         try:
             result = func(*args, **kwargs)
+            return result
         except OperationalError:
             raise DatabaseConnectionError
         except SoftServeException as e:
@@ -18,7 +19,6 @@ def handle_exceptions(func):
             get_error_response(e)
         except Exception as e:
             get_error_response(e)
-        return result
 
     return wrapper
 

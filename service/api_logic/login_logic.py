@@ -1,7 +1,7 @@
 from flask import current_app, url_for
 from flask_mail import Message
 from itsdangerous import URLSafeTimedSerializer
-from dto.api_output import OutPutUser
+from dto.api_output import OutPutUser, OutputPreferences
 from database.models import User
 from exept.handle_exeptions import handle_exceptions
 import bcrypt
@@ -39,8 +39,9 @@ def message_to_user_gmail(user: User, reset_url):
 @handle_exceptions
 @api_logic_logger.log_function_call()
 class UserService:
-    def __init__(self, user_dal):
+    def __init__(self, user_dal, preferences_dal):
         self.user_dal = user_dal
+        self.preferences_dal = preferences_dal
         self.s = URLSafeTimedSerializer(current_app.secret_key)
 
 
@@ -67,20 +68,16 @@ class UserService:
         return self.send_reset_email(existing_user, token)
 
     def send_reset_email(self, user: User, token: str):
-        try:
-            reset_url = url_for('login_app.reset_password', token=token, _external=True)
-            print(message_to_user_gmail(user, reset_url))
-            msg = Message(
-                'Password Reset Request',
-                sender=current_app.config['MAIL_USERNAME'],
-                recipients=[user.email],
-                html=message_to_user_gmail(user, reset_url)
-            )
-            #msg.body = message_to_user_gmail(user, reset_url)
-            current_app.extensions['mail'].send(msg)
-            return {"msg": "Success"}
-        except Exception as e:
-            print(e)
+        reset_url = url_for('login_app.reset_password', token=token, _external=True)
+        msg = Message(
+            'Password Reset Request',
+            sender=current_app.config['MAIL_USERNAME'],
+            recipients=[user.email],
+            html=message_to_user_gmail(user, reset_url)
+        )
+        current_app.extensions['mail'].send(msg)
+        return {"msg": "Success"}
+
 
     def get_reset_token(self, email) -> str:
         return self.s.dumps(email, salt="email-confirm")
@@ -109,3 +106,25 @@ class UserService:
 
     def generate_auth_token(self, user):
         return self.s.dumps(user.email, salt="user-auth-token")
+
+    def add_preferences(self, user_id, preferences):
+        if not user_id or not isinstance(preferences, list):
+            return None
+        self.preferences_dal.delete_all_preferences(user_id)
+        self.preferences_dal.add_preferences(user_id, preferences)
+        return {"msg": "Success"}
+
+    def get_user_preferences(self, user_id):
+        prefs = self.preferences_dal.get_user_preferences(user_id)
+        shema = OutputPreferences(many=True).dump(prefs)
+
+        return shema
+
+    def get_all_preferences(self):
+        return self.preferences_dal.get_all_preferences()
+
+    def delete_preferences(self, user_id, preferences):
+        if not user_id or not isinstance(preferences, list):
+            return None
+        self.preferences_dal.delete_preferences(user_id, preferences)
+        return {"msg": "Success"}
