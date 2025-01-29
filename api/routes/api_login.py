@@ -100,7 +100,7 @@ def log_in(service: UserService = Provide[Container.user_service]):
 
         access_token = create_access_token(identity={'id': user.id, 'email': user.email})
 
-        response = {"message": "Ви успішно ввійшли", "user": {"id": user.id, "email": user.email}}
+        response = {"message": "You successfully loged in!", "user": {"id": user.id, "email": user.email}}
         response_obj = jsonify(response)
 
         set_access_cookies(response_obj, access_token)
