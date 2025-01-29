@@ -91,12 +91,12 @@ def log_in(service: UserService = Provide[Container.user_service]):
         password = dto['password_hash']
 
         if not email_or_username or not password:
-            return {"error": "Необхідно вказати email або username і пароль"}, 400
+            return {"error": "It is necessary to specify email or username and password"}, 400
 
         user = service.log_in(email_or_username, password)
 
         if not user:
-            return {"error": "Невірний email/username або пароль"}, 401
+            return {"error": "Invalid email/username or password"}, 401
 
         access_token = create_access_token(identity={'id': user.id, 'email': user.email})
 
