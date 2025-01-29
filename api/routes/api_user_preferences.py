@@ -4,7 +4,7 @@ from exept.exeptions import DatabaseConnectionError
 from exept.handle_exeptions import get_error_response
 from logger.logger import Logger
 from dependency_injector.wiring import inject, Provide
-from service.api_logic.login_logic import UserService
+from service.api_logic.user_logic import UserService
 from api.container.container import Container
 
 

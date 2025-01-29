@@ -17,8 +17,11 @@ from database.session import DATABASE_URL
 from flask_mail import Mail
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
+import os
+from dotenv import load_dotenv
 
 
+load_dotenv()
 db = SQLAlchemy()
 mail = Mail()
 jwt = JWTManager()
@@ -37,16 +40,16 @@ def create_app():
     app.config['CACHE_DEFAULT_TIMEOUT'] = 60*5
     cache.init_app(app)
 
-    app.secret_key = "SECRET_KEY"
-    app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+    app.secret_key = os.getenv('SECRET_KEY')
+    app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
     app.config['MAIL_PORT'] = 587
     app.config['MAIL_USE_TLS'] = True
     app.config['MAIL_USE_SSL'] = False
-    app.config['MAIL_USERNAME'] = 'q.sport.news@gmail.com'
-    app.config['MAIL_PASSWORD'] = 'jjrc siyp trnq tzcp'
+    app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+    app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
     mail.init_app(app)
     
-    app.config['JWT_SECRET_KEY'] = 'your_secret_key'
+    app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
     app.config['JWT_TOKEN_LOCATION'] = ['cookies']
     app.config['JWT_COOKIE_SECURE'] = False
     app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=3)

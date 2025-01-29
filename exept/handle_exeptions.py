@@ -31,9 +31,6 @@ def get_error_reset_password():
     response = {"message": "Invalid or expired token"}
     return jsonify(response), 400
 
-def get_good_reset_password():
-    response = {"message": "Success password rest"}
-    return jsonify(response), 200
 
 
 

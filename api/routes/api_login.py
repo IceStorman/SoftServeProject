@@ -1,10 +1,10 @@
 from flask import Blueprint, jsonify, request
 from dto.api_input import InputUserDTO, ResetPasswordDTO, NewPasswordDTO, InputUserLoginDTO
 from exept.exeptions import DatabaseConnectionError
-from exept.handle_exeptions import get_error_response, get_error_reset_password, get_good_reset_password
+from exept.handle_exeptions import get_error_response, get_error_reset_password
 from logger.logger import Logger
 from dependency_injector.wiring import inject, Provide
-from service.api_logic.login_logic import UserService
+from service.api_logic.user_logic import UserService
 from api.container.container import Container
 from flask_jwt_extended import JWTManager,create_access_token, set_access_cookies, unset_jwt_cookies
 from datetime import timedelta
@@ -66,17 +66,15 @@ def reset_password(token, service: UserService = Provide[Container.user_service]
         if request.method == "POST":
             data = request.get_json()
             dto = NewPasswordDTO().load(data)
-            
-            
             service.reset_user_password(dto["email"], dto["new_password"])
 
-            
-            user = service.user.get_user_by_email(dto["email"])  
+            user = service.user.get_user_by_email(dto["email"])
             if user:
-                new_jwt = create_access_token(identity=user.email)  
+                new_jwt = create_access_token(identity=user.email)
                 return jsonify({"msg": "Пароль змінено успішно", "token": new_jwt})
 
-            return get_good_reset_password()
+            return {"msg": "Success"}
+
     except Exception as e:
         api_routes_logger.error(f"Error in POST /: {str(e)}")
         return get_error_response(e)

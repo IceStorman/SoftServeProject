@@ -18,7 +18,7 @@ class UserService:
     def __init__(self, user_dal, preferences_dal):
         self.user_dal = user_dal
         self.preferences_dal = preferences_dal
-        self.s = URLSafeTimedSerializer(current_app.secret_key)
+        self.serializer = URLSafeTimedSerializer(current_app.secret_key)
 
 
     def create_user(self, email_front, username_front, password_front):
@@ -63,18 +63,21 @@ class UserService:
 
 
     def get_reset_token(self, email) -> str:
-        return self.s.dumps(email, salt="email-confirm")
+        return self.serializer.dumps(email, salt="email-confirm")
 
     def reset_user_password(self, email, new_password: str) -> None:
         user = self.user_dal.get_user_by_email(email)
+        if not user:
+            return
         self.user_dal.update_user_password(user, new_password)
 
     def confirm_token(self, token: str, expiration=3600):
         try:
-            email = self.s.loads(token, salt="email-confirm", max_age=expiration)
+            email = self.serializer.loads(token, salt="email-confirm", max_age=expiration)
         except:
             return False
         user = self.user_dal.get_user_by_email(email)
+
         return OutPutUser().dump(user)
 
     def log_in(self, email_or_username: str, password: str):
@@ -88,7 +91,7 @@ class UserService:
         return {"error": "Невірні облікові дані"}
 
     def generate_auth_token(self, user):
-        return self.s.dumps(user.email, salt="user-auth-token")
+        return self.serializer.dumps(user.email, salt="user-auth-token")
 
     def add_preferences(self, user_id, preferences):
         if not user_id or not isinstance(preferences, list):
