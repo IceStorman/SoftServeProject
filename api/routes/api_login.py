@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 from dto.api_input import InputUserDTO, ResetPasswordDTO, NewPasswordDTO, InputUserLoginDTO
+from dto.common_responce import CommonResponseWithUser
 from exept.exeptions import DatabaseConnectionError
 from exept.handle_exeptions import get_error_response, get_error_reset_password
 from logger.logger import Logger
@@ -88,7 +89,7 @@ def log_in(service: UserService = Provide[Container.user_service]):
 
         access_token = create_access_token(identity={'id': user.id, 'email': user.email})
 
-        response = {"message": "You successfully loged in!", "user": {"id": user.id, "email": user.email}}
+        response = CommonResponseWithUser(user_id=user.user_id, user_email=user.email).to_dict
         response_obj = jsonify(response)
 
         set_access_cookies(response_obj, access_token)

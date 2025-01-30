@@ -82,10 +82,10 @@ class InputUserLoginDTO(BaseDTO):
     password_hash = fields.Str(required=True)
 
 
-class InputUserPreferencesDTO(BaseDTO):
+class UpdateUserPreferencesDTO(BaseDTO):
     preferences = fields.List(fields.Int, required=True)
     user_id = fields.Int(required=False, missing=None)
 
 
-class InputGetUserPreferencesDTO(BaseDTO):
+class GetUserPreferencesDTO(BaseDTO):
     user_id = fields.Int(required=False, missing=None)
