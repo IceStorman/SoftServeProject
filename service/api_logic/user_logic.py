@@ -36,7 +36,7 @@ class UserService:
         return OutputUser().dump(new_user)
 
     def request_password_reset(self, email: str):
-        existing_user = self.user_dal.get_user_by_email(email)
+        existing_user = self.user_dal.get_user_by_email_or_username(email)
         if not existing_user:
             return OutputUser().dump(None)
 
@@ -63,14 +63,13 @@ class UserService:
         return CommonResponse().to_dict()
 
     def get_reset_token(self, email) -> str:
-        user = self.user_dal.get_user_by_email(email)
+        user = self.user_dal.get_user_by_email_or_username(email)
         if not user:
             return email
         return self.serializer.dumps(user.username, salt="email-confirm")
 
-
     def reset_user_password(self, email, new_password: str) -> str:
-        user = self.user_dal.get_user_by_email(email)
+        user = self.user_dal.get_user_by_email_or_username(email)
         if not user:
             return email
         self.user_dal.update_user_password(user, new_password)
@@ -79,7 +78,7 @@ class UserService:
 
     def confirm_token(self, token: str, expiration=3600):
         username = self.serializer.loads(token, salt="email-confirm", max_age=expiration)
-        user = self.user_dal.get_user_by_username(username)
+        user = self.user_dal.get_user_by_email_or_username(username)
         return OutputUser().dump(user)
 
     def log_in(self, email_or_username: str, password: str):
