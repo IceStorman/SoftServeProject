@@ -29,8 +29,7 @@ def create_account_endpoint(service: UserService = Provide[Container.user_servic
     try:
         data = request.get_json()
         dto = InputUserDTO().load(data)
-
-        result = service.create_user(dto["email"], dto["username"], dto["password_hash"])
+        result = service.create_user(dto.email, dto.username, dto.password_hash)
 
         return result
     except Exception as e:
@@ -45,7 +44,7 @@ def request_password_reset(service: UserService = Provide[Container.user_service
     try:
         data = request.get_json()
         dto = ResetPasswordDTO().load(data)
-        result = service.request_password_reset(dto["email"])
+        result = service.request_password_reset(dto.email)
         return result
 
     except Exception as e:
@@ -61,17 +60,13 @@ def reset_password(token, service: UserService = Provide[Container.user_service]
             user_data = service.confirm_token(token)
             if not user_data:
                 return get_error_reset_password()
+
             return user_data
 
         if request.method == "POST":
             data = request.get_json()
             dto = NewPasswordDTO().load(data)
-            token = service.reset_user_password(dto["email"], dto["new_password"])
-
-            # user = service.user.get_user_by_email(dto["email"])
-            # if user:
-            #     new_jwt = create_access_token(identity=user.email)
-            #     return jsonify({"msg": "Пароль змінено успішно", "token": new_jwt})
+            token = service.reset_user_password(dto.email, dto.new_password)
 
             return token
 
@@ -85,15 +80,8 @@ def reset_password(token, service: UserService = Provide[Container.user_service]
 def log_in(service: UserService = Provide[Container.user_service]):
     try:
         data = request.get_json()
-
         dto = InputUserLoginDTO().load(data)
-        email_or_username = dto['email_or_username']
-        password = dto['password_hash']
-
-        if not email_or_username or not password:
-            return {"error": "It is necessary to specify email or username and password"}, 400
-
-        user = service.log_in(email_or_username, password)
+        user = service.log_in(dto.email_or_username, dto.password_hash)
 
         if not user:
             return {"error": "Invalid email/username or password"}, 401

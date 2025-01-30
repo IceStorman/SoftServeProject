@@ -16,9 +16,8 @@ api_logic_logger = Logger("api_logic_logger", "api_logic_logger.log")
 @handle_exceptions
 @api_logic_logger.log_function_call()
 class UserService:
-    def __init__(self, user_dal, preferences_dal):
+    def __init__(self, user_dal):
         self.user_dal = user_dal
-        self.preferences_dal = preferences_dal
         self.serializer = URLSafeTimedSerializer(current_app.secret_key)
 
 
@@ -66,7 +65,7 @@ class UserService:
     def get_reset_token(self, email) -> str:
         return self.serializer.dumps(email, salt="email-confirm")
 
-    def reset_user_password(self, email, new_password: str) -> None:
+    def reset_user_password(self, email, new_password: str) -> str:
         user = self.user_dal.get_user_by_email(email)
         if not user:
             return

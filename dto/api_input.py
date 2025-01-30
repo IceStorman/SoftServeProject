@@ -1,5 +1,6 @@
+from collections import namedtuple
 from datetime import datetime
-from marshmallow import Schema, fields, pre_load
+from marshmallow import Schema, fields, pre_load, post_load
 
 
 class BaseDTO(Schema):
@@ -15,6 +16,11 @@ class BaseDTO(Schema):
         if 'letter' in data and data['letter']:
             data['letter'] = ' '.join(data['letter'].split()).lower()
         return data
+
+    @post_load
+    def make_object(self, data, **kwargs):
+        class_name = self.__class__.__name__.replace("Schema", "") or "DTO"
+        return namedtuple(class_name, data.keys())(*data.values())
 
 
 class TeamsLeagueDTO(BaseDTO):
