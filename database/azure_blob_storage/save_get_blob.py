@@ -9,6 +9,7 @@ from database.session import SessionLocal
 from exept.colors_text import print_error_message, print_good_message
 import re
 
+from service.implementation.email_sender.email_sender import try_send_email_to_users
 
 load_dotenv()
 account_url = os.getenv("BLOBURL")
@@ -290,6 +291,8 @@ def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
                 name=team_name
             )
             session.add(team_index)
+
+            try_send_email_to_users(team_index)
 
         session.commit()
     except Exception as e:
