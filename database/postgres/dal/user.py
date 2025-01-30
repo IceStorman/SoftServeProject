@@ -17,6 +17,9 @@ class UserDAL:
     def get_user_by_email(self, email: str) -> User:
         return self.session.query(User).filter(User.email == email).first()
 
+    def get_user_by_username(self, username: str) -> User:
+        return self.session.query(User).filter(User.username == username).first()
+
     def create_user(self, new_user):
         self.session.add(new_user)
         self.session.commit()

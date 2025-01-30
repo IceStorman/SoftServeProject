@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 from dto.api_input import InputUserDTO, ResetPasswordDTO, NewPasswordDTO, InputUserLoginDTO
 from dto.common_responce import CommonResponseWithUser
 from exept.exeptions import DatabaseConnectionError
-from exept.handle_exeptions import get_error_response, get_error_reset_password
+from exept.handle_exeptions import get_error_response
 from logger.logger import Logger
 from dependency_injector.wiring import inject, Provide
 from service.api_logic.user_logic import UserService
@@ -59,8 +59,6 @@ def reset_password(token, service: UserService = Provide[Container.user_service]
     try:
         if request.method == "GET":
             user_data = service.confirm_token(token)
-            if not user_data:
-                return get_error_reset_password()
 
             return user_data
 

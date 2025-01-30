@@ -43,5 +43,13 @@ class DatabaseConnectionError(SoftServeException):
         super().__init__(message)
 
 
+class InvalidResetPasswordError(SoftServeException):
+    status_code = 400
+
+    def __init__(self, date_value):
+        self.date_value = date_value
+        message = f"Invalid or expired token'"
+        super().__init__(message)
+
 
 

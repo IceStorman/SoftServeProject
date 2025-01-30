@@ -66,7 +66,8 @@ class UserService:
         user = self.user_dal.get_user_by_email(email)
         if not user:
             return email
-        return self.serializer.dumps(email, salt="email-confirm")
+        return self.serializer.dumps(user.username, salt="email-confirm")
+
 
     def reset_user_password(self, email, new_password: str) -> str:
         user = self.user_dal.get_user_by_email(email)
@@ -77,12 +78,8 @@ class UserService:
         return new_jwt
 
     def confirm_token(self, token: str, expiration=3600):
-        try:
-            email = self.serializer.loads(token, salt="email-confirm", max_age=expiration)
-        except:
-            return False
-        user = self.user_dal.get_user_by_email(email)
-
+        username = self.serializer.loads(token, salt="email-confirm", max_age=expiration)
+        user = self.user_dal.get_user_by_username(username)
         return OutputUser().dump(user)
 
     def log_in(self, email_or_username: str, password: str):
