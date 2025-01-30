@@ -16,13 +16,14 @@ api_logic_logger = Logger("api_logic_logger", "api_logic_logger.log")
 @handle_exceptions
 @api_logic_logger.log_function_call()
 class UserService:
-    def __init__(self, user_dal):
-        self.user_dal = user_dal
-        self.serializer = URLSafeTimedSerializer(current_app.secret_key)
+    def __init__(self, user_dal, preferences_dal):
+        self._user_dal = user_dal
+        self._preferences_dal = preferences_dal
+        self._serializer = URLSafeTimedSerializer(current_app.secret_key)
 
 
     def create_user(self, email_front, username_front, password_front):
-        existing_user = self.user_dal.get_user_by_email_or_username(email_front, username_front)
+        existing_user = self._user_dal.get_user_by_email_or_username(email_front, username_front)
         if existing_user:
             return OutPutUser().dump(existing_user)
 
@@ -30,12 +31,12 @@ class UserService:
         hashed_password = bcrypt.hashpw(password_front.encode('utf-8'), salt)
 
         new_user = User(email=email_front, username=username_front, password_hash=hashed_password.decode('utf-8'))
-        self.user_dal.create_user(new_user)
+        self._user_dal.create_user(new_user)
 
         return OutPutUser().dump(new_user)
 
     def request_password_reset(self, email: str):
-        existing_user = self.user_dal.get_user_by_email(email)
+        existing_user = self._user_dal.get_user_by_email(email)
         if not existing_user:
             return OutPutUser().dump(None)
 
@@ -66,10 +67,10 @@ class UserService:
         return self.serializer.dumps(email, salt="email-confirm")
 
     def reset_user_password(self, email, new_password: str) -> str:
-        user = self.user_dal.get_user_by_email(email)
+        user = self._user_dal.get_user_by_email(email)
         if not user:
             return
-        self.user_dal.update_user_password(user, new_password)
+        self._user_dal.update_user_password(user, new_password)
         new_jwt = create_access_token(identity=user.email)
         return new_jwt
 
@@ -78,13 +79,13 @@ class UserService:
             email = self.serializer.loads(token, salt="email-confirm", max_age=expiration)
         except:
             return False
-        user = self.user_dal.get_user_by_email(email)
+        user = self._user_dal.get_user_by_email(email)
 
         return OutPutUser().dump(user)
 
     def log_in(self, email_or_username: str, password: str):
 
-        user = self.user_dal.get_user_by_email_or_username_and_password(email_or_username, password)
+        user = self._user_dal.get_user_by_email_or_username_and_password(email_or_username, password)
 
         if user:
             token = self.generate_auth_token(user)
@@ -94,3 +95,25 @@ class UserService:
 
     def generate_auth_token(self, user):
         return self.serializer.dumps(user.email, salt="user-auth-token")
+
+    def add_preferences(self, user_id, preferences):
+        if not user_id or not isinstance(preferences, list):
+            return None
+        self._preferences_dal.delete_all_preferences(user_id)
+        self._preferences_dal.add_preferences(user_id, preferences)
+        return {"msg": "Success"}
+
+    def get_user_preferences(self, user_id):
+        prefs = self._preferences_dal.get_user_preferences(user_id)
+        shema = OutputPreferences(many=True).dump(prefs)
+
+        return shema
+
+    def get_all_preferences(self):
+        return self._preferences_dal.get_all_preferences()
+
+    def delete_preferences(self, user_id, preferences):
+        if not user_id or not isinstance(preferences, list):
+            return None
+        self._preferences_dal.delete_preferences(user_id, preferences)
+        return {"msg": "Success"}
