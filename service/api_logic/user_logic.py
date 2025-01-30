@@ -99,6 +99,12 @@ class UserService:
     def add_preferences(self, user_id, preferences):
         if not user_id or not isinstance(preferences, list):
             return None
+        existing_sports = set(self._preferences_dal.get_all_preference_indexes())
+        valid_preferences = [sport_id for sport_id in preferences if sport_id in existing_sports]
+
+        if not valid_preferences:
+            return {"msg": "No valid preferences"}
+
         self._preferences_dal.delete_all_preferences(user_id)
         self._preferences_dal.add_preferences(user_id, preferences)
         return {"msg": "Success"}

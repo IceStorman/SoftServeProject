@@ -38,3 +38,9 @@ class PreferencesDAL:
 
     def get_all_preferences(self):
         return get_all_sports()
+
+    def get_all_preference_indexes(self) -> list:
+        return [
+            sport.sport_id for sport in
+            self.session.query(Sport.sport_id).order_by(Sport.sport_name.asc()).all()
+        ]
