@@ -78,7 +78,7 @@ class NotCorrectPasswordError(SoftServeException):
 
 
 class UserAlreadyExistError(SoftServeException):
-    status_code = 404
+    status_code = 409
 
     def __init__(self, date_value):
         self.date_value = date_value
