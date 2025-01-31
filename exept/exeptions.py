@@ -61,11 +61,19 @@ class UserDoNotExistError(SoftServeException):
         super().__init__(message)
 
 
-class NotCorrectUsernameOrPasswordError(SoftServeException):
+class NotCorrectUsernameOrEmailError(SoftServeException):
     status_code = 401
 
     def __init__(self):
-        message = f"Username or password are not correct'"
+        message = f"Username or email are not correct'"
+        super().__init__(message)
+
+
+class NotCorrectPasswordError(SoftServeException):
+    status_code = 401
+
+    def __init__(self):
+        message = f"Password is not correct'"
         super().__init__(message)
 
 

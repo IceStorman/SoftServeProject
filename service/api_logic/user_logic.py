@@ -4,7 +4,7 @@ from itsdangerous import URLSafeTimedSerializer
 from dto.api_output import OutputUser, OutputPreferences, OutputLogin
 from database.models import User
 from dto.common_responce import CommonResponse
-from exept.exeptions import UserDoNotExistError, NotCorrectUsernameOrPasswordError, UserAlreadyExistError
+from exept.exeptions import UserDoNotExistError, NotCorrectUsernameOrEmailError, UserAlreadyExistError, NotCorrectPasswordError
 import bcrypt
 from logger.logger import Logger
 from jinja2 import Environment, FileSystemLoader
@@ -84,11 +84,11 @@ class UserService:
 
         if not user:
             self.logger.warning("User does not exist")
-            raise NotCorrectUsernameOrPasswordError()
+            raise NotCorrectUsernameOrEmailError()
 
         if not bcrypt.checkpw(password.encode('utf-8'), user.password_hash.encode('utf-8')):
             self.logger.warning("User does not exist")
-            raise NotCorrectUsernameOrPasswordError()
+            raise NotCorrectPasswordError()
 
         token = self.generate_auth_token(user)
         return OutputLogin(email=user.email, token=token, id=user.user_id)
