@@ -1,6 +1,5 @@
 from sqlalchemy import or_
 from database.models import User
-import bcrypt
 
 class UserDAL:
     def __init__(self, session=None):
@@ -30,13 +29,3 @@ class UserDAL:
     def update_user_password(self, user: User, new_password):
         user.password_hash = new_password
         self.session.commit()
-
-    def get_user_by_email_or_username_and_password(self, email_or_username, password):
-        user = self.session.query(User).filter(
-            or_(
-                User.email == email_or_username,
-                User.username == email_or_username
-            )
-        ).first()
-
-
