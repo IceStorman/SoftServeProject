@@ -69,4 +69,10 @@ class NotCorrectUsernameOrPasswordError(SoftServeException):
         super().__init__(message)
 
 
+class UserAlreadyExistError(SoftServeException):
+    status_code = 404
 
+    def __init__(self, date_value):
+        self.date_value = date_value
+        message = f"User '{date_value}' with such data already exist'"
+        super().__init__(message)

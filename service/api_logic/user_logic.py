@@ -4,7 +4,7 @@ from itsdangerous import URLSafeTimedSerializer
 from dto.api_output import OutputUser, OutputPreferences, OutputLogin
 from database.models import User
 from dto.common_responce import CommonResponse
-from exept.exeptions import UserDoNotExistError, NotCorrectUsernameOrPasswordError
+from exept.exeptions import UserDoNotExistError, NotCorrectUsernameOrPasswordError, UserAlreadyExistError
 import bcrypt
 from logger.logger import Logger
 from jinja2 import Environment, FileSystemLoader
@@ -23,7 +23,7 @@ class UserService:
         existing_user = self.user_dal.get_user_by_email_or_username(email_front, username_front)
         if existing_user:
             self.logger.debug("User already exist")
-            return OutputUser().dump(existing_user)
+            raise UserAlreadyExistError(existing_user)
 
         salt = bcrypt.gensalt()
         hashed_password = bcrypt.hashpw(password_front.encode('utf-8'), salt)
