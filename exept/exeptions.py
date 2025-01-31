@@ -74,5 +74,5 @@ class UserAlreadyExistError(SoftServeException):
 
     def __init__(self, date_value):
         self.date_value = date_value
-        message = f"User '{date_value}' with such data already exist'"
+        message = f"User with such data already exist'"
         super().__init__(message)

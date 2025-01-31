@@ -1,6 +1,7 @@
+import re
 from collections import namedtuple
 from datetime import datetime
-from marshmallow import Schema, fields, pre_load, post_load
+from marshmallow import Schema, fields, pre_load, post_load, ValidationError
 
 
 class BaseDTO(Schema):
@@ -21,6 +22,29 @@ class BaseDTO(Schema):
     def make_object(self, data, **kwargs):
         class_name = self.__class__.__name__.replace("Schema", "") or "DTO"
         return namedtuple(class_name, data.keys())(*data.values())
+
+    @pre_load
+    def validate_email(self, data, **kwargs):
+        if 'email' in data and data['email']:
+            if not re.match(r'^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', data['email']):
+                raise ValidationError("Invalid email format", field_name="email")
+        return data
+
+    @pre_load
+    def validate_email(self, data, **kwargs):
+        if 'username' in data and data['username']:
+            regex = re.compile(r'[ @!#$%^&*()<>?/\|}{~:;,.+=]')
+            if regex.search(data['username']):
+                raise ValidationError("Invalid username format", field_name="username")
+        return data
+
+    @pre_load
+    def validate_password(self, data, **kwargs):
+        if 'password_hash' in data and data['password_hash']:
+            regex = re.compile(r'(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?!.*\s){8,}')
+            if not re.match(regex, data['password_hash']):
+                raise ValidationError("Invalid password format", field_name="password_hash")
+        return data
 
 
 class TeamsLeagueDTO(BaseDTO):
