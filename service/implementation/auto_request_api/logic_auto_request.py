@@ -3,11 +3,25 @@ from dotenv import load_dotenv
 import requests
 from datetime import datetime
 from typing import Dict
+from sqlalchemy import text
+from database.session import SessionLocal
 from database.azure_blob_storage.save_get_blob import blob_autosave_api
 
+from database.postgres import save_api_data
+
 load_dotenv()
-api_key = [os.getenv("APIKEY"), "API_KEY_2", "API_KEY_3"]
-current_key_index = 0
+api_key = [
+    os.getenv("APIKEY1"),
+    os.getenv("APIKEY2"),
+    os.getenv("APIKEY3"),
+    os.getenv("APIKEY4"),
+    os.getenv("APIKEY5"),
+    os.getenv("APIKEY6"),
+    os.getenv("APIKEY7"),
+    os.getenv("APIKEY8"),
+    os.getenv("APIKEY9"),
+    os.getenv("APIKEY10"),
+]
 
 apis = [
     {
@@ -39,71 +53,43 @@ apis = [
         "frequency": 1335
     },
     {
-        "name": "football",
-        "index": "teams",
-        "url": "https://v3.football.api-sports.io/teams?country=Ukraine",
-        "host": "v3.football.api-sports.io",
-         "frequency": 769
-    },
-    {
-        "name": "football",
-        "index": "venues",
-        "url": "https://v3.football.api-sports.io/venues?country=Ukraine",
-        "host": "v3.football.api-sports.io",
-        "frequency": 31
-    },
-    {
-        "name": "football",
-        "index": "injuries",
-        "url": "https://v3.football.api-sports.io/injuries?date=DATE",
-        "host": "v3.football.api-sports.io",
-        "frequency": 31.5
-    },
-    {
         "name": "afl",
-        "index": "afl-leagues",
+        "index": "leagues",
         "url": "https://v1.afl.api-sports.io/leagues",
         "host": "v1.afl.api-sports.io",
         "frequency": 1335
     },
     {
         "name": "afl",
-        "index": "afl-teams",
-        "url": "https://v1.afl.api-sports.io/teams",
-        "host": "v1.afl.api-sports.io",
-        "frequency": 600
-    },
-    {
-        "name": "afl",
-        "index": "afl-games",
+        "index": "games",
         "url": "https://v1.afl.api-sports.io/games?date=DATE",
         "host": "v1.afl.api-sports.io",
         "frequency": 3
     },
     {
         "name": "afl",
-        "index": "afl-games-quarters?",
+        "index": "games-quarters?",
         "url": "https://v1.afl.api-sports.io/games/quarters?date=DATE",
         "host": "v1.afl.api-sports.io",
         "frequency": 13
     },
     {
         "name": "afl",
-        "index": "afl-games-events",
+        "index": "games-events",
         "url": "https://v1.afl.api-sports.io/games/events?date=DATE",
         "host": "v1.afl.api-sports.io",
         "frequency": 15
     },
     {
         "name": "afl",
-        "index": "afl-games-statistics-teams",
+        "index": "games-statistics-teams",
         "url": "https://v1.afl.api-sports.io/games/statistics/teams?date=DATE",
         "host": "v1.afl.api-sports.io",
         "frequency": 17
     },
     {
         "name": "afl",
-        "index": "afl-games-statistics-players",
+        "index": "games-statistics-players",
         "url": "https://v1.afl.api-sports.io/games/statistics/players?date=DATE",
         "host": "v1.afl.api-sports.io",
         "frequency": 16
@@ -114,13 +100,6 @@ apis = [
         "url": "https://v1.baseball.api-sports.io/leagues",
         "host": "v1.baseball.api-sports.io",
         "frequency": 1333
-    },
-    {
-        "name": "baseball",
-        "index": "teams",
-        "url": "https://v1.baseball.api-sports.io/teams",
-        "host": "v1.baseball.api-sports.io",
-        "frequency": 601
     },
     {
         "name": "baseball",
@@ -135,13 +114,6 @@ apis = [
         "url": "https://v1.basketball.api-sports.io/leagues",
         "host": "v1.basketball.api-sports.io",
         "frequency": 1334
-    },
-    {
-        "name": "basketball",
-        "index": "teams",
-        "url": "https://v1.basketball.api-sports.io/teams",
-        "host": "v1.basketball.api-sports.io",
-        "frequency": 303
     },
     {
         "name": "basketball",
@@ -163,13 +135,6 @@ apis = [
         "url": "https://v1.formula-1.api-sports.io/circuits",
         "host": "v1.formula-1.api-sports.io",
         "frequency": 1298
-    },
-    {
-        "name": "formula-1",
-        "index": "teams",
-        "url": "https://v1.formula-1.api-sports.io/teams",
-        "host": "v1.formula-1.api-sports.io",
-         "frequency": 599
     },
     {
         "name": "formula-1",
@@ -201,17 +166,10 @@ apis = [
     },
     {
         "name": "handball",
-        "index": "teams",
-        "url": "https://v1.handball.api-sports.io/teams?country=Ukraine",
-        "host": "v1.handball.api-sports.io",
-        "frequency": 345
-    },
-    {
-        "name": "handball",
         "index": "games",
         "url": "https://v1.handball.api-sports.io/games?date=DATE",
         "host": "v1.handball.api-sports.io",
-        "frequency": 3.5
+        "frequency": 3
     },
     {
         "name": "hockey",
@@ -229,13 +187,6 @@ apis = [
     },
     {
         "name": "hockey",
-        "index": "teams",
-        "url": "https://v1.hockey.api-sports.io/teams?country=Ukraine",
-        "host": "v1.hockey.api-sports.io",
-        "frequency": 659
-    },
-    {
-        "name": "hockey",
         "index": "games",
         "url": "https://v1.hockey.api-sports.io/games?date=DATE",
         "host": "v1.hockey.api-sports.io",
@@ -247,13 +198,6 @@ apis = [
         "url": "https://v1.mma.api-sports.io/categories",
         "host": "v1.mma.api-sports.io",
         "frequency": 376
-    },
-    {
-        "name": "mma",
-        "index": "teams",
-        "url": "https://v1.mma.api-sports.io/teams",
-        "host": "v1.mma.api-sports.io",
-        "frequency": 1100
     },
     {
         "name": "mma",
@@ -299,13 +243,6 @@ apis = [
     },
     {
         "name": "nba",
-        "index": "teams",
-        "url": "https://v2.nba.api-sports.io/teams",
-        "host": "v2.nba.api-sports.io",
-        "frequency": 379
-    },
-    {
-        "name": "nba",
         "index": "players",
         "url": "https://v2.nba.api-sports.io/players?country=USA",
         "host": "v2.nba.api-sports.io",
@@ -317,13 +254,6 @@ apis = [
         "url": "https://v1.american-football.api-sports.io/leagues",
         "host": "v1.american-football.api-sports.io",
         "frequency": 679
-    },
-    {
-        "name": "nfl",
-        "index": "teams",
-        "url": "https://v1.american-football.api-sports.io/teams?season=2024&league=2",
-        "host": "v1.american-football.api-sports.io",
-        "frequency": 113
     },
     {
         "name": "nfl",
@@ -349,7 +279,7 @@ apis = [
     {
         "name": "rugby",
         "index": "teams",
-        "url": "https://v1.rugby.api-sports.io/teams?country=USA",
+        "url": "https://v1.rugby.api-sports.io/teams?country=Argentina&league=1&season=2022",
         "host": "v1.rugby.api-sports.io",
         "frequency": 683
     },
@@ -376,13 +306,6 @@ apis = [
     },
     {
         "name": "volleyball",
-        "index": "teams",
-        "url": "https://v1.volleyball.api-sports.io/teams?country=Ukraine",
-        "host": "v1.volleyball.api-sports.io",
-        "frequency": 375
-    },
-    {
-        "name": "volleyball",
         "index": "games",
         "url": "https://v1.volleyball.api-sports.io/games?date=DATE",
         "host": "v1.volleyball.api-sports.io",
@@ -390,39 +313,48 @@ apis = [
     },
 ]
 token_usage = {
-    "football": 0,
-    "basketball": 0,
-    "volleyball": 0,
-    "afl": 0,
-    "baseball": 0,
-    "formula-1": 0,
-    "handball": 0,
-    "hockey": 0,
-    "mma": 0,
-    "nba": 0,
-    "nfl": 0,
-    "rugby": 0
+    "football": { "current_key_index": 0 , "count": 0 },
+    "basketball": { "current_key_index": 0 , "count": 0 },
+    "volleyball": { "current_key_index": 0 , "count": 0 },
+    "afl": { "current_key_index": 0 , "count": 0 },
+    "baseball": { "current_key_index": 0 , "count": 0 },
+    "formula-1": { "current_key_index": 0 , "count": 0 },
+    "handball": { "current_key_index": 0 , "count": 0 },
+    "hockey": { "current_key_index": 0 , "count": 0 },
+    "mma": { "current_key_index": 0 , "count": 0 },
+    "nba": { "current_key_index": 0 , "count": 0 },
+    "nfl": { "current_key_index": 0 , "count": 0 },
+    "rugby": { "current_key_index": 0 , "count": 0 },
 }
 
 def auto_request_system(api: Dict[str, str]) -> None:
     try:
-        global current_key_index
-        print(f"Виконання запиту для {api['name']}, {api['index']}")
         today = datetime.now().strftime('%Y-%m-%d')
         url_with_date = api["url"].replace("DATE", today)
-        if token_usage[api['name']] >= 99:
-            current_key_index = (current_key_index + 1) % len(api_key)
-            token_usage[api['name']] = 0
-        token_usage[api['name']] += 1
+        if token_usage[api['name']]["count"] >= 99:
+            token_usage[api['name']]["current_key_index"] = (token_usage[api['name']]["current_key_index"] + 1) % len(api_key)
+            token_usage[api['name']]["count"] = 0
+        token_usage[api['name']]["count"] += 1
         headers = {
             'x-rapidapi-host': api["host"],
-            'x-rapidapi-key': api_key[current_key_index]
+            'x-rapidapi-key': api_key[token_usage[api['name']]["current_key_index"]]
         }
         response = requests.get(url_with_date, headers=headers, timeout=10)
         response.raise_for_status()
         json_data = response.json()
-        blob_autosave_api(json_data, api)
+        #blob_autosave_api(json_data, api)
+
+        save_api_data(json_data, api['name'])
     except requests.exceptions.RequestException as e:
-        print(f"Помилка при запиті до {api['name']}: {e}")
+        print(f"Error while making a request to {api['name']}: {e}")
     except Exception as e:
-        print(f"Загальна помилка при збереженні даних для {api['name']}: {e}")
+        print(f"General error while saving data for {api['name']}: {e}")
+
+
+def keep_db_alive():
+    try:
+        with SessionLocal() as session:
+            session.execute(text("SELECT 1"))
+            print("Database connection is alive.")
+    except Exception as e:
+        print(f"Error keeping database connection alive: {e}")

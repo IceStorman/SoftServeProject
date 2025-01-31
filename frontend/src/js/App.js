@@ -1,27 +1,27 @@
-import {
-    useEffect,
-    useState
-} from "react";
+import React from "react";
 import {
     BrowserRouter as Router,
     Routes,
     Route,
-    Navigate,
-    Link
+    Navigate
 } from "react-router-dom";
+import {Toaster} from "sonner";
 
-import header from "../components/header";
-import footer from "../components/footer";
+import Header from "../components/header";
+import Footer from "../components/footer";
 
-// import Home component
-import homePage from "../pages/mainPage";
 import SignUpPage from "../pages/signUpPage";
 import SignInPage from "../pages/signInPage";
 import MainPage from "../pages/mainPage";
 import ForgotPasswordPage from "../pages/forgotPasswordPage";
+import SportPage from "../pages/sportPage";
+import LeaguePage from "../pages/leaguePage";
+import StreamPage from "../pages/streamPage";
+import NewsPage from "../pages/newsPage";
+import NotExistingPage from "../pages/notExistingPage";
+import ScrollToTop from "../components/scrollToTop";
 
 function App(){
-
 
     return (
         <>
@@ -32,8 +32,11 @@ function App(){
                 v7_relativeSplatPath: true,
                 }}
             >
+                <ScrollToTop />
 
-                {header()}
+                <Toaster  position="top-center" expand={true} richColors  />
+
+                {<Header />}
 
                 <Routes>
 
@@ -45,11 +48,24 @@ function App(){
 
                     <Route path="/reset-password" element={<ForgotPasswordPage />} />
 
-                    <Route path="*" element={<Navigate to="/" />} />
+                    <Route path="/sport/:sportName" element={<SportPage />} />
+
+                    <Route path="/sport/:sportName/league/:leagueName" element={<LeaguePage />} />
+
+                    <Route path="/sport/:sportName/news/:id" element={<NewsPage />} />
+
+                    <Route path="/stream" element={<StreamPage />} />
+
+                    <Route path="/news/:id" element={<NewsPage />} />
+
+
+                    <Route path="/not-existing" element={<NotExistingPage />} />
+
+                    <Route path="*" element={<Navigate to="/not-existing" replace />} />
 
                 </Routes>
 
-                {footer()}
+                {<Footer />}
 
             </Router>
 

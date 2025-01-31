@@ -1,0 +1,109 @@
+
+
+  .itemsPaginationBlock {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80%;
+
+    .filter {
+      display: flex;
+      flex-direction: row;
+      align-self: start;
+      margin: 2rem auto 0;
+      gap: 2rem;
+      width: 100%;
+
+      .itemSearch {
+        position: relative;
+        width: 17.3rem;
+        height: 2rem;
+
+        button {
+          position: absolute;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          justify-self: end;
+          width: 2rem;
+          height: 2rem;
+          font-size: 1.3rem;
+          top: 0;
+          right: 0;
+          background-color: $main-background-color;
+          border: 0.2rem solid $special-dark-purple;
+          border-radius: 0.5rem;
+          cursor: pointer;
+          transition: transform 0.3s ease;
+        }
+
+        button:hover{
+          transform: scale(1.05);
+        }
+
+        @include custom-form(input, label, 15rem, $special-dark-purple, $main-background-color, #5a5a5a);
+      }
+    }
+
+    .leaguesCountry {
+      all: unset;
+      width: 10rem;
+
+      button {
+        all: unset;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 10rem;
+        height: 2rem;
+        font-size: 1rem;
+        background-color: $special-dark-purple;
+        border-top-left-radius: 0.5rem;
+        border-top-right-radius: 0.5rem;
+        color: $main-text-color;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .contentCover{
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+      }
+
+      .dropMenu {
+        width: 10rem;
+        max-height: 20rem;
+        position: absolute;
+        overflow-y: scroll;
+        overflow-x: hidden;
+
+        h1 {
+          display: flex;
+          justify-content: center;
+          background-color: $purple-btn-color;
+          width: 100%;
+          padding: 0.2rem 0;
+          color: $main-text-color;
+          box-sizing: border-box;
+          border: 0.1rem solid $special-dark-purple;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        @include scrollbar-style;
+      }
+
+      button:hover, h1:hover{
+        font-size: 1.1rem;
+        color: $scroll-track;
+      }
+
+      .inActiveDrop {
+        border-radius: 0.5rem;
+      }
+    }
+
+  }

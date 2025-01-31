@@ -1,0 +1,15 @@
+.stream{
+    display: flex;
+    margin: 2rem 2rem 0 2rem;
+    padding: 1rem;
+    color: $main-text-color;
+    background-color: $special-dark-purple;
+    border-radius: 10px;
+    .time{
+        margin-right: 1rem;
+    }
+    .text{
+        margin-left: 1rem;
+        font-size: 1.5rem;
+    }
+}

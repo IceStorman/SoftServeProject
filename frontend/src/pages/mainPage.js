@@ -1,256 +1,148 @@
 import React, {useState, useEffect} from "react";
-import { Link } from "react-router-dom";
 import axios from 'axios';
 
-import News from "../components/mainPage/News.js"
+import apiEndpoints from "../apiEndpoints";
 
-/*const news =[
-    {
-        img: "/img/team.jpg",
-        title: "Why did the programmer quit his job? Because he didn't get arrays.",
-        date: "02.04.2006"
-    },
-    {
-        img: "/img/team.jpg",
-        title: "Why do Java developers wear glasses? Because they can't C#.",
-        date: "11.12.2005"
-    },
-    {
-        img: "/img/team.jpg",
-        title: "There are only 10 types of people in the world: those who understand binary and those who don't.",
-        date: "14.02.2006"
-    }
-
-
-];*/
-
-
+import News from "../components/mainPage/news.js"
+import SportBtn from "../components/mainPage/sportBtn"
+import Slider from "../components/games/slider.js";
+import {toast} from "sonner";
+import NoItems from "../components/NoItems";
 
 function MainPage() {
+    const [loginStatus,setLoginStatus]=useState(false)
+
     const [news, setNews] = useState([]);
+    const [sports, setSport] = useState([]);
+    const [games, setGames] = useState([]);
+
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
-        axios.get('http://127.0.0.1:5001/news/recent')
+
+        setLoading(true)
+
+        axios.get(`${apiEndpoints.url}${apiEndpoints.news.getRecent}`)
             .then(res => {
                 const returnedNews = res.data;
                 setNews(returnedNews);
             })
             .catch(error => {
-                console.error('There was an error fetching the news:', error);
+                toast.error(`:( Troubles With News Loading: ${error}`);
+            })
+
+    }, []);
+
+    useEffect(() => {
+        axios.get(`${apiEndpoints.url}${apiEndpoints.sports.getAll}`)
+            .then(res => {
+                const returnedSports = res.data;
+                setSport(returnedSports);
+            })
+            .catch(error => {
+                toast.error(`:( Troubles With Sports Loading: ${error}`);
             });
     }, []);
+
+    useEffect(() => {
+        axios.get(`${apiEndpoints.url}${apiEndpoints.games.getGames}`)
+            .then(res => {
+                const returnedGames = res.data;
+                setGames(returnedGames);
+            })
+            .catch(error => {
+                toast.error(`:( Troubles With Games Loading: ${error}`);
+            });
+    }, []);
+
+    useEffect(() => {
+        (news.length > 0 || sports.length > 0 || games.length) ? setLoading(false)
+        : setTimeout(() => {
+            setLoading(false);
+        }, 2000)
+    }, [news.length, sports.length, games.length]);
 
     return(
 
         <>
 
-            <section className="streams">
-
-                <button></button>
-
-                <div className="streamsBar">
-
-                    <div className="activeStreams">
-
-                        <h2 id="liveStreams">Активні</h2>
-
-                        <div className="streamBox">
-
-                            <i className="fa fa-user-o" aria-hidden="true"></i>
-
-                            <div className="streamInfo">
-
-                                <h4 className="online">етер</h4>
-
-                                <h1 className="score">0:0</h1>
-
-                                <h4 className="matchLeague">ліга</h4>
-
-                            </div>
-
-                            <i className="fa fa-user-o" aria-hidden="true"></i>
-
-                        </div>
-
-                    </div>
-
-                    <div className="scheduledStream">
-
-                        <div id="plannedStreams">
-                            <h2>MNS</h2>
-                            <h2>00</h2>
-                        </div>
-
-                        <div className="streamBox">
-
-                            <i className="fa fa-user-o" aria-hidden="true"></i>
-
-                            <div className="streamInfo">
-
-                                <h4 className="preview">скоро</h4>
-
-                                <h1 className="score">VS</h1>
-
-                                <h4 className="matchLeague">ліга</h4>
-
-                            </div>
-
-                            <i className="fa fa-user-o" aria-hidden="true"></i>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <button id="rightBtn"></button>
-
-            </section>
+            <Slider games={games}/>
 
             <section className="container">
 
-                <section className="news">
+                <section className={`news ${loginStatus ? "narrow" : "wide wrappedNews"}`}>
 
                     <h1 className="newsTitle">НОВИНИ</h1>
 
-                    {news.slice(0, 5).map((item, index) =>
-                            <News
-                                key={index}
-                                title={item.data?.header?.title}
-                                text={item.data?.body}
-                                img={item.data?.img}
-                            />
-                        )
+                    {
+                        !(news.length === 0) ?
+                            news.map((item, index) => (
+                                <News
+                                    key={index}
+                                    id={item.blob_id}
+                                    title={item.data?.title}
+                                    date={item.data?.timestamp}
+                                    img={item.data?.images[0]}
+                                    sport={item.data?.S_P_O_R_T}
+                                />
+                            ))
+                            : (loading === false) ?
+                                (
+                                    <NoItems
+                                        key={1}
+                                        text={"No latest news were found"}
+                                    />
+                                ) : null
                     }
 
                 </section>
 
-                <section className="news">
+                {loginStatus ? (
+                    <section className={`news ${loginStatus ? "narrow" : "wide"}`}>
 
-                    <h1 className="newsTitle">РЕКОМЕНДАЦІЇ</h1>
+                        <h1 className="newsTitle">РЕКОМЕНДАЦІЇ</h1>
 
-                    <div className="newsBox">
+                        <div className="newsBox">
 
-                        <img src="/img/team.jpg" alt="news picture"/>
+                            <img src="/img/team.jpg" alt="news picture"/>
 
-                        <div className="newsInsight">
+                            <div className="newsInsight">
+                                <h1>TITLE BLA BLA BLA BLA</h1>
+                                <h4 className="date">02.04.2024</h4>
+                            </div>
 
-                            <h1>TITLE BLA BLA BLA BLA</h1>
-
-                            <h4 className="date">02.04.2024</h4>
+                            <hr/>
 
                         </div>
 
-                        <hr/>
+                    </section>
+                ) : null}
 
-                    </div>
-
-                </section>
 
                 <section className="navSports">
 
-                    <div className="sportBox">
-
-                        <Link to={"/"}>
-                            <img src="/img/hero-banner.png" alt="footbal player"/>
-                        </Link>
-
-                    </div>
-
-                    <div className="sportBox">
-
-                        <Link to={"/"}>
-                            <img src="/img/basket-player.png" alt="basket player"/>
-                        </Link>
-
-                    </div>
-
-                    <div className="sportBox">
-
-                        <Link to={"/"}>
-                            <img src="/img/min-nba.png" alt="nba player"/>
-                        </Link>
-
-
-                    </div>
-
-                    <div className="sportBox">
-
-                        <Link to={"/"}>
-                            <img src="/img/mma-logo.png" alt="mma player"/>
-                        </Link>
-
-                    </div>
-
-                    <div className="sportBox">
-
-                        <Link to={"/"}>
-                            <img src="/img/handball-logo.png" alt="handball player"/>
-                        </Link>
-
-                    </div>
-
-                    <div className="sportBox">
-
-                        <Link to={"/"}>
-                            <img src="/img/hockey-logo.png" alt="hockey player"/>
-                        </Link>
-
-                    </div>
-
-                    <div className="sportBox">
-
-                        <Link to={"/"}>
-                            <img src="/img/afl-logo.png" alt="afl player"/>
-                        </Link>
-
-                    </div>
-
-                    <div className="sportBox">
-
-                        <Link to={"/"}>
-                            <img src="/img/baseball-logo.png" alt="baseball player"/>
-                        </Link>
-
-                    </div>
-
-                    <div className="sportBox">
-
-                        <Link to={"/"}>
-                            <img src="/img/rugby-logo.png" alt="rugby player"/>
-                        </Link>
-
-                    </div>
-
-                    <div className="sportBox">
-
-                        <Link to={"/"}>
-                            <img src="/img/volleyball-logo.png" alt="balleyball player"/>
-                        </Link>
-
-                    </div>
-
-                    <div className="sportBox">
-
-                        <Link to={"/"}>
-                            <img src="/img/nfl-logo.png" alt="nfl player"/>
-                        </Link>
-
-                    </div>
-
-                    <div className="sportBox">
-
-                        <Link to={"/"}>
-                            <img src="/img/f1-mini.png" alt="formula player"/>
-                        </Link>
-
-                    </div>
-
+                    {sports.map((item, index) => (
+                        <SportBtn
+                            key={index}
+                            sport={item.sport}
+                            sportId={item.id}
+                            img={item.logo}
+                            sports={sports}
+                        />
+                    ))}
 
                 </section>
 
             </section>
+
+            {loading === true ?
+                (
+                    <>
+                        <div className={"loader-background"}></div>
+                        <div className="loader"></div>
+                    </>
+                ) : null
+            }
 
         </>
     );
