@@ -11,19 +11,18 @@ from jinja2 import Environment, FileSystemLoader
 import os
 from flask_jwt_extended import create_access_token
 
-logger = Logger("api_logic_logger", "api_logic_logger.log")
 
-
-@logger.log_function_call()
 class UserService:
     def __init__(self, user_dal):
         self.user_dal = user_dal
         self.serializer = URLSafeTimedSerializer(current_app.secret_key)
+        self.logger = Logger("api_logic_logger", "api_logic_logger.log").logger
 
 
     def create_user(self, email_front, username_front, password_front):
         existing_user = self.user_dal.get_user_by_email_or_username(email_front, username_front)
         if existing_user:
+            self.logger.debug("User already exist")
             return OutputUser().dump(existing_user)
 
         salt = bcrypt.gensalt()
@@ -31,7 +30,6 @@ class UserService:
 
         new_user = User(email=email_front, username=username_front, password_hash=hashed_password.decode('utf-8'))
         self.user_dal.create_user(new_user)
-
         return OutputUser().dump(new_user)
 
     def request_password_reset(self, email: str):
@@ -68,7 +66,7 @@ class UserService:
         return self.serializer.dumps(user.username, salt="email-confirm")
 
     def reset_user_password(self, email, new_password: str) -> str:
-        user = self.user_dal.get_user_by_email_or_username(email)
+        user = self.user_dal.get_user_by_email_or_username(None, email)
         if not user:
             raise UserDoNotExistError(email)
 
@@ -84,6 +82,7 @@ class UserService:
     def log_in(self, email_or_username: str, password: str):
         user = self.user_dal.get_user_by_email_or_username_and_password(email_or_username, password)
         if not user:
+            self.logger.warning("User does not exist")
             raise NotCorrectUsernameOrPasswordError()
 
         token = self.generate_auth_token(user)
