@@ -6,7 +6,7 @@ from exept.handle_exeptions import handle_exceptions
 from service.api_logic.scripts import get_sport_index_by_name
 from logger.logger import Logger
 
-logger = Logger("api_logic_logger", "api_logic_logger.log")
+logger = Logger("logger", "all.log")
 
 @logger.log_function_call()
 def fetch_streams(session, order_by: ClauseElement = None, limit: int = None, filters=None):

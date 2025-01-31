@@ -16,7 +16,7 @@ class UserService:
     def __init__(self, user_dal):
         self.user_dal = user_dal
         self.serializer = URLSafeTimedSerializer(current_app.secret_key)
-        self.logger = Logger("api_logic_logger", "api_logic_logger.log").logger
+        self.logger = Logger("logger", "all.log").logger
 
 
     def create_user(self, email_front, username_front, password_front):

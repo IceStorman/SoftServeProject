@@ -4,7 +4,7 @@ from exept.exeptions import DatabaseConnectionError, SoftServeException
 from exept.handle_exeptions import get_custom_error_response
 from logger.logger import Logger
 
-logger = Logger("api_routes_logger", "api_routes_logger.log")
+logger = Logger("logger", "all.log")
 
 countries_app = Blueprint('countries_app', __name__)
 

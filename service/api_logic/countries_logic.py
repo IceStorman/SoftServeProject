@@ -6,7 +6,7 @@ from exept.handle_exeptions import handle_exceptions
 from database.session import SessionLocal
 from logger.logger import Logger
 
-logger = Logger("api_logic_logger", "api_logic_logger.log")
+logger = Logger("logger", "all.log")
 
 
 session = SessionLocal()

@@ -8,7 +8,7 @@ from dto.api_input import SportsLeagueDTO, SearchDTO
 from dto.pagination import Pagination
 from logger.logger import Logger
 
-logger = Logger("api_routes_logger", "api_routes_logger.log")
+logger = Logger("logger", "all.log")
 
 sports_app = Blueprint('sports', __name__)
 

@@ -8,7 +8,7 @@ from service.api_logic.scripts import get_sport_by_name
 from database.session import SessionLocal
 from logger.logger import Logger
 
-logger = Logger("api_logic_logger", "api_logic_logger.log")
+logger = Logger("logger", "all.log")
 
 session = SessionLocal()
 

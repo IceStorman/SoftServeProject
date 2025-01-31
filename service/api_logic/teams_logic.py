@@ -8,7 +8,7 @@ from database.session import SessionLocal
 from logger.logger import Logger
 from sqlalchemy import func
 
-logger = Logger("api_logic_logger", "api_logic_logger.log")
+logger = Logger("logger", "all.log")
 
 session = SessionLocal()
 

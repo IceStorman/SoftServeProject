@@ -6,7 +6,7 @@ from sqlalchemy.orm import Query
 from sqlalchemy import and_
 from logger.logger import Logger
 
-logger = Logger("api_logic_logger", "api_logic_logger.log")
+logger = Logger("logger", "all.log")
 
 @logger.log_function_call()
 def get_sport_by_name(session, sport_name):

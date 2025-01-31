@@ -10,7 +10,7 @@ from service.implementation.auto_request_api.sport_data_managers.team_statistics
     TeamStatisticsDataManager
 from logger.logger import Logger
 
-logger = Logger("api_routes_logger", "api_routes_logger.log")
+logger = Logger("logger", "all.log")
 
 
 CACHE_TEAMS = 60*1.3

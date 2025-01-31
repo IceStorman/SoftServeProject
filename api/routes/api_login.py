@@ -13,7 +13,7 @@ from flask_jwt_extended import JWTManager,create_access_token, set_access_cookie
 from datetime import timedelta
 
 
-logger = Logger("api_routes_logger", "api_routes_logger.log")
+logger = Logger("logger", "all.log")
 
 login_app = Blueprint('login_app', __name__)
 

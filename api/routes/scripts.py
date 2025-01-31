@@ -3,7 +3,7 @@ import hashlib
 import json
 from logger.logger import Logger
 
-logger = Logger("api_routes_logger", "api_routes_logger.log")
+logger = Logger("logger", "all.log")
 
 
 def get_cache_key():
