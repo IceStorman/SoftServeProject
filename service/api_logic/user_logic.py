@@ -80,8 +80,13 @@ class UserService:
         return OutputUser().dump(user)
 
     def log_in(self, email_or_username: str, password: str):
-        user = self.user_dal.get_user_by_email_or_username_and_password(email_or_username, password)
+        user = self.user_dal.get_user_by_email_or_username(email_or_username, email_or_username)
+
         if not user:
+            self.logger.warning("User does not exist")
+            raise NotCorrectUsernameOrPasswordError()
+
+        if not bcrypt.checkpw(password.encode('utf-8'), user.password_hash.encode('utf-8')):
             self.logger.warning("User does not exist")
             raise NotCorrectUsernameOrPasswordError()
 
