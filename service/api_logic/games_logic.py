@@ -8,12 +8,12 @@ from sqlalchemy.orm import aliased
 from database.session import SessionLocal
 from logger.logger import Logger
 
-api_logic_logger = Logger("api_logic_logger", "api_logic_logger.log")
+logger = Logger("api_logic_logger", "api_logic_logger.log")
 
 session = SessionLocal()
 
 @handle_exceptions
-@api_logic_logger.log_function_call()
+@logger.log_function_call()
 def get_games_today(
         filters_dto: dict,
         pagination: Pagination

@@ -13,14 +13,14 @@ from flask_jwt_extended import JWTManager,create_access_token, set_access_cookie
 from datetime import timedelta
 
 
-api_routes_logger = Logger("api_routes_logger", "api_routes_logger.log")
+logger = Logger("api_routes_logger", "api_routes_logger.log")
 
 login_app = Blueprint('login_app', __name__)
 
 
 @login_app.errorhandler(DatabaseConnectionError)
 def handle_db_timeout_error(e):
-    api_routes_logger.error(f"Database error: {str(e)}")
+    logger.error(f"Database error: {str(e)}")
     response = {"error in data base": str(e)}
     return response
 
@@ -28,7 +28,7 @@ def handle_db_timeout_error(e):
 @login_app.route('/sign_up', methods=['POST'])
 @inject
 @handle_exceptions
-@api_routes_logger.log_function_call()
+@logger.log_function_call()
 def create_account_endpoint(service: UserService = Provide[Container.user_service]):
     try:
         data = request.get_json()
@@ -38,14 +38,14 @@ def create_account_endpoint(service: UserService = Provide[Container.user_servic
         return result
 
     except SoftServeException as e:
-        api_routes_logger.error(f"Error in POST /: {str(e)}")
+        logger.error(f"Error in POST /: {str(e)}")
         get_custom_error_response(e)
 
 
 @login_app.route('/reset-password-request', methods=['POST'])
 @inject
 @handle_exceptions
-@api_routes_logger.log_function_call()
+@logger.log_function_call()
 def request_password_reset(service: UserService = Provide[Container.user_service]):
     try:
         data = request.get_json()
@@ -55,13 +55,13 @@ def request_password_reset(service: UserService = Provide[Container.user_service
         return result
 
     except SoftServeException as e:
-        api_routes_logger.error(f"Error in POST /: {str(e)}")
+        logger.error(f"Error in POST /: {str(e)}")
         get_custom_error_response(e)
 
 @login_app.route('/reset-password/<token>', methods=['GET', 'POST'])
 @inject
 @handle_exceptions
-@api_routes_logger.log_function_call()
+@logger.log_function_call()
 def reset_password(token, service: UserService = Provide[Container.user_service]):
     try:
         if request.method == "GET":
@@ -77,13 +77,13 @@ def reset_password(token, service: UserService = Provide[Container.user_service]
             return token
 
     except SoftServeException as e:
-        api_routes_logger.error(f"Error in POST /: {str(e)}")
+        logger.error(f"Error in POST /: {str(e)}")
         return get_custom_error_response(e)
 
 @login_app.route('/login', methods=['POST'])
 @inject
 @handle_exceptions
-@api_routes_logger.log_function_call()
+@logger.log_function_call()
 def log_in(service: UserService = Provide[Container.user_service]):
     try:
         data = request.get_json()
@@ -99,7 +99,7 @@ def log_in(service: UserService = Provide[Container.user_service]):
         return response_json
 
     except SoftServeException as e:
-        api_routes_logger.error(f"Error in POST /login: {str(e)}")
+        logger.error(f"Error in POST /login: {str(e)}")
         return get_custom_error_response(e)
 
 

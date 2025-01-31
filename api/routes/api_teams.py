@@ -1,4 +1,3 @@
-import logging
 from flask import Blueprint, request
 from dto.pagination import Pagination
 from exept.handle_exeptions import get_custom_error_response
@@ -11,7 +10,7 @@ from service.implementation.auto_request_api.sport_data_managers.team_statistics
     TeamStatisticsDataManager
 from logger.logger import Logger
 
-api_routes_logger = Logger("api_routes_logger", "api_routes_logger.log")
+logger = Logger("api_routes_logger", "api_routes_logger.log")
 
 
 CACHE_TEAMS = 60*1.3
@@ -20,13 +19,13 @@ teams_app = Blueprint('teams', __name__)
 
 @teams_app.errorhandler(DatabaseConnectionError)
 def handle_db_timeout_error(e):
-    api_routes_logger.error(f"Database error: {str(e)}")
+    logger.error(f"Database error: {str(e)}")
     response = {"error in data base": str(e)}
     return response
 
 
 @teams_app.route("/league", methods=['POST'])
-@api_routes_logger.log_function_call()
+@logger.log_function_call()
 def get_teams_sport_endpoint():
     try:
         data = request.get_json()
@@ -35,13 +34,13 @@ def get_teams_sport_endpoint():
         league_teams = get_teams(dto, pagination)
         return league_teams
     except SoftServeException as e:
-        api_routes_logger.error(f"Error in POST /: {str(e)}")
+        logger.error(f"Error in POST /: {str(e)}")
         get_custom_error_response(e)
 
 
 @teams_app.route('/statistics', methods=['POST'])
 @cache.cached(timeout=CACHE_TEAMS)
-@api_routes_logger.log_function_call()
+@logger.log_function_call()
 def get_teams_statistics_endpoint():
     try:
         data = request.get_json()
@@ -50,12 +49,12 @@ def get_teams_statistics_endpoint():
         team_statistics = data_manager.get_teams_statistics()
         return team_statistics
     except SoftServeException as e:
-        api_routes_logger.error(f"Error in POST /: {str(e)}")
+        logger.error(f"Error in POST /: {str(e)}")
         get_custom_error_response(e)
 
 
 @teams_app.route('/players', methods=['POST'])
-@api_routes_logger.log_function_call()
+@logger.log_function_call()
 def get_players_endpoint():
     try:
         data = request.get_json()
@@ -63,7 +62,7 @@ def get_players_endpoint():
         team_players = basketball_players(dto)
         return team_players
     except SoftServeException as e:
-        api_routes_logger.error(f"Error in POST /: {str(e)}")
+        logger.error(f"Error in POST /: {str(e)}")
         get_custom_error_response(e)
 
 

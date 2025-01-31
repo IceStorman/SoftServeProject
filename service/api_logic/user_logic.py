@@ -11,10 +11,10 @@ from jinja2 import Environment, FileSystemLoader
 import os
 from flask_jwt_extended import create_access_token
 
-api_logic_logger = Logger("api_logic_logger", "api_logic_logger.log")
+logger = Logger("api_logic_logger", "api_logic_logger.log")
 
 
-@api_logic_logger.log_function_call()
+@logger.log_function_call()
 class UserService:
     def __init__(self, user_dal):
         self.user_dal = user_dal
