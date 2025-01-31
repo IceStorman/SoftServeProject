@@ -1,10 +1,10 @@
 from flask import current_app, url_for
 from flask_mail import Message
 from itsdangerous import URLSafeTimedSerializer
-from dto.api_output import OutputUser, OutputPreferences
+from dto.api_output import OutputUser, OutputPreferences, OutputLogin
 from database.models import User
-from dto.common_responce import CommonResponse, CommonResponseWithToken
-from exept.handle_exeptions import handle_exceptions
+from dto.common_responce import CommonResponse
+from exept.exeptions import UserDoNotExistError, NotCorrectUsernameOrPasswordError
 import bcrypt
 from logger.logger import Logger
 from jinja2 import Environment, FileSystemLoader
@@ -14,7 +14,6 @@ from flask_jwt_extended import create_access_token
 api_logic_logger = Logger("api_logic_logger", "api_logic_logger.log")
 
 
-@handle_exceptions
 @api_logic_logger.log_function_call()
 class UserService:
     def __init__(self, user_dal):
@@ -38,10 +37,9 @@ class UserService:
     def request_password_reset(self, email: str):
         existing_user = self.user_dal.get_user_by_email_or_username(email)
         if not existing_user:
-            return OutputUser().dump(None)
+            raise UserDoNotExistError(email)
 
         token = self.get_reset_token(existing_user.email)
-
         return self.send_reset_email(existing_user, token)
 
     def message_to_user_gmail(self, user: User, reset_url):
@@ -65,13 +63,15 @@ class UserService:
     def get_reset_token(self, email) -> str:
         user = self.user_dal.get_user_by_email_or_username(email)
         if not user:
-            return email
+            raise UserDoNotExistError(email)
+
         return self.serializer.dumps(user.username, salt="email-confirm")
 
     def reset_user_password(self, email, new_password: str) -> str:
         user = self.user_dal.get_user_by_email_or_username(email)
         if not user:
-            return email
+            raise UserDoNotExistError(email)
+
         self.user_dal.update_user_password(user, new_password)
         new_jwt = create_access_token(identity=user.email)
         return new_jwt
@@ -82,14 +82,12 @@ class UserService:
         return OutputUser().dump(user)
 
     def log_in(self, email_or_username: str, password: str):
-
         user = self.user_dal.get_user_by_email_or_username_and_password(email_or_username, password)
+        if not user:
+            raise NotCorrectUsernameOrPasswordError()
 
-        if user:
-            token = self.generate_auth_token(user)
-            return CommonResponseWithToken(token).to_dict()
-
-        return CommonResponse("Error").to_dict()
+        token = self.generate_auth_token(user)
+        return OutputLogin(email=user.email, token=token, id=user.user_id)
 
     def generate_auth_token(self, user):
         return self.serializer.dumps(user.email, salt="user-auth-token")

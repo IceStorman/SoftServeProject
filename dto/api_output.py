@@ -50,3 +50,10 @@ class OutputPreferences(Schema):
     sport_name = fields.Str(required=True)
     sport_img = fields.Str(required=True)
 
+class OutputLogin():
+    def __init__(self, email: str, id: int, token: str):
+        self.email = email
+        self.id = id
+        self.token = token
+        self.message = "You successfully logged in!"
+

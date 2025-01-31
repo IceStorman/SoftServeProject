@@ -52,4 +52,21 @@ class InvalidResetPasswordError(SoftServeException):
         super().__init__(message)
 
 
+class UserDoNotExistError(SoftServeException):
+    status_code = 404
+
+    def __init__(self, date_value):
+        self.date_value = date_value
+        message = f"User '{date_value}' does not exist'"
+        super().__init__(message)
+
+
+class NotCorrectUsernameOrPasswordError(SoftServeException):
+    status_code = 401
+
+    def __init__(self):
+        message = f"Username or password are not correct'"
+        super().__init__(message)
+
+
 
