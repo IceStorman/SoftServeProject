@@ -6,16 +6,19 @@ class UserDAL:
     def __init__(self, session=None):
         self.session = session
 
-    def get_user_by_email_or_username(self, email, username):
-        return self.session.query(User).filter(
-            or_(
-                User.email == email,
-                User.username == username
-            )
-        ).first()
+    def get_user_by_email_or_username(self, email=None, username=None):
+        filters = []
 
-    def get_user_by_email(self, email: str) -> User:
-        return self.session.query(User).filter(User.email == email).first()
+        if email:
+            filters.append(User.email == email)
+
+        if username:
+            filters.append(User.username == username)
+
+        if not filters:
+            return None
+
+        return self.session.query(User).filter(or_(*filters)).first()
 
     def create_user(self, new_user):
         self.session.add(new_user)

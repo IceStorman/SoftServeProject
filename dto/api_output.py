@@ -41,9 +41,19 @@ class CountriesOutput(Schema):
     flag = fields.Str()
     name = fields.Str()
 
-class OutPutUser(Schema):
+class OutputUser(Schema):
     username = fields.Str(required=True)
     email = fields.Str(required=True)
 
+class OutputPreferences(Schema):
+    sports_id = fields.Str(required=True)
+    sport_name = fields.Str(required=True)
+    sport_img = fields.Str(required=True)
 
+class OutputLogin():
+    def __init__(self, email: str, id: int, token: str):
+        self.email = email
+        self.id = id
+        self.token = token
+        self.message = "You successfully logged in!"
 

@@ -3,8 +3,8 @@ from flask import Blueprint,request
 from service.api_logic.news_logic import get_news_by_count, get_latest_sport_news, get_popular_news, get_news_by_id
 from api.routes.cache import cache
 from api.routes.scripts import get_cache_key
-from exept.handle_exeptions import get_error_response
-from exept.exeptions import DatabaseConnectionError
+from exept.handle_exeptions import get_custom_error_response, get_exception_error_response
+from exept.exeptions import DatabaseConnectionError, SoftServeException
 from logger.logger import Logger
 
 api_routes_logger = Logger("api_routes_logger", "api_routes_logger.log")
@@ -27,10 +27,9 @@ def get_recent_news_endpoint():
     try:
         recent_news = get_news_by_count(COUNT_NEWS)
         return recent_news
-    except Exception as e:
+    except SoftServeException as e:
         api_routes_logger.error(f"Error in GET /: {str(e)}")
-        get_error_response(e)
-
+        get_exception_error_response(e)
 
 @news_app.route('/<sport_type>', methods=['GET'])
 @cache.cached(timeout=60*60, key_prefix=get_cache_key)
@@ -39,9 +38,9 @@ def get_sport_news_endpoint(sport_type):
     try:
         sport_news = get_latest_sport_news(COUNT_NEWS, sport_type)
         return sport_news
-    except Exception as e:
+    except SoftServeException as e:
         api_routes_logger.error(f"Error in GET /: {str(e)}")
-        get_error_response(e)
+        get_custom_error_response(e)
 
 
 @news_app.route('/popular', methods=['GET'])
@@ -51,9 +50,9 @@ def get_popular_news_endpoint():
     try:
         popular_news = get_popular_news(COUNT_NEWS)
         return popular_news
-    except Exception as e:
+    except SoftServeException as e:
         api_routes_logger.error(f"Error in GET /: {str(e)}")
-        get_error_response(e)
+        get_custom_error_response(e)
 
 
 @news_app.route('/article', methods=['POST'])
@@ -65,9 +64,9 @@ def specific_article():
         news_id=article['blob_id']
         response = get_news_by_id(news_id)
         return response
-    except Exception as e:
+    except SoftServeException as e:
         api_routes_logger.error(f"Error in POST /: {str(e)}")
-        get_error_response(e)
+        get_custom_error_response(e)
 
 
     

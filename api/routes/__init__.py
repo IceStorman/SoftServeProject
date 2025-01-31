@@ -1,25 +1,30 @@
-import os
 from flask import Flask
 from flask_cors import CORS
 from api.container.container import Container
-from api.routes import api_news, api_games, api_sports, api_teams, api_countries, api_login
+from api.routes import (
+    api_news,
+    api_games,
+    api_sports,
+    api_teams,
+    api_countries,
+    api_login,
+    api_user_preferences
+)
 from api.routes.cache import cache
 from flask_swagger_ui import get_swaggerui_blueprint
 from flask_sqlalchemy import SQLAlchemy
 from database.session import DATABASE_URL
 from flask_mail import Mail
-from flask_jwt_extended import JWTManager, create_access_token
-from itsdangerous import URLSafeTimedSerializer, BadSignature
+from flask_jwt_extended import JWTManager
 from datetime import timedelta
+import os
+from dotenv import load_dotenv
 
 
-
+load_dotenv()
 db = SQLAlchemy()
 mail = Mail()
 jwt = JWTManager()
-
-
-
 
 
 def create_app():
@@ -35,16 +40,16 @@ def create_app():
     app.config['CACHE_DEFAULT_TIMEOUT'] = 60*5
     cache.init_app(app)
 
-    app.secret_key = "SECRET_KEY"
-    app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+    app.secret_key = os.getenv('SECRET_KEY')
+    app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
     app.config['MAIL_PORT'] = 587
     app.config['MAIL_USE_TLS'] = True
     app.config['MAIL_USE_SSL'] = False
-    app.config['MAIL_USERNAME'] = 'q.sport.news@gmail.com'
-    app.config['MAIL_PASSWORD'] = 'jjrc siyp trnq tzcp'
+    app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+    app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
     mail.init_app(app)
     
-    app.config['JWT_SECRET_KEY'] = 'your_secret_key'
+    app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
     app.config['JWT_TOKEN_LOCATION'] = ['cookies']
     app.config['JWT_COOKIE_SECURE'] = False
     app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=3)

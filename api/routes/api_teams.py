@@ -1,12 +1,12 @@
 import logging
 from flask import Blueprint, request
 from dto.pagination import Pagination
-from exept.handle_exeptions import get_error_response
+from exept.handle_exeptions import get_custom_error_response
 from service.api_logic.teams_logic import get_teams
 from service.implementation.auto_request_api.logic_request_by_react import basketball_players
 from api.routes.cache import cache
 from dto.api_input import TeamsLeagueDTO, TeamsStatisticsOrPlayersDTO
-from exept.exeptions import DatabaseConnectionError
+from exept.exeptions import DatabaseConnectionError, SoftServeException
 from service.implementation.auto_request_api.sport_data_managers.team_statistics_data_manager import \
     TeamStatisticsDataManager
 from logger.logger import Logger
@@ -34,9 +34,9 @@ def get_teams_sport_endpoint():
         pagination = Pagination(**data)
         league_teams = get_teams(dto, pagination)
         return league_teams
-    except Exception as e:
+    except SoftServeException as e:
         api_routes_logger.error(f"Error in POST /: {str(e)}")
-        get_error_response(e)
+        get_custom_error_response(e)
 
 
 @teams_app.route('/statistics', methods=['POST'])
@@ -49,9 +49,9 @@ def get_teams_statistics_endpoint():
         data_manager = TeamStatisticsDataManager(dto, dto.sport_id)
         team_statistics = data_manager.get_teams_statistics()
         return team_statistics
-    except Exception as e:
+    except SoftServeException as e:
         api_routes_logger.error(f"Error in POST /: {str(e)}")
-        get_error_response(e)
+        get_custom_error_response(e)
 
 
 @teams_app.route('/players', methods=['POST'])
@@ -62,9 +62,9 @@ def get_players_endpoint():
         dto = TeamsStatisticsOrPlayersDTO(**data)
         team_players = basketball_players(dto)
         return team_players
-    except Exception as e:
+    except SoftServeException as e:
         api_routes_logger.error(f"Error in POST /: {str(e)}")
-        get_error_response(e)
+        get_custom_error_response(e)
 
 
 
