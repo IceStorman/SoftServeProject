@@ -1,15 +1,15 @@
-from flask import current_app, url_for
+from flask import current_app, url_for, jsonify
 from flask_mail import Message
 from itsdangerous import URLSafeTimedSerializer
 from dto.api_output import OutputUser, OutputPreferences, OutputLogin
 from database.models import User
-from dto.common_responce import CommonResponse
+from dto.common_responce import CommonResponse, CommonResponseWithUser
 from exept.exeptions import UserDoNotExistError, NotCorrectUsernameOrEmailError, UserAlreadyExistError, NotCorrectPasswordError
 import bcrypt
 from logger.logger import Logger
 from jinja2 import Environment, FileSystemLoader
 import os
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, set_access_cookies
 
 
 class UserService:
@@ -17,7 +17,6 @@ class UserService:
         self.user_dal = user_dal
         self.serializer = URLSafeTimedSerializer(current_app.secret_key)
         self.logger = Logger("logger", "all.log").logger
-
 
     def create_user(self, email_front, username_front, password_front):
         existing_user = self.user_dal.get_user_by_email_or_username(email_front, username_front)
@@ -30,7 +29,9 @@ class UserService:
 
         new_user = User(email=email_front, username=username_front, password_hash=hashed_password.decode('utf-8'))
         self.user_dal.create_user(new_user)
-        return OutputUser().dump(new_user)
+
+        token = self.generate_auth_token(new_user)
+        return OutputLogin(email=new_user.email, token=token, id=new_user.user_id)
 
     def request_password_reset(self, email: str):
         existing_user = self.user_dal.get_user_by_email_or_username(email)
@@ -66,7 +67,7 @@ class UserService:
         return self.serializer.dumps(user.username, salt="email-confirm")
 
     def reset_user_password(self, email, new_password: str) -> str:
-        user = self.user_dal.get_user_by_email_or_username(None, email)
+        user = self.user_dal.get_user_by_email_or_username(email)
         if not user:
             raise UserDoNotExistError(email)
 
@@ -76,7 +77,7 @@ class UserService:
 
     def confirm_token(self, token: str, expiration=3600):
         username = self.serializer.loads(token, salt="email-confirm", max_age=expiration)
-        user = self.user_dal.get_user_by_email_or_username(username)
+        user = self.user_dal.get_user_by_email_or_username(None, username)
         return OutputUser().dump(user)
 
     def log_in(self, email_or_username: str, password: str):
@@ -87,7 +88,7 @@ class UserService:
             raise NotCorrectUsernameOrEmailError()
 
         if not bcrypt.checkpw(password.encode('utf-8'), user.password_hash.encode('utf-8')):
-            self.logger.warning("User does not exist")
+            self.logger.warning("Passwords do not match")
             raise NotCorrectPasswordError()
 
         token = self.generate_auth_token(user)
@@ -95,3 +96,22 @@ class UserService:
 
     def generate_auth_token(self, user):
         return self.serializer.dumps(user.email, salt="user-auth-token")
+
+    def google_auth(self, email):
+        user = self.user_dal.get_user_by_email_or_username(email)
+        if not user:
+            user = User(email=email, username=email.split('@')[0])
+            self.user_dal.create_user(user)
+
+        token = self.generate_auth_token(user)
+        return OutputLogin(email=user.email, token=token, id=user.user_id)
+
+    def create_access_token_response(self, user):
+        access_token = create_access_token(identity=user.email)
+
+        response = CommonResponseWithUser(user_id=user.id, user_email=user.email).to_dict()
+        response_json = jsonify(response)
+
+        set_access_cookies(response_json, access_token)
+
+        return response_json

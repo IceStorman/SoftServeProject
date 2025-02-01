@@ -91,7 +91,7 @@ class InputUserDTO(BaseDTO):
     password_hash = fields.Str(required=True)
 
 
-class ResetPasswordDTO(BaseDTO):
+class InputUserByEmailDTO(BaseDTO):
     email = fields.Str(required=True)
 
 
@@ -112,3 +112,10 @@ class UpdateUserPreferencesDTO(BaseDTO):
 
 class GetUserPreferencesDTO(BaseDTO):
     user_id = fields.Int(required=False, missing=None)
+
+
+class InputUserByGoogleDTO(BaseDTO):
+    email = fields.Str(required=True)
+    id = fields.Str(required=False, missing=None)
+    verified_email = fields.Bool(required=False, missing=None)
+    picture = fields.Str(required=False, missing=None)
