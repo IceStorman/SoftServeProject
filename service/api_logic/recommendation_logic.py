@@ -1,45 +1,37 @@
-import asyncio
-from keras.src.losses import cosine_similarity
 from Levenshtein import ratio
 from datetime import datetime, timedelta
 import pandas as pd
+from dto.api_input import UserInteraction
+from dto.api_output import OutputRecommendationList
+from logger.logger import Logger
 
-
-class UserInteraction:
-    def __init__(self, sport_id, news_id):
-        self.sport_id = sport_id
-        self.news_id = news_id
 
 class RecommendationService:
-    def __init__(self, recommendation_dal):
+    def __init__(self, recommendation_dal, user_dal):
         self._recommendation_dal = recommendation_dal
-        #self.logger = Logger("api_logic_logger", "api_logic_logger.log").logger
+        self._user_dal = user_dal
+        self.logger = Logger("logger", "all.log").logger
 
 
-    def hybrid_recommendations(self, alpha=0.6, beta=0.3, top_n=5):
-        try:
-            users = self._recommendation_dal.get_active_users()
-            recommendations_list = []
+    def hybrid_recommendations(self, user=None, top_n=5):
+        recommendations_list = []
+        if user is None:
+            users = self._recommendation_dal.get_all_users()
             for user in users:
-                # if not user.is_expired():
-                    interaction_df = self.__get_interactions()
-                    user_interaction_matrix = self.__create_interaction_matrix(interaction_df)
-                    recommendations_for_user_with_score = self.__user_based_recommendations(user.user_id, user_interaction_matrix, top_n=top_n)
-                    # cf_scores = self.get_cf_recommendations(user_id, user_interaction_matrix, top_n=top_n)
-                    #
-                    # final_scores = {}
-                    #
-                    # for news in set(recommendations_for_user_with_score + cf_scores):
-                    #     final_scores[news] = (
-                    #             alpha * (recommendations_for_user_with_score.get(news, 0)) +
-                    #             beta * (cf_scores.get(news, 0))
-                    #     )
+                interaction_df = self.__get_interactions()
+                user_interaction_matrix = self.__create_interaction_matrix(interaction_df)
+                recommendations_for_user_with_score = self.__user_based_recommendations(user.user_id, user_interaction_matrix, top_n=top_n)
+                recommendations_list.append(recommendations_for_user_with_score)
+        else:
+            interaction_df = self.__get_interactions()
+            user_interaction_matrix = self.__create_interaction_matrix(interaction_df)
+            recommendations_for_user_with_score = self.__user_based_recommendations(user.user_id, user_interaction_matrix, top_n=top_n)
+            recommendations_list.append(recommendations_for_user_with_score)
+            return recommendations_list
 
-                    #return sorted(c, key=final_scores.get, reverse=True)[:top_n]
-                    recommendations_list.append(recommendations_for_user_with_score)
-            return recommendations_for_user_with_score
-        except Exception as e:
-            print(e)
+        self.__save_to_db_users_recommendations(recommendations_list)
+
+
 
     def __get_interactions(self, time_limit=21):
         time_limit = datetime.now() - timedelta(days=time_limit)
@@ -68,6 +60,7 @@ class RecommendationService:
 
         news_details_df['save_at'] = pd.to_datetime(news_details_df['save_at'])
         current_time = datetime.now()
+
         news_details_df['time_score'] = news_details_df['save_at'].apply(
             lambda t: max(0, 1 - (current_time - t).days / 21) if pd.notnull(t) else 0
         )
@@ -93,8 +86,10 @@ class RecommendationService:
             'save_at': 'max',
             'time_score': 'mean',
             'sport_score': 'mean',
-            'team_score': 'sum'
+            'team_score': 'sum',
+            'interaction_score': 'max',
         }).reset_index()
+
         news_df_unique = news_df_unique.set_index('news_id')
         news_df_unique['adjusted_score'] = news_df_unique['sport_score'] * news_df_unique['time_score'] + news_df_unique['team_score']
 
@@ -105,14 +100,16 @@ class RecommendationService:
         final_recommendations_df = not_seen_news_df['adjusted_score'].sort_values(ascending=False).head(top_n).index.tolist()
 
         final_news_recommendations = self._recommendation_dal.get_news_by_recommendation_list(final_recommendations_df)
-
-        return [
+        recommendations_list = [
             {
                 "news_id": news.news_id,
-                "score": news_df_unique.loc[news.news_id, 'adjusted_score']
+                "score": news_df_unique.loc[news.news_id, 'adjusted_score'],
+                "user_id": user_id
             }
             for news in final_news_recommendations
         ]
+
+        return OutputRecommendationList(many=True).dump(recommendations_list)
 
 
     def __get_user_preferences(self, user_id):
@@ -192,6 +189,17 @@ class RecommendationService:
 
     def __calculate_team_score(self, teams_in_news, user_preferred_teams):
         return sum(0.2 if self.__levenshtein_for_teams_similarity(team, user_preferred_teams) else 0 for team in teams_in_news)
+
+
+    def __save_to_db_users_recommendations(self, recommendations_list):
+        for rec in recommendations_list:
+            user_id = rec["user_id"]
+            self._recommendation_dal.save_users_recommendations(user_id, recommendations_list)
+
+
+    def get_user_recommendations(self, user_id):
+        all_recs = self._recommendation_dal.get_user_recommendations(user_id)
+        return OutputRecommendationList(many=True).dump(all_recs)
 
 
     # def get_cf_recommendations(self, user_id, interaction_matrix, top_n=5):

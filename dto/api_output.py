@@ -56,3 +56,8 @@ class OutputLogin():
         self.token = token
         self.message = "You successfully logged in!"
 
+class OutputRecommendationList(Schema):
+    news_id = fields.Int(required=True)
+    score = fields.Float(required=True)
+    user_id = fields.Int(required=True)
+

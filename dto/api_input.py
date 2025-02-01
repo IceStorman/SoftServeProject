@@ -112,3 +112,13 @@ class UpdateUserPreferencesDTO(BaseDTO):
 
 class GetUserPreferencesDTO(BaseDTO):
     user_id = fields.Int(required=False, missing=None)
+
+
+class UserInteraction:
+    def __init__(self, sport_id, news_id):
+        self.sport_id = sport_id
+        self.news_id = news_id
+
+
+class InputUserByIdDTO(BaseDTO):
+    user_id = fields.Int(required=False, missing=None)
