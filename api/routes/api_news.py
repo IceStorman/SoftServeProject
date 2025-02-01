@@ -77,7 +77,7 @@ def specific_article():
 @inject
 def generate_recommendations(service: RecommendationService = Provide[Container.recommendation_service]):
     try:
-        service.recommendations()
+        service.hybrid_recommendations()
         return jsonify({"status": "Processing recommendations"}), 202
     except Exception as e:
         api_routes_logger.error(f"Error in RECOMMENDATIONS: {str(e)}")

@@ -7,9 +7,9 @@ class RecommendationDAL:
         self.session = session
 
     def get_active_users(self):
-        # return self.session.query(ActiveUser).all()
+        return self.session.query(User).all()
         #self.new()
-        return [{"user_id": i} for i in range(2, 6)]  # 5 тестових юзерів
+        #return [{"user_id": i} for i in range(2, 6)]  # 5 тестових юзерів
 
     def get_user_interactions(self, time_limit):
         try:
@@ -30,8 +30,10 @@ class RecommendationDAL:
             union_query = union_all(likes_query)
 
             return self.session.execute(union_query).fetchall()
+
         except Exception as e:
             print(e)
+
 
     def get_user_preferences_by_id(self, user_id):
         query = (
@@ -47,6 +49,7 @@ class RecommendationDAL:
 
         return query.all()
 
+
     def get_sport_id_for_news(self, news_id):
         query = (
             self.session.query(
@@ -57,11 +60,11 @@ class RecommendationDAL:
             .filter(News.news_id == news_id)
         )
         sport = query.all()
+
         return sport[0][0]  if sport else None
 
+
     def get_news_details_by_interactions(self, user_interaction_matrix):
-        print(user_interaction_matrix.index)
-        print(user_interaction_matrix.columns)
         return  (
             self.session.query(News, TeamInNews)
             .outerjoin(TeamInNews, News.news_id == TeamInNews.news_id)
@@ -69,8 +72,10 @@ class RecommendationDAL:
             .all()
         )
 
+
     def get_news_by_recommendation_list(self, final_recommendations):
         return self.session.query(News).filter(News.news_id.in_(final_recommendations)).all()
+
 
     def new(self):
         from datetime import datetime
