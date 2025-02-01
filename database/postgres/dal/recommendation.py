@@ -9,10 +9,12 @@ class RecommendationDAL:
 
 
     def get_all_users(self):
+        self.new()
         return self.session.query(User).all()
-        #self.new()
+
 
     def get_user_interactions(self, time_limit):
+        self.new()
         likes_query = self.session.query(
             Likes.users_id.label('user_id'),
             Likes.news_id.label('news_id'),
@@ -92,9 +94,9 @@ class RecommendationDAL:
     def new(self):
         from datetime import datetime
         test_likes = [
-            Likes(users_id=2, news_id=15, timestamp=datetime(2024, 1, 25)),
-            Likes(users_id=2, news_id=16, timestamp=datetime(2025, 1, 27)),
-            Likes(users_id=2, news_id=17, timestamp=datetime(2025, 1, 29))
+            Likes(users_id=2, news_id=31, timestamp=datetime(2024, 1, 25)),
+            Likes(users_id=2, news_id=32, timestamp=datetime(2025, 1, 27)),
+            Likes(users_id=3, news_id=33, timestamp=datetime(2025, 1, 31))
         ]
         self.session.add_all(test_likes)
         self.session.commit()

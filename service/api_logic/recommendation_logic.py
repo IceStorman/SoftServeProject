@@ -5,6 +5,12 @@ from dto.api_input import UserInteraction
 from dto.api_output import OutputRecommendationList
 from logger.logger import Logger
 
+SEC_PER_DAY = 24 * 60 * 60
+MAX_LIMIT_FOR_REC_IN_DAYS = 21
+SCORE_FOR_NOT_PREFER_SPORT = 0.25
+SCORE_FOR_PREFER_SPORT = 0.1
+SCORE_FOR_PREFER_TEAM = 0.2
+BASE_LIMIT_OF_NEWS_FOR_RECS = 5
 
 class RecommendationService:
     def __init__(self, recommendation_dal, user_dal):
@@ -13,7 +19,7 @@ class RecommendationService:
         self.logger = Logger("logger", "all.log").logger
 
 
-    def hybrid_recommendations(self, user=None, top_n=5):
+    def hybrid_recommendations(self, user=None, top_n=BASE_LIMIT_OF_NEWS_FOR_RECS):
         recommendations_list = []
         if user is None:
             users = self._recommendation_dal.get_all_users()
@@ -33,7 +39,7 @@ class RecommendationService:
 
 
 
-    def __get_interactions(self, time_limit=21):
+    def __get_interactions(self, time_limit=MAX_LIMIT_FOR_REC_IN_DAYS):
         time_limit = datetime.now() - timedelta(days=time_limit)
         interactions = self._recommendation_dal.get_user_interactions(time_limit)
         interactions_df = pd.DataFrame(interactions, columns=['user_id', 'news_id', 'interaction', 'timestamp'])
@@ -51,6 +57,15 @@ class RecommendationService:
             fill_value=0
         )
 
+    def calculate_time_score(self, save_at):
+        now = datetime.now()
+        delta_seconds = (now - save_at).total_seconds()
+        delta_days = delta_seconds / SEC_PER_DAY
+        if delta_days > MAX_LIMIT_FOR_REC_IN_DAYS:
+            return 0
+
+        return 1 - (delta_days / MAX_LIMIT_FOR_REC_IN_DAYS)
+
 
     def __user_based_recommendations(self, user_id, user_interaction_matrix, top_n=5):
         user_preferred_teams, user_preferred_sports = self.__get_user_preferences(user_id)
@@ -58,12 +73,11 @@ class RecommendationService:
 
         news_details_df = self.__get_news_details_by_user_interaction_matrix(user_id, user_interaction_matrix)
 
-        news_details_df['save_at'] = pd.to_datetime(news_details_df['save_at'])
-        current_time = datetime.now()
+        news_details_df['time_score'] = news_details_df['save_at'].apply(self.calculate_time_score)
 
-        news_details_df['time_score'] = news_details_df['save_at'].apply(
-            lambda t: max(0, 1 - (current_time - t).days / 21) if pd.notnull(t) else 0
-        )
+        # news_details_df['time_score'] = news_details_df['save_at'].apply(
+        #     lambda t: max(0, 1 - (current_time - t).days / 21) if pd.notnull(t) else 0
+        # )
 
         news_details_df['sport_score'] = news_details_df['sport_id'].apply(
             lambda sport: self.__calculate_sport_score(
@@ -172,9 +186,9 @@ class RecommendationService:
         sport_score = 0
         for sport in news_sports:
             if sport in preferred_sports:
-                sport_score += 0.1
+                sport_score += SCORE_FOR_PREFER_SPORT
             if sport in user_interactions:
-                sport_score += 0.25
+                sport_score += SCORE_FOR_NOT_PREFER_SPORT
 
         return sport_score
 
@@ -188,7 +202,7 @@ class RecommendationService:
 
 
     def __calculate_team_score(self, teams_in_news, user_preferred_teams):
-        return sum(0.2 if self.__levenshtein_for_teams_similarity(team, user_preferred_teams) else 0 for team in teams_in_news)
+        return sum(SCORE_FOR_PREFER_TEAM if self.__levenshtein_for_teams_similarity(team, user_preferred_teams) else 0 for team in teams_in_news)
 
 
     def __save_to_db_users_recommendations(self, recommendations_list):
