@@ -1,8 +1,11 @@
+from service.api_logic.websocket import socketio
 from flask import Flask
 from flask_cors import CORS
 from api.routes import api_news, api_games, api_sports, api_teams, api_countries
 from api.routes.cache import cache
 from flask_swagger_ui import get_swaggerui_blueprint
+from api.container.container import Container
+
 
 
 def create_app():
@@ -12,6 +15,8 @@ def create_app():
     app.config['JSON_AS_ASCII'] = False
     app.config['CACHE_DEFAULT_TIMEOUT'] = 60*5
     cache.init_app(app)
+    socketio.init_app(app)
+
     SWAGGER_URL = '/swagger'
     API_URL = '/static/swagger.json'
 
@@ -30,6 +35,8 @@ def create_app():
     app.register_blueprint(api_teams.teams_app, url_prefix='/teams')
     app.register_blueprint(api_countries.countries_app, url_prefix='/countries')
 
+    app.container = Container()
+
 
 
     return app
@@ -37,5 +44,5 @@ def create_app():
 
 app = create_app()
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5001, debug=True, use_reloader=False)
+    socketio.run(app, host='0.0.0.0', port=5001, debug=True, use_reloader=False, allow_unsafe_werkzeug=True)
 

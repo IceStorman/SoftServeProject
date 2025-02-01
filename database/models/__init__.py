@@ -15,5 +15,6 @@ from .likes import Likes
 from .views import Views
 from .players import Players
 from .categories import Category
+from .active_user import ActiveUser
 
 from .base import Base

@@ -1,11 +1,14 @@
-import logging
-from flask import Blueprint,request
+from dependency_injector.wiring import Provide, inject
+from flask import Blueprint, request, jsonify
+from api.container.container import Container
 from service.api_logic.news_logic import get_news_by_count, get_latest_sport_news, get_popular_news, get_news_by_id
 from api.routes.cache import cache
 from api.routes.scripts import get_cache_key
 from exept.handle_exeptions import get_error_response
 from exept.exeptions import DatabaseConnectionError
 from logger.logger import Logger
+from service.api_logic.recommendation_logic import RecommendationService
+from service.api_logic.websocket import connected_users, socketio
 
 api_routes_logger = Logger("api_routes_logger", "api_routes_logger.log")
 
@@ -69,6 +72,15 @@ def specific_article():
         api_routes_logger.error(f"Error in GET /: {str(e)}")
         get_error_response(e)
 
+
+@news_app.route("/recommendations", methods=["GET"])
+@inject
+def generate_recommendations(service: RecommendationService = Provide[Container.recommendation_service]):
+    try:
+        service.recommendations()
+        return jsonify({"status": "Processing recommendations"}), 202
+    except Exception as e:
+        api_routes_logger.error(f"Error in RECOMMENDATIONS: {str(e)}")
 
     
 
