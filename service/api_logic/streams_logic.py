@@ -6,9 +6,9 @@ from exept.handle_exeptions import handle_exceptions
 from service.api_logic.scripts import get_sport_index_by_name
 from logger.logger import Logger
 
-api_logic_logger = Logger("api_logic_logger", "api_logic_logger.log")
+logger = Logger("logger", "all.log")
 
-@api_logic_logger.log_function_call()
+@logger.log_function_call()
 def fetch_streams(session, order_by: ClauseElement = None, limit: int = None, filters=None):
     query = session.query(Stream)
     if filters:
@@ -21,7 +21,7 @@ def fetch_streams(session, order_by: ClauseElement = None, limit: int = None, fi
 
 
 @handle_exceptions
-@api_logic_logger.log_function_call()
+@logger.log_function_call()
 def save_json_stream_to_streams_table(session, streams_data):
     streams_list = json.loads(streams_data) if isinstance(streams_data, str) else streams_data
 
@@ -35,7 +35,7 @@ def save_json_stream_to_streams_table(session, streams_data):
     session.commit()
 
 @handle_exceptions
-@api_logic_logger.log_function_call()
+@logger.log_function_call()
 def save_json_stream_to_status_table(session,streams_data):
     streams_list = json.loads(streams_data) if isinstance(streams_data, str) else streams_data
 
@@ -54,13 +54,13 @@ def save_json_stream_to_status_table(session,streams_data):
 
 
 @handle_exceptions
-@api_logic_logger.log_function_call()
+@logger.log_function_call()
 def get_streams_by_count(session, count:int):
     streams = fetch_streams(session, order_by=Stream.start_time.desc(), limit=count)
     return json_streams(streams)
 
 @handle_exceptions
-@api_logic_logger.log_function_call()
+@logger.log_function_call()
 def get_latest_sport_streams(session, count:int, sport_name:str):
     sport = get_sport_index_by_name(session, sport_name)
     filters = [Stream.sport_id == sport.sport_id]
@@ -68,7 +68,7 @@ def get_latest_sport_streams(session, count:int, sport_name:str):
     return json_streams(streams)
 
 @handle_exceptions
-@api_logic_logger.log_function_call()
+@logger.log_function_call()
 def get_streams_of_sport(session, sport_name:str):
     sport = get_sport_index_by_name(session, sport_name)
     filters = [Stream.sport_id == sport.sport_id]
@@ -77,7 +77,7 @@ def get_streams_of_sport(session, sport_name:str):
 
 
 
-@api_logic_logger.log_function_call()
+@logger.log_function_call()
 def json_streams(session):
     streams = session.query(Stream).all()
     streams_data = []

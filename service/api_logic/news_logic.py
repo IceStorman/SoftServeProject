@@ -8,11 +8,11 @@ from service.api_logic.scripts import get_sport_by_name
 from database.session import SessionLocal
 from logger.logger import Logger
 
-api_logic_logger = Logger("api_logic_logger", "api_logic_logger.log")
+logger = Logger("logger", "all.log")
 
 session = SessionLocal()
 
-@api_logic_logger.log_function_call()
+@logger.log_function_call()
 def fetch_news(session, order_by: ClauseElement = None, limit: int = None, filters=None):
     query = session.query(News)
     if filters:
@@ -25,14 +25,14 @@ def fetch_news(session, order_by: ClauseElement = None, limit: int = None, filte
 
 
 @handle_exceptions
-@api_logic_logger.log_function_call()
+@logger.log_function_call()
 def get_news_by_count(count: int):
     news = fetch_news(session, order_by=News.save_at.desc(), limit=count)
     return json_news(news)
 
 
 @handle_exceptions
-@api_logic_logger.log_function_call()
+@logger.log_function_call()
 def get_latest_sport_news(count: int, sport_name: str):
     sport = get_sport_by_name(session, sport_name)
 
@@ -42,22 +42,22 @@ def get_latest_sport_news(count: int, sport_name: str):
 
 
 @handle_exceptions
-@api_logic_logger.log_function_call()
+@logger.log_function_call()
 def get_popular_news(count: int):
     news = fetch_news(session, order_by=News.interest_rate.desc(), limit=count)
     return json_news(news)
 
 @handle_exceptions
-@api_logic_logger.log_function_call()
+@logger.log_function_call()
 def get_news_by_id(blob_id: str):
     news = fetch_news(session, filters=[News.blob_id == blob_id], limit=1)
     if news:
-        api_logic_logger.warning(f"News ware`t empty: {news}")
+        logger.warning(f"News ware`t empty: {news}")
         return json_news(news)
 
 
 
-@api_logic_logger.log_function_call()
+@logger.log_function_call()
 def json_news(news_records):
     all_results = []
     for news_record in news_records:
