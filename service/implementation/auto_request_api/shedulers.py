@@ -2,7 +2,6 @@ import time
 from apscheduler.schedulers.background import BackgroundScheduler
 from concurrent.futures import ThreadPoolExecutor
 from api.container.container import Container
-from exept.exeptions import SoftServeException
 from service.implementation.auto_request_api.logic_auto_request import apis, auto_request_system, keep_db_alive
 from logger.logger import Logger
 

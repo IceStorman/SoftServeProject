@@ -1,7 +1,7 @@
 import re
 from collections import namedtuple
 from datetime import datetime
-from marshmallow import Schema, fields, pre_load, post_load, ValidationError
+from marshmallow import Schema, fields, pre_load, post_load, ValidationError, validates
 
 
 class BaseDTO(Schema):
@@ -124,6 +124,21 @@ class UpdateUserPreferencesDTO(BaseDTO):
 
 
 class GetUserPreferencesDTO(BaseDTO):
+    user_id = fields.Int(required=False, missing=None)
+
+
+class UserInteraction:
+    def __init__(self, sport_id, news_id):
+        self.sport_id = sport_id
+        self.news_id = news_id
+
+
+class UserInteractionSchema(BaseDTO):
+    sport_id = fields.Int(required=True)
+    news_id = fields.Int(required=True)
+
+
+class InputUserByIdDTO(BaseDTO):
     user_id = fields.Int(required=False, missing=None)
 
 

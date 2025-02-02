@@ -75,6 +75,8 @@ def specific_article():
 
 @news_app.route("/get/recommendation", methods=["GET"])
 @inject
+@handle_exceptions
+@logger.log_function_call()
 async def get_recommendations_endpoint(service: RecommendationService = Provide[Container.recommendation_service]):
     try:
         #user_id = get_user_id_from_jwt()
@@ -91,11 +93,11 @@ async def get_recommendations_endpoint(service: RecommendationService = Provide[
 @inject
 @handle_exceptions
 @logger.log_function_call()
-def fast_generate_recommendation_endpoint(service: RecommendationService = Provide[Container.recommendation_service]):
+async def fast_generate_recommendation_endpoint(service: RecommendationService = Provide[Container.recommendation_service]):
     try:
         data = request.get_json()
         dto = InputUserByIdDTO().load(data)
-        rec = service.hybrid_recommendations(dto)
+        rec = await service.hybrid_recommendations(dto)
         return rec
 
     except SoftServeException as e:

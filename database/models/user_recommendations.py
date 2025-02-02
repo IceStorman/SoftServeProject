@@ -6,3 +6,4 @@ class UserRecommendations(Base):
     user_id = Column(Integer, ForeignKey('Users.user_id'))
     news_id = Column(Integer, ForeignKey('News.news_id'))
     score = Column(Float)
+    rating = Column(Integer)

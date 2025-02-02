@@ -80,7 +80,12 @@ class RecommendationDAL:
         self.session.query(UserRecommendations).filter_by(user_id=user_id).delete()
 
         recommendation_objects = [
-            UserRecommendations(user_id=user_id, news_id=rec.news_id, score=rec.score)
+            UserRecommendations(
+                user_id=user_id,
+                news_id=rec.news_id,
+                score=rec.score,
+                rating=rec.rating
+            )
             for rec in recommendations
         ]
         self.session.add_all(recommendation_objects)

@@ -1,7 +1,7 @@
 from Levenshtein import ratio
 from datetime import datetime, timedelta
 import pandas as pd
-from dto.api_input import UserInteraction
+from dto.api_input import UserInteraction, UserInteractionSchema, InputUserByIdDTO
 from dto.api_output import OutputRecommendationList
 from exept.exeptions import NoUsersInDBError, EmptyRecommendationListForUserError
 from exept.handle_exeptions import handle_exceptions
@@ -23,16 +23,17 @@ class RecommendationService:
         self._recommendations_list = []
 
 
-    def hybrid_recommendations(self, user=None, top_n=BASE_LIMIT_OF_NEWS_FOR_RECS):
-        if user is None:
+    async def hybrid_recommendations(self, user=None, top_n=BASE_LIMIT_OF_NEWS_FOR_RECS):
+        #if user in None:
+        if user is not None:
             users_that_want_recs = self._recommendation_dal.get_all_users()
             if not users_that_want_recs:
                 raise NoUsersInDBError
             for user in users_that_want_recs:
                 try:
-                    interaction_df = self.__get_interactions()
-                    user_interaction_matrix = self.__create_interaction_matrix(interaction_df)
-                    recommendations_for_user_with_score = self.__user_based_recommendations(user.user_id, user_interaction_matrix, top_n=top_n)
+                    interaction_df = self.__get_interactions(users_that_want_recs)
+                    users_interaction_matrix = self.__create_interaction_matrix(interaction_df)
+                    recommendations_for_user_with_score = await self.__user_based_recommendations(user.user_id, users_interaction_matrix, top_n=top_n)
                     if not recommendations_for_user_with_score or not any(recommendations_for_user_with_score):
                         raise EmptyRecommendationListForUserError(user.user_id)
                     self._recommendations_list.append(recommendations_for_user_with_score)
@@ -40,9 +41,9 @@ class RecommendationService:
                     self.logger.error(f"{e}, so skipping this user")
                     continue
         else:
-            interaction_df = self.__get_interactions()
-            user_interaction_matrix = self.__create_interaction_matrix(interaction_df)
-            recommendations_for_user_with_score = self.__user_based_recommendations(user.user_id, user_interaction_matrix, top_n=top_n)
+            interaction_df = self.__get_interactions(user)
+            users_interaction_matrix = self.__create_interaction_matrix(interaction_df)
+            recommendations_for_user_with_score = self.__user_based_recommendations(user.user_id, users_interaction_matrix, top_n=top_n)
             if not recommendations_for_user_with_score or not any(recommendations_for_user_with_score):
                 raise EmptyRecommendationListForUserError(user.user_id)
             self._recommendations_list.append(recommendations_for_user_with_score)
@@ -52,13 +53,20 @@ class RecommendationService:
         return self._recommendations_list
 
 
-    def __get_interactions(self, time_limit=MAX_LIMIT_FOR_REC_IN_DAYS):
+    def __get_interactions(self, users_that_want_recs, time_limit=MAX_LIMIT_FOR_REC_IN_DAYS):
         time_limit = datetime.now() - timedelta(days=time_limit)
         interactions = self._recommendation_dal.get_user_interactions(time_limit)
         interactions_df = pd.DataFrame(interactions, columns=['user_id', 'news_id', 'interaction', 'timestamp'])
         interactions_grouped = interactions_df.groupby(['user_id', 'news_id'], as_index=False)['interaction'].sum()
 
-        return interactions_grouped
+        user_ids = [user.user_id for user in users_that_want_recs]
+        all_users_df = pd.DataFrame(user_ids, columns=['user_id'])
+
+        full_interactions = all_users_df.merge(interactions_grouped, on='user_id', how='left')
+        full_interactions['news_id'] = full_interactions['news_id'].fillna(-1).astype(int)
+        full_interactions['interaction'] = full_interactions['interaction'].fillna(0).astype(int)
+
+        return full_interactions
 
 
     def __create_interaction_matrix(self, interactions_df):
@@ -80,7 +88,7 @@ class RecommendationService:
         return 1 - (delta_days / MAX_LIMIT_FOR_REC_IN_DAYS)
 
 
-    def __user_based_recommendations(self, user_id, user_interaction_matrix, top_n=5):
+    async def __user_based_recommendations(self, user_id, user_interaction_matrix, top_n=5):
         user_preferred_teams, user_preferred_sports = self.__get_user_preferences(user_id)
         user_interactions_with_sport_in_news, user_not_interactions_with_sport_in_news = self.__get_user_interactions_with_sport_in_news(user_id, user_interaction_matrix)
 
@@ -131,9 +139,10 @@ class RecommendationService:
             {
                 "news_id": news.news_id,
                 "score": news_df_unique.loc[news.news_id, 'adjusted_score'],
-                "user_id": user_id
+                "user_id": user_id,
+                "rating": index + 1
             }
-            for news in final_news_recommendations
+            for index, news in enumerate(final_news_recommendations)
         ]
 
         return OutputRecommendationList(many=True).dump(recommendations_list)
@@ -158,7 +167,12 @@ class RecommendationService:
 
         for news_id, interaction_value in user_interaction_data.items():
             sport_id = self._recommendation_dal.get_sport_id_for_news(news_id)
-            interaction = UserInteraction(sport_id, news_id)
+            interaction = UserInteractionSchema().load(
+                {
+                    "sport_id": sport_id if sport_id is not None else 0,
+                    "news_id": news_id if news_id != -1 else 0,
+                }
+            )
 
             if interaction_value > 0:
                 user_interactions.append(interaction)
@@ -226,5 +240,9 @@ class RecommendationService:
 
 
     async def get_recommendations_from_db(self, user_id):
-        all_recs = self._recommendation_dal.get_user_recommendations(user_id)
-        return OutputRecommendationList(many=True).dump(all_recs)
+        # all_recs = self._recommendation_dal.get_user_recommendations(user_id)
+        # return OutputRecommendationList(many=True).dump(all_recs)
+        user_id = {"user_id": user_id}
+        user = InputUserByIdDTO().load(user_id)
+        q = await self.hybrid_recommendations(user)
+        return q
