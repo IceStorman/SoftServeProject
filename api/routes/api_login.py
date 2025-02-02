@@ -17,7 +17,7 @@ from api.container.container import Container
 import os
 
 
-os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'  # Дозволяє HTTP для OAuth
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 logger = Logger("logger", "all.log")
 

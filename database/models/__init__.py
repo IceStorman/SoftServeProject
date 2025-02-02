@@ -15,5 +15,8 @@ from .likes import Likes
 from .views import Views
 from .players import Players
 from .categories import Category
+from .streams_status import Streams_Status
+from .streams import Stream
+from .user_recommendation import UserRecommendations
 
 from .base import Base
