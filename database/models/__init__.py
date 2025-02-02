@@ -16,6 +16,6 @@ from .views import Views
 from .players import Players
 from .categories import Category
 from .streams_status import Streams_Status
-from .statuses import Statuses
+from .streams import Stream
 
 from .base import Base
