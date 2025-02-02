@@ -85,37 +85,21 @@ class GamesDTO(BaseDTO):
     per_page = fields.Int(required=False, missing=0)
 
 
-class InputUserDTO(BaseDTO):
-    username = fields.Str(required=True)
-    email = fields.Str(required=True)
-    password_hash = fields.Str(required=True)
+class NewsDTO(BaseDTO):
+    news__news_id = fields.Int(required=False, missing=None)
+    news__sport_id = fields.Int(required=False, missing=None)
+    news__interest_rate = fields.Int(required=False, missing=None)
+
+    
 
 
-class InputUserByEmailDTO(BaseDTO):
-    email = fields.Str(required=True)
+class StreamsDTO(BaseDTO):
+    streams__stream_id = fields.Int(required=False, missing = None)
+    streams__stream_url = fields.Str(required=False, missing=None)
+    streams__start_time = fields.Int(required=False, missing=None)#don't know if it is correct
+    streams__sport_id = fields.Int(required=False, missing=None)
 
 
-class NewPasswordDTO(BaseDTO):
-    new_password = fields.Str(required=True)
-    email = fields.Str(required=True)
 
 
-class InputUserLoginDTO(BaseDTO):
-    email_or_username = fields.Str(required=True)
-    password_hash = fields.Str(required=True)
 
-
-class UpdateUserPreferencesDTO(BaseDTO):
-    preferences = fields.List(fields.Int, required=True)
-    user_id = fields.Int(required=False, missing=None)
-
-
-class GetUserPreferencesDTO(BaseDTO):
-    user_id = fields.Int(required=False, missing=None)
-
-
-class InputUserByGoogleDTO(BaseDTO):
-    email = fields.Str(required=True)
-    id = fields.Str(required=False, missing=None)
-    verified_email = fields.Bool(required=False, missing=None)
-    picture = fields.Str(required=False, missing=None)

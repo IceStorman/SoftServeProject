@@ -4,7 +4,9 @@ from database.models.streams_status import Streams_Status
 from sqlalchemy.sql.expression import ClauseElement
 from exept.handle_exeptions import handle_exceptions
 from service.api_logic.scripts import get_sport_index_by_name
-from logger.logger import Logger
+from dto.pagination import Pagination
+from sqlalchemy.orm import aliased
+import datetime
 
 logger = Logger("logger", "all.log")
 
@@ -22,6 +24,36 @@ def fetch_streams(session, order_by: ClauseElement = None, limit: int = None, fi
 
 @handle_exceptions
 @logger.log_function_call()
+def get_streams_today(pagination, session):
+
+    StreamsStatus = aliased(Streams_Status)
+
+
+    query = (
+        session.query(
+            Stream.stream_id,
+            Stream.stream_url,
+            Stream.start_time,
+            Stream.sport_id,
+            StreamsStatus.status_id
+        )
+        .join(StreamsStatus, Stream.stream_id == StreamsStatus.stream_id)
+    )
+
+    today_start = datetime.combine(datetime.date.today(), datetime.min.time())
+    today_end = datetime.combine(datetime.date.today(), datetime.max.time())
+    query = query.filter(
+        Stream.start_time.between(today_start.timestamp(), today_end.timestamp())
+    )
+
+
+    if pagination:
+        query = query.offset(pagination.offset).limit(pagination.limit)
+
+    return query.all()
+
+
+@handle_exceptions
 def save_json_stream_to_streams_table(session, streams_data):
     streams_list = json.loads(streams_data) if isinstance(streams_data, str) else streams_data
 
@@ -86,7 +118,6 @@ def json_streams(session):
             "stream_id":stream.stream_id,
             "stream_url":stream.stream_url,
             "start_time":stream.start_time,
-            "status":stream.status,
             "sport_id":stream.sport_id
         })
     return json.dumps(streams_data, ensure_ascii=False)
