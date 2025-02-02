@@ -1,24 +1,44 @@
+import functools
 from functools import wraps
+
+import asyncio
 from flask import jsonify
 from pydantic import ValidationError
 from sqlalchemy.exc import OperationalError
+from sqlalchemy.util import await_only
+from tensorflow.python.eager.context import async_wait
+
 from exept.exeptions import SoftServeException, DatabaseConnectionError
 
 
 def handle_exceptions(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        try:
-            result = func(*args, **kwargs)
-            return result
-        except OperationalError:
-            raise DatabaseConnectionError
-        except ValidationError as e:
-            return get_custom_error_response(e)
-        except Exception as e:
-            return get_exception_error_response(e)
+    if asyncio.iscoroutinefunction(func):
+        @wraps(func)
+        async def async_wrapper(*args, **kwargs):
+            try:
+                foo = await func(*args, **kwargs)
+                return foo
+            except OperationalError:
+                raise DatabaseConnectionError
+            except ValidationError as e:
+                return get_custom_error_response(e)
+            except Exception as e:
+                return get_exception_error_response(e)
 
-    return wrapper
+        return async_wrapper
+    else:
+        @wraps(func)
+        def sync_wrapper(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except OperationalError:
+                raise DatabaseConnectionError
+            except ValidationError as e:
+                return get_custom_error_response(e)
+            except Exception as e:
+                return get_exception_error_response(e)
+
+        return sync_wrapper
 
 
 def handle_exceptions_for_class(cls):

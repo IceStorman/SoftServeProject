@@ -91,7 +91,7 @@ class InputUserDTO(BaseDTO):
     password_hash = fields.Str(required=True)
 
 
-class ResetPasswordDTO(BaseDTO):
+class InputUserByEmailDTO(BaseDTO):
     email = fields.Str(required=True)
 
 
@@ -114,11 +114,8 @@ class GetUserPreferencesDTO(BaseDTO):
     user_id = fields.Int(required=False, missing=None)
 
 
-class UserInteraction:
-    def __init__(self, sport_id, news_id):
-        self.sport_id = sport_id
-        self.news_id = news_id
-
-
-class InputUserByIdDTO(BaseDTO):
-    user_id = fields.Int(required=False, missing=None)
+class InputUserByGoogleDTO(BaseDTO):
+    email = fields.Str(required=True)
+    id = fields.Str(required=False, missing=None)
+    verified_email = fields.Bool(required=False, missing=None)
+    picture = fields.Str(required=False, missing=None)
