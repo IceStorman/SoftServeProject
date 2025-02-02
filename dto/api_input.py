@@ -90,8 +90,6 @@ class NewsDTO(BaseDTO):
     news__sport_id = fields.Int(required=False, missing=None)
     news__interest_rate = fields.Int(required=False, missing=None)
 
-    
-
 
 class StreamsDTO(BaseDTO):
     streams__stream_id = fields.Int(required=False, missing = None)
@@ -100,6 +98,37 @@ class StreamsDTO(BaseDTO):
     streams__sport_id = fields.Int(required=False, missing=None)
 
 
+class InputUserDTO(BaseDTO):
+    username = fields.Str(required=True)
+    email = fields.Str(required=True)
+    password_hash = fields.Str(required=True)
 
 
+class InputUserByEmailDTO(BaseDTO):
+    email = fields.Str(required=True)
 
+
+class NewPasswordDTO(BaseDTO):
+    new_password = fields.Str(required=True)
+    email = fields.Str(required=True)
+
+
+class InputUserLoginDTO(BaseDTO):
+    email_or_username = fields.Str(required=True)
+    password_hash = fields.Str(required=True)
+
+
+class UpdateUserPreferencesDTO(BaseDTO):
+    preferences = fields.List(fields.Int, required=True)
+    user_id = fields.Int(required=False, missing=None)
+
+
+class GetUserPreferencesDTO(BaseDTO):
+    user_id = fields.Int(required=False, missing=None)
+
+
+class InputUserByGoogleDTO(BaseDTO):
+    email = fields.Str(required=True)
+    id = fields.Str(required=False, missing=None)
+    verified_email = fields.Bool(required=False, missing=None)
+    picture = fields.Str(required=False, missing=None)
