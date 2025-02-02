@@ -1,69 +1,97 @@
 from typing import Optional
+from enum import Enum
+
+class SportType(Enum):
+    handball = "handball"
+    hockey = "hockey"
+    afl = "afl"
+    rugby = "rugby"
+    baseball = "baseball"
+    basketball = "basketball"
+    volleyball = "volleyball"
+    football = "football"
+    nfl = "nfl"
+    mma = "mma"
+    formula_1 = "formula-1"
+
+def get_sport_type(sport_id: str) -> Optional[SportType]:
+    try:
+        sport_name = sport_id.replace('_', '-').lower()
+        sport_type = SportType(sport_name)
+        return sport_type
+    except ValueError:
+        print(f"Invalid sport_id: {sport_id}")
+        return None
 
 def get_team_statistics_url(sport_id: str, team_id: Optional[int], league_id: Optional[int]):
-    print("Getting team statistics url")
-    match sport_id.lower():
-        case "handball":
+    sport_type = get_sport_type(sport_id)
+
+    match sport_type:
+        case SportType.handball:
             return f"https://v1.handball.api-sports.io/teams/statistics?season=2024&team={team_id}&league={league_id}"
-        case "hockey":
+        case SportType.hockey:
             return f"https://v1.hockey.api-sports.io/teams/statistics?season=2024&team={team_id}&league={league_id}"
-        case "afl":
+        case SportType.afl:
             return f"https://v1.afl.api-sports.io/teams/statistics?id={team_id}&season=2023"
-        case "rugby":
+        case SportType.rugby:
             return f"https://v1.rugby.api-sports.io/teams/statistics?season=2024&team={team_id}&league={league_id}"
-        case "baseball":
+        case SportType.baseball:
             return f"https://v1.baseball.api-sports.io/teams/statistics?league={league_id}&season=2024&team={team_id}"
-        case "volleyball":
+        case SportType.volleyball:
             return f"https://v1.volleyball.api-sports.io/teams/statistics?season=2024&team={team_id}&league={league_id}"
 
 def get_team_statistics_index(sport_id: str, team_id: Optional[int], league_id: Optional[int]):
-    print("Getting team statistics index")
-    match sport_id.lower():
-        case "handball":
+    sport_type = get_sport_type(sport_id)
+
+    match sport_type:
+        case SportType.handball:
             return f"teams/statistics?season=2024&team={team_id}&league={league_id}"
-        case "hockey":
+        case SportType.hockey:
             return f"teams/statistics?season=2024&team={team_id}&league={league_id}"
-        case "afl":
+        case SportType.afl:
             return f"teams/statistics?id={team_id}&season=2023"
-        case "rugby":
+        case SportType.rugby:
             return f"teams/statistics?season=2024&team={team_id}&league={league_id}"
-        case "baseball":
+        case SportType.baseball:
             return f"teams/statistics?season=2024&team={team_id}&league={league_id}"
-        case "volleyball":
+        case SportType.volleyball:
             return f"teams/statistics?league={league_id}&season=2024&team={team_id}"
 
 def get_team_index(sport_id: str, league_id: Optional[int]):
     print("Getting team index")
-    match sport_id.lower():
-        case "formula-1":
+
+    match get_sport_type(sport_id):
+        case SportType.formula_1:
             return f"teams/teams"
-        case "mma":
+        case SportType.mma:
             return f"teams/teams"
         case _:
             return f"teams/teams?season=2023&league={league_id}"
 
-def get_host(sport_id: str):
+def get_host(sport_id: str) -> Optional[str]:
     print("Getting host")
-    match sport_id.lower():
-        case "formula-1":
+
+    sport_type = get_sport_type(sport_id)
+    match sport_type:
+        case SportType.formula_1:
             return "v1.formula-1.api-sports.io"
-        case "hockey":
+        case SportType.hockey:
             return "v1.hockey.api-sports.io"
-        case "volleyball":
+        case SportType.volleyball:
             return "v1.volleyball.api-sports.io"
-        case "afl":
+        case SportType.afl:
             return "v1.afl.api-sports.io"
-        case "rugby":
+        case SportType.rugby:
             return "v1.rugby.api-sports.io"
-        case "handball":
+        case SportType.handball:
             return "v1.handball.api-sports.io"
-        case "football":
+        case SportType.football:
             return "v3.football.api-sports.io"
-        case "baseball":
+        case SportType.baseball:
             return "v1.baseball.api-sports.io"
-        case "basketball":
+        case SportType.basketball:
             return "v1.basketball.api-sports.io"
-        case "mma":
+        case SportType.mma:
             return "v1.mma.api-sports.io"
-        case "nfl":
+        case SportType.nfl:
             return "v1.american-football.api-sports.io"

@@ -43,5 +43,44 @@ class DatabaseConnectionError(SoftServeException):
         super().__init__(message)
 
 
+class InvalidResetPasswordError(SoftServeException):
+    status_code = 400
+
+    def __init__(self, date_value):
+        self.date_value = date_value
+        message = f"Invalid or expired token'"
+        super().__init__(message)
 
 
+class UserDoNotExistError(SoftServeException):
+    status_code = 404
+
+    def __init__(self, date_value):
+        self.date_value = date_value
+        message = f"User '{date_value}' does not exist'"
+        super().__init__(message)
+
+
+class NotCorrectUsernameOrEmailError(SoftServeException):
+    status_code = 401
+
+    def __init__(self):
+        message = f"Username or email are not correct'"
+        super().__init__(message)
+
+
+class NotCorrectPasswordError(SoftServeException):
+    status_code = 401
+
+    def __init__(self):
+        message = f"Username/Email or password are not correct'"
+        super().__init__(message)
+
+
+class UserAlreadyExistError(SoftServeException):
+    status_code = 409
+
+    def __init__(self, date_value):
+        self.date_value = date_value
+        message = f"User with such data already exist'"
+        super().__init__(message)

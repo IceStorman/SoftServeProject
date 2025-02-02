@@ -8,12 +8,12 @@ from database.session import SessionLocal
 from logger.logger import Logger
 from sqlalchemy import func
 
-api_logic_logger = Logger("api_logic_logger", "api_logic_logger.log")
+logger = Logger("logger", "all.log")
 
 session = SessionLocal()
 
 @handle_exceptions
-@api_logic_logger.log_function_call()
+@logger.log_function_call()
 def get_teams(
         filters_dto: dict,
         pagination: Pagination
@@ -27,8 +27,8 @@ def get_teams(
          #    .like(f"{filters_dto.get('letter', '')}%")
          # )
     )
-    a = query.all()
-    for p in a:
+    content_data = query.all()
+    for p in content_data:
         print(p)
 
     model_aliases = {

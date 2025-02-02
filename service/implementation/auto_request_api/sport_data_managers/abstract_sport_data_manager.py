@@ -6,7 +6,7 @@ from database.azure_blob_storage.save_get_blob import blob_save_specific_api, ge
 from database.session import SessionLocal
 from typing import Dict
 from datetime import datetime
-from database.models import Sport
+from database.models.sports import Sport
 from database.postgres.save_data import save_api_data
 from service.implementation.auto_request_api.sport_data_managers.sport_consts import get_host
 
@@ -41,8 +41,7 @@ class AbstractSportDataManager:
         response = requests.get(url, headers=headers)
         response.raise_for_status()
         json_data = response.json()
-        print(json_data)
-        print(name)
+
         if "teams/teams" in blob_name:
             save_api_data(json_data, name)
             return json_data

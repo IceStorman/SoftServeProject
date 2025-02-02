@@ -1,115 +1,158 @@
-from flask import Blueprint, jsonify, request
-from dto.api_input import InputUserDTO, ResetPasswordDTO, NewPasswordDTO, InputUserLoginDTO
-from exept.exeptions import DatabaseConnectionError
-from exept.handle_exeptions import get_error_response, get_error_reset_password
+from contextlib import nullcontext
+
+import requests
+from flask import Blueprint, jsonify, request, current_app, session, redirect
+from oauthlib.oauth2 import WebApplicationClient
+from requests_oauthlib import OAuth2Session
+from tensorflow.python.ops.initializers_ns import identity
+
+from dto.api_input import InputUserDTO, InputUserByEmailDTO, NewPasswordDTO, InputUserLoginDTO, InputUserByGoogleDTO
+from dto.common_responce import CommonResponseWithUser
+from exept.exeptions import DatabaseConnectionError, SoftServeException
+from exept.handle_exeptions import get_custom_error_response, handle_exceptions
 from logger.logger import Logger
 from dependency_injector.wiring import inject, Provide
 from service.api_logic.user_logic import UserService
 from api.container.container import Container
-from flask_jwt_extended import JWTManager,create_access_token, set_access_cookies, unset_jwt_cookies
-from datetime import timedelta
+import os
 
 
-api_routes_logger = Logger("api_routes_logger", "api_routes_logger.log")
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+
+logger = Logger("logger", "all.log")
 
 login_app = Blueprint('login_app', __name__)
 
 
 @login_app.errorhandler(DatabaseConnectionError)
 def handle_db_timeout_error(e):
-    api_routes_logger.error(f"Database error: {str(e)}")
+    logger.error(f"Database error: {str(e)}")
     response = {"error in data base": str(e)}
     return response
 
 
-@login_app.route('/sign_up', methods=['POST'])
+@login_app.route('/sign-up', methods=['POST'])
 @inject
-@api_routes_logger.log_function_call()
-def create_account_endpoint(service: UserService = Provide[Container.user_service]):
+@handle_exceptions
+@logger.log_function_call()
+async def create_account_endpoint(service: UserService = Provide[Container.user_service]):
     try:
         data = request.get_json()
         dto = InputUserDTO().load(data)
+        user = await service.create_user(dto.email, dto.username, dto.password_hash)
+        response = await service.create_access_token_response(user)
 
-        result = service.create_user(dto["email"], dto["username"], dto["password_hash"])
+        return response
 
-        return result
-    except Exception as e:
-        api_routes_logger.error(f"Error in POST /: {str(e)}")
-        get_error_response(e)
+    except SoftServeException as e:
+        logger.error(f"Error in POST /: {str(e)}")
+        return get_custom_error_response(e)
+
 
 
 @login_app.route('/reset-password-request', methods=['POST'])
 @inject
-@api_routes_logger.log_function_call()
+@handle_exceptions
+@logger.log_function_call()
 def request_password_reset(service: UserService = Provide[Container.user_service]):
     try:
         data = request.get_json()
-        dto = ResetPasswordDTO().load(data)
-        result = service.request_password_reset(dto["email"])
+        dto = InputUserByEmailDTO().load(data)
+        result = service.request_password_reset(dto.email)
+
         return result
 
-    except Exception as e:
-        api_routes_logger.error(f"Error in POST /: {str(e)}")
-        get_error_response(e)
+    except SoftServeException as e:
+        logger.error(f"Error in POST /: {str(e)}")
+        return get_custom_error_response(e)
 
 @login_app.route('/reset-password/<token>', methods=['GET', 'POST'])
 @inject
-@api_routes_logger.log_function_call()
+@handle_exceptions
+@logger.log_function_call()
 def reset_password(token, service: UserService = Provide[Container.user_service]):
     try:
         if request.method == "GET":
             user_data = service.confirm_token(token)
-            if not user_data:
-                return get_error_reset_password()
+
             return user_data
 
         if request.method == "POST":
             data = request.get_json()
             dto = NewPasswordDTO().load(data)
-            service.reset_user_password(dto["email"], dto["new_password"])
+            token = service.reset_user_password(dto.email, dto.new_password)
 
-            user = service.user.get_user_by_email(dto["email"])
-            if user:
-                new_jwt = create_access_token(identity=user.email)
-                return jsonify({"msg": "Пароль змінено успішно", "token": new_jwt})
+            return token
 
-            return {"msg": "Success"}
-
-    except Exception as e:
-        api_routes_logger.error(f"Error in POST /: {str(e)}")
-        return get_error_response(e)
+    except SoftServeException as e:
+        logger.error(f"Error in POST /: {str(e)}")
+        return get_custom_error_response(e)
 
 @login_app.route('/login', methods=['POST'])
 @inject
-@api_routes_logger.log_function_call()
-def log_in(service: UserService = Provide[Container.user_service]):
+@handle_exceptions
+@logger.log_function_call()
+async def log_in(service: UserService = Provide[Container.user_service]):
     try:
         data = request.get_json()
-
         dto = InputUserLoginDTO().load(data)
-        email_or_username = dto['email_or_username']
-        password = dto['password_hash']
+        user = await service.log_in(dto.email_or_username, dto.password_hash)
+        response = await service.create_access_token_response(user)
 
-        if not email_or_username or not password:
-            return {"error": "Необхідно вказати email або username і пароль"}, 400
+        return response
 
-        user = service.log_in(email_or_username, password)
+    except SoftServeException as e:
+        logger.error(f"Error in POST /login: {str(e)}")
+        return get_custom_error_response(e)
 
-        if not user:
-            return {"error": "Невірний email/username або пароль"}, 401
+@login_app.route("/login/google", methods=['GET'])
+@inject
+@handle_exceptions
+@logger.log_function_call()
+def login_google():
+    try:
+        with current_app.app_context():
+            client = WebApplicationClient(current_app.config['GOOGLE_CLIENT_ID'])
+            authorization_url = client.prepare_request_uri(
+                current_app.config['AUTHORIZATION_BASE_URL'],
+                redirect_uri=current_app.config['REDIRECT_URI'],
+                scope=current_app.config['SCOPES']
+            )
 
-        access_token = create_access_token(identity={'id': user.id, 'email': user.email})
+        return redirect(authorization_url)
 
-        response = {"message": "Ви успішно ввійшли", "user": {"id": user.id, "email": user.email}}
-        response_obj = jsonify(response)
+    except SoftServeException as e:
+        logger.error(f"Error in GET /login/google: {str(e)}")
+        return get_custom_error_response(e)
 
-        set_access_cookies(response_obj, access_token)
+@login_app.route("/auth/google/callback", methods=["POST"])
+@inject
+@handle_exceptions
+@logger.log_function_call()
+def callback(service: UserService = Provide[Container.user_service]):
+    try:
+        with current_app.app_context():
+            client = WebApplicationClient(current_app.config['GOOGLE_CLIENT_ID'])
+            token_url, headers, body = client.prepare_token_request(
+                current_app.config['TOKEN_URL'],
+                client_secret=current_app.config['GOOGLE_CLIENT_SECRET'],
+                authorization_response=request.url,
+                redirect_url=current_app.config['REDIRECT_URI']
+            )
+        token_response = requests.post(token_url, headers=headers, data=body)
+        client.parse_request_body_response(token_response.text)
 
-        return response_obj
+        user_info_response = requests.get(
+            current_app.config['USER_INFO_URL'],
+            headers={'Authorization': f'Bearer {client.token["access_token"]}'}
+        )
+        user_info = user_info_response.json()
+        dto = InputUserByGoogleDTO().load(user_info)
+        user = service.google_auth(dto.email)
+        response = service.create_access_token_response(user)
 
-    except Exception as e:
-        api_routes_logger.error(f"Error in POST /login: {str(e)}")
-        return get_error_response(e)
+        return response
 
-
-
+    except SoftServeException as e:
+        logger.error(f"Error in POST /auth/google/callback: {str(e)}")
+        return get_custom_error_response(e)

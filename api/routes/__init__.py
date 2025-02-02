@@ -55,6 +55,14 @@ def create_app():
     app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=3)
     jwt.init_app(app)
 
+    app.config['GOOGLE_CLIENT_ID'] = os.getenv('GOOGLE_CLIENT_ID')
+    app.config['GOOGLE_CLIENT_SECRET'] = os.getenv('GOOGLE_CLIENT_SECRET')
+    app.config['REDIRECT_URI'] = 'http://127.0.0.1:5001/login/auth/google/callback'
+    app.config['AUTHORIZATION_BASE_URL'] = 'https://accounts.google.com/o/oauth2/auth'
+    app.config['TOKEN_URL'] = 'https://oauth2.googleapis.com/token'
+    app.config['USER_INFO_URL'] = 'https://www.googleapis.com/oauth2/v2/userinfo'
+    app.config['SCOPES'] = 'https://www.googleapis.com/auth/userinfo.email'
+
     SWAGGER_URL = '/swagger'
     API_URL = '/static/swagger.json'
 
@@ -73,8 +81,6 @@ def create_app():
     app.register_blueprint(api_teams.teams_app, url_prefix='/teams')
     app.register_blueprint(api_countries.countries_app, url_prefix='/countries')
     app.register_blueprint(api_login.login_app, url_prefix='/login')
-    app.register_blueprint(api_user_preferences.preferences_app, url_prefix='/preferences')
-
 
 
     app.container = Container()
