@@ -9,12 +9,12 @@ class RecommendationDAL:
 
 
     def get_all_users(self):
-        self.new()
+        #elf.new()
         return self.session.query(User).all()
 
 
     def get_user_interactions(self, time_limit):
-        self.new()
+        #self.new()
         likes_query = self.session.query(
             Likes.users_id.label('user_id'),
             Likes.news_id.label('news_id'),
@@ -88,8 +88,14 @@ class RecommendationDAL:
 
 
     def get_user_recommendations(self, user_id):
-        return self.session.query(UserRecommendations).filter_by(user_id=user_id).all()
-
+        #return self.session.query(UserRecommendations).filter_by(user_id=user_id).all()
+        return [
+            {
+                "news_id": 13,
+                "score": 0.143415255,
+                "user_id": 2
+            }
+        ]
 
     def new(self):
         from datetime import datetime

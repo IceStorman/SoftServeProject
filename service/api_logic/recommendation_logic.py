@@ -3,6 +3,8 @@ from datetime import datetime, timedelta
 import pandas as pd
 from dto.api_input import UserInteraction
 from dto.api_output import OutputRecommendationList
+from exept.exeptions import NoUsersInDBError, EmptyRecommendationListForUserError
+from exept.handle_exeptions import handle_exceptions
 from logger.logger import Logger
 
 SEC_PER_DAY = 24 * 60 * 60
@@ -12,31 +14,42 @@ SCORE_FOR_PREFER_SPORT = 0.1
 SCORE_FOR_PREFER_TEAM = 0.2
 BASE_LIMIT_OF_NEWS_FOR_RECS = 5
 
+
 class RecommendationService:
     def __init__(self, recommendation_dal, user_dal):
         self._recommendation_dal = recommendation_dal
         self._user_dal = user_dal
         self.logger = Logger("logger", "all.log").logger
+        self._recommendations_list = []
 
 
     def hybrid_recommendations(self, user=None, top_n=BASE_LIMIT_OF_NEWS_FOR_RECS):
-        recommendations_list = []
         if user is None:
-            users = self._recommendation_dal.get_all_users()
-            for user in users:
-                interaction_df = self.__get_interactions()
-                user_interaction_matrix = self.__create_interaction_matrix(interaction_df)
-                recommendations_for_user_with_score = self.__user_based_recommendations(user.user_id, user_interaction_matrix, top_n=top_n)
-                recommendations_list.append(recommendations_for_user_with_score)
+            users_that_want_recs = self._recommendation_dal.get_all_users()
+            if not users_that_want_recs:
+                raise NoUsersInDBError
+            for user in users_that_want_recs:
+                try:
+                    interaction_df = self.__get_interactions()
+                    user_interaction_matrix = self.__create_interaction_matrix(interaction_df)
+                    recommendations_for_user_with_score = self.__user_based_recommendations(user.user_id, user_interaction_matrix, top_n=top_n)
+                    if not recommendations_for_user_with_score or not any(recommendations_for_user_with_score):
+                        raise EmptyRecommendationListForUserError(user.user_id)
+                    self._recommendations_list.append(recommendations_for_user_with_score)
+                except EmptyRecommendationListForUserError as e:
+                    self.logger.error(f"{e}, so skipping this user")
+                    continue
         else:
             interaction_df = self.__get_interactions()
             user_interaction_matrix = self.__create_interaction_matrix(interaction_df)
             recommendations_for_user_with_score = self.__user_based_recommendations(user.user_id, user_interaction_matrix, top_n=top_n)
-            recommendations_list.append(recommendations_for_user_with_score)
-            return recommendations_list
+            if not recommendations_for_user_with_score or not any(recommendations_for_user_with_score):
+                raise EmptyRecommendationListForUserError(user.user_id)
+            self._recommendations_list.append(recommendations_for_user_with_score)
+        self.logger.info("I AM HERE NOW BUT THIS SAVE NOT WORK")
+        #self.__save_to_db_users_recommendations(self._recommendations_list)
 
-        self.__save_to_db_users_recommendations(recommendations_list)
-
+        return self._recommendations_list
 
 
     def __get_interactions(self, time_limit=MAX_LIMIT_FOR_REC_IN_DAYS):
@@ -57,7 +70,7 @@ class RecommendationService:
             fill_value=0
         )
 
-    def calculate_time_score(self, save_at):
+    def __calculate_time_score(self, save_at):
         now = datetime.now()
         delta_seconds = (now - save_at).total_seconds()
         delta_days = delta_seconds / SEC_PER_DAY
@@ -73,7 +86,7 @@ class RecommendationService:
 
         news_details_df = self.__get_news_details_by_user_interaction_matrix(user_id, user_interaction_matrix)
 
-        news_details_df['time_score'] = news_details_df['save_at'].apply(self.calculate_time_score)
+        news_details_df['time_score'] = news_details_df['save_at'].apply(self.__calculate_time_score)
 
         # news_details_df['time_score'] = news_details_df['save_at'].apply(
         #     lambda t: max(0, 1 - (current_time - t).days / 21) if pd.notnull(t) else 0
@@ -206,37 +219,12 @@ class RecommendationService:
 
 
     def __save_to_db_users_recommendations(self, recommendations_list):
-        for rec in recommendations_list:
-            user_id = rec["user_id"]
-            self._recommendation_dal.save_users_recommendations(user_id, recommendations_list)
+        for recs in recommendations_list:
+            for user_rec in recs:
+                user_id = user_rec["user_id"]
+                self._recommendation_dal.save_user_recommendation(user_id, recommendations_list)
 
 
-    def get_user_recommendations(self, user_id):
+    async def get_recommendations_from_db(self, user_id):
         all_recs = self._recommendation_dal.get_user_recommendations(user_id)
         return OutputRecommendationList(many=True).dump(all_recs)
-
-
-    # def get_cf_recommendations(self, user_id, interaction_matrix, top_n=5):
-    #     similar_users = self.get_similar_users(user_id, interaction_matrix)
-    #     similar_users_interactions = interaction_matrix.loc[similar_users].mean()
-    #
-    #     return similar_users_interactions.sort_values(ascending=False).head(top_n).index.tolist()
-    #
-    # def get_similar_users(self, user_id, interaction_matrix, top_n=5):
-    #     if user_id not in interaction_matrix.index:
-    #         return []
-    #
-    #     # Вираховуємо схожість користувача з іншими
-    #     similarity_matrix = cosine_similarity(interaction_matrix, interaction_matrix)
-    #     user_index = interaction_matrix.index.get_loc(user_id)
-    #     print(user_index)
-    #
-    #     # Беремо top_n найсхожіших користувачів (окрім самого себе)
-    #     similar_users = sorted(
-    #         list(enumerate(similarity_matrix[user_index, :])),
-    #         key=lambda x: x[1], reverse=True
-    #     )[1:top_n + 1]  # Пропускаємо самого себе
-    #
-    #     return [interaction_matrix.index[i] for i, _ in similar_users]
-
-

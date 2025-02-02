@@ -84,3 +84,20 @@ class UserAlreadyExistError(SoftServeException):
         self.date_value = date_value
         message = f"User with such data already exist'"
         super().__init__(message)
+
+
+class NoUsersInDBError(SoftServeException):
+    status_code = 404
+
+    def __init__(self):
+        message = f"There are no users in database"
+        super().__init__(message)
+
+
+class EmptyRecommendationListForUserError(SoftServeException):
+    status_code = 204
+
+    def __init__(self, user_id):
+        message = f"There are no recommendations for user '{user_id} at this moment'"
+        super().__init__(message)
+

@@ -1,5 +1,5 @@
 from dependency_injector.wiring import inject, Provide
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app, make_response
 from api.container.container import Container
 from dto.api_input import InputUserByIdDTO
 from service.api_logic.news_logic import get_news_by_count, get_latest_sport_news, get_popular_news, get_news_by_id
@@ -73,13 +73,13 @@ def specific_article():
         get_custom_error_response(e)
 
 
-@news_app.route("/get/recommendation/<user_id>", methods=["GET"])
+@news_app.route("/get/recommendation", methods=["GET"])
 @inject
-@handle_exceptions
-@logger.log_function_call()
-def generate_recommendations(user_id, service: RecommendationService = Provide[Container.recommendation_service]):
+async def get_recommendations_endpoint(service: RecommendationService = Provide[Container.recommendation_service]):
     try:
-        rec = service.get_user_recommendations(user_id)
+        #user_id = get_user_id_from_jwt()
+        user_id = request.cookies.get("snfu")
+        rec = await service.get_recommendations_from_db(user_id)
         return rec
 
     except SoftServeException as e:
@@ -91,7 +91,7 @@ def generate_recommendations(user_id, service: RecommendationService = Provide[C
 @inject
 @handle_exceptions
 @logger.log_function_call()
-def generate_recommendations1(service: RecommendationService = Provide[Container.fast_recommendation_service]):
+def fast_generate_recommendation_endpoint(service: RecommendationService = Provide[Container.recommendation_service]):
     try:
         data = request.get_json()
         dto = InputUserByIdDTO().load(data)
@@ -102,10 +102,27 @@ def generate_recommendations1(service: RecommendationService = Provide[Container
         logger.error(f"Error in Get Recommendations /: {str(e)}")
         get_custom_error_response(e)
 
+@news_app.route("/qwerty")
+def qwerty():
+    response = make_response("Hello Nigga")
+    response.set_cookie("snfu", "2")
+    return response
 
 
-    
-
-
-
-
+# def get_user_id_from_jwt():
+#     jwt_token = request.cookies.get('access_token')
+#     if jwt_token is None:
+#         raise Exception("JWT token not found in cookies")
+#
+#     try:
+#         decoded_payload = jwt.decode(
+#             jwt_token,
+#             current_app.config['JWT_SECRET_KEY'],
+#             algorithms=["HS256"]
+#         )
+#         user_id = decoded_payload['identity']
+#         return user_id
+#     except jwt.ExpiredSignatureError:
+#         raise Exception("JWT token has expired")
+#     except jwt.InvalidTokenError:
+#         raise Exception("Invalid JWT token")
