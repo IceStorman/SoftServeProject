@@ -291,8 +291,7 @@ def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
                 name=team_name
             )
             session.add(team_index)
-
-            try_send_email_to_users(team_index)
+            try_send_email_to_users(team_index.name)
 
         session.commit()
     except Exception as e:
