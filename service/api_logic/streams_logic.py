@@ -3,6 +3,7 @@ from database.models.streams import Stream
 from database.models.streams_status import Streams_Status
 from sqlalchemy.sql.expression import ClauseElement
 from exept.handle_exeptions import handle_exceptions
+from logger.logger import Logger
 from service.api_logic.scripts import get_sport_index_by_name
 from dto.pagination import Pagination
 from sqlalchemy.orm import aliased
@@ -54,6 +55,7 @@ def get_streams_today(pagination, session):
 
 
 @handle_exceptions
+@logger.log_function_call()
 def save_json_stream_to_streams_table(session, streams_data):
     streams_list = json.loads(streams_data) if isinstance(streams_data, str) else streams_data
 
@@ -109,6 +111,7 @@ def get_streams_of_sport(session, sport_name:str):
 
 
 
+@logger.log_function_call()
 @logger.log_function_call()
 def json_streams(session):
     streams = session.query(Stream).all()
