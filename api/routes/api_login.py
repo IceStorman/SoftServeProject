@@ -115,7 +115,7 @@ def login_google():
             client = WebApplicationClient(current_app.config['GOOGLE_CLIENT_ID'])
             authorization_url = client.prepare_request_uri(
                 current_app.config['AUTHORIZATION_BASE_URL'],
-                redirect_uri=current_app.config['REDIRECT_URI'],
+                redirect_uri = current_app.config['REDIRECT_URI'],
                 scope=current_app.config['SCOPES']
             )
 
@@ -135,9 +135,9 @@ def callback(service: UserService = Provide[Container.user_service]):
             client = WebApplicationClient(current_app.config['GOOGLE_CLIENT_ID'])
             token_url, headers, body = client.prepare_token_request(
                 current_app.config['TOKEN_URL'],
-                client_secret=current_app.config['GOOGLE_CLIENT_SECRET'],
-                authorization_response=request.url,
-                redirect_url=current_app.config['REDIRECT_URI']
+                client_secret = current_app.config['GOOGLE_CLIENT_SECRET'],
+                authorization_response = request.url,
+                redirect_url = current_app.config['REDIRECT_URI']
             )
         token_response = requests.post(token_url, headers=headers, data=body)
         client.parse_request_body_response(token_response.text)
