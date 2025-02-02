@@ -1,6 +1,6 @@
 from flask import Blueprint
 from service.api_logic.countries_logic import get_countries, search_countries
-from exept.exeptions import DatabaseConnectionError, SoftServeException
+from exept.exeptions import DatabaseConnectionError, CustomQSportException
 from exept.handle_exeptions import get_custom_error_response
 from logger.logger import Logger
 
@@ -20,7 +20,7 @@ def get_countries_endpoint():
     try:
         countries = get_countries()
         return countries
-    except SoftServeException as e:
+    except CustomQSportException as e:
         logger.error(f"Error in GET /: {str(e)}")
         get_custom_error_response(e)
 
@@ -31,6 +31,6 @@ def search_countries_endpoint(query):
     try:
         result = search_countries(query.lower())
         return result
-    except SoftServeException as e:
+    except CustomQSportException as e:
         logger.error(f"Error in GET /: {str(e)}")
         get_custom_error_response(e)

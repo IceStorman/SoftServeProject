@@ -8,7 +8,7 @@ from tensorflow.python.ops.initializers_ns import identity
 
 from dto.api_input import InputUserDTO, InputUserByEmailDTO, NewPasswordDTO, InputUserLoginDTO, InputUserByGoogleDTO
 from dto.common_responce import CommonResponseWithUser
-from exept.exeptions import DatabaseConnectionError, SoftServeException
+from exept.exeptions import DatabaseConnectionError, CustomQSportException
 from exept.handle_exeptions import get_custom_error_response, handle_exceptions
 from logger.logger import Logger
 from dependency_injector.wiring import inject, Provide
@@ -44,7 +44,7 @@ async def create_account_endpoint(service: UserService = Provide[Container.user_
 
         return response
 
-    except SoftServeException as e:
+    except CustomQSportException as e:
         logger.error(f"Error in POST /: {str(e)}")
         return get_custom_error_response(e)
 
@@ -62,7 +62,7 @@ def request_password_reset(service: UserService = Provide[Container.user_service
 
         return result
 
-    except SoftServeException as e:
+    except CustomQSportException as e:
         logger.error(f"Error in POST /: {str(e)}")
         return get_custom_error_response(e)
 
@@ -84,7 +84,7 @@ def reset_password(token, service: UserService = Provide[Container.user_service]
 
             return token
 
-    except SoftServeException as e:
+    except CustomQSportException as e:
         logger.error(f"Error in POST /: {str(e)}")
         return get_custom_error_response(e)
 
@@ -101,7 +101,7 @@ async def log_in(service: UserService = Provide[Container.user_service]):
 
         return response
 
-    except SoftServeException as e:
+    except CustomQSportException as e:
         logger.error(f"Error in POST /login: {str(e)}")
         return get_custom_error_response(e)
 
@@ -121,7 +121,7 @@ def login_google():
 
         return redirect(authorization_url)
 
-    except SoftServeException as e:
+    except CustomQSportException as e:
         logger.error(f"Error in GET /login/google: {str(e)}")
         return get_custom_error_response(e)
 
@@ -153,6 +153,6 @@ def callback(service: UserService = Provide[Container.user_service]):
 
         return response
 
-    except SoftServeException as e:
+    except CustomQSportException as e:
         logger.error(f"Error in POST /auth/google/callback: {str(e)}")
         return get_custom_error_response(e)
