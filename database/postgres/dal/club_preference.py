@@ -8,4 +8,10 @@ class ClubPreferenceDAL:
         self.db_session = db_session
 
     def get_subscribed_users_on_specific_teams(self, team_name):
-        return self.db_session.query(ClubPreference).filter(ClubPreference.preferences == team_name).all()
+        data = self.db_session.query(ClubPreference).filter(ClubPreference.preferences == team_name).all()
+
+        user_ids = list()
+        for preference in data:
+            user_ids.append(preference.users_id)
+
+        return user_ids

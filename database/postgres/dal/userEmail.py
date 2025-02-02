@@ -8,4 +8,5 @@ class UserEmailDAL:
         self.db_session = db_session
 
     def get_user_email(self, user_id):
-        return self.db_session.query(User.email).filter(User.user_id == user_id).first()
+        data = self.db_session.query(User).filter(User.user_id == user_id).first()
+        return data.email if data else None

@@ -8,11 +8,10 @@ prefs_dal = ClubPreferenceDAL(session)
 user_dal = UserEmailDAL(session)
 
 def try_send_email_to_users(team_name: str):
-    print("Trying to send email to users")
     subscribed_users = get_subscribed_users(team_name)
 
-    for user in subscribed_users:
-        user_email = get_user_email(user.user_id)
+    for user_id in subscribed_users:
+        user_email = get_user_email(user_id)
         send_email_to_user(user_email)
 
 def get_subscribed_users(team_name: str):
