@@ -6,6 +6,7 @@ from logger.logger import Logger
 logger = Logger("logger", "all.log")
 
 
+
 def get_cache_key():
     sport_type = request.view_args.get('sport_type')
     logger.debug(f"Cache key for sport type: {sport_type}")
