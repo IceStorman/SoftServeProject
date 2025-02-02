@@ -8,7 +8,7 @@ from tensorflow.python.ops.initializers_ns import identity
 
 from dto.api_input import InputUserDTO, InputUserByEmailDTO, NewPasswordDTO, InputUserLoginDTO, InputUserByGoogleDTO
 from dto.common_responce import CommonResponseWithUser
-from exept.exeptions import DatabaseConnectionError, SoftServeException
+from exept.exeptions import DatabaseConnectionError, CustomQSportException
 from exept.handle_exeptions import get_custom_error_response, handle_exceptions
 from logger.logger import Logger
 from dependency_injector.wiring import inject, Provide
@@ -44,7 +44,7 @@ async def create_account_endpoint(service: UserService = Provide[Container.user_
 
         return response
 
-    except SoftServeException as e:
+    except CustomQSportException as e:
         logger.error(f"Error in POST /: {str(e)}")
         return get_custom_error_response(e)
 
@@ -62,7 +62,7 @@ def request_password_reset(service: UserService = Provide[Container.user_service
 
         return result
 
-    except SoftServeException as e:
+    except CustomQSportException as e:
         logger.error(f"Error in POST /: {str(e)}")
         return get_custom_error_response(e)
 
@@ -84,7 +84,7 @@ def reset_password(token, service: UserService = Provide[Container.user_service]
 
             return token
 
-    except SoftServeException as e:
+    except CustomQSportException as e:
         logger.error(f"Error in POST /: {str(e)}")
         return get_custom_error_response(e)
 
@@ -101,7 +101,7 @@ async def log_in(service: UserService = Provide[Container.user_service]):
 
         return response
 
-    except SoftServeException as e:
+    except CustomQSportException as e:
         logger.error(f"Error in POST /login: {str(e)}")
         return get_custom_error_response(e)
 
@@ -115,13 +115,13 @@ def login_google():
             client = WebApplicationClient(current_app.config['GOOGLE_CLIENT_ID'])
             authorization_url = client.prepare_request_uri(
                 current_app.config['AUTHORIZATION_BASE_URL'],
-                redirect_uri=current_app.config['REDIRECT_URI'],
+                redirect_uri = current_app.config['REDIRECT_URI'],
                 scope=current_app.config['SCOPES']
             )
 
         return redirect(authorization_url)
 
-    except SoftServeException as e:
+    except CustomQSportException as e:
         logger.error(f"Error in GET /login/google: {str(e)}")
         return get_custom_error_response(e)
 
@@ -135,9 +135,9 @@ def callback(service: UserService = Provide[Container.user_service]):
             client = WebApplicationClient(current_app.config['GOOGLE_CLIENT_ID'])
             token_url, headers, body = client.prepare_token_request(
                 current_app.config['TOKEN_URL'],
-                client_secret=current_app.config['GOOGLE_CLIENT_SECRET'],
-                authorization_response=request.url,
-                redirect_url=current_app.config['REDIRECT_URI']
+                client_secret = current_app.config['GOOGLE_CLIENT_SECRET'],
+                authorization_response = request.url,
+                redirect_url = current_app.config['REDIRECT_URI']
             )
         token_response = requests.post(token_url, headers=headers, data=body)
         client.parse_request_body_response(token_response.text)
@@ -153,6 +153,6 @@ def callback(service: UserService = Provide[Container.user_service]):
 
         return response
 
-    except SoftServeException as e:
+    except CustomQSportException as e:
         logger.error(f"Error in POST /auth/google/callback: {str(e)}")
         return get_custom_error_response(e)

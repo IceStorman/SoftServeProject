@@ -4,7 +4,7 @@ from dto.pagination import Pagination
 from service.api_logic.games_logic import get_games_today
 from api.routes.cache import cache
 from api.routes.scripts import  post_cache_key
-from exept.exeptions import DatabaseConnectionError, SoftServeException
+from exept.exeptions import DatabaseConnectionError, CustomQSportException
 from exept.handle_exeptions import get_custom_error_response
 from logger.logger import Logger
 
@@ -31,7 +31,7 @@ def get_stream_info_endpoint():
         pagination = Pagination(**data)
         games = get_games_today(dto, pagination)
         return games
-    except SoftServeException as e:
+    except CustomQSportException as e:
         logger.error(f"Error in POST /: {str(e)}")
         get_custom_error_response(e)
 
@@ -46,6 +46,6 @@ def get_stream_info_with_filters_endpoint():
         pagination = Pagination(**data)
         games = get_games_today(dto, pagination)
         return games
-    except SoftServeException as e:
+    except CustomQSportException as e:
         logger.error(f"Error in POST /: {str(e)}")
         get_custom_error_response(e)

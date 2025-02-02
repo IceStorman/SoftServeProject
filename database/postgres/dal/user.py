@@ -2,10 +2,10 @@ from sqlalchemy import or_
 from database.models import User
 
 class UserDAL:
-    def __init__(self, session=None):
+    def __init__(self, session = None):
         self.session = session
 
-    def get_user_by_email_or_username(self, email=None, username=None):
+    def get_user_by_email_or_username(self, email = None, username = None):
         filters = []
 
         if email:
