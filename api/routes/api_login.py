@@ -14,8 +14,6 @@ from logger.logger import Logger
 from dependency_injector.wiring import inject, Provide
 from service.api_logic.user_logic import UserService
 from api.container.container import Container
-from flask_jwt_extended import create_access_token, set_access_cookies, unset_jwt_cookies
-from datetime import timedelta
 import os
 
 
@@ -33,23 +31,23 @@ def handle_db_timeout_error(e):
     return response
 
 
-@login_app.route('/sign_up', methods=['POST'])
+@login_app.route('/sign-up', methods=['POST'])
 @inject
 @handle_exceptions
 @logger.log_function_call()
-def create_account_endpoint(service: UserService = Provide[Container.user_service]):
+async def create_account_endpoint(service: UserService = Provide[Container.user_service]):
     try:
         data = request.get_json()
         dto = InputUserDTO().load(data)
-        user = service.create_user(dto.email, dto.username, dto.password_hash)
-        response = service.create_access_token_response(user)
+        user = await service.create_user(dto.email, dto.username, dto.password_hash)
+        response = await service.create_access_token_response(user)
 
         return response
 
-
     except SoftServeException as e:
         logger.error(f"Error in POST /: {str(e)}")
-        get_custom_error_response(e)
+        return get_custom_error_response(e)
+
 
 
 @login_app.route('/reset-password-request', methods=['POST'])
@@ -66,7 +64,7 @@ def request_password_reset(service: UserService = Provide[Container.user_service
 
     except SoftServeException as e:
         logger.error(f"Error in POST /: {str(e)}")
-        get_custom_error_response(e)
+        return get_custom_error_response(e)
 
 @login_app.route('/reset-password/<token>', methods=['GET', 'POST'])
 @inject
@@ -94,12 +92,12 @@ def reset_password(token, service: UserService = Provide[Container.user_service]
 @inject
 @handle_exceptions
 @logger.log_function_call()
-def log_in(service: UserService = Provide[Container.user_service]):
+async def log_in(service: UserService = Provide[Container.user_service]):
     try:
         data = request.get_json()
         dto = InputUserLoginDTO().load(data)
-        user = service.log_in(dto.email_or_username, dto.password_hash)
-        response = service.create_access_token_response(user)
+        user = await service.log_in(dto.email_or_username, dto.password_hash)
+        response = await service.create_access_token_response(user)
 
         return response
 

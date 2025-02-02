@@ -2,6 +2,9 @@ import logging
 import functools
 import os
 from logging.handlers import RotatingFileHandler
+import asyncio
+
+from sqlalchemy.util import await_only
 
 
 class Logger:
@@ -45,15 +48,29 @@ class Logger:
 
     def log_function_call(self):
         def decorator(func):
-            @functools.wraps(func)
-            def wrapper(*args, **kwargs):
-                try:
-                    self.trace(f"Call of {func.__name__}()  args={args}, kwargs={kwargs}")
-                    return func(*args, **kwargs)
-                except Exception as e:
-                    self.logger.error(f"Error in {func.__name__}(): {str(e)}")
-                    raise
-            return wrapper
+            if asyncio.iscoroutinefunction(func):
+                @functools.wraps(func)
+                async def async_wrapper(*args, **kwargs):
+                    try:
+                        self.trace(f"Call of {func.__name__}()  args={args}, kwargs={kwargs}")
+                        return await func(*args, **kwargs)
+                    except Exception as e:
+                        self.logger.error(f"Error in {func.__name__}(): {str(e)}")
+                        raise
+
+                return async_wrapper
+            else:
+                @functools.wraps(func)
+                def sync_wrapper(*args, **kwargs):
+                    try:
+                        self.trace(f"Call of {func.__name__}()  args={args}, kwargs={kwargs}")
+                        return func(*args, **kwargs)
+                    except Exception as e:
+                        self.logger.error(f"Error in {func.__name__}(): {str(e)}")
+                        raise
+
+                return sync_wrapper
+
         return decorator
 
     def debug(self, message):

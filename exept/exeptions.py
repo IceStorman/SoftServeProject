@@ -73,7 +73,7 @@ class NotCorrectPasswordError(SoftServeException):
     status_code = 401
 
     def __init__(self):
-        message = f"Password is not correct'"
+        message = f"Username/Email or password are not correct'"
         super().__init__(message)
 
 
