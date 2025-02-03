@@ -78,24 +78,24 @@ class NewsService:
     
 
     def get_news_by_count(self, count: int):
-        news = self.news_dal.fetch_news(order_by=News.save_at.desc(), limit=count)
+        news = self._news_dal.fetch_news(order_by=News.save_at.desc(), limit=count)
         return self.json_news(news)
 
 
     def get_latest_sport_news(self, count: int, sport_name: str):
         sport = get_sport_by_name(self.session, sport_name)
         filters = [News.sport_id == sport.sport_id]
-        news = self.news_dal.fetch_news(order_by=News.save_at.desc(), limit=count, filters=filters)
+        news = self._news_dal.fetch_news(order_by=News.save_at.desc(), limit=count, filters=filters)
         return self.json_news(news)
 
 
     def get_popular_news(self, count: int):
-        news = self.news_dal.fetch_news(order_by=News.interest_rate.desc(), limit=count)
+        news = self._news_dal.fetch_news(order_by=News.interest_rate.desc(), limit=count)
         return self.json_news(news)
 
 
     def get_news_by_id(self, blob_id: str):
-        news = self.news_dal.get_news_by_id(blob_id)
+        news = self._news_dal.get_news_by_id(blob_id)
         if news:
             self.logger.warning(f"News were found: {news}")
             return self.json_news([news])
