@@ -3,7 +3,7 @@ from service.api_logic.news_logic import NewsService
 from api.routes.cache import cache
 from api.routes.scripts import get_cache_key
 from exept.handle_exeptions import get_custom_error_response, get_exception_error_response
-from exept.exeptions import DatabaseConnectionError, SoftServeException
+from exept.exeptions import DatabaseConnectionError, CustomQSportException
 from dependency_injector.wiring import inject, Provide
 from api.container.container import Container
 from logger.logger import Logger
@@ -28,7 +28,7 @@ def get_recent_news_endpoint(service: NewsService = Provide[Container.news_servi
     try:
         recent_news = service.get_news_by_count(COUNT_NEWS)
         return recent_news
-    except SoftServeException as e:
+    except CustomQSportException as e:
         logger.error(f"Error in GET /: {str(e)}")
         get_exception_error_response(e)
 
@@ -39,7 +39,7 @@ def get_sport_news_endpoint(sport_type, service: NewsService = Provide[Container
     try:
         sport_news = service.get_latest_sport_news(COUNT_NEWS, sport_type)
         return sport_news
-    except SoftServeException as e:
+    except CustomQSportException as e:
         logger.error(f"Error in GET /: {str(e)}")
         get_custom_error_response(e)
 
@@ -51,7 +51,7 @@ def get_popular_news_endpoint(service: NewsService = Provide[Container.news_serv
     try:
         popular_news = service.get_popular_news(COUNT_NEWS)
         return popular_news
-    except SoftServeException as e:
+    except CustomQSportException as e:
         logger.error(f"Error in GET /: {str(e)}")
         get_custom_error_response(e)
 
@@ -65,7 +65,7 @@ def specific_article(service: NewsService = Provide[Container.news_service]):
         news_id=article['blob_id']
         response = service.get_news_by_id(news_id)
         return response
-    except SoftServeException as e:
+    except CustomQSportException as e:
         logger.error(f"Error in POST /: {str(e)}")
         get_custom_error_response(e)
 

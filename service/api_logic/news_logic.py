@@ -15,20 +15,20 @@ class NewsService:
         self.logger = Logger("logger", "all.log").logger
     
 
-    def get_news_by_count(self, count: int):
-        news = self._news_dal.fetch_news(order_by=News.save_at.desc(), limit=count)
+    def get_news_by_count(self, COUNT: int):
+        news = self._news_dal.fetch_news(order_by=News.save_at.desc(), limit=COUNT)
         return self.json_news(news)
 
 
-    def get_latest_sport_news(self, count: int, sport_name: str):
+    def get_latest_sport_news(self, COUNT: int, sport_name: str):
         sport = get_sport_by_name(self.session, sport_name)
         filters = [News.sport_id == sport.sport_id]
-        news = self._news_dal.fetch_news(order_by=News.save_at.desc(), limit=count, filters=filters)
+        news = self._news_dal.fetch_news(order_by=News.save_at.desc(), limit=COUNT, filters=filters)
         return self.json_news(news)
 
 
-    def get_popular_news(self, count: int):
-        news = self._news_dal.fetch_news(order_by=News.interest_rate.desc(), limit=count)
+    def get_popular_news(self, COUNT: int):
+        news = self._news_dal.fetch_news(order_by=News.interest_rate.desc(), limit=COUNT)
         return self.json_news(news)
 
 
