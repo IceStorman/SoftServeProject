@@ -9,7 +9,7 @@ import bcrypt
 from logger.logger import Logger
 from jinja2 import Environment, FileSystemLoader
 import os
-from flask_jwt_extended import create_access_token, set_access_cookies
+from flask_jwt_extended import create_access_token, create_refresh_token, set_access_cookies, set_refresh_cookies
 
 
 class UserService:
@@ -81,8 +81,9 @@ class UserService:
 
         self._user_dal.update_user_password(user, new_password)
         new_jwt = create_access_token(identity = user.email)
+        new_refresh = create_refresh_token(identity=user.email)
 
-        return new_jwt
+        return new_jwt, new_refresh
 
 
     def confirm_token(self, token: str, expiration=3600):
@@ -124,8 +125,10 @@ class UserService:
 
     async def create_access_token_response(self, user):
         access_token = create_access_token(identity = user.email)
+        refresh = create_refresh_token(identity=user.email)
         response = CommonResponseWithUser(user_id = user.id, user_email = user.email).to_dict()
         response_json = jsonify(response)
         set_access_cookies(response_json, access_token)
+        set_refresh_cookies(refresh)
 
         return response_json
