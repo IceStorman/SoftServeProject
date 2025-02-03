@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from dto.api_input import UpdateUserPreferencesDTO
+from dto.api_input import UpdateUserPreferencesDTO, GetUserPreferencesDTO
 from exept.exeptions import DatabaseConnectionError, CustomQSportException
 from exept.handle_exeptions import get_custom_error_response, handle_exceptions
 from logger.logger import Logger
@@ -26,13 +26,13 @@ def handle_db_timeout_error(e):
 @inject
 @handle_exceptions
 @api_routes_logger.log_function_call()
-def preferences_endpoint(service: UserService = Provide[Container.user_service]):
+def sport_preferences_endpoint(service: UserService = Provide[Container.user_service]):
     try:
         data = request.get_json()
         dto = UpdateUserPreferencesDTO().load(data)
 
         if request.method == "POST":
-            result = service.add_preferences(dto.user_id, dto.preferences)
+            result = service.add_preferences(dto)
 
             return result
 
@@ -46,13 +46,15 @@ def preferences_endpoint(service: UserService = Provide[Container.user_service])
         return get_custom_error_response(e)
 
 
-@preferences_app.route('/<user_id>', methods=['GET'])
+@preferences_app.route('/get', methods=['POST'])
 @inject
 @handle_exceptions
 @api_routes_logger.log_function_call()
-def get_user_preferences_endpoint(user_id, service: UserService = Provide[Container.user_service]):
+def get_user_sport_preferences_endpoint(service: UserService = Provide[Container.user_service]):
     try:
-        result = service.get_user_preferences(user_id)
+        data = request.get_json()
+        dto = GetUserPreferencesDTO().load(data)
+        result = service.get_user_preferences(dto)
 
         return result
 
@@ -65,7 +67,7 @@ def get_user_preferences_endpoint(user_id, service: UserService = Provide[Contai
 @inject
 @handle_exceptions
 @api_routes_logger.log_function_call()
-def get_all_preferences_endpoint(service: UserService = Provide[Container.user_service]):
+def get_all_sport_preferences_endpoint(service: UserService = Provide[Container.user_service]):
     try:
         result = service.get_all_preferences()
 
@@ -74,4 +76,3 @@ def get_all_preferences_endpoint(service: UserService = Provide[Container.user_s
     except CustomQSportException as e:
         api_routes_logger.error(f"Error in POST /: {str(e)}")
         return get_custom_error_response(e)
-

@@ -121,10 +121,12 @@ class InputUserLoginDTO(BaseDTO):
 class UpdateUserPreferencesDTO(BaseDTO):
     preferences = fields.List(fields.Int, required=True)
     user_id = fields.Int(required=False, missing=None)
+    type = fields.Str(required=False, missing=None)
 
 
 class GetUserPreferencesDTO(BaseDTO):
     user_id = fields.Int(required=False, missing=None)
+    type = fields.Str(required=False, missing=None)
 
 
 class InputUserByGoogleDTO(BaseDTO):

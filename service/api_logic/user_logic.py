@@ -1,19 +1,26 @@
 from flask import current_app, url_for, jsonify
 from flask_mail import Message
 from itsdangerous import URLSafeTimedSerializer
+from dto.api_input import UpdateUserPreferencesDTO
 from dto.api_output import OutputUser, OutputLogin, OutputPreferences
 from database.models import User
 from dto.common_response import CommonResponse, CommonResponseWithUser
 from exept.exeptions import UserDoesNotExistError, IncorrectUsernameOrEmailError, UserAlreadyExistError, \
-    IncorrectPasswordError, IncorrectPreferencesError, NotUserIdOrPreferencesError
+    IncorrectPasswordError, IncorrectPreferencesError, NotUserIdOrPreferencesError, IncorrectTypeOfPreferencesError
 import bcrypt
 from logger.logger import Logger
 from jinja2 import Environment, FileSystemLoader
 import os
 from flask_jwt_extended import create_access_token, set_access_cookies
+from service.api_logic.strategy.preference_strategy import SportPreferenceStrategy, TeamPreferenceStrategy
 
 
 class UserService:
+
+    STRATEGIES = {
+        "SPORT": SportPreferenceStrategy(),
+        "TEAM": TeamPreferenceStrategy()
+    }
 
     def __init__(self, user_dal, preferences_dal):
         self._user_dal = user_dal
@@ -135,36 +142,43 @@ class UserService:
         return response_json
 
 
-    def add_preferences(self, user_id, preferences):
-        if not user_id or not isinstance(preferences, list):
+    def add_preferences(self, dto: UpdateUserPreferencesDTO):
+        if not dto.user_id or not isinstance(dto.preferences, list):
             raise NotUserIdOrPreferencesError()
 
-        existing_sports = set(self._preferences_dal.get_all_preference_indexes())
-        valid_preferences = [sport_id for sport_id in preferences if sport_id in existing_sports]
+        strategy = self.STRATEGIES.get(dto.type)
+        if not strategy:
+            raise IncorrectTypeOfPreferencesError()
+
+        existing_sports = strategy.get_existing_preferences(self._preferences_dal)
+        valid_preferences = set([sport_id for sport_id in dto.preferences if sport_id in existing_sports])
 
         if not valid_preferences:
             raise IncorrectPreferencesError()
 
-        self._preferences_dal.delete_all_preferences(user_id)
-        self._preferences_dal.add_preferences(user_id, preferences)
+        strategy.delete_all_preferences(self._preferences_dal, dto.user_id)
+        strategy.add_preferences(self._preferences_dal, dto.user_id, valid_preferences)
 
         return CommonResponse().to_dict()
 
 
-    def get_user_preferences(self, user_id):
-        prefs = self._preferences_dal.get_user_preferences(user_id)
+    def get_user_preferences(self, dto: UpdateUserPreferencesDTO):
+        strategy = self.STRATEGIES.get(dto.type)
+        prefs = strategy.get_user_preferences(self._preferences_dal, dto.user_id)
         shema = OutputPreferences(many=True).dump(prefs)
 
         return shema
 
 
     def get_all_preferences(self):
-        return self._preferences_dal.get_all_preferences()
+        return self._preferences_dal.get_all_sport_preferences()
 
 
-    def delete_preferences(self, user_id, preferences):
-        if not user_id or not isinstance(preferences, list):
+    def delete_preferences(self, dto: UpdateUserPreferencesDTO):
+        if not dto.user_id or not isinstance(dto.preferences, list):
             raise NotUserIdOrPreferencesError()
 
-        self._preferences_dal.delete_preferences(user_id, preferences)
+        strategy = self.STRATEGIES.get(dto.type)
+        strategy.delete_preferences(self._preferences_dal, dto.user_id, dto.preferences)
+
         return CommonResponse().to_dict()
