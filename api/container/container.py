@@ -7,9 +7,9 @@ from service.api_logic.news_logic import NewsService
 
 
 class Container(containers.DeclarativeContainer):
-    wiring_config = containers.WiringConfiguration(modules=["api.routes.api_login"])
-    
-    wiring_config = containers.WiringConfiguration(modules=["api.routes.api_news"])
+    wiring_config = containers.WiringConfiguration(
+        modules=["api.routes.api_login", "api.routes.api_news"]
+    )
 
     db_session = providers.Factory(SessionLocal)
 

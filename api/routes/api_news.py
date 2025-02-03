@@ -23,6 +23,7 @@ def handle_db_timeout_error(e):
 
 @news_app.route('/recent', methods=['GET'])
 @cache.cached(timeout=60*60)
+@inject
 @logger.log_function_call()
 def get_recent_news_endpoint(service: NewsService = Provide[Container.news_service]):
     try:
@@ -34,6 +35,7 @@ def get_recent_news_endpoint(service: NewsService = Provide[Container.news_servi
 
 @news_app.route('/<sport_type>', methods=['GET'])
 @cache.cached(timeout=60*60, key_prefix=get_cache_key)
+@inject
 @logger.log_function_call()
 def get_sport_news_endpoint(sport_type, service: NewsService = Provide[Container.news_service]):
     try:
@@ -46,6 +48,7 @@ def get_sport_news_endpoint(sport_type, service: NewsService = Provide[Container
 
 @news_app.route('/popular', methods=['GET'])
 @cache.cached(timeout=60*3)
+@inject
 @logger.log_function_call()
 def get_popular_news_endpoint(service: NewsService = Provide[Container.news_service]):
     try:
@@ -57,6 +60,7 @@ def get_popular_news_endpoint(service: NewsService = Provide[Container.news_serv
 
 
 @news_app.route('/article', methods=['POST'])
+@inject
 @logger.log_function_call()
 def specific_article(service: NewsService = Provide[Container.news_service]):
 

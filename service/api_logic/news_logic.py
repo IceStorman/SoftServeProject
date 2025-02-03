@@ -1,5 +1,6 @@
 import json
 from flask import Response
+from sqlalchemy import desc
 from database.models import News
 from database.azure_blob_storage.save_get_blob import blob_get_news
 from sqlalchemy.sql.expression import ClauseElement
@@ -16,19 +17,19 @@ class NewsService:
     
 
     def get_news_by_count(self, COUNT: int):
-        news = self._news_dal.fetch_news(order_by=News.save_at.desc(), limit=COUNT)
+        news = self._news_dal.fetch_news(order_by=desc(News.save_at), limit=COUNT)
         return self.json_news(news)
+
 
 
     def get_latest_sport_news(self, COUNT: int, sport_name: str):
         sport = get_sport_by_name(self.session, sport_name)
         filters = [News.sport_id == sport.sport_id]
-        news = self._news_dal.fetch_news(order_by=News.save_at.desc(), limit=COUNT, filters=filters)
+        news = self._news_dal.fetch_news(order_by=desc(News.save_at), limit=COUNT, filters=filters)
         return self.json_news(news)
 
-
     def get_popular_news(self, COUNT: int):
-        news = self._news_dal.fetch_news(order_by=News.interest_rate.desc(), limit=COUNT)
+        news = self._news_dal.fetch_news(order_by=desc(News.interest_rate), limit=COUNT)
         return self.json_news(news)
 
 
