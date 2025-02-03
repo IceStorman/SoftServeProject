@@ -52,8 +52,17 @@ def create_app():
     app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
     app.config['JWT_TOKEN_LOCATION'] = ['cookies']
     app.config['JWT_COOKIE_SECURE'] = False
-    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=3)
+    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1)
+    app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30)
     jwt.init_app(app)
+
+    app.config['GOOGLE_CLIENT_ID'] = os.getenv('GOOGLE_CLIENT_ID')
+    app.config['GOOGLE_CLIENT_SECRET'] = os.getenv('GOOGLE_CLIENT_SECRET')
+    app.config['REDIRECT_URI'] = 'http://127.0.0.1:5001/login/auth/google/callback'
+    app.config['AUTHORIZATION_BASE_URL'] = 'https://accounts.google.com/o/oauth2/auth'
+    app.config['TOKEN_URL'] = 'https://oauth2.googleapis.com/token'
+    app.config['USER_INFO_URL'] = 'https://www.googleapis.com/oauth2/v2/userinfo'
+    app.config['SCOPES'] = 'https://www.googleapis.com/auth/userinfo.email'
 
     SWAGGER_URL = '/swagger'
     API_URL = '/static/swagger.json'
