@@ -13,7 +13,7 @@ from logger.logger import Logger
 class NewsService:
     def __init__(self, news_dal):
         self._news_dal = news_dal
-        self.logger = Logger("logger", "all.log").logger
+        self._logger = Logger("logger", "all.log").logger
     
 
     def get_news_by_count(self, COUNT: int):
@@ -36,7 +36,7 @@ class NewsService:
     def get_news_by_id(self, blob_id: str):
         news = self._news_dal.get_news_by_id(blob_id)
         if news:
-            self.logger.warning(f"News were found: {news}")
+            self._logger.warning(f"News were found: {news}")
             return self.json_news([news])
 
     def json_news(self, news_records):
