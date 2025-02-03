@@ -69,9 +69,3 @@ def specific_article(service: NewsService = Provide[Container.news_service]):
         logger.error(f"Error in POST /: {str(e)}")
         get_custom_error_response(e)
 
-
-    
-
-
-
-

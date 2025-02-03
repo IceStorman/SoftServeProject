@@ -18,3 +18,4 @@ class NewsDAL:
 
     def get_news_by_id(self, blob_id: str):
         return self.session.query(News).filter(News.blob_id == blob_id).first()
+
