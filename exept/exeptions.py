@@ -84,3 +84,19 @@ class UserAlreadyExistError(CustomQSportException):
         self.date_value = date_value
         message = f"User with such data already exist'"
         super().__init__(message)
+
+
+class IncorrectPreferencesError(CustomQSportException):
+    status_code = 400
+
+    def __init__(self):
+        message = f"No valid preferences"
+        super().__init__(message)
+
+
+class NotUserIdOrPreferencesError(CustomQSportException):
+    status_code = 401
+
+    def __init__(self):
+        message = f"User ID or preferences are not correct"
+        super().__init__(message)

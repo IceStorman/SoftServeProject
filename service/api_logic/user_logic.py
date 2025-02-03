@@ -4,7 +4,8 @@ from itsdangerous import URLSafeTimedSerializer
 from dto.api_output import OutputUser, OutputPreferences, OutputLogin
 from database.models import User
 from dto.common_responce import CommonResponse, CommonResponseWithUser
-from exept.exeptions import UserDoNotExistError, IncorrectUsernameOrEmailError, UserAlreadyExistError, IncorrectPasswordError
+from exept.exeptions import UserDoNotExistError, IncorrectUsernameOrEmailError, UserAlreadyExistError, \
+    IncorrectPasswordError, IncorrectPreferencesError, NotUserIdOrPreferencesError
 import bcrypt
 from logger.logger import Logger
 from jinja2 import Environment, FileSystemLoader
@@ -132,3 +133,38 @@ class UserService:
         set_access_cookies(response_json, access_token)
 
         return response_json
+
+
+    def add_preferences(self, user_id, preferences):
+        if not user_id or not isinstance(preferences, list):
+            raise NotUserIdOrPreferencesError()
+
+        existing_sports = set(self._preferences_dal.get_all_preference_indexes())
+        valid_preferences = [sport_id for sport_id in preferences if sport_id in existing_sports]
+
+        if not valid_preferences:
+            raise IncorrectPreferencesError()
+
+        self._preferences_dal.delete_all_preferences(user_id)
+        self._preferences_dal.add_preferences(user_id, preferences)
+
+        return CommonResponse().to_dict()
+
+
+    def get_user_preferences(self, user_id):
+        prefs = self._preferences_dal.get_user_preferences(user_id)
+        shema = OutputPreferences(many=True).dump(prefs)
+
+        return shema
+
+
+    def get_all_preferences(self):
+        return self._preferences_dal.get_all_preferences()
+
+
+    def delete_preferences(self, user_id, preferences):
+        if not user_id or not isinstance(preferences, list):
+            raise NotUserIdOrPreferencesError()
+
+        self._preferences_dal.delete_preferences(user_id, preferences)
+        return CommonResponse().to_dict()
