@@ -86,7 +86,7 @@ class UserAlreadyExistError(CustomQSportException):
         super().__init__(message)
 
 
-class NoUsersInDBError(SoftServeException):
+class NoUsersInDBError(CustomQSportException):
     status_code = 404
 
     def __init__(self):
@@ -94,7 +94,7 @@ class NoUsersInDBError(SoftServeException):
         super().__init__(message)
 
 
-class EmptyRecommendationListForUserError(SoftServeException):
+class EmptyRecommendationListForUserError(CustomQSportException):
     status_code = 204
 
     def __init__(self, user_id):

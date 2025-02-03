@@ -21,7 +21,7 @@ class NewsService:
 
 
     def get_latest_sport_news(self, count: int, sport_name: str):
-        sport = get_sport_by_name(self.session, sport_name)
+        sport = self._news_dal.get_sport_by_name(sport_name)
         filters = [News.sport_id == sport.sport_id]
         news = self._news_dal.fetch_news(order_by=News.save_at.desc(), limit=count, filters=filters)
         return self.json_news(news)
@@ -33,7 +33,7 @@ class NewsService:
 
 
     def get_news_by_id(self, blob_id: str):
-        news = self._news_dal.get_news_by_id(blob_id)
+        news = self._news_dal.get_news_by_blob_id(blob_id)
         if news:
             self.logger.warning(f"News were found: {news}")
             return self.json_news([news])
@@ -50,4 +50,13 @@ class NewsService:
             json.dumps(all_results, ensure_ascii=False),
             content_type='application/json; charset=utf-8',
         )
+
+    async def send_all_info_from_blob_to_user(self, recommendations_list):
+        all_news_from_blob = []
+        for recs in recommendations_list:
+            news_id = recs["news_id"]
+            news_from_blob = self._news_dal.get_news_by_id(news_id)
+            all_news_from_blob.append(news_from_blob)
+
+        return self.json_news(all_news_from_blob)
 

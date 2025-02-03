@@ -22,14 +22,14 @@ class RecommendationDAL:
             Likes.timestamp.label('timestamp')
         ).filter(Likes.timestamp >= time_limit)
 
-        # views_query = self.session.query(
-        #     Views.users_id.label('user_id'),
-        #     Views.news_id.label('news_id'),
-        #     literal(1).label('interaction'),
-        #     Views.timestamp.label('timestamp')
-        # ).filter(Views.timestamp >= time_limit)
+        views_query = self.session.query(
+            Views.users_id.label('user_id'),
+            Views.news_id.label('news_id'),
+            literal(1).label('interaction'),
+            Views.timestamp.label('timestamp')
+        ).filter(Views.timestamp >= time_limit)
 
-        union_query = union_all(likes_query)
+        union_query = union_all(likes_query, views_query)
 
         return self.session.execute(union_query).fetchall()
 
@@ -76,31 +76,65 @@ class RecommendationDAL:
         return self.session.query(News).filter(News.news_id.in_(final_recommendations)).all()
 
 
-    def save_user_recommendation(self, user_id, recommendations):
-        self.session.query(UserRecommendations).filter_by(user_id=user_id).delete()
+    # def save_user_recommendation(self, user_id, recommendations):
+    #     self.session.query(UserRecommendations).filter_by(user_id=user_id).delete()
+    #
+    #     recommendation_objects = [
+    #         UserRecommendations(
+    #             user_id=rec['user_id'],
+    #             news_id=rec['news_id'],
+    #             score=rec['score'],
+    #             rating=rec['rating'],
+    #         )
+    #         for rec in recommendations
+    #     ]
+    #     self.session.add_all(recommendation_objects)
+    #     self.session.commit()
 
-        recommendation_objects = [
-            UserRecommendations(
-                user_id=user_id,
-                news_id=rec.news_id,
-                score=rec.score,
-                rating=rec.rating
-            )
-            for rec in recommendations
-        ]
-        self.session.add_all(recommendation_objects)
+    def save_user_recommendation(self, user_id, recommendations):
+        existing_recommendations = (
+            self.session.query(UserRecommendations)
+            .filter_by(user_id=user_id)
+            .all()
+        )
+
+        num_existing = len(existing_recommendations)
+        num_new = len(recommendations)
+
+        for i in range(min(num_existing, num_new)):
+            existing_recommendations[i].news_id = recommendations[i]['news_id']
+            existing_recommendations[i].score = recommendations[i]['score']
+            existing_recommendations[i].rating = recommendations[i]['rating']
+
+        if num_new > num_existing:
+            new_records = [
+                UserRecommendations(
+                    user_id=user_id,
+                    news_id=rec['news_id'],
+                    score=rec['score'],
+                    rating=rec['rating']
+                )
+                for rec in recommendations[num_existing:]
+            ]
+            self.session.add_all(new_records)
+
+        elif num_new < num_existing:
+            for i in range(num_new, num_existing):
+                existing_recommendations[i].news_id = -1
+                existing_recommendations[i].score = 0
+                existing_recommendations[i].rating = 0
+
         self.session.commit()
 
-
     def get_user_recommendations(self, user_id):
-        #return self.session.query(UserRecommendations).filter_by(user_id=user_id).all()
-        return [
-            {
-                "news_id": 13,
-                "score": 0.143415255,
-                "user_id": 2
-            }
-        ]
+        return self.session.query(UserRecommendations).filter_by(user_id=user_id).all()
+        # return [
+        #     {
+        #         "news_id": 13,
+        #         "score": 0.143415255,
+        #         "user_id": 2
+        #     }
+        # ]
 
     def new(self):
         from datetime import datetime
