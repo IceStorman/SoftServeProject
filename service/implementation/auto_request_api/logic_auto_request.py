@@ -29,287 +29,287 @@ apis = [
         "index": "fixtures",
         "url": "https://v3.football.api-sports.io/fixtures?date=DATE",
         "host": "v3.football.api-sports.io",
-        "frequency": 0.3
+        "frequency": 3
     },
     {
         "name": "football",
         "index": "timezone",
         "url": "https://v3.football.api-sports.io/timezone",
         "host": "v3.football.api-sports.io",
-        "frequency": 0.1333
+        "frequency": 1333
     },
     {
         "name": "football",
         "index": "countries",
         "url": "https://v3.football.api-sports.io/countries",
         "host":"v3.football.api-sports.io",
-        "frequency": 0.1331
+        "frequency": 1331
     },
     {
         "name": "football",
         "index": "leagues",
         "url": "https://v3.football.api-sports.io/leagues",
         "host":"v3.football.api-sports.io",
-        "frequency": 0.1335
+        "frequency": 1335
     },
     {
         "name": "afl",
         "index": "leagues",
         "url": "https://v1.afl.api-sports.io/leagues",
         "host": "v1.afl.api-sports.io",
-        "frequency": 0.1335
+        "frequency": 1335
     },
     {
         "name": "afl",
         "index": "games",
         "url": "https://v1.afl.api-sports.io/games?date=DATE",
         "host": "v1.afl.api-sports.io",
-        "frequency": 0.3
+        "frequency": 3
     },
     {
         "name": "afl",
         "index": "games-quarters?",
         "url": "https://v1.afl.api-sports.io/games/quarters?date=DATE",
         "host": "v1.afl.api-sports.io",
-        "frequency": 0.13
+        "frequency": 13
     },
     {
         "name": "afl",
         "index": "games-events",
         "url": "https://v1.afl.api-sports.io/games/events?date=DATE",
         "host": "v1.afl.api-sports.io",
-        "frequency": 0.15
+        "frequency": 15
     },
     {
         "name": "afl",
         "index": "games-statistics-teams",
         "url": "https://v1.afl.api-sports.io/games/statistics/teams?date=DATE",
         "host": "v1.afl.api-sports.io",
-        "frequency": 0.17
+        "frequency": 17
     },
     {
         "name": "afl",
         "index": "games-statistics-players",
         "url": "https://v1.afl.api-sports.io/games/statistics/players?date=DATE",
         "host": "v1.afl.api-sports.io",
-        "frequency": 0.16
+        "frequency": 16
     },
     {
         "name": "baseball",
         "index": "leagues",
         "url": "https://v1.baseball.api-sports.io/leagues",
         "host": "v1.baseball.api-sports.io",
-        "frequency": 0.1333
+        "frequency": 1333
     },
     {
         "name": "baseball",
         "index": "games",
         "url": "https://v1.baseball.api-sports.io/games?date=DATE",
         "host": "v1.baseball.api-sports.io",
-        "frequency": 0.3
+        "frequency": 3
     },
     {
         "name": "basketball",
         "index": "leagues",
         "url": "https://v1.basketball.api-sports.io/leagues",
         "host": "v1.basketball.api-sports.io",
-        "frequency": 0.1334
+        "frequency": 1334
     },
     {
         "name": "basketball",
         "index": "games",
         "url": "https://v1.basketball.api-sports.io/games?date=DATE",
         "host": "v1.basketball.api-sports.io",
-        "frequency": 0.6
+        "frequency": 1.6
     },
     {
         "name": "formula-1",
         "index": "competitions",
         "url": "https://v1.formula-1.api-sports.io/competitions",
         "host": "v1.formula-1.api-sports.io",
-        "frequency": 0.1299
+        "frequency": 1299
     },
     {
         "name": "formula-1",
         "index": "circuits",
         "url": "https://v1.formula-1.api-sports.io/circuits",
         "host": "v1.formula-1.api-sports.io",
-        "frequency": 0.1298
+        "frequency": 1298
     },
     {
         "name": "formula-1",
         "index": "drivers?search=lewi",
         "url": "https://v1.formula-1.api-sports.io/drivers?search=lewi",
         "host": "v1.formula-1.api-sports.io",
-        "frequency": 0.302
+        "frequency": 302
     },
     {
         "name": "formula-1",
         "index": "races",
         "url": "https://v1.formula-1.api-sports.io/races?date=DATE",
         "host": "v1.formula-1.api-sports.io",
-        "frequency": 0.11
+        "frequency": 11
     },
     {
         "name": "handball",
         "index": "countries",
         "url": "https://v1.handball.api-sports.io/countries",
         "host": "v1.handball.api-sports.io",
-         "frequency": 0.1301
+         "frequency": 1301
     },
     {
         "name": "handball",
         "index": "leagues",
         "url": "https://v1.handball.api-sports.io/leagues",
         "host": "v1.handball.api-sports.io",
-        "frequency": 0.679
+        "frequency": 679
     },
     {
         "name": "handball",
         "index": "games",
         "url": "https://v1.handball.api-sports.io/games?date=DATE",
         "host": "v1.handball.api-sports.io",
-        "frequency": 0.3
+        "frequency": 3
     },
     {
         "name": "hockey",
         "index": "countries",
         "url": "https://v1.hockey.api-sports.io/countries",
         "host": "v1.hockey.api-sports.io",
-        "frequency": 0.1305
+        "frequency": 1305
     },
     {
         "name": "hockey",
         "index": "leagues",
         "url": "https://v1.hockey.api-sports.io/leagues",
         "host": "v1.hockey.api-sports.io",
-        "frequency": 0.670
+        "frequency": 670
     },
     {
         "name": "hockey",
         "index": "games",
         "url": "https://v1.hockey.api-sports.io/games?date=DATE",
         "host": "v1.hockey.api-sports.io",
-        "frequency": 0.3
+        "frequency": 3
     },
     {
         "name": "mma",
         "index": "categories",
         "url": "https://v1.mma.api-sports.io/categories",
         "host": "v1.mma.api-sports.io",
-        "frequency": 0.376
+        "frequency": 376
     },
     {
         "name": "mma",
         "index": "fighters",
         "url": "https://v1.mma.api-sports.io/fighters?category=Flyweight",
         "host": "v1.mma.api-sports.io",
-        "frequency": 0.311
+        "frequency": 311
     },
     {
         "name": "mma",
         "index": "fights",
         "url": "https://v1.mma.api-sports.io/fights?date=DATE",
         "host": "v1.mma.api-sports.io",
-        "frequency": 0.5
+        "frequency": 5
     },
     {
         "name": "mma",
         "index": "fights-results",
         "url": "https://v1.mma.api-sports.io/fights/results?date=DATE",
         "host": "v1.mma.api-sports.io",
-        "frequency": 0.7
+        "frequency": 7
     },
     {
         "name": "mma",
         "index": "fights-statistics-fighters",
         "url": "https://v1.mma.api-sports.io/fights/statistics/fighters?date=DATE",
         "host": "v1.mma.api-sports.io",
-        "frequency": 0.16
+        "frequency": 16
     },
     {
         "name": "nba",
         "index": "leagues",
         "url": "https://v2.nba.api-sports.io/leagues",
         "host": "v2.nba.api-sports.io",
-        "frequency": 0.1099
+        "frequency": 1099
     },
     {
         "name": "nba",
         "index": "games",
         "url": "https://v2.nba.api-sports.io/games?date=DATE",
         "host": "v2.nba.api-sports.io",
-        "frequency": .7
+        "frequency": 1.7
     },
     {
         "name": "nba",
         "index": "players",
         "url": "https://v2.nba.api-sports.io/players?country=USA",
         "host": "v2.nba.api-sports.io",
-        "frequency": 0.672
+        "frequency": 672
     },
     {
         "name": "nfl",
         "index": "leagues",
         "url": "https://v1.american-football.api-sports.io/leagues",
         "host": "v1.american-football.api-sports.io",
-        "frequency": 0.679
+        "frequency": 679
     },
     {
         "name": "nfl",
         "index": "games",
         "url": "https://v1.american-football.api-sports.io/games?date=DATE",
         "host": "v1.american-football.api-sports.io",
-        "frequency": 0.4
+        "frequency": 4
     },
     {
         "name": "rugby",
         "index": "countries",
         "url": "https://v1.rugby.api-sports.io/countries",
         "host": "v1.rugby.api-sports.io",
-        "frequency": 0.1303
+        "frequency": 1303
     },
     {
         "name": "rugby",
         "index": "leagues",
         "url": "https://v1.rugby.api-sports.io/leagues",
         "host": "v1.rugby.api-sports.io",
-        "frequency": 0.1308
+        "frequency": 1308
     },
     {
         "name": "rugby",
         "index": "teams",
         "url": "https://v1.rugby.api-sports.io/teams?country=Argentina&league=1&season=2022",
         "host": "v1.rugby.api-sports.io",
-        "frequency": 0.683
+        "frequency": 683
     },
     {
         "name": "rugby",
         "index": "games",
         "url": "https://v1.rugby.api-sports.io/games?date=DATE",
         "host": "v1.rugby.api-sports.io",
-        "frequency": 0.4
+        "frequency": 4
     },
     {
         "name": "volleyball",
         "index": "countries",
         "url": "https://v1.volleyball.api-sports.io/countries",
         "host": "v1.volleyball.api-sports.io",
-        "frequency": 0.1301
+        "frequency": 1301
     },
     {
         "name": "volleyball",
         "index": "leagues",
         "url": "https://v1.volleyball.api-sports.io/leagues",
         "host": "v1.volleyball.api-sports.io",
-        "frequency": 0.1298
+        "frequency": 1298
     },
     {
         "name": "volleyball",
         "index": "games",
         "url": "https://v1.volleyball.api-sports.io/games?date=DATE",
         "host": "v1.volleyball.api-sports.io",
-        "frequency": 0.3
+        "frequency": 3
     },
 ]
 token_usage = {
