@@ -21,7 +21,6 @@ class NewsService:
         return self.json_news(news)
 
 
-
     def get_latest_sport_news(self, count: int, sport_name: str):
         sport = self._news_dal.get_sport_by_name(sport_name)
         #sport = get_sport_by_name(self.session, sport_name)
@@ -40,6 +39,7 @@ class NewsService:
             self._logger.warning(f"News were found: {news}")
             return self.json_news([news])
 
+
     def json_news(self, news_records):
         all_results = []
         for news_record in news_records:
@@ -53,11 +53,12 @@ class NewsService:
             content_type='application/json; charset=utf-8',
         )
 
+
     async def send_all_info_from_blob_to_user(self, recommendations_list):
         all_news_from_blob = []
         for recs in recommendations_list:
             news_id = recs["news_id"]
-            news_from_blob = self._news_dal.get_news_by_id(news_id)
+            news_from_blob = self._news_dal.get_news_by_real_id(news_id)
             all_news_from_blob.append(news_from_blob)
 
         return self.json_news(all_news_from_blob)

@@ -1,6 +1,8 @@
+from sqlalchemy.orm import aliased
+
 from database.models import Likes, Views, News, User, ClubPreference, UserPreference, Sport, TeamInNews, \
     UserRecommendations
-from sqlalchemy import union_all,  literal
+from sqlalchemy import union_all, literal, func
 
 
 class RecommendationDAL:
@@ -9,12 +11,10 @@ class RecommendationDAL:
 
 
     def get_all_users(self):
-        #elf.new()
         return self.session.query(User).all()
 
 
     def get_user_interactions(self, time_limit):
-        #self.new()
         likes_query = self.session.query(
             Likes.users_id.label('user_id'),
             Likes.news_id.label('news_id'),
@@ -30,6 +30,16 @@ class RecommendationDAL:
         ).filter(Views.timestamp >= time_limit)
 
         union_query = union_all(likes_query, views_query)
+        # aliased_union = aliased(union_query)
+        #
+        # aggregated_query = (
+        #     self.session.query(
+        #         aliased_union.c.user_id,
+        #         aliased_union.c.news_id,
+        #         func.sum(aliased_union.c.interaction).label('interaction')
+        #     )
+        #     .group_by(aliased_union.c.user_id, aliased_union.c.news_id)
+        # )
 
         return self.session.execute(union_query).fetchall()
 
@@ -70,10 +80,6 @@ class RecommendationDAL:
             .filter(News.news_id.in_(user_interaction_matrix.columns.tolist()))
             .all()
         )
-
-
-    def get_news_by_recommendation_list(self, final_recommendations):
-        return self.session.query(News).filter(News.news_id.in_(final_recommendations)).all()
 
 
     # def save_user_recommendation(self, user_id, recommendations):
@@ -126,6 +132,7 @@ class RecommendationDAL:
 
         self.session.commit()
 
+
     def get_user_recommendations(self, user_id):
         return self.session.query(UserRecommendations).filter_by(user_id=user_id).all()
         # return [
@@ -135,6 +142,7 @@ class RecommendationDAL:
         #         "user_id": 2
         #     }
         # ]
+
 
     def new(self):
         from datetime import datetime

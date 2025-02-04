@@ -35,3 +35,11 @@ class NewsDAL:
     def get_sport_by_name(self, sport_name):
         return self.session.query(Sport).filter_by(sport_name = sport_name).first()
 
+
+    def get_news_ids(self, time_limit):
+        return (
+            self.session.query(News.news_id)
+            .filter(News.save_at >= time_limit)
+            .all()
+        )
+

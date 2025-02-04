@@ -101,3 +101,10 @@ class EmptyRecommendationListForUserError(CustomQSportException):
         message = f"There are no recommendations for user '{user_id} at this moment'"
         super().__init__(message)
 
+
+class NoJWTInCookieError(CustomQSportException):
+    status_code = 401
+
+    def __init__(self):
+        message = f"There are no JWT cookie for this user"
+        super().__init__(message)

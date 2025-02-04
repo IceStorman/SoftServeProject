@@ -49,9 +49,9 @@ class AutoSchedulerService:
         self.logger.info("Started rec_scheduler")
         try:
             self.rec_scheduler.add_job(
-                lambda: Container.recommendation_service().hybrid_recommendations(),
+                lambda: Container.recommendation_service().auto_hybrid_recommendation_system(),
                 'cron',
-                hour=11, minute=13
+                hour=3, minute=00
             )
 
         except Exception as e:
@@ -86,6 +86,7 @@ if __name__ == "__main__":
     try:
         while True:
             time.sleep(1)
+
     except (KeyboardInterrupt, SystemExit):
         scheduler_service.stop()
         executor.shutdown(wait=True)

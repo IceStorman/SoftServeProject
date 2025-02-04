@@ -1,18 +1,18 @@
 from dependency_injector.wiring import Provide, inject
-from flask import Blueprint, request, make_response
+from flask import Blueprint, request, make_response, current_app
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from api.routes.cache import cache
 from api.routes.scripts import get_cache_key
 from exept.handle_exeptions import get_custom_error_response, get_exception_error_response
-from exept.exeptions import DatabaseConnectionError, CustomQSportException
-from dependency_injector.wiring import inject, Provide
+from exept.exeptions import DatabaseConnectionError, CustomQSportException, NoJWTInCookieError
 from api.container.container import Container
 from exept.exeptions import DatabaseConnectionError, CustomQSportException
 from logger.logger import Logger
 from exept.handle_exeptions import handle_exceptions
 from service.api_logic.news_logic import NewsService
 from service.api_logic.recommendation_logic import RecommendationService
-from dto.api_input import InputUserByIdDTO
-
+from dto.api_input import InputUserByIdDTO, InputUserDTO, InputUserLoginDTO
+from service.api_logic.user_logic import UserService
 
 logger = Logger("logger", "all.log")
 
@@ -85,6 +85,7 @@ def specific_article(service: NewsService = Provide[Container.news_service]):
 
 
 @news_app.route("/get/recommendation", methods=["GET"])
+@jwt_required()
 @inject
 @handle_exceptions
 @logger.log_function_call()
@@ -93,9 +94,8 @@ async def get_recommendations_endpoint(
         service_news: NewsService = Provide[Container.news_service],
     ):
     try:
-        #user_id = get_user_id_from_jwt()
-        user_id = request.cookies.get("snfu")
-        rec = await service_recs.get_recommendations_from_db(user_id)
+        user_email = get_jwt_identity()
+        rec = await service_recs.get_recommendations_from_db(user_email)
         all_recs_with_data = await service_news.send_all_info_from_blob_to_user(rec)
 
         return all_recs_with_data
@@ -113,38 +113,37 @@ async def fast_generate_recommendation_endpoint(service_recs: RecommendationServ
     try:
         data = request.get_json()
         dto = InputUserByIdDTO().load(data)
-        rec = await service_recs.hybrid_recommendations(dto)
+        rec = await service_recs.fast_hybrid_recommendation_system(dto)
         return rec
 
     except CustomQSportException as e:
         logger.error(f"Error in Get Recommendations /: {str(e)}")
         return get_custom_error_response(e)
 
-@news_app.route("/qwerty")
-def qwerty():
-    response = make_response("Hello Nigga")
-    response.set_cookie("snfu", "2")
+
+@news_app.route("/all/recommendation", methods=["GET"])
+@inject
+@handle_exceptions
+@logger.log_function_call()
+async def all_generate_recommendation_endpoint(service_recs: RecommendationService = Provide[Container.recommendation_service]):
+    try:
+        rec = await service_recs.auto_hybrid_recommendation_system()
+        return rec
+
+    except CustomQSportException as e:
+        logger.error(f"Error in Get Recommendations /: {str(e)}")
+        return get_custom_error_response(e)
+
+@news_app.route("/qwerty", methods=["GET"])
+@inject
+async def qwerty(service: UserService = Provide[Container.user_service]):
+    #response = make_response("Hello Nigga")
+    #response.set_cookie("snfu", "2")
+    data = {
+        "email_or_username": "UserVlad",
+        "password_hash": "1qQ"
+    }
+    dto = InputUserLoginDTO().load(data)
+    user = await service.log_in(dto.email_or_username, dto.password_hash)
+    response = await service.create_access_token_response(user)
     return response
-
-
-# def get_user_id_from_jwt():
-#     jwt_token = request.cookies.get('access_token')
-#     if jwt_token is None:
-#         raise Exception("JWT token not found in cookies")
-#
-#     try:
-#         decoded_payload = jwt.decode(
-#             jwt_token,
-#             current_app.config['JWT_SECRET_KEY'],
-#             algorithms=["HS256"]
-#         )
-#         user_id = decoded_payload['identity']
-#         return user_id
-#     except jwt.ExpiredSignatureError:
-#         raise Exception("JWT token has expired")
-#     except jwt.InvalidTokenError:
-#         raise Exception("Invalid JWT token")
-
-
-
-
