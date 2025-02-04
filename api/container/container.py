@@ -16,6 +16,7 @@ class Container(containers.DeclarativeContainer):
             "api.routes.api_news"
         ]
     )
+
     db_session = providers.Factory(SessionLocal)
 
     user_dal = providers.Factory(UserDAL, session=db_session)

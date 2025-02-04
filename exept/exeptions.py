@@ -52,7 +52,7 @@ class InvalidResetPasswordError(CustomQSportException):
         super().__init__(message)
 
 
-class UserDoNotExistError(CustomQSportException):
+class UserDoesNotExistError(CustomQSportException):
     status_code = 404
 
     def __init__(self, date_value):

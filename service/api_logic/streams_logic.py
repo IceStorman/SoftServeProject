@@ -112,7 +112,6 @@ def get_streams_of_sport(session, sport_name:str):
 
 
 @logger.log_function_call()
-@logger.log_function_call()
 def json_streams(session):
     streams = session.query(Stream).all()
     streams_data = []

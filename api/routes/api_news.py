@@ -3,6 +3,8 @@ from flask import Blueprint, request, make_response
 from api.routes.cache import cache
 from api.routes.scripts import get_cache_key
 from exept.handle_exeptions import get_custom_error_response, get_exception_error_response
+from exept.exeptions import DatabaseConnectionError, CustomQSportException
+from dependency_injector.wiring import inject, Provide
 from api.container.container import Container
 from exept.exeptions import DatabaseConnectionError, CustomQSportException
 from logger.logger import Logger
@@ -26,9 +28,9 @@ def handle_db_timeout_error(e):
 
 
 @news_app.route('/recent', methods=['GET'])
-#@cache.cached(timeout=60*60)
+@cache.cached(timeout=60*60)
 @inject
-#@handle_exceptions
+@handle_exceptions
 @logger.log_function_call()
 def get_recent_news_endpoint(service: NewsService = Provide[Container.news_service]):
     try:
