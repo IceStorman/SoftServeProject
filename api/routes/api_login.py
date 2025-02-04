@@ -5,7 +5,7 @@ from flask import Blueprint, jsonify, request, current_app, session, redirect
 from oauthlib.oauth2 import WebApplicationClient
 from requests_oauthlib import OAuth2Session
 from tensorflow.python.ops.initializers_ns import identity
-
+from typing import TypeVar, Generic
 from dto.api_input import InputUserDTO, InputUserByEmailDTO, NewPasswordDTO, InputUserLoginDTO, InputUserByGoogleDTO
 from dto.common_response import CommonResponseWithUser
 from exept.exeptions import DatabaseConnectionError, CustomQSportException
@@ -16,6 +16,7 @@ from service.api_logic.user_logic import UserService
 from api.container.container import Container
 import os
 
+T = TypeVar('T')
 
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
@@ -95,8 +96,21 @@ def reset_password(token, service: UserService = Provide[Container.user_service]
 async def log_in(service: UserService = Provide[Container.user_service]):
     try:
         data = request.get_json()
-        dto = InputUserLoginDTO().load(data)
-        user = await service.log_in(dto.email_or_username, dto.password_hash)
+        dto = T
+        status = ""
+
+        try:
+            dto = InputUserByGoogleDTO().load(data) or dto
+            status = "google"
+        except Exception:
+            pass
+        try:
+            dto = InputUserLoginDTO().load(data) or dto
+            status = "simple"
+        except Exception:
+            pass
+
+        user = await service.log_in(status, dto)
         response = await service.create_access_token_response(user)
 
         return response
@@ -125,34 +139,19 @@ def login_google():
         logger.error(f"Error in GET /login/google: {str(e)}")
         return get_custom_error_response(e)
 
-@login_app.route("/auth/google/callback", methods=["POST"])
-@inject
-@handle_exceptions
-@logger.log_function_call()
-def callback(service: UserService = Provide[Container.user_service]):
-    try:
-        with current_app.app_context():
-            client = WebApplicationClient(current_app.config['GOOGLE_CLIENT_ID'])
-            token_url, headers, body = client.prepare_token_request(
-                current_app.config['TOKEN_URL'],
-                client_secret = current_app.config['GOOGLE_CLIENT_SECRET'],
-                authorization_response = request.url,
-                redirect_url = current_app.config['REDIRECT_URI']
-            )
-        token_response = requests.post(token_url, headers=headers, data=body)
-        client.parse_request_body_response(token_response.text)
-
-        user_info_response = requests.get(
-            current_app.config['USER_INFO_URL'],
-            headers={'Authorization': f'Bearer {client.token["access_token"]}'}
-        )
-        user_info = user_info_response.json()
-        dto = InputUserByGoogleDTO().load(user_info)
-        user = service.google_auth(dto.email)
-        response = service.create_access_token_response(user)
-
-        return response
-
-    except CustomQSportException as e:
-        logger.error(f"Error in POST /auth/google/callback: {str(e)}")
-        return get_custom_error_response(e)
+# @login_app.route("/auth/google/callback", methods=["POST"])
+# @inject
+# @handle_exceptions
+# @logger.log_function_call()
+# async def callback(service: UserService = Provide[Container.user_service]):
+#     try:
+#         user_info = await service.log_in(dto.email_or_username, dto.password_hash)
+#         dto = InputUserByGoogleDTO().load(user_info)
+#         user = service.google_auth(dto.email)
+#         response = service.create_access_token_response(user)
+#
+#         return response
+#
+#     except CustomQSportException as e:
+#         logger.error(f"Error in POST /auth/google/callback: {str(e)}")
+#         return get_custom_error_response(e)

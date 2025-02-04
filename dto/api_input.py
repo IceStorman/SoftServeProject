@@ -132,3 +132,4 @@ class InputUserByGoogleDTO(BaseDTO):
     id = fields.Str(required=False, missing=None)
     verified_email = fields.Bool(required=False, missing=None)
     picture = fields.Str(required=False, missing=None)
+    auth_url = fields.Str(required=False, missing=None)

@@ -1,6 +1,10 @@
+from typing import Union
+
 from flask import current_app, url_for, jsonify
 from flask_mail import Message
 from itsdangerous import URLSafeTimedSerializer
+
+from dto.api_input import InputUserLoginDTO, InputUserByGoogleDTO
 from dto.api_output import OutputUser, OutputLogin
 from database.models import User
 from dto.common_response import CommonResponse, CommonResponseWithUser
@@ -10,13 +14,20 @@ from logger.logger import Logger
 from jinja2 import Environment, FileSystemLoader
 import os
 from flask_jwt_extended import create_access_token, set_access_cookies
+from service.api_logic.auth_strategy import SimpleAuthStrategy, GoogleAuthStrategy, AuthContext
 
 
 class UserService:
+
     def __init__(self, user_dal):
         self._user_dal = user_dal
         self._serializer = URLSafeTimedSerializer(current_app.secret_key)
         self._logger = Logger("logger", "all.log").logger
+
+        self.strategies = {
+            "simple": SimpleAuthStrategy(user_dal=self._user_dal, serializer=self._serializer),
+            "google": GoogleAuthStrategy(user_dal=self._user_dal, serializer=self._serializer),
+        }
 
 
     async def create_user(self, email_front, username_front, password_front):
@@ -92,34 +103,16 @@ class UserService:
         return OutputUser().dump(user)
 
 
-    async def log_in(self, email_or_username: str, password: str):
-        user = self._user_dal.get_user_by_email_or_username(email_or_username, email_or_username)
+    async def log_in(self, method: str, credentials: Union[InputUserLoginDTO, InputUserByGoogleDTO]):
+        if method not in self.strategies:
+            raise ValueError("Invalid login method")
 
-        if not user:
-            self._logger.warning("User does not exist")
-            raise IncorrectUsernameOrEmailError()
-
-        if not bcrypt.checkpw(password.encode('utf-8'), user.password_hash.encode('utf-8')):
-            self._logger.warning("Passwords do not match")
-            raise IncorrectPasswordError()
-
-        token = await self.__generate_auth_token(user)
-
-        return OutputLogin(email = user.email, token = token, id = user.user_id)
-
+        login_context = AuthContext(self.strategies[method])
+        xuy = await login_context.execute_login(credentials)
+        return xuy
 
     async def __generate_auth_token(self, user):
-        return self._serializer.dumps(user.email, salt = "user-auth-token")
-
-    def google_auth(self, email):
-        user = self._user_dal.get_user_by_email_or_username(email)
-        if not user:
-            user = User(email = email, username = email.split('@')[0])
-            self._user_dal.create_user(user)
-
-        token = self.__generate_auth_token(user)
-
-        return OutputLogin(email = user.email, token = token, id = user.user_id)
+            return self._serializer.dumps(user.email, salt = "user-auth-token")
 
 
     async def create_access_token_response(self, user):
