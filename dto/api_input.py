@@ -134,3 +134,11 @@ class InputUserByGoogleDTO(BaseDTO):
     id = fields.Str(required=False, missing=None)
     verified_email = fields.Bool(required=False, missing=None)
     picture = fields.Str(required=False, missing=None)
+
+
+class PreferenceStrategySchema(Schema):
+    main_table = fields.Str(required=True)
+    related_table = fields.Str(required=True)
+    user_id_field = fields.Str(required=True)
+    type_id_field = fields.Str(required=True)
+

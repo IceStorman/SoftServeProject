@@ -3,7 +3,7 @@ from flask_mail import Message
 from itsdangerous import URLSafeTimedSerializer
 from dto.api_input import UpdateUserPreferencesDTO
 from dto.api_output import OutputUser, OutputLogin, OutputPreferences
-from database.models import User
+from database.models import User, UserPreference, ClubPreference, TeamIndex, Sport
 from dto.common_response import CommonResponse, CommonResponseWithUser
 from exept.exeptions import UserDoesNotExistError, IncorrectUsernameOrEmailError, UserAlreadyExistError, \
     IncorrectPasswordError, IncorrectPreferencesError, NotUserIdOrPreferencesError, IncorrectTypeOfPreferencesError
@@ -17,9 +17,17 @@ from service.api_logic.strategy.preference_strategy import SportPreferenceStrate
 
 class UserService:
 
+    '''I now have two variants of realisation business layer for preferences
+        First one is smth like strategies with ABS class, but all methods are sooo similar
+        Second one is big Dict with Models from db that i going to input to the similar script
+            for both of them
+        Whats from this SHLACK is better ?
+
+        PS 'SECOND ONE IN PreferencesDAL'
+    '''
     STRATEGIES = {
         "SPORT": SportPreferenceStrategy(),
-        "TEAM": TeamPreferenceStrategy()
+        "TEAM": TeamPreferenceStrategy(),
     }
 
     def __init__(self, user_dal, preferences_dal):
