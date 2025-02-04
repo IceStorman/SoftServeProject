@@ -133,17 +133,3 @@ async def all_generate_recommendation_endpoint(service_recs: RecommendationServi
     except CustomQSportException as e:
         logger.error(f"Error in Get Recommendations /: {str(e)}")
         return get_custom_error_response(e)
-
-@news_app.route("/qwerty", methods=["GET"])
-@inject
-async def qwerty(service: UserService = Provide[Container.user_service]):
-    #response = make_response("Hello Nigga")
-    #response.set_cookie("snfu", "2")
-    data = {
-        "email_or_username": "UserVlad",
-        "password_hash": "1qQ"
-    }
-    dto = InputUserLoginDTO().load(data)
-    user = await service.log_in(dto.email_or_username, dto.password_hash)
-    response = await service.create_access_token_response(user)
-    return response
