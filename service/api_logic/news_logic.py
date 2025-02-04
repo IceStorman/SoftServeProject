@@ -8,7 +8,7 @@ from exept.handle_exeptions import handle_exceptions
 from service.api_logic.scripts import get_sport_by_name
 from database.session import SessionLocal
 from logger.logger import Logger
-
+from filter_manager import NewsFilterManager
 
 class NewsService:
     def __init__(self, news_dal):
@@ -52,3 +52,9 @@ class NewsService:
             content_type='application/json; charset=utf-8',
         )
 
+    def get_filtered_news(self, filters: dict):
+        session = SessionLocal()
+        query = session.query(News).order_by(desc(News.save_at))
+        query = NewsFilterManager.apply_filters(query, filters, session)
+        news = query.all()
+        return self.json_news(news)
