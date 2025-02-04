@@ -3,10 +3,6 @@ from flask import Response
 from sqlalchemy import desc
 from database.models import News
 from database.azure_blob_storage.save_get_blob import blob_get_news
-from sqlalchemy.sql.expression import ClauseElement
-from exept.handle_exeptions import handle_exceptions
-from service.api_logic.scripts import get_sport_by_name
-from database.session import SessionLocal
 from logger.logger import Logger
 
 
@@ -21,9 +17,8 @@ class NewsService:
         return self.json_news(news)
 
 
-    def get_latest_sport_news(self, count: int, sport_name: str):
+    def get_latest_sport_news(self, COUNT: int, sport_name: str):
         sport = self._news_dal.get_sport_by_name(sport_name)
-        #sport = get_sport_by_name(self.session, sport_name)
         filters = [News.sport_id == sport.sport_id]
         news = self._news_dal.fetch_news(order_by=desc(News.save_at), limit=COUNT, filters=filters)
         return self.json_news(news)

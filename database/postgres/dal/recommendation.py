@@ -1,7 +1,5 @@
-from sqlalchemy.orm import aliased
-
-from database.models import Likes, Views, News, User, ClubPreference, UserPreference, Sport, TeamInNews, \
-    UserRecommendations
+from database.models import Likes, Views, News, User, ClubPreference, \
+    UserPreference, Sport, TeamInNews, UserRecommendations
 from sqlalchemy import union_all, literal, func
 
 
@@ -30,16 +28,6 @@ class RecommendationDAL:
         ).filter(Views.timestamp >= time_limit)
 
         union_query = union_all(likes_query, views_query)
-        # aliased_union = aliased(union_query)
-        #
-        # aggregated_query = (
-        #     self.session.query(
-        #         aliased_union.c.user_id,
-        #         aliased_union.c.news_id,
-        #         func.sum(aliased_union.c.interaction).label('interaction')
-        #     )
-        #     .group_by(aliased_union.c.user_id, aliased_union.c.news_id)
-        # )
 
         return self.session.execute(union_query).fetchall()
 
@@ -82,21 +70,6 @@ class RecommendationDAL:
         )
 
 
-    # def save_user_recommendation(self, user_id, recommendations):
-    #     self.session.query(UserRecommendations).filter_by(user_id=user_id).delete()
-    #
-    #     recommendation_objects = [
-    #         UserRecommendations(
-    #             user_id=rec['user_id'],
-    #             news_id=rec['news_id'],
-    #             score=rec['score'],
-    #             rating=rec['rating'],
-    #         )
-    #         for rec in recommendations
-    #     ]
-    #     self.session.add_all(recommendation_objects)
-    #     self.session.commit()
-
     def save_user_recommendation(self, user_id, recommendations):
         existing_recommendations = (
             self.session.query(UserRecommendations)
@@ -135,22 +108,3 @@ class RecommendationDAL:
 
     def get_user_recommendations(self, user_id):
         return self.session.query(UserRecommendations).filter_by(user_id=user_id).all()
-        # return [
-        #     {
-        #         "news_id": 13,
-        #         "score": 0.143415255,
-        #         "user_id": 2
-        #     }
-        # ]
-
-
-    def new(self):
-        from datetime import datetime
-        test_likes = [
-            Likes(users_id=2, news_id=31, timestamp=datetime(2024, 1, 25)),
-            Likes(users_id=2, news_id=32, timestamp=datetime(2025, 1, 27)),
-            Likes(users_id=3, news_id=33, timestamp=datetime(2025, 1, 31))
-        ]
-        self.session.add_all(test_likes)
-        self.session.commit()
-
