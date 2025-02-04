@@ -7,7 +7,7 @@ from requests_oauthlib import OAuth2Session
 from tensorflow.python.ops.initializers_ns import identity
 
 from dto.api_input import InputUserDTO, InputUserByEmailDTO, NewPasswordDTO, InputUserLoginDTO, InputUserByGoogleDTO
-from dto.common_responce import CommonResponseWithUser
+from dto.common_response import CommonResponseWithUser
 from exept.exeptions import DatabaseConnectionError, CustomQSportException
 from exept.handle_exeptions import get_custom_error_response, handle_exceptions
 from logger.logger import Logger
