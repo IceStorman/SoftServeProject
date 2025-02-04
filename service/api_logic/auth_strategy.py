@@ -32,8 +32,8 @@ class AuthContext:
         self._strategy = strategy
 
     async def execute_login(self, credentials: T):
-        xuy = await self._strategy.authenticate(credentials)
-        return xuy
+        login_strategy = await self._strategy.authenticate(credentials)
+        return login_strategy
 
 
 class SimpleAuthStrategy(AuthStrategy[InputUserLoginDTO]):

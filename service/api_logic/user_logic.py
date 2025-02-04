@@ -108,8 +108,8 @@ class UserService:
             raise ValueError("Invalid login method")
 
         login_context = AuthContext(self.strategies[method])
-        xuy = await login_context.execute_login(credentials)
-        return xuy
+        login_strategy = await login_context.execute_login(credentials)
+        return login_strategy
 
     async def __generate_auth_token(self, user):
             return self._serializer.dumps(user.email, salt = "user-auth-token")
