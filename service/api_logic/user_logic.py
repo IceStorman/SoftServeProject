@@ -142,13 +142,17 @@ class UserService:
         if not dto.user_id or not isinstance(dto.preferences, list):
             raise NotUserIdOrPreferencesError()
 
+        new_dto_by_type_of_preference = self.dto_for_type_of_preference(dto)
+
         existing_sports = self._preferences_dal.get_all_sport_preference_indexes()
-        valid_preferences = set([sport_id for sport_id in dto.preferences if sport_id in existing_sports])
+        if dto.type == SPORT_TYPE:
+            valid_preferences = set([sport_id for sport_id in dto.preferences if sport_id in existing_sports])
+
+        if dto.type == TEAM_TYPE:
+            valid_preferences = set([sport_id for sport_id in dto.preferences])
 
         if not valid_preferences:
             raise IncorrectPreferencesError()
-
-        new_dto_by_type_of_preference = self.dto_for_type_of_preference(dto)
 
         self._preferences_dal.delete_all_user_preferences(new_dto_by_type_of_preference, dto)
         self._preferences_dal.add_user_preferences(new_dto_by_type_of_preference, dto, valid_preferences)
