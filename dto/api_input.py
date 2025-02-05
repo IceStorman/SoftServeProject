@@ -141,4 +141,4 @@ class InputUserLogInDTO(BaseDTO):
     verified_email = fields.Bool(required=False, missing=None)
     picture = fields.Str(required=False, missing=None)
     auth_url = fields.Str(required=False, missing=None)
-    auth_provider = fields.String(required=True)
+    auth_provider = fields.String(required=False, missing=None)

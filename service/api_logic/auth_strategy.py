@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from enum import Enum
 import bcrypt
 import requests
 from flask import current_app, request
@@ -11,11 +12,12 @@ from typing import Generic, TypeVar
 
 T = TypeVar("T")
 
-
-class AuthHandler(ABC, Generic[T]):
+class AuthMethods(Enum):
     SIMPLE = "simple"
     GOOGLE = "google"
 
+
+class AuthHandler(ABC, Generic[T]):
     def __init__(self, user_service):
         self._user_service = user_service
 
@@ -28,8 +30,8 @@ class AuthManager:
     def __init__(self, user_service):
         self._user_service = user_service
         self.strategies = {
-            AuthHandler.SIMPLE: SimpleAuthHandler(user_service=self._user_service),
-            AuthHandler.GOOGLE: GoogleAuthHandler(user_service=self._user_service),
+            AuthMethods.SIMPLE.value: SimpleAuthHandler(user_service=self._user_service),
+            AuthMethods.GOOGLE.value: GoogleAuthHandler(user_service=self._user_service),
         }
 
     async def execute_log_in(self, method: str, credentials: T):
@@ -76,13 +78,11 @@ class GoogleAuthHandler(AuthHandler[T]):
         )
 
         data = user_info_response.json()
-        data['auth_provider'] = credentials.auth_provider
-
         user_info = InputUserLogInDTO().load(data)
 
         user = self._user_service._user_dal.get_user_by_email_or_username(user_info.email)
         if not user:
-            user = User(email=user_info.email, username=user_info.email.split('@')[0])
+            user = User(email=data.email, username=data.email.split('@')[0])
             self._user_service.create_user(user)
 
         token = await self._user_service.get_generate_auth_token(user)
