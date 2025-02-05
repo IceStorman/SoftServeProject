@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Query
-from database.models import News
+from database.models import News, TeamInNews
 from service.api_logic.scripts import get_sport_by_name
 
 
@@ -10,6 +10,7 @@ class NewsFilterManager:
         "sport": "apply_sport_filter",
         "date_from": "apply_date_from",
         "date_to": "apply_date_to",
+        "team": "apply_team_filter",
     }
 
     @staticmethod
@@ -28,6 +29,10 @@ class NewsFilterManager:
     @staticmethod
     def apply_date_to(query: Query, value: str) -> Query:
         return query.filter(News.save_at <= value)
+
+    @staticmethod
+    def apply_team_filter(query: Query, value: str) -> Query:
+        return query.join(TeamInNews, News.news_id == TeamInNews.news_id).filter(TeamInNews.name.ilike(f"%{value}%"))
 
     @classmethod
     def apply_filters(cls, query: Query, filters: dict, session) -> Query:
