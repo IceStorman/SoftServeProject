@@ -17,10 +17,8 @@ from logger.logger import Logger
 T = TypeVar("T")
 
 class AuthStrategy(ABC, Generic[T]):
-    def __init__(self, user_dal, serializer):
-        self._user_dal = user_dal
-        self._logger = Logger("logger", "all.log").logger
-        self._serializer = serializer
+    def __init__(self, user_service):
+        self._user_service = user_service
 
     @abstractmethod
     def authenticate(self, credentials: T):
@@ -38,22 +36,20 @@ class AuthContext:
 
 class SimpleAuthStrategy(AuthStrategy[T]):
     async def authenticate(self, credentials: T):
-        user = self._user_dal.get_user_by_email_or_username(credentials.email_or_username, credentials.email_or_username)
+        user = self._user_service._user_dal.get_user_by_email_or_username(credentials.email_or_username, credentials.email_or_username)
 
         if not user:
-            self._logger.warning("User does not exist")
+            self._user_service._logger.warning("User does not exist")
             raise IncorrectUsernameOrEmailError()
 
         if not bcrypt.checkpw(credentials.password_hash.encode('utf-8'), user.password_hash.encode('utf-8')):
-            self._logger.warning("Passwords do not match")
+            self._user_service._logger.warning("Passwords do not match")
             raise IncorrectPasswordError()
 
-        token = await self.__generate_auth_token(user)
+        token = await self._user_service.get_generate_auth_token(user)
 
         return OutputLogin(email=user.email, token=token, id=user.user_id)
 
-    async def __generate_auth_token(self, user):
-            return self._serializer.dumps(user.email, salt = "user-auth-token")
 
 
 class GoogleAuthStrategy(AuthStrategy[T]):
@@ -79,14 +75,11 @@ class GoogleAuthStrategy(AuthStrategy[T]):
 
         user_info = InputUserLogInDTO().load(data)
 
-        user = self._user_dal.get_user_by_email_or_username(user_info.email)
+        user = self._user_service._user_dal.get_user_by_email_or_username(user_info.email)
         if not user:
             user = User(email=user_info.email, username=user_info.email.split('@')[0])
-            self._user_dal.create_user(user)
+            self._user_service.create_user(user)
 
-        token = self.__generate_auth_token(user)
+        token = await self._user_service.get_generate_auth_token(user)
 
         return OutputLogin(email=user.email, token=token, id=user.user_id)
-
-    async def __generate_auth_token(self, user):
-            return self._serializer.dumps(user.email, salt = "user-auth-token")

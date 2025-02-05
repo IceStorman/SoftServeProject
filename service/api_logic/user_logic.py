@@ -25,8 +25,8 @@ class UserService:
         self._logger = Logger("logger", "all.log").logger
 
         self.strategies = {
-            "simple": SimpleAuthStrategy(user_dal=self._user_dal, serializer=self._serializer),
-            "google": GoogleAuthStrategy(user_dal=self._user_dal, serializer=self._serializer),
+            "simple": SimpleAuthStrategy(user_service=self),
+            "google": GoogleAuthStrategy(user_service=self),
         }
 
 
@@ -113,6 +113,10 @@ class UserService:
 
     async def __generate_auth_token(self, user):
             return self._serializer.dumps(user.email, salt = "user-auth-token")
+
+
+    def get_generate_auth_token(self, user):
+        return self.__generate_auth_token(user)
 
 
     async def create_access_token_response(self, user):
