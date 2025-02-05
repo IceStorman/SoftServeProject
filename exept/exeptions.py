@@ -89,5 +89,13 @@ class IncorrectLogInStrategyMethod(CustomQSportException):
     status_code = 404
 
     def __init__(self, data_value):
-        message = f"{data_value} isn't a log in method in this app'"
+        message = f"{data_value} is not a log in method in this app"
+        super().__init__(message)
+
+
+class InvalidDataForGoogleLogIn(CustomQSportException):
+    status_code = 404
+
+    def __init__(self):
+        message = f"Google data is invalid"
         super().__init__(message)

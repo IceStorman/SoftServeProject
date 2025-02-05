@@ -7,7 +7,8 @@ from oauthlib.oauth2 import WebApplicationClient
 from database.models import User
 from dto.api_input import InputUserLogInDTO
 from dto.api_output import OutputLogin
-from exept.exeptions import IncorrectUserDataError, UserDoesNotExistError, IncorrectLogInStrategyMethod
+from exept.exeptions import IncorrectUserDataError, UserDoesNotExistError, IncorrectLogInStrategyMethod, \
+    InvalidDataForGoogleLogIn
 from typing import Generic, TypeVar
 
 T = TypeVar("T")
@@ -70,12 +71,17 @@ class GoogleAuthHandler(AuthHandler[T]):
                 redirect_url=current_app.config['REDIRECT_URI']
             )
         token_response = requests.post(token_url, headers=headers, data=body)
+        if token_response.status_code != 200:
+            raise InvalidDataForGoogleLogIn()
+
         client.parse_request_body_response(token_response.text)
 
         user_info_response = requests.get(
             current_app.config['USER_INFO_URL'],
             headers={'Authorization': f'Bearer {client.token["access_token"]}'}
         )
+        if user_info_response.status_code != 200:
+            raise InvalidDataForGoogleLogIn()
 
         data = user_info_response.json()
         user_info = InputUserLogInDTO().load(data)
