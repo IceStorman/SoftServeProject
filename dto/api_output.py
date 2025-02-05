@@ -1,5 +1,4 @@
 from marshmallow import Schema, fields
-from database.models import Games
 
 class GameOutput(Schema):
     id = fields.Int()
@@ -40,3 +39,20 @@ class CountriesOutput(Schema):
     id = fields.Int(attribute="country_id")
     flag = fields.Str()
     name = fields.Str()
+
+class OutputUser(Schema):
+    username = fields.Str(required=True)
+    email = fields.Str(required=True)
+
+class OutputPreferences(Schema):
+    sports_id = fields.Str(required=True)
+    sport_name = fields.Str(required=True)
+    sport_img = fields.Str(required=True)
+
+class OutputLogin():
+    def __init__(self, email: str, id: int, token: str):
+        self.email = email
+        self.id = id
+        self.token = token
+        self.message = "You successfully logged in!"
+
