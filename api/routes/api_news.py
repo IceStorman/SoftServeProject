@@ -73,14 +73,14 @@ def specific_article(service: NewsService = Provide[Container.news_service]):
         logger.error(f"Error in POST /: {str(e)}")
         get_custom_error_response(e)
 
-@news_app.route('/filtered', methods=['GET'])
+@news_app.route('/filtered', methods=['POST'])
 @inject
 @logger.log_function_call()
 def get_filtered_news_endpoint(service: NewsService = Provide[Container.news_service]):
     try:
-        filters = request.args.to_dict()
+        filters = request.get_json() or {}
         filtered_news = service.get_filtered_news(filters)
         return filtered_news
     except CustomQSportException as e:
-        logger.error(f"Error in GET /filtered: {str(e)}")
+        logger.error(f"Error in POST /filtered: {str(e)}")
         return get_custom_error_response(e)
