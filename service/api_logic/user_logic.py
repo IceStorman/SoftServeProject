@@ -1,22 +1,34 @@
+from typing import Union
+
 from flask import current_app, url_for, jsonify
 from flask_mail import Message
 from itsdangerous import URLSafeTimedSerializer
+
+from dto.api_input import InputUserLogInDTO
 from dto.api_output import OutputUser, OutputLogin
 from database.models import User
 from dto.common_response import CommonResponse, CommonResponseWithUser
-from exept.exeptions import UserDoesNotExistError, IncorrectUsernameOrEmailError, UserAlreadyExistError, IncorrectPasswordError
+from exept.exeptions import UserDoesNotExistError, IncorrectUsernameOrEmailError, UserAlreadyExistError, \
+    IncorrectUserDataError, IncorrectLogInStrategyMethod
 import bcrypt
 from logger.logger import Logger
 from jinja2 import Environment, FileSystemLoader
 import os
-from flask_jwt_extended import create_access_token, create_refresh_token, set_access_cookies, set_refresh_cookies
+from flask_jwt_extended import create_access_token, set_access_cookies
+from service.api_logic.auth_strategy import SimpleAuthHandler, GoogleAuthHandler, AuthManager
 
 
 class UserService:
+
     def __init__(self, user_dal):
         self._user_dal = user_dal
         self._serializer = URLSafeTimedSerializer(current_app.secret_key)
         self._logger = Logger("logger", "all.log").logger
+
+        self.strategies = {
+            "simple": SimpleAuthHandler(user_service=self),
+            "google": GoogleAuthHandler(user_service=self),
+        }
 
 
     async def create_user(self, email_front, username_front, password_front):
@@ -81,9 +93,8 @@ class UserService:
 
         self._user_dal.update_user_password(user, new_password)
         new_jwt = create_access_token(identity = user.email)
-        new_refresh = create_refresh_token(identity=user.email)
 
-        return new_jwt, new_refresh
+        return new_jwt
 
 
     def confirm_token(self, token: str, expiration=3600):
@@ -93,42 +104,27 @@ class UserService:
         return OutputUser().dump(user)
 
 
-    async def log_in(self, email_or_username: str, password: str):
-        user = self._user_dal.get_user_by_email_or_username(email_or_username, email_or_username)
+    async def log_in(self, method: str, credentials: InputUserLogInDTO):
+        if method not in self.strategies:
+            raise IncorrectLogInStrategyMethod(method)
 
-        if not user:
-            self._logger.warning("User does not exist")
-            raise IncorrectUsernameOrEmailError()
-
-        if not bcrypt.checkpw(password.encode('utf-8'), user.password_hash.encode('utf-8')):
-            self._logger.warning("Passwords do not match")
-            raise IncorrectPasswordError()
-
-        token = await self.__generate_auth_token(user)
-
-        return OutputLogin(email = user.email, token = token, id = user.user_id)
-
+        login_context = AuthManager(self.strategies[method])
+        login_strategy = await login_context.execute_login(credentials)
+        response = await self.create_access_token_response(login_strategy)
+        return response
 
     async def __generate_auth_token(self, user):
-        return self._serializer.dumps(user.email, salt = "user-auth-token")
+            return self._serializer.dumps(user.email, salt = "user-auth-token")
 
-    def google_auth(self, email):
-        user = self._user_dal.get_user_by_email_or_username(email)
-        if not user:
-            user = User(email = email, username = email.split('@')[0])
-            self._user_dal.create_user(user)
 
-        token = self.__generate_auth_token(user)
-
-        return OutputLogin(email = user.email, token = token, id = user.user_id)
+    def get_generate_auth_token(self, user):
+        return self.__generate_auth_token(user)
 
 
     async def create_access_token_response(self, user):
         access_token = create_access_token(identity = user.email)
-        refresh = create_refresh_token(identity=user.email)
         response = CommonResponseWithUser(user_id = user.id, user_email = user.email).to_dict()
         response_json = jsonify(response)
         set_access_cookies(response_json, access_token)
-        set_refresh_cookies(refresh)
 
         return response_json
