@@ -1,21 +1,17 @@
-from typing import Union
-
 from flask import current_app, url_for, jsonify
 from flask_mail import Message
 from itsdangerous import URLSafeTimedSerializer
-
 from dto.api_input import InputUserLogInDTO
 from dto.api_output import OutputUser, OutputLogin
 from database.models import User
 from dto.common_response import CommonResponse, CommonResponseWithUser
-from exept.exeptions import UserDoesNotExistError, IncorrectUsernameOrEmailError, UserAlreadyExistError, \
-    IncorrectUserDataError, IncorrectLogInStrategyMethod
+from exept.exeptions import UserDoesNotExistError, UserAlreadyExistError
 import bcrypt
 from logger.logger import Logger
 from jinja2 import Environment, FileSystemLoader
 import os
 from flask_jwt_extended import create_access_token, set_access_cookies
-from service.api_logic.auth_strategy import SimpleAuthHandler, GoogleAuthHandler, AuthManager
+from service.api_logic.auth_strategy import AuthManager
 
 
 class UserService:
@@ -24,11 +20,6 @@ class UserService:
         self._user_dal = user_dal
         self._serializer = URLSafeTimedSerializer(current_app.secret_key)
         self._logger = Logger("logger", "all.log").logger
-
-        self.strategies = {
-            "simple": SimpleAuthHandler(user_service=self),
-            "google": GoogleAuthHandler(user_service=self),
-        }
 
 
     async def create_user(self, email_front, username_front, password_front):
@@ -104,14 +95,12 @@ class UserService:
         return OutputUser().dump(user)
 
 
-    async def log_in(self, method: str, credentials: InputUserLogInDTO):
-        if method not in self.strategies:
-            raise IncorrectLogInStrategyMethod(method)
-
-        login_context = AuthManager(self.strategies[method])
-        login_strategy = await login_context.execute_login(credentials)
-        response = await self.create_access_token_response(login_strategy)
+    async def log_in(self, credentials: InputUserLogInDTO):
+        login_context = AuthManager(self)
+        user = await login_context.execute_log_in(credentials.auth_provider, credentials)
+        response = await self.create_access_token_response(user)
         return response
+
 
     async def __generate_auth_token(self, user):
             return self._serializer.dumps(user.email, salt = "user-auth-token")

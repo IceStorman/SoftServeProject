@@ -1,21 +1,21 @@
 from abc import ABC, abstractmethod
-from typing import Dict
 import bcrypt
 import requests
 from flask import current_app, request
-from itsdangerous import URLSafeTimedSerializer
 from oauthlib.oauth2 import WebApplicationClient
 from database.models import User
 from dto.api_input import InputUserLogInDTO
 from dto.api_output import OutputLogin
-from exept.exeptions import IncorrectUserDataError, UserDoesNotExistError
+from exept.exeptions import IncorrectUserDataError, UserDoesNotExistError, IncorrectLogInStrategyMethod
 from typing import Generic, TypeVar
-
-from logger.logger import Logger
 
 T = TypeVar("T")
 
+
 class AuthHandler(ABC, Generic[T]):
+    SIMPLE = "simple"
+    GOOGLE = "google"
+
     def __init__(self, user_service):
         self._user_service = user_service
 
@@ -25,11 +25,18 @@ class AuthHandler(ABC, Generic[T]):
 
 
 class AuthManager:
-    def __init__(self, strategy: AuthHandler):
-        self._strategy = strategy
+    def __init__(self, user_service):
+        self._user_service = user_service
+        self.strategies = {
+            AuthHandler.SIMPLE: SimpleAuthHandler(user_service=self._user_service),
+            AuthHandler.GOOGLE: GoogleAuthHandler(user_service=self._user_service),
+        }
 
-    async def execute_login(self, credentials: T):
-        login_strategy = await self._strategy.authenticate(credentials)
+    async def execute_log_in(self, method: str, credentials: T):
+        if method not in self.strategies:
+            raise IncorrectLogInStrategyMethod(method)
+
+        login_strategy = await self.strategies[method].authenticate(credentials)
         return login_strategy
 
 

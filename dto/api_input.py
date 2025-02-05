@@ -18,6 +18,12 @@ class BaseDTO(Schema):
             data['letter'] = ' '.join(data['letter'].split()).lower()
         return data
 
+    @pre_load
+    def to_lower(self, data, **kwargs):
+        if 'auth_provider' in data and data['auth_provider']:
+            data['auth_provider'] = data['auth_provider'].lower()
+        return data
+
     @post_load
     def make_object(self, data, **kwargs):
         class_name = self.__class__.__name__.replace("Schema", "") or "DTO"
