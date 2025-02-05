@@ -39,8 +39,8 @@ class RecommendationDAL:
                 UserPreference.sports_id
             )
             .select_from(User)
-            .outerjoin(UserClubPreferences, UserClubPreferences.users_id == User.user_id)
-            .outerjoin(UserPreference, UserPreference.users_id == User.user_id)
+            .join(UserClubPreferences, UserClubPreferences.users_id == User.user_id)
+            .join(UserPreference, UserPreference.users_id == User.user_id)
             .filter(User.user_id == user_id)
         )
 

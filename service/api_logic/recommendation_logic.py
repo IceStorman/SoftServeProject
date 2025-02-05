@@ -10,7 +10,7 @@ from logger.logger import Logger
 SEC_PER_DAY = 24 * 60 * 60
 MAX_LIMIT_FOR_REC_IN_DAYS = 21
 SCORE_FOR_NOT_PREFER_SPORT = 0.25
-SCORE_FOR_PREFER_SPORT = 0.1
+SCORE_FOR_PREFER_SPORT = 0.20
 SCORE_FOR_NOTHING = 0.1
 SCORE_FOR_PREFER_TEAM = 0.2
 BASE_LIMIT_OF_NEWS_FOR_RECS = 5
@@ -174,8 +174,8 @@ class RecommendationService:
         if not user_preferences:
             return [], []
 
-        user_preferred_teams = [row.preferences for row in user_preferences if row.preferences is not None]
-        user_preferred_sports = [row.sports_id for row in user_preferences if row.sports_id is not None]
+        user_preferred_teams = list({row.preferences for row in user_preferences if row.preferences is not None})
+        user_preferred_sports = list({row.sports_id for row in user_preferences if row.sports_id is not None})
 
         return user_preferred_teams, user_preferred_sports
 
