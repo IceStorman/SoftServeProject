@@ -1,20 +1,26 @@
 from flask import current_app, url_for, jsonify
 from flask_mail import Message
 from itsdangerous import URLSafeTimedSerializer
-from dto.api_output import OutputUser, OutputLogin
+from dto.api_input import UpdateUserPreferencesDTO, SportPreferenceDTO, TeamPreferenceDTO
+from dto.api_output import OutputUser, OutputLogin, OutputSportPreferences, OutputTeamPreferences
 from database.models import User
 from dto.common_response import CommonResponse, CommonResponseWithUser
-from exept.exeptions import UserDoesNotExistError, IncorrectUsernameOrEmailError, UserAlreadyExistError, IncorrectPasswordError
+from exept.exeptions import UserDoesNotExistError, IncorrectUsernameOrEmailError, UserAlreadyExistError, \
+    IncorrectPasswordError, IncorrectPreferencesError, NotUserIdOrPreferencesError, IncorrectTypeOfPreferencesError
 import bcrypt
 from logger.logger import Logger
 from jinja2 import Environment, FileSystemLoader
 import os
 from flask_jwt_extended import create_access_token, set_access_cookies
 
+SPORT_TYPE = "sport"
+TEAM_TYPE = "team"
 
 class UserService:
-    def __init__(self, user_dal):
+
+    def __init__(self, user_dal, preferences_dal):
         self._user_dal = user_dal
+        self._preferences_dal = preferences_dal
         self._serializer = URLSafeTimedSerializer(current_app.secret_key)
         self._logger = Logger("logger", "all.log").logger
 
@@ -111,6 +117,7 @@ class UserService:
     async def __generate_auth_token(self, user):
         return self._serializer.dumps(user.email, salt = "user-auth-token")
 
+
     def google_auth(self, email):
         user = self._user_dal.get_user_by_email_or_username(email)
         if not user:
@@ -129,3 +136,63 @@ class UserService:
         set_access_cookies(response_json, access_token)
 
         return response_json
+
+
+    def add_preferences(self, dto: UpdateUserPreferencesDTO):
+        if not dto.user_id or not isinstance(dto.preferences, list):
+            raise NotUserIdOrPreferencesError()
+
+        new_dto_by_type_of_preference = self.dto_for_type_of_preference(dto)
+
+        existing_sports = self._preferences_dal.get_all_sport_preference_indexes()
+        if dto.type == SPORT_TYPE:
+            valid_preferences = set([sport_id for sport_id in dto.preferences if sport_id in existing_sports])
+
+        if dto.type == TEAM_TYPE:
+            valid_preferences = set([sport_id for sport_id in dto.preferences])
+
+        if not valid_preferences:
+            raise IncorrectPreferencesError()
+
+        self._preferences_dal.delete_all_user_preferences(new_dto_by_type_of_preference, dto)
+        self._preferences_dal.add_user_preferences(new_dto_by_type_of_preference, dto, valid_preferences)
+
+        return CommonResponse().to_dict()
+
+
+    def get_user_preferences(self, dto: UpdateUserPreferencesDTO):
+        new_dto_by_type_of_preference = self.dto_for_type_of_preference(dto)
+
+        prefs = self._preferences_dal.get_user_preferences(new_dto_by_type_of_preference, dto)
+        if dto.type == SPORT_TYPE:
+            shema = OutputSportPreferences(many=True).dump(prefs)
+            return shema
+
+        if dto.type == TEAM_TYPE:
+            shema = OutputTeamPreferences(many=True).dump(prefs)
+            return shema
+
+
+    def get_all_preferences(self):
+        return self._preferences_dal.get_all_sport_preferences()
+
+
+    def delete_preferences(self, dto: UpdateUserPreferencesDTO):
+        if not dto.user_id or not isinstance(dto.preferences, list):
+            raise NotUserIdOrPreferencesError()
+
+        new_dto_by_type_of_preference = self.dto_for_type_of_preference(dto)
+
+        self._preferences_dal.delete_user_preferences(new_dto_by_type_of_preference, dto)
+
+        return CommonResponse().to_dict()
+
+
+    def dto_for_type_of_preference(self, dto):
+        if dto.type == SPORT_TYPE:
+            return SportPreferenceDTO()
+        elif dto.type == TEAM_TYPE:
+            return TeamPreferenceDTO()
+        else:
+            raise IncorrectTypeOfPreferencesError()
+
