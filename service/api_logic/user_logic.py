@@ -8,7 +8,8 @@ from dto.api_input import InputUserLogInDTO
 from dto.api_output import OutputUser, OutputLogin
 from database.models import User
 from dto.common_response import CommonResponse, CommonResponseWithUser
-from exept.exeptions import UserDoesNotExistError, IncorrectUsernameOrEmailError, UserAlreadyExistError, IncorrectPasswordError
+from exept.exeptions import UserDoesNotExistError, IncorrectUsernameOrEmailError, UserAlreadyExistError, \
+    IncorrectUserDataError, IncorrectLogInStrategyMethod
 import bcrypt
 from logger.logger import Logger
 from jinja2 import Environment, FileSystemLoader
@@ -105,7 +106,7 @@ class UserService:
 
     async def log_in(self, method: str, credentials: InputUserLogInDTO):
         if method not in self.strategies:
-            raise ValueError("Invalid login method")
+            raise IncorrectLogInStrategyMethod(method)
 
         login_context = AuthManager(self.strategies[method])
         login_strategy = await login_context.execute_login(credentials)

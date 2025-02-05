@@ -5,11 +5,10 @@ import requests
 from flask import current_app, request
 from itsdangerous import URLSafeTimedSerializer
 from oauthlib.oauth2 import WebApplicationClient
-
 from database.models import User
 from dto.api_input import InputUserLogInDTO
 from dto.api_output import OutputLogin
-from exept.exeptions import IncorrectUsernameOrEmailError, IncorrectPasswordError
+from exept.exeptions import IncorrectUserDataError, UserDoesNotExistError
 from typing import Generic, TypeVar
 
 from logger.logger import Logger
@@ -40,11 +39,11 @@ class SimpleAuthHandler(AuthHandler[T]):
 
         if not user:
             self._user_service._logger.warning("User does not exist")
-            raise IncorrectUsernameOrEmailError()
+            raise UserDoesNotExistError(user.email)
 
         if not bcrypt.checkpw(credentials.password_hash.encode('utf-8'), user.password_hash.encode('utf-8')):
             self._user_service._logger.warning("Passwords do not match")
-            raise IncorrectPasswordError()
+            raise IncorrectUserDataError()
 
         token = await self._user_service.get_generate_auth_token(user)
 
