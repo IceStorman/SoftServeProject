@@ -52,7 +52,7 @@ class InvalidResetPasswordError(CustomQSportException):
         super().__init__(message)
 
 
-class UserDoNotExistError(CustomQSportException):
+class UserDoesNotExistError(CustomQSportException):
     status_code = 404
 
     def __init__(self, date_value):
@@ -69,7 +69,7 @@ class IncorrectUsernameOrEmailError(CustomQSportException):
         super().__init__(message)
 
 
-class IncorrectPasswordError(CustomQSportException):
+class IncorrectUserDataError(CustomQSportException):
     status_code = 401
 
     def __init__(self):
@@ -83,4 +83,19 @@ class UserAlreadyExistError(CustomQSportException):
     def __init__(self, date_value):
         self.date_value = date_value
         message = f"User with such data already exist'"
+        super().__init__(message)
+
+class IncorrectLogInStrategyMethod(CustomQSportException):
+    status_code = 404
+
+    def __init__(self, data_value):
+        message = f"{data_value} is not a log in method in this app"
+        super().__init__(message)
+
+
+class InvalidDataForGoogleLogIn(CustomQSportException):
+    status_code = 404
+
+    def __init__(self):
+        message = f"Google data is invalid"
         super().__init__(message)

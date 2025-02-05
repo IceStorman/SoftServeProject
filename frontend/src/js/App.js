@@ -20,6 +20,7 @@ import StreamPage from "../pages/streamPage";
 import NewsPage from "../pages/newsPage";
 import NotExistingPage from "../pages/notExistingPage";
 import ScrollToTop from "../components/scrollToTop";
+import InsideStreamPage from "../pages/insideStreamPage";
 
 function App(){
 
@@ -55,6 +56,8 @@ function App(){
                     <Route path="/sport/:sportName/news/:id" element={<NewsPage />} />
 
                     <Route path="/stream" element={<StreamPage />} />
+
+                    <Route path="/streamq" element={<InsideStreamPage />} />
 
                     <Route path="/news/:id" element={<NewsPage />} />
 

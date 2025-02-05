@@ -8,7 +8,7 @@ import LeagueBtn from "../components/sportPage/leagueBtn";
 import ItemList from "../components/itemsList/itemsList";
 import TeamsBtn from "../components/LeaguePage/teamsBtn";
 import SearchWithFilter from "../components/searchFilter/searchFilterBtn";
-
+import Slider from "../components/games/slider.js";
 
 function LeaguePage(){
     const { leagueName  } = useParams();
@@ -33,6 +33,7 @@ function LeaguePage(){
     const [prevInputValue, setPrevInputValue] = useState('');
     const [searchClicked, setSearchClicked] = useState(false);
 
+    const [games, setGames] = useState([]);
 
     const handlePageClick = (event) => {
         const selectedPage = event.selected;
@@ -80,6 +81,21 @@ function LeaguePage(){
         }
     };
 
+    useEffect(() => {
+        const requestData = { 
+            games__league_id: leagueId,
+        };
+
+        axios.post(`${apiEndpoints.url}${apiEndpoints.games.getGames}`, requestData)
+            .then(res => {
+                const returnedGames = res.data;
+                setGames(returnedGames);
+            })
+            .catch(error => {
+                toast.error(`:( Troubles With Games Loading: ${error}`);
+            });
+    }, []);
+
 
     useEffect(() => {
         if(prevInputValue !== inputValue){
@@ -103,6 +119,8 @@ function LeaguePage(){
     return(
         <>
             <section className={"leaguePage"}>
+
+            <Slider games={games}/>
 
                 <h1 className={"sportTitle"}>{leagueName}</h1>
 

@@ -91,6 +91,7 @@ $scroll-track: #f9eaff;
 @import "loader";
 @import "searchSportPage";
 @import "leaguePage";
+@import "videoPlayer";
 
 @font-face {
     font-family: 'RubikBubbles';
@@ -117,7 +118,6 @@ body {
     width: 100%;
     font-family: "Merriweather";
     background-color: $main-background-color;
-
     @include scrollbar-style;
 }
 

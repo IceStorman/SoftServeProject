@@ -23,13 +23,6 @@
     margin: 0 1rem 0.5rem;
   }
 
-  h4 {
-    display: flex;
-    justify-content: flex-end;
-    margin: -1rem 1rem 0;
-    color: $scroll-hover;
-  }
-
   .newsSection{
     display: flex;
     flex-direction: column;
@@ -59,4 +52,39 @@
       }
     }
   }
+
+  .likeButtonContainer {
+    display: flex;
+    justify-content: space-between;
+    margin: 1.5rem 1.6rem 0;
+
+    h4 {
+      display: flex;
+      color: $scroll-hover;
+    }
+
+    .likeButton {
+      background-color: transparent;
+      border: none;
+      margin: -1rem 0 1rem 1.5rem;
+      cursor: pointer;
+      font-size: 2rem;
+      transition: color 0.3s ease, transform 0.2s ease;
+      outline: none;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &.liked {
+        color: #ff0000;
+      }
+
+      &:hover:not(.liked) {
+        transform: scale(1.2);
+        color: $scroll-hover;
+      }
+    }
+  }
+
 }

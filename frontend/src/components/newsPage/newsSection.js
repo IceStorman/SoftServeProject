@@ -1,7 +1,10 @@
-import React from "react";
+import React, {useState} from "react";
+import axios from "axios";
+import apiEndpoints from "../../apiEndpoints";
+import {toast} from "sonner";
 
 function NewsSection({text, teams, img, subheading}){
-    
+
     const highlightText = (text) => {
         return teams.reduce((item, team) => {
             const regex = new RegExp(` (${team}) `, 'gi');
@@ -11,7 +14,8 @@ function NewsSection({text, teams, img, subheading}){
 
     const highlightedText = highlightText(text.join(' '));
 
-    return(
+    return (
+
         <section className={"newsSection"}>
 
             {!(subheading.length === 0) ? <h2>{subheading}</h2> : null}
@@ -22,7 +26,7 @@ function NewsSection({text, teams, img, subheading}){
                     <div className={"imgContainer"}>
                         <img src={img} alt={subheading}/>
                     </div>
-                : null
+                    : null
                 }
 
                 <p dangerouslySetInnerHTML={{__html: highlightedText}}></p>
@@ -32,5 +36,4 @@ function NewsSection({text, teams, img, subheading}){
         </section>
     );
 }
-
 export default NewsSection;
