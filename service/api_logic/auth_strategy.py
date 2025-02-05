@@ -16,7 +16,7 @@ from logger.logger import Logger
 
 T = TypeVar("T")
 
-class AuthStrategy(ABC, Generic[T]):
+class AuthHandler(ABC, Generic[T]):
     def __init__(self, user_service):
         self._user_service = user_service
 
@@ -25,8 +25,8 @@ class AuthStrategy(ABC, Generic[T]):
         pass
 
 
-class AuthContext:
-    def __init__(self, strategy: AuthStrategy):
+class AuthManager:
+    def __init__(self, strategy: AuthHandler):
         self._strategy = strategy
 
     async def execute_login(self, credentials: T):
@@ -34,7 +34,7 @@ class AuthContext:
         return login_strategy
 
 
-class SimpleAuthStrategy(AuthStrategy[T]):
+class SimpleAuthHandler(AuthHandler[T]):
     async def authenticate(self, credentials: T):
         user = self._user_service._user_dal.get_user_by_email_or_username(credentials.email_or_username, credentials.email_or_username)
 
@@ -51,8 +51,7 @@ class SimpleAuthStrategy(AuthStrategy[T]):
         return OutputLogin(email=user.email, token=token, id=user.user_id)
 
 
-
-class GoogleAuthStrategy(AuthStrategy[T]):
+class GoogleAuthHandler(AuthHandler[T]):
     async def authenticate(self, credentials: T):
         with current_app.app_context():
             client = WebApplicationClient(current_app.config['GOOGLE_CLIENT_ID'])

@@ -14,7 +14,7 @@ from logger.logger import Logger
 from jinja2 import Environment, FileSystemLoader
 import os
 from flask_jwt_extended import create_access_token, set_access_cookies
-from service.api_logic.auth_strategy import SimpleAuthStrategy, GoogleAuthStrategy, AuthContext
+from service.api_logic.auth_strategy import SimpleAuthHandler, GoogleAuthHandler, AuthManager
 
 
 class UserService:
@@ -25,8 +25,8 @@ class UserService:
         self._logger = Logger("logger", "all.log").logger
 
         self.strategies = {
-            "simple": SimpleAuthStrategy(user_service=self),
-            "google": GoogleAuthStrategy(user_service=self),
+            "simple": SimpleAuthHandler(user_service=self),
+            "google": GoogleAuthHandler(user_service=self),
         }
 
 
@@ -107,7 +107,7 @@ class UserService:
         if method not in self.strategies:
             raise ValueError("Invalid login method")
 
-        login_context = AuthContext(self.strategies[method])
+        login_context = AuthManager(self.strategies[method])
         login_strategy = await login_context.execute_login(credentials)
         return login_strategy
 
