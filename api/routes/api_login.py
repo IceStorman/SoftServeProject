@@ -110,8 +110,8 @@ async def log_in(service: UserService = Provide[Container.user_service]):
         # except Exception:
         #     pass
 
-        user = await service.log_in(dto.auth_provider, dto)
-        response = await service.create_access_token_response(user)
+        response = await service.log_in(dto.auth_provider, dto)
+        #response = await service.create_access_token_response(user)
 
         return response
 

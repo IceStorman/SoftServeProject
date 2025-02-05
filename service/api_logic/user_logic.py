@@ -109,7 +109,8 @@ class UserService:
 
         login_context = AuthManager(self.strategies[method])
         login_strategy = await login_context.execute_login(credentials)
-        return login_strategy
+        response = await self.create_access_token_response(login_strategy)
+        return response
 
     async def __generate_auth_token(self, user):
             return self._serializer.dumps(user.email, salt = "user-auth-token")
