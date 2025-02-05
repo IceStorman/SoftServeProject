@@ -1,9 +1,9 @@
 from flask import current_app, url_for, jsonify
 from flask_mail import Message
 from itsdangerous import URLSafeTimedSerializer
-from dto.api_input import UpdateUserPreferencesDTO
-from dto.api_output import OutputUser, OutputLogin, OutputPreferences
-from database.models import User, UserPreference, ClubPreference, TeamIndex, Sport
+from dto.api_input import UpdateUserPreferencesDTO, SportPreferenceDTO, TeamPreferenceDTO
+from dto.api_output import OutputUser, OutputLogin, OutputSportPreferences, OutputTeamPreferences
+from database.models import User
 from dto.common_response import CommonResponse, CommonResponseWithUser
 from exept.exeptions import UserDoesNotExistError, IncorrectUsernameOrEmailError, UserAlreadyExistError, \
     IncorrectPasswordError, IncorrectPreferencesError, NotUserIdOrPreferencesError, IncorrectTypeOfPreferencesError
@@ -12,23 +12,11 @@ from logger.logger import Logger
 from jinja2 import Environment, FileSystemLoader
 import os
 from flask_jwt_extended import create_access_token, set_access_cookies
-from service.api_logic.strategy.preference_strategy import SportPreferenceStrategy, TeamPreferenceStrategy
 
+SPORT_TYPE = "sport"
+TEAM_TYPE = "team"
 
 class UserService:
-
-    '''I now have two variants of realisation business layer for preferences
-        First one is smth like strategies with ABS class, but all methods are sooo similar
-        Second one is big Dict with Models from db that i going to input to the similar script
-            for both of them
-        Whats from this SHLACK is better ?
-
-        PS 'SECOND ONE IN PreferencesDAL'
-    '''
-    STRATEGIES = {
-        "SPORT": SportPreferenceStrategy(),
-        "TEAM": TeamPreferenceStrategy(),
-    }
 
     def __init__(self, user_dal, preferences_dal):
         self._user_dal = user_dal
@@ -154,28 +142,31 @@ class UserService:
         if not dto.user_id or not isinstance(dto.preferences, list):
             raise NotUserIdOrPreferencesError()
 
-        strategy = self.STRATEGIES.get(dto.type)
-        if not strategy:
-            raise IncorrectTypeOfPreferencesError()
-
-        existing_sports = strategy.get_existing_preferences(self._preferences_dal)
+        existing_sports = self._preferences_dal.get_all_sport_preference_indexes()
         valid_preferences = set([sport_id for sport_id in dto.preferences if sport_id in existing_sports])
 
         if not valid_preferences:
             raise IncorrectPreferencesError()
 
-        strategy.delete_all_preferences(self._preferences_dal, dto.user_id)
-        strategy.add_preferences(self._preferences_dal, dto.user_id, valid_preferences)
+        new_dto_by_type_of_preference = self.dto_for_type_of_preference(dto)
+
+        self._preferences_dal.delete_all_user_preferences(new_dto_by_type_of_preference, dto)
+        self._preferences_dal.add_user_preferences(new_dto_by_type_of_preference, dto, valid_preferences)
 
         return CommonResponse().to_dict()
 
 
     def get_user_preferences(self, dto: UpdateUserPreferencesDTO):
-        strategy = self.STRATEGIES.get(dto.type)
-        prefs = strategy.get_user_preferences(self._preferences_dal, dto.user_id)
-        shema = OutputPreferences(many=True).dump(prefs)
+        new_dto_by_type_of_preference = self.dto_for_type_of_preference(dto)
 
-        return shema
+        prefs = self._preferences_dal.get_user_preferences(new_dto_by_type_of_preference, dto)
+        if dto.type == SPORT_TYPE:
+            shema = OutputSportPreferences(many=True).dump(prefs)
+            return shema
+
+        if dto.type == TEAM_TYPE:
+            shema = OutputTeamPreferences(many=True).dump(prefs)
+            return shema
 
 
     def get_all_preferences(self):
@@ -186,7 +177,18 @@ class UserService:
         if not dto.user_id or not isinstance(dto.preferences, list):
             raise NotUserIdOrPreferencesError()
 
-        strategy = self.STRATEGIES.get(dto.type)
-        strategy.delete_preferences(self._preferences_dal, dto.user_id, dto.preferences)
+        new_dto_by_type_of_preference = self.dto_for_type_of_preference(dto)
+
+        self._preferences_dal.delete_user_preferences(new_dto_by_type_of_preference, dto)
 
         return CommonResponse().to_dict()
+
+
+    def dto_for_type_of_preference(self, dto):
+        if dto.type == SPORT_TYPE:
+            return SportPreferenceDTO()
+        elif dto.type == TEAM_TYPE:
+            return TeamPreferenceDTO()
+        else:
+            raise IncorrectTypeOfPreferencesError()
+

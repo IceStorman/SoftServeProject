@@ -3,6 +3,8 @@ from collections import namedtuple
 from datetime import datetime
 from marshmallow import Schema, fields, pre_load, post_load, ValidationError
 
+from exept.exeptions import IncorrectTypeOfPreferencesError
+
 
 class BaseDTO(Schema):
     @pre_load
@@ -136,9 +138,49 @@ class InputUserByGoogleDTO(BaseDTO):
     picture = fields.Str(required=False, missing=None)
 
 
-class PreferenceStrategySchema(Schema):
-    main_table = fields.Str(required=True)
-    related_table = fields.Str(required=True)
-    user_id_field = fields.Str(required=True)
-    type_id_field = fields.Str(required=True)
+class SportPreferenceDTO:
+    def __init__(self):
+        self.main_table = "UserPreference"
+        self.related_table = "Sport"
+        self.user_id_field = "users_id"
+        self.type_id_field = "sports_id"
+        self.related_name = "sport_name"
+        self.related_logo = "sport_img"
+        self.related_id = "sport_id"
+
+
+class TeamPreferenceDTO:
+    def __init__(self):
+        self.main_table = "UserClubPreferences"
+        self.related_table = "TeamIndex"
+        self.user_id_field = "users_id"
+        self.type_id_field = "preferences"
+        self.related_name = "name"
+        self.related_logo = "logo"
+        self.related_id = "team_index_id"
+
+
+class TablesAndColumnsDTO:
+    def __init__(self, main_table, related_table, user_id_field, type_id_field, related_name, related_logo, related_id):
+        self.main_table = main_table
+        self.related_table = related_table
+        self.user_id_field = user_id_field
+        self.type_id_field = type_id_field
+        self.related_name = related_name
+        self.related_logo = related_logo
+        self.related_id = related_id
+
+
+class PreferenceTypeDTO(Schema):
+    type = fields.Str(required=False, missing=None)
+
+    @post_load
+    def make_preference_type(self, data):
+        if data['type'] == 'sports':
+            return SportPreferenceDTO()
+        elif data['type'] == 'teams':
+            return TeamPreferenceDTO()
+        else:
+            raise IncorrectTypeOfPreferencesError()
+
 

@@ -37,7 +37,7 @@ def sport_preferences_endpoint(service: UserService = Provide[Container.user_ser
             return result
 
         if request.method == "DELETE":
-            result = service.delete_preferences(dto.user_id, dto.preferences)
+            result = service.delete_preferences(dto)
 
             return result
 
