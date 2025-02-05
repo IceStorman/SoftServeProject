@@ -6,7 +6,7 @@ from oauthlib.oauth2 import WebApplicationClient
 from requests_oauthlib import OAuth2Session
 from tensorflow.python.ops.initializers_ns import identity
 from typing import TypeVar, Generic
-from dto.api_input import InputUserDTO, InputUserByEmailDTO, NewPasswordDTO, InputUserLoginDTO, InputUserByGoogleDTO
+from dto.api_input import InputUserDTO, InputUserByEmailDTO, NewPasswordDTO, InputUserLogInDTO
 from dto.common_response import CommonResponseWithUser
 from exept.exeptions import DatabaseConnectionError, CustomQSportException
 from exept.handle_exeptions import get_custom_error_response, handle_exceptions
@@ -96,21 +96,21 @@ def reset_password(token, service: UserService = Provide[Container.user_service]
 async def log_in(service: UserService = Provide[Container.user_service]):
     try:
         data = request.get_json()
-        dto = T
-        status = ""
+        dto = InputUserLogInDTO().load(data)
+        # status = ""
+        #
+        # try:
+        #     dto = InputUserByGoogleDTO().load(data) or dto
+        #     status = "google"
+        # except Exception:
+        #     pass
+        # try:
+        #     dto = InputUserLoginDTO().load(data) or dto
+        #     status = "simple"
+        # except Exception:
+        #     pass
 
-        try:
-            dto = InputUserByGoogleDTO().load(data) or dto
-            status = "google"
-        except Exception:
-            pass
-        try:
-            dto = InputUserLoginDTO().load(data) or dto
-            status = "simple"
-        except Exception:
-            pass
-
-        user = await service.log_in(status, dto)
+        user = await service.log_in(dto.auth_provider, dto)
         response = await service.create_access_token_response(user)
 
         return response

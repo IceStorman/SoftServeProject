@@ -4,7 +4,7 @@ from flask import current_app, url_for, jsonify
 from flask_mail import Message
 from itsdangerous import URLSafeTimedSerializer
 
-from dto.api_input import InputUserLoginDTO, InputUserByGoogleDTO
+from dto.api_input import InputUserLogInDTO
 from dto.api_output import OutputUser, OutputLogin
 from database.models import User
 from dto.common_response import CommonResponse, CommonResponseWithUser
@@ -103,7 +103,7 @@ class UserService:
         return OutputUser().dump(user)
 
 
-    async def log_in(self, method: str, credentials: Union[InputUserLoginDTO, InputUserByGoogleDTO]):
+    async def log_in(self, method: str, credentials: InputUserLogInDTO):
         if method not in self.strategies:
             raise ValueError("Invalid login method")
 
