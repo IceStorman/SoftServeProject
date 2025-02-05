@@ -49,16 +49,6 @@ function SportPage() {
         getLeagues(selectedPage);
     };
 
-    function handleSearchClick() {
-        setSearchClicked((prev) => !prev);
-    }
-
-    const handleKeyDown = (event) => {
-        if (event.key === 'Enter') {
-            handleSearchClick();
-        }
-    };
-
     const getLeagues = async (page) => {
 
         setPrevCountryFilter(countryFilter);
@@ -175,6 +165,8 @@ function SportPage() {
                 <section className={"itemsPaginationBlock"}>
 
                     <SearchWithFilter
+                        setSearchClicked={setSearchClicked}
+                        inputValue={inputValue}
                         setInputValue={setInputValue}
                         loading={loading}
                         placeholder={"Search league"}
