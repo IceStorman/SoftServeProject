@@ -1,4 +1,4 @@
-from database.models import Likes, Views, News, User, ClubPreference, \
+from database.models import Likes, Views, News, User, UserClubPreferences, \
     UserPreference, Sport, TeamInNews, UserRecommendations
 from sqlalchemy import union_all, literal, func
 
@@ -35,11 +35,11 @@ class RecommendationDAL:
     def get_user_preferences_by_id(self, user_id):
         query = (
             self.session.query(
-                ClubPreference.preferences,
+                UserClubPreferences.preferences,
                 UserPreference.sports_id
             )
             .select_from(User)
-            .outerjoin(ClubPreference, ClubPreference.users_id == User.user_id)
+            .outerjoin(UserClubPreferences, UserClubPreferences.users_id == User.user_id)
             .outerjoin(UserPreference, UserPreference.users_id == User.user_id)
             .filter(User.user_id == user_id)
         )
