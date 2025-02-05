@@ -36,8 +36,8 @@ class AuthContext:
         return login_strategy
 
 
-class SimpleAuthStrategy(AuthStrategy[InputUserLogInDTO]):
-    async def authenticate(self, credentials: InputUserLogInDTO):
+class SimpleAuthStrategy(AuthStrategy[T]):
+    async def authenticate(self, credentials: T):
         user = self._user_dal.get_user_by_email_or_username(credentials.email_or_username, credentials.email_or_username)
 
         if not user:
@@ -56,8 +56,8 @@ class SimpleAuthStrategy(AuthStrategy[InputUserLogInDTO]):
             return self._serializer.dumps(user.email, salt = "user-auth-token")
 
 
-class GoogleAuthStrategy(AuthStrategy[InputUserLogInDTO]):
-    async def authenticate(self, credentials: InputUserLogInDTO):
+class GoogleAuthStrategy(AuthStrategy[T]):
+    async def authenticate(self, credentials: T):
         with current_app.app_context():
             client = WebApplicationClient(current_app.config['GOOGLE_CLIENT_ID'])
             token_url, headers, body = client.prepare_token_request(
