@@ -1,19 +1,22 @@
 from abc import ABC, abstractmethod
-from typing import Dict
+from enum import Enum
 import bcrypt
 import requests
 from flask import current_app, request
-from itsdangerous import URLSafeTimedSerializer
 from oauthlib.oauth2 import WebApplicationClient
 from database.models import User
 from dto.api_input import InputUserLogInDTO
 from dto.api_output import OutputLogin
-from exept.exeptions import IncorrectUserDataError, UserDoesNotExistError
+from exept.exeptions import IncorrectUserDataError, UserDoesNotExistError, IncorrectLogInStrategyMethod, \
+    InvalidDataForGoogleLogIn
 from typing import Generic, TypeVar
 
-from logger.logger import Logger
-
 T = TypeVar("T")
+
+class AuthMethods(Enum):
+    SIMPLE = "simple"
+    GOOGLE = "google"
+
 
 class AuthHandler(ABC, Generic[T]):
     def __init__(self, user_service):
@@ -25,11 +28,18 @@ class AuthHandler(ABC, Generic[T]):
 
 
 class AuthManager:
-    def __init__(self, strategy: AuthHandler):
-        self._strategy = strategy
+    def __init__(self, user_service):
+        self._user_service = user_service
+        self.strategies = {
+            AuthMethods.SIMPLE.value: SimpleAuthHandler(user_service=self._user_service),
+            AuthMethods.GOOGLE.value: GoogleAuthHandler(user_service=self._user_service),
+        }
 
-    async def execute_login(self, credentials: T):
-        login_strategy = await self._strategy.authenticate(credentials)
+    async def execute_log_in(self, method: str, credentials: T):
+        if method not in self.strategies:
+            raise IncorrectLogInStrategyMethod(method)
+
+        login_strategy = await self.strategies[method].authenticate(credentials)
         return login_strategy
 
 
@@ -61,21 +71,24 @@ class GoogleAuthHandler(AuthHandler[T]):
                 redirect_url=current_app.config['REDIRECT_URI']
             )
         token_response = requests.post(token_url, headers=headers, data=body)
+        if token_response.status_code != 200:
+            raise InvalidDataForGoogleLogIn()
+
         client.parse_request_body_response(token_response.text)
 
         user_info_response = requests.get(
             current_app.config['USER_INFO_URL'],
             headers={'Authorization': f'Bearer {client.token["access_token"]}'}
         )
+        if user_info_response.status_code != 200:
+            raise InvalidDataForGoogleLogIn()
 
         data = user_info_response.json()
-        data['auth_provider'] = credentials.auth_provider
-
         user_info = InputUserLogInDTO().load(data)
 
         user = self._user_service._user_dal.get_user_by_email_or_username(user_info.email)
         if not user:
-            user = User(email=user_info.email, username=user_info.email.split('@')[0])
+            user = User(email=data.email, username=data.email.split('@')[0])
             self._user_service.create_user(user)
 
         token = await self._user_service.get_generate_auth_token(user)
