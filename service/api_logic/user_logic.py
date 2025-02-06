@@ -22,8 +22,12 @@ class UserService:
         self._logger = Logger("logger", "all.log").logger
 
 
+    def get_user_by_email_or_username(self, email_front=None, username_front=None):
+        return self._user_dal.get_user_by_email_or_username(email_front, username_front)
+
+
     async def create_user(self, email_front, username_front, password_front):
-        existing_user = self._user_dal.get_user_by_email_or_username(email_front, username_front)
+        existing_user = self.get_user_by_email_or_username(email_front, username_front)
         if existing_user:
             self._logger.debug("User already exist")
             raise UserAlreadyExistError(existing_user)
@@ -39,7 +43,7 @@ class UserService:
 
 
     def request_password_reset(self, email: str):
-        existing_user = self._user_dal.get_user_by_email_or_username(email)
+        existing_user = self.get_user_by_email_or_username(email)
         if not existing_user:
             raise UserDoesNotExistError(email)
 
@@ -70,7 +74,7 @@ class UserService:
 
 
     def __get_reset_token(self, email) -> str:
-        user = self._user_dal.get_user_by_email_or_username(email)
+        user = self.get_user_by_email_or_username(email)
         if not user:
             raise UserDoesNotExistError(email)
 
@@ -78,7 +82,7 @@ class UserService:
 
 
     def reset_user_password(self, email, new_password: str):
-        user = self._user_dal.get_user_by_email_or_username(email)
+        user = self.get_user_by_email_or_username(email)
         if not user:
             raise UserDoesNotExistError(email)
 
@@ -95,7 +99,7 @@ class UserService:
 
     def confirm_token(self, token: str, expiration=3600):
         username = self._serializer.loads(token, salt = "email-confirm", max_age = expiration)
-        user = self._user_dal.get_user_by_email_or_username(None, username)
+        user = self.get_user_by_email_or_username(None, username)
 
         return OutputUser().dump(user)
 
