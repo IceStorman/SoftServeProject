@@ -7,6 +7,7 @@ from exept.exeptions import DatabaseConnectionError, CustomQSportException
 from dependency_injector.wiring import inject, Provide
 from api.container.container import Container
 from logger.logger import Logger
+from dto.pagination import Pagination
 
 logger = Logger("logger", "all.log")
 
@@ -79,7 +80,7 @@ def specific_article(service: NewsService = Provide[Container.news_service]):
 def get_filtered_news_endpoint(service: NewsService = Provide[Container.news_service]):
     try:
         filters = request.get_json() or {}
-        filtered_news = service.get_filtered_news(filters)
+        filtered_news = service.get_filtered_news(filters, Pagination())
         return filtered_news
     except CustomQSportException as e:
         logger.error(f"Error in POST /filtered: {str(e)}")

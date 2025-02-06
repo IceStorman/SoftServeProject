@@ -9,6 +9,7 @@ from service.api_logic.scripts import get_sport_by_name
 from database.session import SessionLocal
 from logger.logger import Logger
 from filter_manager import NewsFilterManager
+from dto.pagination import Pagination
 
 class NewsService:
     def __init__(self, news_dal):
@@ -52,9 +53,15 @@ class NewsService:
             content_type='application/json; charset=utf-8',
         )
 
-    def get_filtered_news(self, filters: dict):
+    def get_filtered_news(self, filters: dict, pagination: Pagination):
         session = SessionLocal()
         query = session.query(News).order_by(desc(News.save_at))
+
         query = NewsFilterManager.apply_filters(query, filters, session)
+
+        offset, limit = pagination.get_pagination()
+        if offset is not None and limit is not None:
+            query = query.offset(offset).limit(limit)
+
         news = query.all()
         return self.json_news(news)
