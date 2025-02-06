@@ -10,7 +10,7 @@ import bcrypt
 from logger.logger import Logger
 from jinja2 import Environment, FileSystemLoader
 import os
-from flask_jwt_extended import create_access_token, set_access_cookies
+from flask_jwt_extended import create_access_token,create_refresh_token, set_access_cookies, set_refresh_cookies
 from service.api_logic.auth_strategy import AuthManager
 
 
@@ -77,15 +77,20 @@ class UserService:
         return self._serializer.dumps(user.username, salt = "email-confirm")
 
 
-    def reset_user_password(self, email, new_password: str) -> str:
+    def reset_user_password(self, email, new_password: str):
         user = self._user_dal.get_user_by_email_or_username(email)
         if not user:
             raise UserDoesNotExistError(email)
 
         self._user_dal.update_user_password(user, new_password)
-        new_jwt = create_access_token(identity = user.email)
+        new_jwt = create_access_token(identity=user.email)
+        new_refresh = create_refresh_token(identity=user.email)
 
-        return new_jwt
+        response = jsonify({"message": "Password reset successful"})
+        set_access_cookies(response, new_jwt)
+        set_refresh_cookies(response, new_refresh)
+
+        return response
 
 
     def confirm_token(self, token: str, expiration=3600):
