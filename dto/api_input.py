@@ -119,11 +119,6 @@ class NewPasswordDTO(BaseDTO):
     email = fields.Str(required=True)
 
 
-# class InputUserLoginDTO(BaseDTO):
-#     email_or_username = fields.Str(required=True)
-#     password_hash = fields.Str(required=True)
-
-
 class UpdateUserPreferencesDTO(BaseDTO):
     preferences = fields.List(fields.Int, required=True)
     user_id = fields.Int(required=False, missing=None)
