@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 from typing import Optional
 import datetime
 
-class JWTDTO(BaseModel):
+class jwtDTO(BaseModel):
     id: Optional[int] = Field(default=None)
     user_id: int = Field(...)
     jti: str = Field(...)
