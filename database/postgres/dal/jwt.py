@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from database.models.token_blocklist import TokenBlocklist
-from database.postgres.dto.jwt import JWTDTO
+from database.postgres.dto.jwt import jwtDTO
 from sqlalchemy.exc import SQLAlchemyError
 from typing import Optional, List
 import datetime
@@ -9,11 +9,7 @@ class JWTDAL:
     def __init__(self, db_session: Session):
         self.db_session = db_session
 
-    def save_jwts(self, jwt_dto_list: List[JWTDTO]):
-        for jwt in jwt_dto_list:
-            self.save_jwt(jwt)
-
-    def save_jwt(self, jwt_dto: JWTDTO) -> int:
+    def save_jwt(self, jwt_dto: jwtDTO) -> int:
         if jwt_dto.id:
             jwt_entry = self.get_jwt_by_id(jwt_dto.id)
         else:
@@ -25,8 +21,12 @@ class JWTDAL:
             jwt_entry = self.create_jwt(jwt_dto)
 
         return jwt_entry.id
+    
+    def save_jwts(self, jwt_dto_list: List[jwtDTO]):
+        for jwt in jwt_dto_list:
+            self.save_jwt(jwt)
 
-    def create_jwt(self, jwt_dto: JWTDTO) -> TokenBlocklist:
+    def create_jwt(self, jwt_dto: jwtDTO) -> TokenBlocklist:
         new_jwt = TokenBlocklist(
             user_id=jwt_dto.user_id,
             jti=jwt_dto.jti,
@@ -41,7 +41,7 @@ class JWTDAL:
         self.db_session.refresh(new_jwt)
         return new_jwt
 
-    def update_jwt(self, jwt_id: int, jwt_dto: JWTDTO) -> TokenBlocklist:
+    def update_jwt(self, jwt_id: int, jwt_dto: jwtDTO) -> TokenBlocklist:
         jwt_entry = self.get_jwt_by_id(jwt_id)
         if jwt_entry:
             jwt_entry.user_id = jwt_dto.user_id

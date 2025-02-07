@@ -1,4 +1,5 @@
-from flask import current_app, url_for, jsonify
+from flask import current_app, url_for, jsonify, make_response
+import json
 from flask_mail import Message
 from itsdangerous import URLSafeTimedSerializer
 from dto.api_input import InputUserLogInDTO
@@ -10,7 +11,8 @@ import bcrypt
 from logger.logger import Logger
 from jinja2 import Environment, FileSystemLoader
 import os
-from flask_jwt_extended import create_access_token,create_refresh_token, set_access_cookies, set_refresh_cookies
+from flask_jwt_extended import create_access_token,create_refresh_token, set_access_cookies, set_refresh_cookies\
+    , get_jwt_identity
 from service.api_logic.auth_strategy import AuthManager
 
 
@@ -100,11 +102,7 @@ class UserService:
         return OutputUser().dump(user)
 
 
-    async def log_in(self, credentials: InputUserLogInDTO):
-        login_context = AuthManager(self)
-        user = await login_context.execute_log_in(credentials.auth_provider, credentials)
-        response = await self.create_access_token_response(user)
-        return response
+    
 
 
     async def __generate_auth_token(self, user):
@@ -115,10 +113,35 @@ class UserService:
         return self.__generate_auth_token(user)
 
 
-    async def create_access_token_response(self, user):
-        access_token = create_access_token(identity = user.email)
-        response = CommonResponseWithUser(user_id = user.id, user_email = user.email).to_dict()
-        response_json = jsonify(response)
-        set_access_cookies(response_json, access_token)
+    async def create_access_token_response(self, user, return_tokens: bool = False):
+        access_token = create_access_token(identity=user.email)
+        refresh_token = create_refresh_token(identity=user.email)
 
-        return response_json
+        response_data = {
+            "user_id": user.id,
+            "user_email": user.email
+        }
+        if return_tokens:
+            response_data["access_token"] = access_token
+            response_data["refresh_token"] = refresh_token
+
+        response = make_response(jsonify(response_data))
+        set_access_cookies(response, access_token)
+        set_refresh_cookies(response, refresh_token)
+        
+
+        return response
+
+    # async def log_in(self, credentials: InputUserLogInDTO, return_tokens: bool = False):
+    #     login_context = AuthManager(self)
+    #     user = await login_context.execute_log_in(credentials.auth_provider, credentials)
+    #     return await self.create_access_token_response(user, return_tokens)
+    
+    async def log_in(self, credentials: InputUserLogInDTO):
+        login_context = AuthManager(self)
+        user = await login_context.execute_log_in(credentials.auth_provider, credentials)
+        response = await self.create_access_token_response(user)
+        response_json = response.get_json()
+        print(json.dumps(response_json, indent=4, ensure_ascii=False))
+
+        return response
