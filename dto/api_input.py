@@ -86,9 +86,16 @@ class GamesDTO(BaseDTO):
 
 
 class NewsDTO(BaseDTO):
-    news__news_id = fields.Int(required=False, missing=None)
-    news__sport_id = fields.Int(required=False, missing=None)
-    news__interest_rate = fields.Int(required=False, missing=None)
+    news_id = fields.Int(required=False, missing=None)
+    sport = fields.Str(required=False, missing=None)
+    interest_rate = fields.Int(required=False, missing=None)
+    page = fields.Int(required=False, missing=0)
+    per_page = fields.Int(required=False, missing=0)
+    title_contains = fields.Str(required=False, allow_none=True)
+    date_from = fields.Date(required=False, allow_none=True)
+    date_to = fields.Date(required=False, allow_none=True)
+    team = fields.Str(required=False, allow_none=True)
+
 
 
 class StreamsDTO(BaseDTO):

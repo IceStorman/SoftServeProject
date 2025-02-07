@@ -8,6 +8,8 @@ from dependency_injector.wiring import inject, Provide
 from api.container.container import Container
 from logger.logger import Logger
 from dto.pagination import Pagination
+from dto.api_input import NewsDTO
+
 
 logger = Logger("logger", "all.log")
 
@@ -80,7 +82,14 @@ def specific_article(service: NewsService = Provide[Container.news_service]):
 def get_filtered_news_endpoint(service: NewsService = Provide[Container.news_service]):
     try:
         filters = request.get_json() or {}
-        filtered_news = service.get_filtered_news(filters, Pagination())
+
+        dto = NewsDTO().load(filters)
+        dto_dict = NewsDTO().dump(dto)
+
+        pagination_dict = {key: value for key, value in dto_dict.items() if key in Pagination.__annotations__}
+        pagination = Pagination(**pagination_dict)
+
+        filtered_news = service.get_filtered_news(dto_dict, pagination)
         return filtered_news
     except CustomQSportException as e:
         logger.error(f"Error in POST /filtered: {str(e)}")
