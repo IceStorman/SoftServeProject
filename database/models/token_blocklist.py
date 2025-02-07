@@ -9,5 +9,4 @@ class TokenBlocklist(Base):
     token_type = Column(String(10), nullable=False)
     revoked = Column(Boolean, default=False, nullable=False)
     expires_at = Column(DateTime, nullable=False)
-    created_at = Column(DateTime)
     updated_at = Column(DateTime)  

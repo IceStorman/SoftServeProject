@@ -4,6 +4,8 @@ from flask_mail import Message
 from itsdangerous import URLSafeTimedSerializer
 from dto.api_input import InputUserLogInDTO
 from dto.api_output import OutputUser, OutputLogin
+from database.postgres.dal.jwt import jwtDAL
+
 from database.models import User
 from dto.common_response import CommonResponse, CommonResponseWithUser
 from exept.exeptions import UserDoesNotExistError, UserAlreadyExistError
@@ -11,17 +13,19 @@ import bcrypt
 from logger.logger import Logger
 from jinja2 import Environment, FileSystemLoader
 import os
-from flask_jwt_extended import create_access_token,create_refresh_token, set_access_cookies, set_refresh_cookies\
-    , get_jwt_identity
+from flask_jwt_extended import create_access_token,create_refresh_token, set_access_cookies, set_refresh_cookies
 from service.api_logic.auth_strategy import AuthManager
+from typing import Optional
 
 
 class UserService:
 
-    def __init__(self, user_dal):
+    def __init__(self, user_dal, jwt_dal: Optional[dict]):
         self._user_dal = user_dal
+        self._jwt_dal = jwt_dal
         self._serializer = URLSafeTimedSerializer(current_app.secret_key)
         self._logger = Logger("logger", "all.log").logger
+        
 
 
     def get_user_by_email_or_username(self, email_front=None, username_front=None):
@@ -136,16 +140,27 @@ class UserService:
 
         return response
 
-    # async def log_in(self, credentials: InputUserLogInDTO, return_tokens: bool = False):
-    #     login_context = AuthManager(self)
-    #     user = await login_context.execute_log_in(credentials.auth_provider, credentials)
-    #     return await self.create_access_token_response(user, return_tokens)
+    
     
     async def log_in(self, credentials: InputUserLogInDTO):
         login_context = AuthManager(self)
         user = await login_context.execute_log_in(credentials.auth_provider, credentials)
-        response = await self.create_access_token_response(user)
-        response_json = response.get_json()
-        print(json.dumps(response_json, indent=4, ensure_ascii=False))
-
+        response = await self.create_access_token_response(user, return_tokens=True)
         return response
+    
+    # async def create_access_token_response(self, user):
+    #     access_token = create_access_token(identity = user.email)
+    #     response = CommonResponseWithUser(user_id = user.id, user_email = user.email).to_dict()
+    #     response_json = jsonify(response)
+    #     set_access_cookies(response_json, access_token)
+
+    #     return response_json    
+    # async def log_in(self, credentials: InputUserLogInDTO):
+    #     login_context = AuthManager(self)
+    #     user = await login_context.execute_log_in(credentials.auth_provider, credentials)
+    #     response = await self.create_access_token_response(user)
+    #     return response
+    # async def log_in(self, credentials: InputUserLogInDTO, return_tokens: bool = False):
+        #     login_context = AuthManager(self)
+        #     user = await login_context.execute_log_in(credentials.auth_provider, credentials)
+        #     return await self.create_access_token_response(user, return_tokens)

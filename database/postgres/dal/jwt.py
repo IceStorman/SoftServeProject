@@ -5,7 +5,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from typing import Optional, List
 import datetime
 
-class JWTDAL:
+class jwtDAL:
     def __init__(self, db_session: Session):
         self.db_session = db_session
 
@@ -33,7 +33,6 @@ class JWTDAL:
             token_type=jwt_dto.token_type,
             revoked=jwt_dto.revoked,
             expires_at=jwt_dto.expires_at,
-            created_at=jwt_dto.created_at or datetime.datetime.utcnow(),
             updated_at=jwt_dto.updated_at or datetime.datetime.utcnow()
         )
         self.db_session.add(new_jwt)
