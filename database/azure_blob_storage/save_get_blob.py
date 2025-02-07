@@ -9,7 +9,7 @@ from database.session import SessionLocal
 from exept.colors_text import print_error_message, print_good_message
 import re
 
-from service.implementation.email_sender.email_sender import try_send_email_to_users
+from service.implementation.email_sender.email_sender import try_send_email_to_users, EmailSender
 
 load_dotenv()
 account_url = os.getenv("BLOBURL")
@@ -300,6 +300,8 @@ def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
                             team_index_id=team_index_id
                         )
                         session.add(team_index)
+
+                        EmailSender.try_send_email_to_users(team_index.team_id)
             else:
                 team_index_id = team_dict.get(team_name, None)
                 if team_index_id is not None:
@@ -309,6 +311,8 @@ def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
                         team_index_id=team_index_id
                     )
                     session.add(team_index)
+
+                    EmailSender.try_send_email_to_users(team_index.team_id)
 
         session.commit()
     except Exception as e:
