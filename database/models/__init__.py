@@ -16,7 +16,7 @@ from .players import Players
 from .categories import Category
 from .streams_status import Streams_Status
 from .streams import Stream
-from .user_recommendations import UserRecommendations
+from .user_recommendations import UserNewsRecommendations
 from .user_club_preferences import UserClubPreferences
 
 from .base import Base

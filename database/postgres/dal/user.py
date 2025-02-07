@@ -1,5 +1,6 @@
 from sqlalchemy import or_
-from database.models import User
+from database.models import User, UserClubPreferences, UserPreference
+
 
 class UserDAL:
     def __init__(self, session = None):
@@ -32,3 +33,20 @@ class UserDAL:
 
     def get_user_id_be_email(self, email: str) -> User:
         return self.session.query(User).filter(User.email == email).first()
+
+    def get_all_users(self):
+        return self.session.query(User).all()
+
+    def get_user_sport_and_club_preferences_by_native_id(self, user_id):
+        query = (
+            self.session.query(
+                UserClubPreferences.preferences,
+                UserPreference.sports_id
+            )
+            .select_from(User)
+            .join(UserClubPreferences, UserClubPreferences.users_id == User.user_id)
+            .join(UserPreference, UserPreference.users_id == User.user_id)
+            .filter(User.user_id == user_id)
+        )
+
+        return query.all()

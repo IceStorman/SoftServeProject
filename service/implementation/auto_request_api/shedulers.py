@@ -49,7 +49,7 @@ class AutoSchedulerService:
         self.logger.info("Started rec_scheduler")
         try:
             self.rec_scheduler.add_job(
-                lambda: Container.recommendation_service().auto_hybrid_recommendation_system(),
+                lambda: Container.recommendation_service().generate_recommendations_for_all_users(),
                 'cron',
                 hour=3, minute=00
             )

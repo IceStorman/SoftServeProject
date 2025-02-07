@@ -10,7 +10,6 @@ from exept.exeptions import DatabaseConnectionError, CustomQSportException
 from logger.logger import Logger
 from exept.handle_exeptions import handle_exceptions
 from service.api_logic.news_logic import NewsService
-from service.api_logic.recommendation_logic import RecommendationService
 from dto.api_input import InputUserByIdDTO, InputUserDTO, InputUserLoginDTO
 from service.api_logic.user_logic import UserService
 
@@ -83,52 +82,17 @@ def specific_article(service: NewsService = Provide[Container.news_service]):
         get_custom_error_response(e)
 
 
-
-@news_app.route("/get/recommendation", methods=["GET"])
-@jwt_required()
+#
+@news_app.route("/recommendation/new_user", methods=["POST"])
 @inject
 @handle_exceptions
 @logger.log_function_call()
-async def get_recommendations_endpoint(
-        service_recs: RecommendationService = Provide[Container.recommendation_service],
-        service_news: NewsService = Provide[Container.news_service],
-    ):
-    try:
-        user_email = get_jwt_identity()
-        rec = await service_recs.get_recommendations_from_db(user_email)
-        all_recs_with_data = await service_news.send_all_info_from_blob_to_user(rec)
-
-        return all_recs_with_data
-
-    except CustomQSportException as e:
-        logger.error(f"Error in Get Recommendations /: {str(e)}")
-        get_custom_error_response(e)
-
-
-@news_app.route("/fast/recommendation", methods=["POST"])
-@inject
-@handle_exceptions
-@logger.log_function_call()
-async def fast_generate_recommendation_endpoint(service_recs: RecommendationService = Provide[Container.recommendation_service]):
+async def recommendations_for_user(service: NewsService = Provide[Container.news_service]):
     try:
         data = request.get_json()
         dto = InputUserByIdDTO().load(data)
-        rec = await service_recs.fast_hybrid_recommendation_system(dto)
-        return rec
-
-    except CustomQSportException as e:
-        logger.error(f"Error in Get Recommendations /: {str(e)}")
-        return get_custom_error_response(e)
-
-
-@news_app.route("/all/recommendation", methods=["GET"])
-@inject
-@handle_exceptions
-@logger.log_function_call()
-async def all_generate_recommendation_endpoint(service_recs: RecommendationService = Provide[Container.recommendation_service]):
-    try:
-        rec = await service_recs.auto_hybrid_recommendation_system()
-        return rec
+        user_recommendations = service.user_recommendations_based_on_preferences_and_last_watch(dto.user_id)
+        return user_recommendations
 
     except CustomQSportException as e:
         logger.error(f"Error in Get Recommendations /: {str(e)}")

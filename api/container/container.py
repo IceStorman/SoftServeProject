@@ -1,11 +1,10 @@
 from dependency_injector import containers, providers
+from database.postgres.dal import SportDAL
 from database.session import SessionLocal
 from database.postgres.dal.user import UserDAL
 from database.postgres.dal.news import NewsDAL
-from database.postgres.dal.recommendation import RecommendationDAL
 from service.api_logic.user_logic import UserService
 from service.api_logic.news_logic import NewsService
-from service.api_logic.recommendation_logic import RecommendationService
 
 
 
@@ -21,18 +20,18 @@ class Container(containers.DeclarativeContainer):
 
     user_dal = providers.Factory(UserDAL, session=db_session)
     news_dal = providers.Factory(NewsDAL, session = db_session)
-    recommendation_dal = providers.Factory(RecommendationDAL, session=db_session)
+    sport_dal = providers.Factory(SportDAL, db_session=db_session)
 
     user_service = providers.Factory(UserService, user_dal=user_dal)
 
-    news_service = providers.Factory(NewsService, news_dal=news_dal)
-
-    recommendation_service = providers.Factory(
-        RecommendationService,
-        recommendation_dal=recommendation_dal,
+    news_service = providers.Factory(
+        NewsService,
+        news_dal=news_dal,
+        sport_dal=sport_dal,
         user_dal=user_dal,
-        news_dal=news_dal
     )
+
+
 
 
 
