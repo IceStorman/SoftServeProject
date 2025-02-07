@@ -2,7 +2,7 @@ from dependency_injector.wiring import Provide, inject
 from flask import Blueprint, request, make_response, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from api.routes.cache import cache
-from api.routes.scripts import get_cache_key
+from api.routes.scripts import get_cache_key, post_cache_key
 from exept.handle_exeptions import get_custom_error_response, get_exception_error_response
 from exept.exeptions import DatabaseConnectionError, CustomQSportException, NoJWTInCookieError
 from api.container.container import Container
@@ -84,6 +84,7 @@ def specific_article(service: NewsService = Provide[Container.news_service]):
 
 #
 @news_app.route("/recommendation/new_user", methods=["POST"])
+@cache.cached(key_prefix=post_cache_key, timeout=60*60*2)
 @inject
 @handle_exceptions
 @logger.log_function_call()

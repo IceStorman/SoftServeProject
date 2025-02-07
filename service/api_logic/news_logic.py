@@ -5,6 +5,8 @@ import numpy as np
 import pandas as pd
 from flask import Response
 from sqlalchemy import desc
+from sqlalchemy.util import await_only
+
 from database.models import News
 from database.azure_blob_storage.save_get_blob import blob_get_news
 from dto.api_output import OutputRecommendationList
@@ -70,14 +72,12 @@ class NewsService:
         )
 
 
-    async def retrieve_user_recommendations_from_blob(self, recommendations_list):
-        all_news_from_blob = []
-        for recs in recommendations_list:
-            news_id = recs["news_id"]
-            news_from_blob = self._news_dal.get_news_by_native_id(news_id)
-            all_news_from_blob.append(news_from_blob)
-
-        return self.json_news(all_news_from_blob)
+    def retrieve_user_recommendations_from_blob(self, blob_id):
+        data = blob_get_news(blob_id)
+        return {
+            "blob_id": blob_id,
+            "data": data
+        }
 
 
     def user_recommendations_based_on_preferences_and_last_watch(self, user_id, top_n=ConstForRecommendations.BASE_LIMIT_OF_NEWS_FOR_RECS.value):
@@ -230,6 +230,7 @@ class NewsService:
                 "news_id": news,
                 "score": user_not_saw_this_news_df.loc[news, 'adjusted_score'],
                 "user_id": user_id,
+                "article": self.retrieve_user_recommendations_from_blob(user_not_saw_this_news_df.loc[news, 'blob_id'])
             }
             for news in recs_by_user_preferences
         ]
@@ -238,6 +239,7 @@ class NewsService:
                 "news_id": news,
                 "score": user_not_saw_this_news_df.loc[news, 'adjusted_score'],
                 "user_id": user_id,
+                "article":  self.retrieve_user_recommendations_from_blob(user_not_saw_this_news_df.loc[news, 'blob_id'])
             }
             for news in recs_by_user_last_watch
         ]
