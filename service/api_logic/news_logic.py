@@ -3,12 +3,10 @@ from flask import Response
 from sqlalchemy import desc
 from database.models import News
 from database.azure_blob_storage.save_get_blob import blob_get_news
-from sqlalchemy.sql.expression import ClauseElement
-from exept.handle_exeptions import handle_exceptions
 from service.api_logic.scripts import get_sport_by_name
 from database.session import SessionLocal
 from logger.logger import Logger
-from service.api_logic.filter_manager import NewsFilterManager
+from service.api_logic.filter_manager.news_filter_manager import NewsFilterManager
 from dto.pagination import Pagination
 from dto.api_input import NewsDTO
 

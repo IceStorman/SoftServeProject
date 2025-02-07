@@ -1,9 +1,9 @@
 from sqlalchemy.orm import Query
 from database.models import News, TeamInNews
 from service.api_logic.scripts import get_sport_by_name
-from dto.api_input import NewsDTO
+from service.api_logic.filter_manager.base_filter_manager import BaseFilterManager
 
-class NewsFilterManager:
+class NewsFilterManager(BaseFilterManager):
 
     FILTERS = {
         "title_contains": "apply_title_contains",
@@ -33,15 +33,3 @@ class NewsFilterManager:
     @staticmethod
     def apply_team_filter(query: Query, value: str) -> Query:
         return query.join(TeamInNews, News.news_id == TeamInNews.news_id).filter(TeamInNews.name.ilike(f"%{value}%"))
-
-
-    @classmethod
-    def apply_filters(cls, query: Query, filters: dict, session) -> Query:
-        for filter_name, filter_value in filters.items():
-            if filter_name in cls.FILTERS and filter_value:
-                filter_method = getattr(cls, cls.FILTERS[filter_name])
-                if filter_name == "sport":
-                    query = filter_method(query, filter_value, session)
-                else:
-                    query = filter_method(query, filter_value)
-        return query
