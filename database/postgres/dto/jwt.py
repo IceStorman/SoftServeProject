@@ -9,7 +9,6 @@ class jwtDTO(BaseModel):
     token_type: str = Field(...)
     revoked: bool = Field(...)
     expires_at: datetime.datetime = Field(...)
-    created_at: Optional[datetime.datetime] = None
     updated_at: Optional[datetime.datetime] = None
 
     class Config:
