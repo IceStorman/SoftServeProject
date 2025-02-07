@@ -67,8 +67,8 @@ class jwtDAL:
             return True
         return False
 
-    def delete_expired_tokens(self):
-        self.db_session.query(TokenBlocklist).filter(
-            TokenBlocklist.expires_at < datetime.datetime.utcnow()
-        ).delete(synchronize_session=False)
-        self.db_session.commit()
+    # def delete_expired_tokens(self):
+    #     self.db_session.query(TokenBlocklist).filter(
+    #         TokenBlocklist.expires_at < datetime.datetime.utcnow()
+    #     ).delete(synchronize_session=False)
+    #     self.db_session.commit()
