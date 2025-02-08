@@ -127,17 +127,6 @@ class GetUserPreferencesDTO(BaseDTO):
     user_id = fields.Int(required=False, missing=None)
 
 
-class UserInteraction:
-    def __init__(self, sport_id, news_id):
-        self.sport_id = sport_id
-        self.news_id = news_id
-
-
-class UserInteractionSchema(BaseDTO):
-    sport_id = fields.Int(required=True)
-    news_id = fields.Int(required=True)
-
-
 class InputUserByIdDTO(BaseDTO):
     user_id = fields.Int(required=False, missing=None)
 

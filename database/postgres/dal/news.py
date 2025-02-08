@@ -35,10 +35,6 @@ class NewsDAL:
         return self.session.query(News).filter(News.news_id.in_(news_ids)).all()
 
 
-    def get_sport_by_name(self, sport_name):
-        return self.session.query(Sport).filter_by(sport_name = sport_name).first()
-
-
     def get_news_native_ids_by_time_limit(self, time_limit):
         return (
             self.session.query(News.news_id)

@@ -44,10 +44,6 @@ class OutputUser(Schema):
     username = fields.Str(required=True)
     email = fields.Str(required=True)
 
-class OutputPreferences(Schema):
-    sports_id = fields.Str(required=True)
-    sport_name = fields.Str(required=True)
-    sport_img = fields.Str(required=True)
 
 class OutputLogin():
     def __init__(self, email: str, id: int, token: str):

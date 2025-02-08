@@ -81,7 +81,7 @@ def specific_article(service: NewsService = Provide[Container.news_service]):
 
 
 #
-@news_app.route("/recommendation/new_user", methods=["POST"])
+@news_app.route("/recommendation", methods=["POST"])
 @cache.cached(key_prefix=post_cache_key, timeout=60*60*2)
 @inject
 @handle_exceptions
