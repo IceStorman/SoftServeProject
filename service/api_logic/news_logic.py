@@ -1,32 +1,21 @@
 import json
-from datetime import datetime
 from enum import Enum
-import numpy as np
 import pandas as pd
 from flask import Response
 from sqlalchemy import desc
-from sqlalchemy.util import await_only
-
 from database.models import News
 from database.azure_blob_storage.save_get_blob import blob_get_news
-from dto.api_output import OutputRecommendationList
 from logger.logger import Logger
+from service.api_logic.helpers.calculating_helper import CalculatingHelper
 
 
-class ConstForRecommendations(Enum):
-    SEC_PER_DAY = 86400
-    PERIOD_OF_TIME = 21
-    MAX_LIMIT_FOR_REC_IN_DAYS = 21
-    SCORE_FOR_NOT_PREFER_SPORT = 0.25
-    SCORE_FOR_PREFER_SPORT = 0.20
-    SCORE_FOR_NOTHING = 0.1
-    SCORE_FOR_PREFER_TEAM = 0.2
+class LimitsConsts(Enum):
     BASE_LIMIT_OF_NEWS_FOR_RECS = 5
-    MIN_PROMOTION_COF = 1
-    MAX_PROMOTION_COF = 4
+    PERIOD_OF_TIME = 21
 
 
 class NewsService:
+
     def __init__(self, news_dal, sport_dal, user_dal):
         self._news_dal = news_dal
         self._sport_dal = sport_dal
@@ -72,41 +61,39 @@ class NewsService:
         )
 
 
-    def retrieve_user_recommendations_from_blob(self, blob_id):
-        data = blob_get_news(blob_id)
-        return {
-            "blob_id": blob_id,
-            "data": data
-        }
+    def user_recommendations_based_on_preferences_and_last_watch(
+            self,
+            user_id: int,
+            user_preferred_teams,
+            user_preferred_sports,
+            calculating_helper: CalculatingHelper,
+            top_n: int = LimitsConsts.BASE_LIMIT_OF_NEWS_FOR_RECS.value
+    ):
 
-
-    def user_recommendations_based_on_preferences_and_last_watch(self, user_id, top_n=ConstForRecommendations.BASE_LIMIT_OF_NEWS_FOR_RECS.value):
-        user_preferred_teams, user_preferred_sports = self.__get_user_preferences(user_id)
-
-        user_and_news_data = self._news_dal.get_user_interactions_with_news_by_period_of_time(
-            user_id,
-            period_of_time=ConstForRecommendations.PERIOD_OF_TIME.value
+        user_interact_with_this_news_mask, user_not_interact_with_this_news_mask, user_and_news_details_df = (
+            self._news_dal.data_frame_to_work_with_user_and_news_data(
+                self._news_dal.get_user_interactions_with_news_by_period_of_time(
+                        user_id,
+                        period_of_time=LimitsConsts.PERIOD_OF_TIME.value
+                )
+            )
         )
 
-        (
-            user_interact_with_this_news_mask,
-            user_not_interact_with_this_news_mask,
-            user_and_news_details_df
-        ) = self._news_dal.data_frame_to_work_with_user_and_news_data(user_and_news_data)
-
-        news_coefficients = self.__calculating_news_coefficients_by_parameters_from_df_and_user_preferences(
+        news_recommendation_coefficients_base_on_parametrs_insideDF = calculating_helper.calculating_news_coefficients_by_parameters_from_df_and_user_preferences(
             user_and_news_details_df,
             user_preferred_teams,
             user_preferred_sports,
-            user_interact_with_this_news_mask
+            user_interact_with_this_news_mask,
         )
 
-        news_coefficients_without_duplicates = self._news_dal.cleaning_duplicate_news_where_is_more_than_one_club(news_coefficients)
-
-        news_adjusted_score_df = self.__calculating_adjusted_score_for_by_coefficients_inside_df(news_coefficients_without_duplicates)
+        news_with_adjusted_score_df = calculating_helper.calculating_adjusted_score_by_coefficients_inside_df(
+            self._news_dal.cleaning_duplicate_news_where_is_more_than_one_club(
+                news_recommendation_coefficients_base_on_parametrs_insideDF
+            )
+        )
 
         user_saw_this_news_df, user_not_saw_this_news_df = self._news_dal.assign_adjusted_scores_for_masks(
-            news_adjusted_score_df,
+            news_with_adjusted_score_df,
             user_interact_with_this_news_mask,
             user_not_interact_with_this_news_mask
         )
@@ -116,97 +103,30 @@ class NewsService:
         recs_by_user_last_watch = self.__get_recommendations_by_last_watch_type(
             user_not_saw_this_news_df,
             user_saw_this_news_df,
+            calculating_helper,
             top_n
         )
 
-        return self.__return_recommendations(
+        return (
             user_not_saw_this_news_df,
             recs_by_user_preferences,
-            recs_by_user_last_watch,
-            user_id
+            recs_by_user_last_watch
         )
 
 
-    def __get_user_preferences(self, user_id):
-        user_preferences = self._user_dal.get_user_sport_and_club_preferences_by_native_id(user_id)
-
-        if not user_preferences:
-            return [], []
-
-        user_preferred_teams = list({row.preferences for row in user_preferences if row.preferences is not None})
-        user_preferred_sports = list({row.sports_id for row in user_preferences if row.sports_id is not None})
-
-        return user_preferred_teams, user_preferred_sports
-
-
-    def __calculate_time_score_vectorized(self, save_at, time_now=datetime.now()):
-        delta_days = (time_now - save_at).dt.total_seconds() * (1 / ConstForRecommendations.SEC_PER_DAY.value)  # Помножили замість поділу
-        return np.maximum(0, 1 - delta_days / ConstForRecommendations.MAX_LIMIT_FOR_REC_IN_DAYS.value)
-
-
-    def __calculate_team_score_vectorized(self, teams_in_news, user_preferred_teams):
-        return np.sum(np.isin(teams_in_news, user_preferred_teams)) * ConstForRecommendations.SCORE_FOR_PREFER_TEAM.value or ConstForRecommendations.SCORE_FOR_NOTHING.value
-
-
-    def __calculate_sport_score_vectorized(self, news_sports, preferred_sports, user_interactions):
-        preferred_count = np.sum(np.isin(news_sports, preferred_sports)) * ConstForRecommendations.SCORE_FOR_PREFER_SPORT.value
-        interacted_count = np.sum(np.isin(news_sports, user_interactions)) * ConstForRecommendations.SCORE_FOR_NOT_PREFER_SPORT.value
-
-        return preferred_count + interacted_count or ConstForRecommendations.SCORE_FOR_NOTHING.value
-
-
-    def __calculating_news_coefficients_by_parameters_from_df_and_user_preferences(
-            self,
-            user_and_news_details_df,
-            user_preferred_teams,
-            user_preferred_sports,
-            user_interact_with_this_news_mask
-    ):
-        user_and_news_details_df['time_score'] = self.__calculate_time_score_vectorized(
-            user_and_news_details_df['save_at']
-        )
-
-        user_and_news_details_df['team_score'] = self.__calculate_team_score_vectorized(
-            user_and_news_details_df['team_id'],
-            user_preferred_teams
-        )
-
-        user_and_news_details_df['sport_score'] = user_and_news_details_df['sport_id'].apply(
-            lambda sport: self.__calculate_sport_score_vectorized(
-                [sport],
-                user_preferred_sports,
-                user_interact_with_this_news_mask['sport_id']
-            )
-        )
-
-        user_and_news_details_df.drop(columns=['sport_id', 'save_at', 'team_id'], inplace=True)
-
-        return user_and_news_details_df
-
-
-    def __calculating_adjusted_score_for_by_coefficients_inside_df(self, dataframe):
-        dataframe['adjusted_score'] = (
-                dataframe['interest_rate_score'] *
-                dataframe['time_score'] *
-                dataframe['team_score'] *
-                dataframe['sport_score']
-        )
-        return dataframe
-
-
-    def __calculate_average_adjusted_score_by_last_watch_news_by_user(self, interacted_df, not_interacted_df):
-        return (
-            interacted_df['adjusted_score'].sum() / len(not_interacted_df)
-            if len(interacted_df) > 0 else -1
-        )
-
-
-    def __get_recommendations_by_user_preferences(self, not_interacted_df, top_n):
+    def __get_recommendations_by_user_preferences(self, not_interacted_df: pd.DataFrame, top_n: int) -> list[int]:
         return not_interacted_df['adjusted_score'].sort_values(ascending=False).head(top_n).index.tolist()
 
 
-    def __get_recommendations_by_last_watch_type(self, user_not_saw_this_news_df, user_saw_this_news_df, top_n):
-        average_adjusted_score_by_last_watch_news = self.__calculate_average_adjusted_score_by_last_watch_news_by_user(
+    def __get_recommendations_by_last_watch_type(
+            self,
+            user_not_saw_this_news_df: pd.DataFrame,
+            user_saw_this_news_df: pd.DataFrame,
+            calculating_helper: CalculatingHelper,
+            top_n: int
+    ) -> pd.DataFrame | None:
+
+        average_adjusted_score_by_last_watch_news = calculating_helper.calculate_user_average_adjusted_score_by_last_watch_news(
             user_saw_this_news_df,
             user_not_saw_this_news_df
         )
@@ -216,39 +136,3 @@ class NewsService:
         return user_not_saw_this_news_df.iloc[
             (user_not_saw_this_news_df['adjusted_score'] - average_adjusted_score_by_last_watch_news).abs().argsort()[:top_n]
         ].index.tolist()
-
-
-    def __return_recommendations(
-            self,
-            user_not_saw_this_news_df,
-            recs_by_user_preferences,
-            recs_by_user_last_watch,
-            user_id
-    ):
-        recommendations_list_by_user_preferences = [
-            {
-                "news_id": news,
-                "score": user_not_saw_this_news_df.loc[news, 'adjusted_score'],
-                "user_id": user_id,
-                "article": self.retrieve_user_recommendations_from_blob(user_not_saw_this_news_df.loc[news, 'blob_id'])
-            }
-            for news in recs_by_user_preferences
-        ]
-        recommendations_list_by_user_last_watch = [
-            {
-                "news_id": news,
-                "score": user_not_saw_this_news_df.loc[news, 'adjusted_score'],
-                "user_id": user_id,
-                "article":  self.retrieve_user_recommendations_from_blob(user_not_saw_this_news_df.loc[news, 'blob_id'])
-            }
-            for news in recs_by_user_last_watch
-        ]
-        self._news_dal.delete_dataframe(user_not_saw_this_news_df)
-        self._news_dal.delete_dataframe(recs_by_user_preferences)
-        self._news_dal.delete_dataframe(recs_by_user_last_watch)
-
-
-        return {
-            "recommendations_list_by_user_preferences": recommendations_list_by_user_preferences,
-            "recommendations_list_by_user_last_watch": recommendations_list_by_user_last_watch
-        }

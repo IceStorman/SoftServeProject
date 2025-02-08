@@ -3,6 +3,7 @@ from database.postgres.dal import SportDAL
 from database.session import SessionLocal
 from database.postgres.dal.user import UserDAL
 from database.postgres.dal.news import NewsDAL
+from service.api_logic.managers.recommendation_menager import RecommendationManager
 from service.api_logic.user_logic import UserService
 from service.api_logic.news_logic import NewsService
 
@@ -30,6 +31,13 @@ class Container(containers.DeclarativeContainer):
         sport_dal=sport_dal,
         user_dal=user_dal,
     )
+
+    recommendation_manager = providers.Factory(
+        RecommendationManager,
+        user_service,
+        news_service
+    )
+
 
 
 

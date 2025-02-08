@@ -1,7 +1,6 @@
 import time
 from apscheduler.schedulers.background import BackgroundScheduler
 from concurrent.futures import ThreadPoolExecutor
-from api.container.container import Container
 from service.implementation.auto_request_api.logic_auto_request import apis, auto_request_system, keep_db_alive
 from logger.logger import Logger
 
@@ -11,7 +10,6 @@ class AutoSchedulerService:
         self.logger = Logger("logger", "all.log").logger
         self.api_scheduler = BackgroundScheduler()
         self.db_scheduler = BackgroundScheduler()
-        self.rec_scheduler = BackgroundScheduler()
 
 
     def scheduler_auto_api_parser(self, apis):
@@ -44,31 +42,15 @@ class AutoSchedulerService:
         except Exception as e:
             self.logger.error(f"Error in DB Scheduler /: {str(e)}")
 
-
-    def scheduler_recommendation(self):
-        self.logger.info("Started rec_scheduler")
-        try:
-            self.rec_scheduler.add_job(
-                lambda: Container.recommendation_service().generate_recommendations_for_all_users(),
-                'cron',
-                hour=3, minute=00
-            )
-
-        except Exception as e:
-            self.logger.error(f"Error in Rec Scheduler /: {str(e)}")
-
-
     def start(self):
         self.api_scheduler.start()
         self.db_scheduler.start()
-        self.rec_scheduler.start()
         self.logger.info("Schedulers started.")
 
 
     def stop(self):
         self.api_scheduler.shutdown()
         self.db_scheduler.shutdown()
-        self.rec_scheduler.shutdown()
         self.logger.info("Schedulers stopped.")
 
 
@@ -80,7 +62,6 @@ if __name__ == "__main__":
 
     scheduler_service.scheduler_auto_api_parser(apis)
     scheduler_service.scheduler_keep_db_alive()
-    scheduler_service.scheduler_recommendation()
 
     scheduler_service.start()
     try:

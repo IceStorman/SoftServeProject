@@ -1,17 +1,15 @@
 from dependency_injector.wiring import Provide, inject
-from flask import Blueprint, request, make_response, current_app
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask import Blueprint, request
 from api.routes.cache import cache
 from api.routes.scripts import get_cache_key, post_cache_key
 from exept.handle_exeptions import get_custom_error_response, get_exception_error_response
-from exept.exeptions import DatabaseConnectionError, CustomQSportException, NoJWTInCookieError
 from api.container.container import Container
 from exept.exeptions import DatabaseConnectionError, CustomQSportException
 from logger.logger import Logger
 from exept.handle_exeptions import handle_exceptions
+from service.api_logic.managers.recommendation_menager import RecommendationManager
 from service.api_logic.news_logic import NewsService
-from dto.api_input import InputUserByIdDTO, InputUserDTO, InputUserLoginDTO
-from service.api_logic.user_logic import UserService
+from dto.api_input import InputUserByIdDTO
 
 logger = Logger("logger", "all.log")
 
@@ -88,11 +86,11 @@ def specific_article(service: NewsService = Provide[Container.news_service]):
 @inject
 @handle_exceptions
 @logger.log_function_call()
-async def recommendations_for_user(service: NewsService = Provide[Container.news_service]):
+async def recommendations_for_user(recommendation_manager: RecommendationManager = Provide[Container.recommendation_manager]):
     try:
         data = request.get_json()
         dto = InputUserByIdDTO().load(data)
-        user_recommendations = service.user_recommendations_based_on_preferences_and_last_watch(dto.user_id)
+        user_recommendations = recommendation_manager.get_recommended_news_for_user(dto.user_id)
         return user_recommendations
 
     except CustomQSportException as e:
