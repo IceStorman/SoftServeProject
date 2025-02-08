@@ -6,7 +6,7 @@ from database.azure_blob_storage.save_get_blob import blob_get_news
 from service.api_logic.scripts import get_sport_by_name
 from database.session import SessionLocal
 from logger.logger import Logger
-from service.api_logic.filter_manager.news_filter_manager import NewsFilterManager
+from service.api_logic.filter_manager.filter_manager_factory import FilterManagerFactory
 from dto.pagination import Pagination
 from dto.api_input import NewsDTO
 
@@ -56,11 +56,11 @@ class NewsService:
         session = SessionLocal()
         query = session.query(News).order_by(desc(News.save_at))
 
-        query = NewsFilterManager.apply_filters(query, filters, session)
+        filtered_query = FilterManagerFactory.apply_filters(News, query, filters, session)
 
         offset, limit = pagination.get_pagination()
         if offset is not None and limit is not None:
-            query = query.offset(offset).limit(limit)
+            filtered_query = filtered_query.offset(offset).limit(limit)
 
-        news = query.all()
+        news = filtered_query.all()
         return self.json_news(news)
