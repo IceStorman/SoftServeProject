@@ -5,7 +5,8 @@ from itsdangerous import URLSafeTimedSerializer
 from dto.api_input import InputUserLogInDTO
 from dto.api_output import OutputUser, OutputLogin
 from database.postgres.dal.jwt import jwtDAL
-
+from database.postgres.dto.jwt import jwtDTO
+from datetime import datetime
 from database.models import User
 from dto.common_response import CommonResponse, CommonResponseWithUser
 from exept.exeptions import UserDoesNotExistError, UserAlreadyExistError
@@ -13,7 +14,7 @@ import bcrypt
 from logger.logger import Logger
 from jinja2 import Environment, FileSystemLoader
 import os
-from flask_jwt_extended import create_access_token,create_refresh_token, set_access_cookies, set_refresh_cookies
+from flask_jwt_extended import create_access_token,create_refresh_token, set_access_cookies, set_refresh_cookies, decode_token
 from service.api_logic.auth_strategy import AuthManager
 from typing import Optional
 
@@ -124,6 +125,32 @@ class UserService:
     async def create_access_token_response(self, user, return_tokens: bool = False):
         access_token = create_access_token(identity=user.email)
         refresh_token = create_refresh_token(identity=user.email)
+        
+        decode_access_token = decode_token(access_token)
+        decode_refresh_token = decode_token(refresh_token)
+        
+        access_expiers_at = datetime.utcfromtimestamp(decode_access_token['exp'])
+        refresh_expiers_at = datetime.utcfromtimestamp(decode_refresh_token['exp'])
+
+
+        access_jwt_dto = jwtDTO(
+            user_id=user.id,
+            jti=decode_access_token['jti'],   
+            token_type="access",
+            revoked=False,
+            expires_at=access_expiers_at
+        )
+        self.jwt_dal.save_jwt(access_jwt_dto)
+
+
+        refresh_jwt_dto = jwtDTO(
+            user_id=user.id,
+            jti=refresh_token,
+            token_type="refresh",
+            revoked=False,
+            expires_at=refresh_expiers_at  
+        )
+        self.jwt_dal.save_jwt(refresh_jwt_dto)
 
         response_data = {
             "user_id": user.id,
@@ -136,7 +163,6 @@ class UserService:
         response = make_response(jsonify(response_data))
         set_access_cookies(response, access_token)
         set_refresh_cookies(response, refresh_token)
-        
 
         return response
 
