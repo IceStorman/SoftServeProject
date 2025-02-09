@@ -66,6 +66,16 @@ class jwtDAL:
             self.db_session.commit()
             return True
         return False
+    
+    def revoke_refresh_token(self, jti: str) -> bool:
+        jwt_entry = self.get_jwt_by_jti(jti)
+        if jwt_entry and jwt_entry.token_type == "refresh":
+            jwt_entry.revoked = True
+            jwt_entry.updated_at = datetime.datetime.utcnow()
+            self.db_session.commit()
+            return True
+        return False
+
 
     # def delete_expired_tokens(self):
     #     self.db_session.query(TokenBlocklist).filter(

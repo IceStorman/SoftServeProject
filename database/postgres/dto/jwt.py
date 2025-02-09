@@ -11,5 +11,6 @@ class jwtDTO(BaseModel):
     expires_at: datetime.datetime = Field(...)
     updated_at: Optional[datetime.datetime] = None
 
-    class Config:
+    class Config: 
+        
         from_attributes = True
