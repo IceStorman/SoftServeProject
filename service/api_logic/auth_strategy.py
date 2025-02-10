@@ -45,7 +45,7 @@ class AuthManager:
 
 class SimpleAuthHandler(AuthHandler[T]):
     async def authenticate(self, credentials: T):
-        user = self._user_service.get_user_by_email_or_username(credentials.email_or_username, credentials.email_or_username)
+        user = self._user_service.get_existing_user(credentials.email_or_username, credentials.email_or_username)
 
         if not user:
             self._user_service._logger.warning("User does not exist")
@@ -86,7 +86,7 @@ class GoogleAuthHandler(AuthHandler[T]):
         data = user_info_response.json()
         user_info = InputUserLogInDTO().load(data)
 
-        user = self._user_service.get_user_by_email_or_username(user_info.email)
+        user = self._user_service.get_existing_user(user_info.email)
         if not user:
             user = User(email=data.email, username=data.email.split('@')[0])
             self._user_service.create_user(user)
