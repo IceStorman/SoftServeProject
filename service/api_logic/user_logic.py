@@ -140,7 +140,7 @@ class UserService:
             revoked=False,
             expires_at=access_expiers_at
         )
-        self.jwt_dal.save_jwt(access_jwt_dto)
+        self._jwt_dal.save_jwt(access_jwt_dto)
 
 
         refresh_jwt_dto = jwtDTO(
@@ -150,7 +150,7 @@ class UserService:
             revoked=False,
             expires_at=refresh_expiers_at  
         )
-        self.jwt_dal.save_jwt(refresh_jwt_dto)
+        self._jwt_dal.save_jwt(refresh_jwt_dto)
 
         response_data = {
             "user_id": user.id,

@@ -3,54 +3,43 @@ from database.models.token_blocklist import TokenBlocklist
 from database.postgres.dto.jwt import jwtDTO
 from sqlalchemy.exc import SQLAlchemyError
 from typing import Optional, List
-import datetime
+from datetime import datetime
 
 class jwtDAL:
     def __init__(self, db_session: Session):
         self.db_session = db_session
 
-    def save_jwt(self, jwt_dto: jwtDTO) -> int:
-        if jwt_dto.id:
-            jwt_entry = self.get_jwt_by_id(jwt_dto.id)
-        else:
-            jwt_entry = None
+    def save_jwt(self, jwt_dto: jwtDTO) -> Optional[int]:
+        try:
+            if jwt_dto.id and (jwt_entry := self.get_jwt_by_id(jwt_dto.id)):
+                jwt_entry.user_id = jwt_dto.user_id
+                jwt_entry.jti = jwt_dto.jti
+                jwt_entry.token_type = jwt_dto.token_type
+                jwt_entry.revoked = jwt_dto.revoked
+                jwt_entry.expires_at = jwt_dto.expires_at
+                jwt_entry.updated_at = datetime.utcnow()
+            else:
+                jwt_entry = TokenBlocklist(
+                    user_id=jwt_dto.user_id,
+                    jti=jwt_dto.jti,
+                    token_type=jwt_dto.token_type,
+                    revoked=jwt_dto.revoked,
+                    expires_at=jwt_dto.expires_at,
+                    updated_at=datetime.utcnow()
+                )
+                self.db_session.add(jwt_entry)
 
-        if jwt_entry:
-            jwt_entry = self.update_jwt(jwt_dto.id, jwt_dto)
-        else:
-            jwt_entry = self.create_jwt(jwt_dto)
+            self.db_session.commit()
+            self.db_session.refresh(jwt_entry)
+            return jwt_entry.id
+        except SQLAlchemyError as e:
+            self.db_session.rollback()
+            print(f"Error in save_jwt: {e}")
+            return None
 
-        return jwt_entry.id
-    
     def save_jwts(self, jwt_dto_list: List[jwtDTO]):
         for jwt in jwt_dto_list:
             self.save_jwt(jwt)
-
-    def create_jwt(self, jwt_dto: jwtDTO) -> TokenBlocklist:
-        new_jwt = TokenBlocklist(
-            user_id=jwt_dto.user_id,
-            jti=jwt_dto.jti,
-            token_type=jwt_dto.token_type,
-            revoked=jwt_dto.revoked,
-            expires_at=jwt_dto.expires_at,
-            updated_at=jwt_dto.updated_at or datetime.datetime.utcnow()
-        )
-        self.db_session.add(new_jwt)
-        self.db_session.commit()
-        self.db_session.refresh(new_jwt)
-        return new_jwt
-
-    def update_jwt(self, jwt_id: int, jwt_dto: jwtDTO) -> TokenBlocklist:
-        jwt_entry = self.get_jwt_by_id(jwt_id)
-        if jwt_entry:
-            jwt_entry.user_id = jwt_dto.user_id
-            jwt_entry.jti = jwt_dto.jti
-            jwt_entry.token_type = jwt_dto.token_type
-            jwt_entry.revoked = jwt_dto.revoked
-            jwt_entry.expires_at = jwt_dto.expires_at
-            jwt_entry.updated_at = datetime.datetime.utcnow()
-            self.db_session.commit()
-        return jwt_entry
 
     def get_jwt_by_id(self, jwt_id: int) -> Optional[TokenBlocklist]:
         return self.db_session.query(TokenBlocklist).filter(TokenBlocklist.id == jwt_id).first()
@@ -59,26 +48,42 @@ class jwtDAL:
         return self.db_session.query(TokenBlocklist).filter(TokenBlocklist.jti == jti).first()
 
     def revoke_jwt(self, jti: str) -> bool:
-        jwt_entry = self.get_jwt_by_jti(jti)
-        if jwt_entry:
-            jwt_entry.revoked = True
-            jwt_entry.updated_at = datetime.datetime.utcnow()
-            self.db_session.commit()
-            return True
-        return False
-    
+ 
+        try:
+            jwt_entry = self.get_jwt_by_jti(jti)
+            if jwt_entry:
+                jwt_entry.revoked = True
+                jwt_entry.updated_at = datetime.datetime.utcnow()
+                self.db_session.commit()
+                return True
+            return False
+        except SQLAlchemyError as e:
+            self.db_session.rollback()
+            print(f"Error in revoke_jwt: {e}")
+            return False
+
     def revoke_refresh_token(self, jti: str) -> bool:
-        jwt_entry = self.get_jwt_by_jti(jti)
-        if jwt_entry and jwt_entry.token_type == "refresh":
-            jwt_entry.revoked = True
-            jwt_entry.updated_at = datetime.datetime.utcnow()
+        try:
+            jwt_entry = self.get_jwt_by_jti(jti)
+            if jwt_entry and jwt_entry.token_type == "refresh":
+                jwt_entry.revoked = True
+                jwt_entry.updated_at = datetime.datetime.utcnow()
+                self.db_session.commit()
+                return True
+            return False
+        except SQLAlchemyError as e:
+            self.db_session.rollback()
+            print(f"Error in revoke_refresh_token: {e}")
+            return False
+
+    def delete_expired_tokens(self) -> int:
+        try:
+            expired_count = self.db_session.query(TokenBlocklist).filter(
+                TokenBlocklist.expires_at < datetime.datetime.utcnow()
+            ).delete(synchronize_session=False)
             self.db_session.commit()
-            return True
-        return False
-
-
-    # def delete_expired_tokens(self):
-    #     self.db_session.query(TokenBlocklist).filter(
-    #         TokenBlocklist.expires_at < datetime.datetime.utcnow()
-    #     ).delete(synchronize_session=False)
-    #     self.db_session.commit()
+            return expired_count
+        except SQLAlchemyError as e:
+            self.db_session.rollback()
+            print(f"Error while deleteng : {e}")
+            return 0
