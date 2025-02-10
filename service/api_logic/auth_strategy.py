@@ -35,7 +35,8 @@ class AuthManager:
             AuthStrategies.GOOGLE.value: GoogleAuthHandler(user_service=self._user_service),
         }
 
-    async def execute_log_in(self, strategy: str, credentials: T):
+    async def execute_log_in(self, credentials: T):
+        strategy = credentials.auth_provider
         if strategy not in self.strategies:
             raise IncorrectLogInStrategyError(strategy)
 

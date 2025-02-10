@@ -110,7 +110,7 @@ class UserService:
 
     async def log_in(self, credentials: InputUserLogInDTO):
         login_context = AuthManager(self)
-        user = await login_context.execute_log_in(credentials.auth_provider, credentials)
+        user = await login_context.execute_log_in(credentials)
         response = await self.create_access_token_response(user)
         return response
 
