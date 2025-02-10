@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from enum import Enum
 import bcrypt
 import requests
 from flask import current_app, request
@@ -10,12 +9,9 @@ from dto.api_output import OutputLogin
 from exept.exeptions import IncorrectUserDataError, UserDoesNotExistError, IncorrectLogInStrategyError, \
     InvalidAuthenticationDataError
 from typing import Generic, TypeVar
+from service.api_logic.models.global_models import AuthStrategies
 
 T = TypeVar("T")
-
-class AuthStrategies(Enum):
-    SIMPLE = "simple"
-    GOOGLE = "google"
 
 
 class AuthHandler(ABC, Generic[T]):
