@@ -22,24 +22,24 @@ class UserService:
         self._logger = Logger("logger", "all.log").logger
 
 
-    def get_user_by_email_or_username(self, email_front=None, username_front=None):
-        return self._user_dal.get_user_by_email_or_username(email_front, username_front)
+    def get_user_by_email_or_username(self, email=None, username=None):
+        return self._user_dal.get_user_by_email_or_username(email, username)
 
 
-    def get_existing_user(self, email_front=None, username_front=None):
-        return self._user_dal.get_existing_user(email_front, username_front)
+    def get_existing_user(self, email=None, username=None):
+        return self._user_dal.get_existing_user(email, username)
 
 
-    async def sign_up_user(self, email_front, username_front, password_front):
-        existing_user = self.get_existing_user(email_front, username_front)
+    async def sign_up_user(self, email, username, password):
+        existing_user = self.get_existing_user(email = email, username = username)
         if existing_user:
             self._logger.debug("User already exist")
             raise UserAlreadyExistError()
 
         salt = bcrypt.gensalt()
-        hashed_password = bcrypt.hashpw(password_front.encode('utf-8'), salt)
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
 
-        new_user = User(email = email_front, username = username_front, password_hash = hashed_password.decode('utf-8'))
+        new_user = User(email = email, username = username, password_hash = hashed_password.decode('utf-8'))
         self.create_user(new_user)
         token = await self.get_generate_auth_token(new_user)
 
@@ -51,7 +51,7 @@ class UserService:
 
 
     def request_password_reset(self, email: str):
-        existing_user = self.get_user_by_email_or_username(email)
+        existing_user = self.get_user_by_email_or_username(email = email)
         if not existing_user:
             raise UserDoesNotExistError(email)
 
@@ -82,7 +82,7 @@ class UserService:
 
 
     def __get_reset_token(self, email) -> str:
-        user = self.get_user_by_email_or_username(email)
+        user = self.get_user_by_email_or_username(email = email)
         if not user:
             raise UserDoesNotExistError(email)
 
@@ -90,7 +90,7 @@ class UserService:
 
 
     def reset_user_password(self, email, new_password: str):
-        user = self.get_user_by_email_or_username(email)
+        user = self.get_user_by_email_or_username(email = email)
         if not user:
             raise UserDoesNotExistError(email)
 
@@ -107,7 +107,7 @@ class UserService:
 
     def confirm_token(self, token: str, expiration=3600):
         username = self._serializer.loads(token, salt = "email-confirm", max_age = expiration)
-        user = self.get_user_by_email_or_username(None, username)
+        user = self.get_user_by_email_or_username(username = username)
 
         return OutputUser().dump(user)
 
@@ -119,7 +119,7 @@ class UserService:
         return response
 
     async def __generate_auth_token(self, user, salt):
-        return self._serializer.dumps(user.email, salt=salt)
+        return self._serializer.dumps(user.email, salt = salt)
 
 
     async def get_generate_auth_token(self, user):

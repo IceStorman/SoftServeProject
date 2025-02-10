@@ -9,7 +9,7 @@ from dto.api_output import OutputLogin
 from exept.exeptions import IncorrectUserDataError, UserDoesNotExistError, IncorrectLogInStrategyError, \
     InvalidAuthenticationDataError
 from typing import Generic, TypeVar
-from service.api_logic.models.global_models import AuthStrategies
+from service.api_logic.models.api_models import AuthStrategies
 
 T = TypeVar("T")
 
@@ -27,8 +27,8 @@ class AuthManager:
     def __init__(self, user_service):
         self._user_service = user_service
         self.strategies = {
-            AuthStrategies.SIMPLE.value: SimpleAuthHandler(user_service=self._user_service),
-            AuthStrategies.GOOGLE.value: GoogleAuthHandler(user_service=self._user_service),
+            AuthStrategies.SIMPLE.value: SimpleAuthHandler(user_service = self._user_service),
+            AuthStrategies.GOOGLE.value: GoogleAuthHandler(user_service = self._user_service),
         }
 
     async def execute_log_in(self, credentials: T):
@@ -54,7 +54,7 @@ class SimpleAuthHandler(AuthHandler[T]):
 
         token = await self._user_service.get_generate_auth_token(user)
 
-        return OutputLogin(email=user.email, token=token, id=user.user_id)
+        return OutputLogin(email = user.email, token = token, id = user.user_id)
 
 
 class GoogleAuthHandler(AuthHandler[T]):
@@ -67,7 +67,7 @@ class GoogleAuthHandler(AuthHandler[T]):
                 authorization_response=request.url,
                 redirect_url=current_app.config['REDIRECT_URI']
             )
-        token_response = requests.post(token_url, headers=headers, data=body)
+        token_response = requests.post(token_url, headers = headers, data = body)
         if token_response.status_code != 200:
             raise InvalidAuthenticationDataError()
 
@@ -83,11 +83,11 @@ class GoogleAuthHandler(AuthHandler[T]):
         data = user_info_response.json()
         user_info = InputUserLogInDTO().load(data)
 
-        user = self._user_service.get_user_by_email_or_username(user_info.email)
+        user = self._user_service.get_user_by_email_or_username(email = user_info.email)
         if not user:
-            user = User(email=user_info.email, username=user_info.email.split('@')[0])
+            user = User(email = user_info.email, username = user_info.email.split('@')[0])
             self._user_service.create_user(user)
 
         token = await self._user_service.get_generate_auth_token(user)
 
-        return OutputLogin(email=user.email, token=token, id=user.user_id)
+        return OutputLogin(email = user.email, token = token, id = user.user_id)
