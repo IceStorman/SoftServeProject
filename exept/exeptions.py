@@ -85,7 +85,7 @@ class UserAlreadyExistError(CustomQSportException):
         message = f"User with such data already exist'"
         super().__init__(message)
 
-class IncorrectLogInStrategyMethod(CustomQSportException):
+class IncorrectLogInStrategyMethodError(CustomQSportException):
     status_code = 404
 
     def __init__(self, data_value):
@@ -93,9 +93,9 @@ class IncorrectLogInStrategyMethod(CustomQSportException):
         super().__init__(message)
 
 
-class InvalidDataForGoogleLogIn(CustomQSportException):
+class InvalidAuthenticationDataError(CustomQSportException):
     status_code = 404
 
-    def __init__(self):
-        message = f"Google data is invalid"
+    def __init__(self, auth_provider_name):
+        message = f"{auth_provider_name} data is invalid"
         super().__init__(message)

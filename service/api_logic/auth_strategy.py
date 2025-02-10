@@ -7,8 +7,8 @@ from oauthlib.oauth2 import WebApplicationClient
 from database.models import User
 from dto.api_input import InputUserLogInDTO
 from dto.api_output import OutputLogin
-from exept.exeptions import IncorrectUserDataError, UserDoesNotExistError, IncorrectLogInStrategyMethod, \
-    InvalidDataForGoogleLogIn
+from exept.exeptions import IncorrectUserDataError, UserDoesNotExistError, IncorrectLogInStrategyMethodError, \
+    InvalidAuthenticationDataError
 from typing import Generic, TypeVar
 
 T = TypeVar("T")
@@ -37,7 +37,7 @@ class AuthManager:
 
     async def execute_log_in(self, method: str, credentials: T):
         if method not in self.strategies:
-            raise IncorrectLogInStrategyMethod(method)
+            raise IncorrectLogInStrategyMethodError(method)
 
         login_strategy = await self.strategies[method].authenticate(credentials)
         return login_strategy
@@ -72,7 +72,7 @@ class GoogleAuthHandler(AuthHandler[T]):
             )
         token_response = requests.post(token_url, headers=headers, data=body)
         if token_response.status_code != 200:
-            raise InvalidDataForGoogleLogIn()
+            raise InvalidAuthenticationDataError()
 
         client.parse_request_body_response(token_response.text)
 
@@ -81,7 +81,7 @@ class GoogleAuthHandler(AuthHandler[T]):
             headers={'Authorization': f'Bearer {client.token["access_token"]}'}
         )
         if user_info_response.status_code != 200:
-            raise InvalidDataForGoogleLogIn()
+            raise InvalidAuthenticationDataError()
 
         data = user_info_response.json()
         user_info = InputUserLogInDTO().load(data)
