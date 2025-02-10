@@ -58,7 +58,7 @@ def create_app():
 
     app.config['GOOGLE_CLIENT_ID'] = os.getenv('GOOGLE_CLIENT_ID')
     app.config['GOOGLE_CLIENT_SECRET'] = os.getenv('GOOGLE_CLIENT_SECRET')
-    app.config['REDIRECT_URI'] = 'http://127.0.0.1:5001/login/auth/google/callback'
+    app.config['REDIRECT_URI'] = 'http://127.0.0.1:5001/login/login'
     app.config['AUTHORIZATION_BASE_URL'] = 'https://accounts.google.com/o/oauth2/auth'
     app.config['TOKEN_URL'] = 'https://oauth2.googleapis.com/token'
     app.config['USER_INFO_URL'] = 'https://www.googleapis.com/oauth2/v2/userinfo'

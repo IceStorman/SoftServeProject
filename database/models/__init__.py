@@ -18,5 +18,6 @@ from .streams_status import Streams_Status
 from .streams import Stream
 from .user_recommendation import UserRecommendations
 from .user_club_preferences import UserClubPreferences
+from .token_blocklist import TokenBlocklist
 
 from .base import Base
