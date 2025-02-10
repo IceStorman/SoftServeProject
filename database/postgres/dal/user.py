@@ -29,3 +29,17 @@ class UserDAL:
     def update_user_password(self, user: User, new_password):
         user.password_hash = new_password
         self.session.commit()
+
+    def get_existing_user(self, email=None, username=None):
+        filters = []
+
+        if email:
+            filters.append(User.email == email)
+
+        if username:
+            filters.append(User.username == username)
+
+        if not filters:
+            return False
+
+        return self.session.query(self.session.query(User.user_id).filter(or_(*filters)).exists()).scalar()

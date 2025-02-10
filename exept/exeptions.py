@@ -80,8 +80,7 @@ class IncorrectUserDataError(CustomQSportException):
 class UserAlreadyExistError(CustomQSportException):
     status_code = 409
 
-    def __init__(self, date_value):
-        self.date_value = date_value
+    def __init__(self):
         message = f"User with such data already exist'"
         super().__init__(message)
 
