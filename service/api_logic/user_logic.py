@@ -94,7 +94,10 @@ class UserService:
         if not user:
             raise UserDoesNotExistError(email)
 
-        self._user_dal.update_user_password(user, new_password)
+        salt = bcrypt.gensalt()
+        hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), salt)
+
+        self._user_dal.update_user_password(user, hashed_password.decode('utf-8'))
         new_jwt = create_access_token(identity=user.email)
         new_refresh = create_refresh_token(identity=user.email)
 
