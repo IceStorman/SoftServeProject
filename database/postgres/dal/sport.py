@@ -4,7 +4,7 @@ from database.postgres.dto import SportDTO
 from typing import Optional
 
 class SportDAL:
-    def __init__(self, db_session: Session):
+    def __init__(self, db_session = None):
         self.db_session = db_session
 
     def create_sport(self, sport_dto: SportDTO) -> Sport:
@@ -40,3 +40,4 @@ class SportDAL:
         self.db_session.delete(sport)
         self.db_session.commit()
         return True
+

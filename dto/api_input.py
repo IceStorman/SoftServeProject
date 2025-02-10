@@ -1,7 +1,7 @@
 import re
 from collections import namedtuple
 from datetime import datetime
-from marshmallow import Schema, fields, pre_load, post_load, ValidationError
+from marshmallow import Schema, fields, pre_load, post_load, ValidationError, validates
 
 
 class BaseDTO(Schema):
@@ -124,6 +124,10 @@ class UpdateUserPreferencesDTO(BaseDTO):
 
 
 class GetUserPreferencesDTO(BaseDTO):
+    user_id = fields.Int(required=False, missing=None)
+
+
+class InputUserByIdDTO(BaseDTO):
     user_id = fields.Int(required=False, missing=None)
 
 
