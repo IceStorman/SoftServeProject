@@ -52,7 +52,7 @@ class SimpleAuthHandler(AuthHandler[T]):
             raise UserDoesNotExistError(user.email)
 
         if not bcrypt.checkpw(credentials.password_hash.encode('utf-8'), user.password_hash.encode('utf-8')):
-            self._user_service._logger.warning("Passwords do not match")
+            self._user_service._logger.warning("Some log in data is incorrect")
             raise IncorrectUserDataError()
 
         token = await self._user_service.get_generate_auth_token(user)
