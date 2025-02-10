@@ -106,7 +106,7 @@ class NewsDAL:
         return user_interact_with_this_news_mask, user_not_interact_with_this_news_mask, user_and_news_details_df
 
 
-    def cleaning_duplicate_news_where_is_more_than_one_club(self, news_coefficients: pd.DataFrame) -> pd.DataFrame:
+    def clean_duplicate_news_where_is_more_than_one_club(self, news_coefficients: pd.DataFrame) -> pd.DataFrame:
         news_coefficients_without_duplicates = news_coefficients.groupby('news_id').agg({
             'blob_id': 'first',
             'interest_rate_score': 'first',

@@ -132,7 +132,7 @@ class UserService:
 
 
     def get_user_sport_and_club_preferences(self, user_id: int) -> list[int] and list[int] | list[None] and list[None]:
-        user_preferences = self._user_dal.get_user_sport_and_club_preferences_by_native_id(user_id)
+        user_preferences = self._user_dal.get_user_sport_and_club_preferences_by_id(user_id)
 
         if not user_preferences:
             return [], []

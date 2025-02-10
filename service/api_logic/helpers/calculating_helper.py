@@ -16,7 +16,7 @@ class RecommendationConsts(Enum):
     MIN_PROMOTION_COF = 1
     MAX_PROMOTION_COF = 4
 
-class CalculatingHelper:
+class CalculatingRecommendationHelper:
 
 
     def __calculate_time_score_vectorized(self, save_at: datetime, time_now: datetime = datetime.now()) -> pd.DataFrame:
@@ -35,7 +35,7 @@ class CalculatingHelper:
         return preferred_count + interacted_count or RecommendationConsts.SCORE_FOR_NOTHING.value
 
 
-    def calculating_news_coefficients_by_parameters_from_df_and_user_preferences(
+    def calculate_news_coefficients_by_parameters_from_df_and_user_preferences(
             self,
             user_and_news_details_df: pd.DataFrame,
             user_preferred_teams: list[int],
@@ -68,7 +68,7 @@ class CalculatingHelper:
         return user_and_news_details_df
 
 
-    def calculating_adjusted_score_by_coefficients_inside_df(self, dataframe: pd.DataFrame) -> pd.DataFrame:
+    def calculate_adjusted_score_by_coefficients_inside_df(self, dataframe: pd.DataFrame) -> pd.DataFrame:
         dataframe['adjusted_score'] = dataframe['interest_rate_score'] * dataframe['time_score'] * dataframe['team_score'] * dataframe['sport_score']
         return dataframe
 

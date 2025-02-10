@@ -86,25 +86,9 @@ class UserAlreadyExistError(CustomQSportException):
         super().__init__(message)
 
 
-class NoUsersInDBError(CustomQSportException):
-    status_code = 404
-
-    def __init__(self):
-        message = f"There are no users in database"
-        super().__init__(message)
-
-
-class EmptyRecommendationListForUserError(CustomQSportException):
+class NoRecommendationListForUserError(CustomQSportException):
     status_code = 204
 
     def __init__(self, user_id):
         message = f"There are no recommendations for user '{user_id} at this moment'"
-        super().__init__(message)
-
-
-class NoJWTInCookieError(CustomQSportException):
-    status_code = 401
-
-    def __init__(self):
-        message = f"There are no JWT cookie for this user"
         super().__init__(message)

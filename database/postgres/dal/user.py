@@ -32,12 +32,10 @@ class UserDAL:
         self.session.commit()
 
     def get_user_id_be_email(self, email: str) -> User:
-        return self.session.query(User).filter(User.email == email).first()
+        return self.session.query(User.user_id).filter(User.email == email).first()
 
-    def get_all_users(self):
-        return self.session.query(User).all()
 
-    def get_user_sport_and_club_preferences_by_native_id(self, user_id):
+    def get_user_sport_and_club_preferences_by_id(self, user_id):
         query = (
             self.session.query(
                 UserClubPreferences.preferences,

@@ -6,7 +6,7 @@ from sqlalchemy import desc
 from database.models import News
 from database.azure_blob_storage.save_get_blob import blob_get_news
 from logger.logger import Logger
-from service.api_logic.helpers.calculating_helper import CalculatingHelper
+from service.api_logic.helpers.calculating_helper import CalculatingRecommendationHelper
 
 
 class LimitsConsts(Enum):
@@ -66,7 +66,7 @@ class NewsService:
             user_id: int,
             user_preferred_teams,
             user_preferred_sports,
-            calculating_helper: CalculatingHelper,
+            calculating_helper: CalculatingRecommendationHelper,
             top_n: int = LimitsConsts.BASE_LIMIT_OF_NEWS_FOR_RECS.value
     ):
 
@@ -79,15 +79,15 @@ class NewsService:
             )
         )
 
-        news_recommendation_coefficients_base_on_parametrs_insideDF = calculating_helper.calculating_news_coefficients_by_parameters_from_df_and_user_preferences(
+        news_recommendation_coefficients_base_on_parametrs_insideDF = calculating_helper.calculate_news_coefficients_by_parameters_from_df_and_user_preferences(
             user_and_news_details_df,
             user_preferred_teams,
             user_preferred_sports,
             user_interact_with_this_news_mask,
         )
 
-        news_with_adjusted_score_df = calculating_helper.calculating_adjusted_score_by_coefficients_inside_df(
-            self._news_dal.cleaning_duplicate_news_where_is_more_than_one_club(
+        news_with_adjusted_score_df = calculating_helper.calculate_adjusted_score_by_coefficients_inside_df(
+            self._news_dal.clean_duplicate_news_where_is_more_than_one_club(
                 news_recommendation_coefficients_base_on_parametrs_insideDF
             )
         )
@@ -122,16 +122,18 @@ class NewsService:
             self,
             user_not_saw_this_news_df: pd.DataFrame,
             user_saw_this_news_df: pd.DataFrame,
-            calculating_helper: CalculatingHelper,
+            calculating_helper: CalculatingRecommendationHelper,
             top_n: int
     ) -> pd.DataFrame | None:
 
-        average_adjusted_score_by_last_watch_news = calculating_helper.calculate_user_average_adjusted_score_by_last_watch_news(
-            user_saw_this_news_df,
-            user_not_saw_this_news_df
-        )
-        if average_adjusted_score_by_last_watch_news == -1:
-            return None
+        if len(user_not_saw_this_news_df) >= 0:
+            average_adjusted_score_by_last_watch_news = calculating_helper.calculate_user_average_adjusted_score_by_last_watch_news(
+                user_saw_this_news_df,
+                user_not_saw_this_news_df
+            )
+
+            if average_adjusted_score_by_last_watch_news == -1:
+                return None
 
         return user_not_saw_this_news_df.iloc[
             (user_not_saw_this_news_df['adjusted_score'] - average_adjusted_score_by_last_watch_news).abs().argsort()[:top_n]
