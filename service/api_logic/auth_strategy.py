@@ -89,7 +89,7 @@ class GoogleAuthHandler(AuthHandler[T]):
 
         user = self._user_service.get_user_by_email_or_username(user_info.email)
         if not user:
-            user = User(email=data.email, username=data.email.split('@')[0])
+            user = User(email=user_info.email, username=user_info.email.split('@')[0])
             self._user_service.create_user(user)
 
         token = await self._user_service.get_generate_auth_token(user)

@@ -30,7 +30,7 @@ class UserService:
         return self._user_dal.get_existing_user(email_front, username_front)
 
 
-    async def create_user(self, email_front, username_front, password_front):
+    async def sign_up_user(self, email_front, username_front, password_front):
         existing_user = self.get_existing_user(email_front, username_front)
         if existing_user:
             self._logger.debug("User already exist")
@@ -40,10 +40,14 @@ class UserService:
         hashed_password = bcrypt.hashpw(password_front.encode('utf-8'), salt)
 
         new_user = User(email = email_front, username = username_front, password_hash = hashed_password.decode('utf-8'))
-        self._user_dal.create_user(new_user)
-        token = await self.__generate_auth_token(new_user)
+        self.create_user(new_user)
+        token = await self.get_generate_auth_token(new_user)
 
         return OutputLogin(email = new_user.email, token = token, id = new_user.user_id)
+
+
+    def create_user(self, new_user):
+        return self._user_dal.create_user(new_user)
 
 
     def request_password_reset(self, email: str):
@@ -114,13 +118,12 @@ class UserService:
         response = await self.create_access_token_response(user)
         return response
 
+    async def __generate_auth_token(self, user, salt):
+        return self._serializer.dumps(user.email, salt=salt)
 
-    async def __generate_auth_token(self, user):
-            return self._serializer.dumps(user.email, salt = "user-auth-token")
 
-
-    def get_generate_auth_token(self, user):
-        return self.__generate_auth_token(user)
+    async def get_generate_auth_token(self, user):
+        return await self.__generate_auth_token(user, salt = "user-auth-token")
 
 
     async def create_access_token_response(self, user):

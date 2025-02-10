@@ -31,7 +31,7 @@ async def create_account_endpoint(service: UserService = Provide[Container.user_
     try:
         data = request.get_json()
         dto = InputUserDTO().load(data)
-        user = await service.create_user(dto.email, dto.username, dto.password_hash)
+        user = await service.sign_up_user(dto.email, dto.username, dto.password_hash)
         response = await service.create_access_token_response(user)
 
         return response
