@@ -7,13 +7,13 @@ from oauthlib.oauth2 import WebApplicationClient
 from database.models import User
 from dto.api_input import InputUserLogInDTO
 from dto.api_output import OutputLogin
-from exept.exeptions import IncorrectUserDataError, UserDoesNotExistError, IncorrectLogInStrategyMethodError, \
+from exept.exeptions import IncorrectUserDataError, UserDoesNotExistError, IncorrectLogInStrategyError, \
     InvalidAuthenticationDataError
 from typing import Generic, TypeVar
 
 T = TypeVar("T")
 
-class AuthMethods(Enum):
+class AuthStrategies(Enum):
     SIMPLE = "simple"
     GOOGLE = "google"
 
@@ -31,15 +31,15 @@ class AuthManager:
     def __init__(self, user_service):
         self._user_service = user_service
         self.strategies = {
-            AuthMethods.SIMPLE.value: SimpleAuthHandler(user_service=self._user_service),
-            AuthMethods.GOOGLE.value: GoogleAuthHandler(user_service=self._user_service),
+            AuthStrategies.SIMPLE.value: SimpleAuthHandler(user_service=self._user_service),
+            AuthStrategies.GOOGLE.value: GoogleAuthHandler(user_service=self._user_service),
         }
 
-    async def execute_log_in(self, method: str, credentials: T):
-        if method not in self.strategies:
-            raise IncorrectLogInStrategyMethodError(method)
+    async def execute_log_in(self, strategy: str, credentials: T):
+        if strategy not in self.strategies:
+            raise IncorrectLogInStrategyError(strategy)
 
-        login_strategy = await self.strategies[method].authenticate(credentials)
+        login_strategy = await self.strategies[strategy].authenticate(credentials)
         return login_strategy
 
 

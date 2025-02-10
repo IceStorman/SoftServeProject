@@ -85,7 +85,7 @@ class UserAlreadyExistError(CustomQSportException):
         message = f"User with such data already exist'"
         super().__init__(message)
 
-class IncorrectLogInStrategyMethodError(CustomQSportException):
+class IncorrectLogInStrategyError(CustomQSportException):
     status_code = 404
 
     def __init__(self, data_value):
