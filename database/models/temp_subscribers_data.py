@@ -1,8 +1,6 @@
-from .base import Column, Integer, ForeignKey, String
+from .base import Base, Column, Integer, ForeignKey, String
 
-from database.models import Base
-
-class TempSubscribers(Base):
+class TempSubscribersData(Base):
     __tablename__ = "TempSubscribersData"
     id = Column(Integer, primary_key=True)
     team_ids = Column(ForeignKey("TeamIndex.team_index_id"))

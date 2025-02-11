@@ -18,5 +18,6 @@ from .streams_status import Streams_Status
 from .streams import Stream
 from .user_recommendation import UserRecommendations
 from .user_club_preferences import UserClubPreferences
+from .temp_subscribers_data import TempSubscribersData
 
 from .base import Base
