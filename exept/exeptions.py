@@ -69,7 +69,7 @@ class IncorrectUsernameOrEmailError(CustomQSportException):
         super().__init__(message)
 
 
-class IncorrectPasswordError(CustomQSportException):
+class IncorrectUserDataError(CustomQSportException):
     status_code = 401
 
     def __init__(self):
@@ -80,8 +80,7 @@ class IncorrectPasswordError(CustomQSportException):
 class UserAlreadyExistError(CustomQSportException):
     status_code = 409
 
-    def __init__(self, date_value):
-        self.date_value = date_value
+    def __init__(self):
         message = f"User with such data already exist'"
         super().__init__(message)
 
@@ -92,3 +91,20 @@ class NoRecommendationListForUserError(CustomQSportException):
     def __init__(self, user_id):
         message = f"There are no recommendations for user '{user_id} at this moment'"
         super().__init__(message)
+
+
+class IncorrectLogInStrategyError(CustomQSportException):
+    status_code = 404
+
+    def __init__(self, data_value):
+        message = f"{data_value} is not a log in method in this app"
+        super().__init__(message)
+
+
+class InvalidAuthenticationDataError(CustomQSportException):
+    status_code = 404
+
+    def __init__(self, auth_provider_name):
+        message = f"{auth_provider_name} data is invalid"
+        super().__init__(message)
+

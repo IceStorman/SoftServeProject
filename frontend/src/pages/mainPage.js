@@ -45,7 +45,10 @@ function MainPage() {
     }, []);
 
     useEffect(() => {
-        axios.get(`${apiEndpoints.url}${apiEndpoints.games.getGames}`)
+        const requestData = { 
+        };
+
+        axios.post(`${apiEndpoints.url}${apiEndpoints.games.getGames}`, requestData)
             .then(res => {
                 const returnedGames = res.data;
                 setGames(returnedGames);
