@@ -136,3 +136,15 @@ class UserService:
         set_access_cookies(response_json, access_token)
 
         return response_json
+
+
+    def get_user_sport_and_club_preferences(self, user_id: int) -> list[int] and list[int] | list[None] and list[None]:
+        user_preferences = self._user_dal.get_user_sport_and_club_preferences_by_id(user_id)
+
+        if not user_preferences:
+            return [], []
+
+        user_preferred_teams = list({row.preferences for row in user_preferences if row.preferences is not None})
+        user_preferred_sports = list({row.sports_id for row in user_preferences if row.sports_id is not None})
+
+        return user_preferred_teams, user_preferred_sports

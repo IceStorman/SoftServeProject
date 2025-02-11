@@ -1,7 +1,7 @@
 import re
 from collections import namedtuple
 from datetime import datetime
-from marshmallow import Schema, fields, pre_load, post_load, ValidationError, EXCLUDE
+from marshmallow import Schema, fields, pre_load, post_load, ValidationError, EXCLUDE, validates
 
 
 class BaseDTO(Schema):
@@ -131,9 +131,17 @@ class GetUserPreferencesDTO(BaseDTO):
     user_id = fields.Int(required=False, missing=None)
 
 
+class InputUserByIdDTO(BaseDTO):
+    user_id = fields.Int(required=False, missing=None)
+
+
+class InputUserByGoogleDTO(BaseDTO):
+    email = fields.Str(required=True)
+    id = fields.Str(required=False, missing=None)
+    auth_provider = fields.String(required=False, missing=None)
+
+
 class InputUserLogInDTO(BaseDTO):
     email = fields.Str(required=False, missing=None)
     email_or_username = fields.Str(required=False, missing=None)
     password_hash = fields.Str(required=False, missing=None)
-    id = fields.Str(required=False, missing=None)
-    auth_provider = fields.String(required=False, missing=None)
