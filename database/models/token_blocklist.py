@@ -1,8 +1,8 @@
 from .base import Base, Column, Integer, String, ForeignKey, Boolean, DateTime
 import datetime 
 
-class TokenBlocklist(Base):
-    __tablename__ = 'Token_Blocklist'
+class Token_Blocklist(Base):
+    __tablename__ = 'Token_blocklist'
     id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey("Users.user_id"))
     jti = Column(String, nullable=False, index=True)

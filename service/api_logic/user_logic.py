@@ -14,7 +14,8 @@ import bcrypt
 from logger.logger import Logger
 from jinja2 import Environment, FileSystemLoader
 import os
-from flask_jwt_extended import create_access_token,create_refresh_token, set_access_cookies, set_refresh_cookies, decode_token
+from flask_jwt_extended import create_access_token,create_refresh_token, set_access_cookies, set_refresh_cookies, decode_token\
+    , get_jwt_identity
 from service.api_logic.auth_strategy import AuthManager
 from typing import Optional
 
@@ -173,6 +174,27 @@ class UserService:
         user = await login_context.execute_log_in(credentials.auth_provider, credentials)
         response = await self.create_access_token_response(user, return_tokens=True)
         return response
+
+    def create_new_access_token(self, identity):
+        if not identity:
+            return jsonify({"error": "Invalid identity"}), 400
+
+        new_access_token = create_access_token(identity=identity)
+
+        decoded_access_token = decode_token(new_access_token)
+        new_access_expires_at = datetime.utcfromtimestamp(decoded_access_token['exp'])
+        
+        access_jwt_dto = jwtDTO(
+            user_id=identity['id'],  
+            jti=decoded_access_token['jti'],   
+            token_type="access",
+            revoked=False,
+            expires_at=new_access_expires_at
+        )
+
+        self._jwt_dal.save_jwt(access_jwt_dto) 
+        return jsonify(access_token=new_access_token)
+
     
     # async def create_access_token_response(self, user):
     #     access_token = create_access_token(identity = user.email)
