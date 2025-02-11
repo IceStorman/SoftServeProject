@@ -9,7 +9,7 @@ from database.session import SessionLocal
 from exept.colors_text import print_error_message, print_good_message
 import re
 
-from service.implementation.email_sender.email_sender import try_send_email_to_users, EmailSender
+from service.implementation.email_sender.email_sender import EmailSender
 
 load_dotenv()
 account_url = os.getenv("BLOBURL")

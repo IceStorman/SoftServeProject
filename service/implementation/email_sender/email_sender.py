@@ -30,12 +30,16 @@ class EmailSender:
     __sender_password = os.getenv("PASSWORD")
 
     @staticmethod
+    def add_subscribers_to_temp_table():
+        pass
+
+    @staticmethod
     def try_send_email_to_users(team_index: int):
         subscribed_users = EmailSender.__get_subscribed_users(team_index)
 
         for user_id in subscribed_users:
             user_email = EmailSender.__get_user_email(user_id)
-            EmailSender.__send_email_to_user(user_email, "Test Email", "Hello, this is a test email from Gmail API!")
+            EmailSender.__send_email_to_user(user_email, "News notification", "The news with the team that you subscribed in have just been released")
 
     @staticmethod
     def __get_subscribed_users(team_index: int):
