@@ -7,6 +7,8 @@ from service.api_logic.scripts import apply_filters
 from sqlalchemy.orm import aliased
 from database.session import SessionLocal
 from logger.logger import Logger
+from service.api_logic.filter_manager.filter_manager_factory import FilterManagerFactory
+
 
 logger = Logger("logger", "all.log")
 
@@ -14,10 +16,7 @@ session = SessionLocal()
 
 @handle_exceptions
 @logger.log_function_call()
-def get_games_today(
-        filters_dto: dict,
-        pagination: Pagination
-):
+def get_games_today( filters_dto: GamesDTO(), pagination: Pagination):
     home_team = aliased(TeamIndex)
     away_team = aliased(TeamIndex)
 
@@ -51,13 +50,13 @@ def get_games_today(
         "leagues": League,
     }
 
-    query = apply_filters(query, filters_dto, model_aliases)
+    filtered_query = FilterManagerFactory.apply_filters(Games, query, filters_dto, session)
 
     offset, limit = pagination.get_pagination()
     if offset is not None and limit is not None:
-        query = query.offset(offset).limit(limit)
+        filtered_query = filtered_query.offset(offset).limit(limit)
 
-    games = query.all()
+    games = filtered_query.all()
 
     schema = GameOutput(many=True)
     return schema.dump(games)

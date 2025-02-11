@@ -2,8 +2,9 @@ from sqlalchemy.orm import Query
 from database.models import News, TeamInNews
 from service.api_logic.scripts import get_sport_by_name
 from service.api_logic.filter_manager.base_filter_manager import BaseFilterManager
+from service.api_logic.filter_manager.common_filters import CommonFilters
 
-class NewsFilterManager(BaseFilterManager):
+class NewsFilterManager(BaseFilterManager, CommonFilters):
 
     FILTERS = {
         "title_contains": "apply_title_contains",
@@ -17,10 +18,9 @@ class NewsFilterManager(BaseFilterManager):
     def apply_title_contains(query: Query, value: str) -> Query:
         return query.filter(News.blob_id.ilike(f"%{value}%"))
 
-    @staticmethod
-    def apply_sport_filter(query: Query, value: str, session) -> Query:
-        sport = get_sport_by_name(session, value)
-        return query.filter(News.sport_id == sport.sport_id)
+    @classmethod
+    def apply_sport_filter(cls, query: Query, value: str, session) -> Query:
+        return super().apply_sport_filter(query, News, value, session)
 
     @staticmethod
     def apply_date_from(query: Query, value: str) -> Query:
