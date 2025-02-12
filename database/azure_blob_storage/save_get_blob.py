@@ -9,7 +9,7 @@ from database.session import SessionLocal
 from exept.colors_text import print_error_message, print_good_message
 import re
 
-from service.implementation.email_sender.email_sender import SubscriptionManager
+from service.implementation.email_sender.email_sender import UserSubscriptionManager
 
 load_dotenv()
 account_url = os.getenv("BLOBURL")
@@ -301,7 +301,7 @@ def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
                         )
                         session.add(team_index)
 
-                        SubscriptionManager.try_send_email_to_users(team_index.team_id)
+                        UserSubscriptionManager.try_send_email_to_users(team_index.team_id)
             else:
                 team_index_id = team_dict.get(team_name, None)
                 if team_index_id is not None:
@@ -312,7 +312,7 @@ def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
                     )
                     session.add(team_index)
 
-                    SubscriptionManager.try_send_email_to_users(team_index.team_id)
+                    UserSubscriptionManager.try_send_email_to_users(team_index.team_id)
 
         session.commit()
     except Exception as e:

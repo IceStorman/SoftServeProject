@@ -7,8 +7,8 @@ from googleapiclient.discovery import build
 from email.mime.text import MIMEText
 
 from database.models import TempSubscribersData
-from database.postgres.dal.club_preference import UserClubPreferenceDAL
-from database.postgres.dal.user_email import UserEmailDAL
+
+from database.postgres.dal.user_subscription import UserSubscriptionDAL
 from database.session import SessionLocal
 
 from pathlib import Path
@@ -17,46 +17,37 @@ from dotenv import load_dotenv
 
 SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
 
-class SubscriptionManager:
+class UserSubscriptionManager:
     session = SessionLocal()
 
     __current_dir = Path(__file__).resolve().parent if "__file__" in locals() else Path.cwd()
     __envars = __current_dir / ".env"
     load_dotenv(__envars)
 
-    __prefs_dal = UserClubPreferenceDAL(session)
-    __user_dal = UserEmailDAL(session)
+    __user_subscription_dal = UserSubscriptionDAL(session)
 
     __sender_email = os.getenv("EMAIL")
     __sender_password = os.getenv("PASSWORD")
 
     @staticmethod
     def add_subscribers_to_temp_table(team_index):
-        users = SubscriptionManager.__user_dal.get_users_by_preference_index(team_index)
+        users = UserSubscriptionManager.__user_subscription_dal.get_users_by_preference_index(team_index)
 
-        new_rows = [
-            TempSubscribersData(team_ids=team_index, subscriber_emails=user.email)
-            for user in users
-        ]
-
-        SubscriptionManager.session.add_all(new_rows)
-        SubscriptionManager.session.commit()
+        UserSubscriptionManager.__user_subscription_dal.add_subscribers_data(team_index, users)
 
     @staticmethod
-    def try_send_email_to_users(team_index: int):
-        subscribed_users_emails = SubscriptionManager.__get_subscribed_users_emails(team_index)
+    def try_send_email_to_users():
+        subscribed_users = UserSubscriptionManager.__user_subscription_dal.get_subscribed_users_data_and_delete_rows()
 
-        for user_id in subscribed_users_emails:
-            user_email = SubscriptionManager.__get_user_email(user_id)
-            SubscriptionManager.__send_email_to_user(user_email, "News notification", "The news with the team that you subscribed in have just been released")
+        email_subject = "News notification"
+        email_body = "The news with the team that you subscribed in have just been released"
 
-    @staticmethod
-    def __get_subscribed_users_emails(team_index):
-        pass
+        for user in subscribed_users:
+            UserSubscriptionManager.__send_email_to_user(user.subscriber_emails, email_subject, email_body)
 
     @staticmethod
     def __send_email_to_user(user_email: str, subject, body):
-        creds = SubscriptionManager.__authenticate_gmail()
+        creds = UserSubscriptionManager.__authenticate_gmail()
         service = build("gmail", "v1", credentials=creds)
 
         message = MIMEText(body)
@@ -92,4 +83,5 @@ class SubscriptionManager:
         return creds
 
 
-SubscriptionManager.add_subscribers_to_temp_table(1)
+UserSubscriptionManager.add_subscribers_to_temp_table(2)
+UserSubscriptionManager.try_send_email_to_users()
