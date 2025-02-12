@@ -6,6 +6,7 @@ from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
 from email.mime.text import MIMEText
 
+from database.models import TempSubscribersData
 from database.postgres.dal.user_subscription import UserSubscriptionDAL
 from database.session import SessionLocal
 
@@ -13,7 +14,10 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+from sqlalchemy import event
+
 SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
+
 
 class UserSubscriptionManager:
     session = SessionLocal()
@@ -30,6 +34,10 @@ class UserSubscriptionManager:
     @staticmethod
     def add_subscribers_to_temp_table(team_index):
         UserSubscriptionManager.__user_subscription_dal.add_subscribers_data(team_index)
+
+    @staticmethod
+    def on_subscribers_inserted(mapper, connection, target):
+        UserSubscriptionManager.try_send_email_to_users()
 
     @staticmethod
     def try_send_email_to_users():
@@ -79,5 +87,5 @@ class UserSubscriptionManager:
         return creds
 
 
-UserSubscriptionManager.add_subscribers_to_temp_table(2)
-UserSubscriptionManager.try_send_email_to_users()
+event.listen(TempSubscribersData, "after_insert", UserSubscriptionManager.on_subscribers_inserted)
+UserSubscriptionManager.add_subscribers_to_temp_table(7)

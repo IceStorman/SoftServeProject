@@ -40,6 +40,4 @@ class UserSubscriptionDAL:
 
         self.db_session.query(TempSubscribersData).delete(synchronize_session=False)
 
-        self.db_session.commit()
-
         return subscribed_users
