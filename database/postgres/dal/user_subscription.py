@@ -8,7 +8,18 @@ class UserSubscriptionDAL:
     def __init__(self, db_session: Session):
         self.db_session = db_session
 
-    def get_users_by_preference_index(self, preference_index):
+    def add_subscribers_data(self, preference_index):
+        users = self.__get_users_by_preference_index(preference_index)
+
+        new_rows = [
+            TempSubscribersData(team_ids=preference_index, subscriber_emails=user.email)
+            for user in users
+        ]
+
+        self.db_session.add_all(new_rows)
+        self.db_session.commit()
+
+    def __get_users_by_preference_index(self, preference_index):
         query = (
             self.db_session.query(User)
             .join(UserClubPreferences, User.user_id == UserClubPreferences.users_id)
@@ -17,15 +28,6 @@ class UserSubscriptionDAL:
         )
 
         return query
-
-    def add_subscribers_data(self, team_index, users):
-        new_rows = [
-            TempSubscribersData(team_ids=team_index, subscriber_emails=user.email)
-            for user in users
-        ]
-
-        self.db_session.add_all(new_rows)
-        self.db_session.commit()
 
     def get_subscribed_users_data_and_delete_rows(self):
         rows_to_delete = self.db_session.query(TempSubscribersData).all()

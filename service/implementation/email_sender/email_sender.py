@@ -6,8 +6,6 @@ from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
 from email.mime.text import MIMEText
 
-from database.models import TempSubscribersData
-
 from database.postgres.dal.user_subscription import UserSubscriptionDAL
 from database.session import SessionLocal
 
@@ -31,9 +29,7 @@ class UserSubscriptionManager:
 
     @staticmethod
     def add_subscribers_to_temp_table(team_index):
-        users = UserSubscriptionManager.__user_subscription_dal.get_users_by_preference_index(team_index)
-
-        UserSubscriptionManager.__user_subscription_dal.add_subscribers_data(team_index, users)
+        UserSubscriptionManager.__user_subscription_dal.add_subscribers_data(team_index)
 
     @staticmethod
     def try_send_email_to_users():
