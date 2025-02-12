@@ -1,64 +1,114 @@
 .sportPage {
+    margin: 2rem;
+    margin-top: 3rem;
     display: flex;
     flex-direction: column;
     align-items: center;
-    overflow: hidden;
+    justify-content: center;
+    background-color: $bg-white;
+    width: fit-content;
+    height: fit-content;
+    justify-self: center;
+    align-self: center;
+    padding: 2rem;
+    padding-bottom: 2.2rem;
+    border: 2px solid black;
+    box-shadow: 10px 10px #000;
 
-    .sportTitle {
-        margin: 1rem 0;
-        text-transform: capitalize;
-        font-size: 3rem;
-        letter-spacing: 0.5rem;
+    h1 {
+        margin-bottom: 1rem;
     }
 
-    .news {
-        width: 80%;
-        background-color: $special-light-purple;
-        border-radius: 0.5rem;
-        margin-top: 0;
+    .sport-selection-grid {
+        display: grid;
+        grid-template-columns: repeat(8, 1fr);
+        gap: 16px;
+        width: fit-content;
+        margin: auto;
+        justify-items: stretch;
+        align-items: stretch;
+        justify-content: center;
 
-        .newsBox {
-            flex-direction: row;
-            justify-content: space-evenly;
-            width: 120rem;
-            max-width: 95%;
-            margin: 1rem auto 0;
-            color: $special-dark-purple;
-            overflow: visible;
-
-            .newsInsight {
-                width: 55%;
-            }
-
-            h4, h1 {
-                margin: 0 0.5rem 0 2rem;
-                align-self: end;
-            }
-
-            h4{
-                color: $scroll-hover;
-            }
-
-            img {
-                width: 50rem;
-                max-width: 45%;
-            }
-
-            .leftPlaceData {
-                align-self: start;
+        &.overflow-3 {
+            @for $i from 3 through 1 {
+                .button-link:nth-last-child(#{$i}) {
+                    grid-column-start: calc(8 - 2 * #{$i});
+                    grid-column-end: span 2;
+                }
             }
         }
 
-        hr {
-            margin: 0 auto 1rem;
-            border: 0.1vh solid white;
-            width: 95%;
+        &.overflow-2 {
+            @for $i from 2 through 1 {
+                .button-link:nth-last-child(#{$i}) {
+                    grid-column-start: calc(7 - 2 * #{$i});
+                    grid-column-end: span 2;
+                }
+            }
         }
 
-        .newsBox:hover{
+        &.overflow-1 {
+            .button-link:nth-last-child(1) {
+                grid-column-start: 4;
+                grid-column-end: span 2;
+            }
+        }
 
-            img{
-                transform: scale(1.02);
+        .button-link {
+            grid-column: span 2;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            button {
+
+                font-family: "GrenzeGotisch";
+                background-color: $main-clr;
+                border: 0 solid #E5E7EB;
+                box-sizing: border-box;
+                color: #000000;
+              //  display: flex;
+               // font-weight: 700;
+                justify-content: center;
+               // line-height: 1.75rem;
+                padding: .75rem 1.75rem;
+                position: relative;
+                text-align: center;
+                text-decoration: none #000000 solid;
+                text-decoration-thickness: auto;
+                width: fit-content;
+                position: relative;
+                cursor: pointer;
+                user-select: none;
+                -webkit-user-select: none;
+                touch-action: manipulation;
+        
+                font-size: 1.3rem;
+                grid-column: span 2;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                &:after {
+                    content: '';
+                    position: absolute;
+                    border: 1px solid #000000;
+                    bottom: 4px;
+                    left: -6px;
+                    width: calc(100% - 1px);
+                    height: calc(100% - 1px);
+                }
+        
+                &:hover::after {
+                    bottom: 2px;
+                    left: -4px;
+                }
+        
+                &:active {
+                    background-color: $main-clr-shadow;
+                }
             }
         }
     }

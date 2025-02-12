@@ -12,22 +12,7 @@ const VideoPlayer = ({game, youtubeLinks = [], otherLinks = [], matchInfo = {} }
 
     return (
         <div className="ramka">
-            <div className="whoPlay">
-                <h1>{game.name1} VS {game.name2}</h1>
-                <div className="teams">
-                    <div className="team">
-                        <img src={game.logo1} alt={`${game.name1} logo`}/>
-                    </div>
-                    <div className="score">
-                        {game.score1} : {game.score2}
-                    </div>
-                    <div className="team">
-                        <img src={game.logo2} alt={`${game.name2} logo`}/>
-                    </div>
-                </div>
-            </div>
-
-
+   
             <div className="videoPlayer">
 
                 <div className="youtubePlayer">
@@ -38,7 +23,7 @@ const VideoPlayer = ({game, youtubeLinks = [], otherLinks = [], matchInfo = {} }
                                 width="100%"
                                 height="500px"
                                 src={`https://www.youtube.com/embed/${youtubeLinks[currentVideoIndex]}`}
-                                frameBorder="0"
+                           
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 allowFullScreen
                             ></iframe>

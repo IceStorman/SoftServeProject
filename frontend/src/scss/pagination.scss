@@ -1,0 +1,136 @@
+.pagination {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.3rem;
+    gap: .5rem;
+    font-family: "PirataOne";
+    margin-top: 1rem;
+    cursor: pointer;
+    list-style: none;
+
+    .line {
+        transform: rotate(90deg);
+    }
+
+    li {
+        display: inline-flex;
+    }
+
+    .page-prev {
+        font-size: 1.7rem;
+        display: inline-flex;
+    }
+
+    .page-next {
+        font-size: 1.7rem;
+        display: inline-flex;
+    }
+
+    .page-num {
+        padding: 0 10px;
+        border: 1px solid black;
+    }
+
+    .page-num:hover {
+        background-color: #46a5ca;
+    }
+
+    .page-active {
+        background-color: #65c7ee;
+    }
+}
+
+.pagination-games{
+    background-color: white;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.1rem;
+    gap: .5rem;
+    font-family: "PirataOne";
+  //  margin-top: 1rem;
+  padding: .5rem 0;
+  border: 2px solid black;
+    cursor: pointer;
+    list-style: none;
+    width: 100%;
+    .line {
+        transform: rotate(90deg);
+    }
+
+    li {
+        display: inline-flex;
+    }
+
+    .page-prev {
+        font-size: 1.4rem;
+        display: inline-flex;
+    }
+
+    .page-next {
+        font-size: 1.4rem;
+        display: inline-flex;
+    }
+
+    .page-num {
+        padding: 0 10px;
+        border: 1px solid black;
+    }
+
+    .page-num:hover {
+        background-color: #46a5ca;
+    }
+
+    .page-active {
+        background-color: #65c7ee;
+    }
+}
+
+.dot-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+
+    .page-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: #ccc;
+        border: none;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        align-self: center;
+        justify-self: center;
+        //    margin-bottom: .2rem;
+    }
+
+    .page-dot.active {
+        background-color: #333;
+    }
+
+    button.arrow {
+        display: inline-flex;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        align-self: center;
+        justify-self: center;
+        cursor: pointer;
+        padding: 0;
+        margin: 0;
+        align-items: center;
+        justify-content: center;
+
+        .line {
+            transform: rotate(90deg);
+        }
+    }
+
+
+}
