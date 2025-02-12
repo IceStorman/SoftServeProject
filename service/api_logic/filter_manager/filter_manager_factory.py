@@ -1,6 +1,7 @@
 from service.api_logic.filter_manager.games_filter_manager import GamesFilterManager
 from service.api_logic.filter_manager.league_filter_manager import LeagueFilterManager
 from service.api_logic.filter_manager.news_filter_manager import NewsFilterManager
+from service.api_logic.filter_manager.teams_filter_manager import TeamsFilterManager
 from sqlalchemy.orm import Query
 
 class FilterManagerFactory:
@@ -9,6 +10,7 @@ class FilterManagerFactory:
         "News": NewsFilterManager,
         "Games": GamesFilterManager,
         "League": LeagueFilterManager,
+        "TeamIndex": TeamsFilterManager,
     }
 
     @classmethod

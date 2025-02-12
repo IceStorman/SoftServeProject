@@ -7,7 +7,7 @@ class LeagueFilterManager(BaseFilterManager, CommonFilters):
 
     FILTERS = {
         "sport": "apply_sport_filter",
-        "country": "apply_country_filter",
+        "country_id": "apply_country_filter",
         "name":"apply_name_filter",
     }
 
@@ -19,6 +19,6 @@ class LeagueFilterManager(BaseFilterManager, CommonFilters):
     def apply_country_filter(cls, query: Query, value: int) -> Query:
         return super().apply_country_filter(query, League, value)
 
-    @staticmethod
-    def apply_name_filter(query: Query, value: str) -> Query:
-        return query.filter(League.name.ilike(f"%{value}%"))
+    @classmethod
+    def apply_name_filter(cls, query: Query, value: str) -> Query:
+        return super().apply_name_filter(query, League, value)

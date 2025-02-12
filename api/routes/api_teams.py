@@ -74,3 +74,16 @@ def get_players_endpoint():
         logger.error(f"Error in POST /: {str(e)}")
         get_custom_error_response(e)
 
+@teams_app.route('/filtered', methods=['POST'])
+@logger.log_function_call()
+def get_team_filtered_endpoint():
+    try:
+        data = request.get_json()
+        dto = TeamsStatisticsOrPlayersDTO().load(data)
+        pagination = Pagination(**data)
+        teams = get_teams(dto, pagination)
+        return teams
+    except CustomQSportException as e:
+        logger.error(f"Error in POST /: {str(e)}")
+        get_custom_error_response(e)
+

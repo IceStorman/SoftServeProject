@@ -16,3 +16,7 @@ class CommonFilters():
     def apply_league_filter(query: Query, model, value: int) -> Query:
         return query.filter(getattr(model, "league_id") == value)
 
+    @staticmethod
+    def apply_name_filter(query: Query, model, value: str) -> Query:
+        return query.filter(getattr(model, "name").ilike(f"%{value}%"))
+
