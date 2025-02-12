@@ -5,7 +5,7 @@ import apiEndpoints from "../../apiEndpoints.js";
 import { toast } from "sonner";
 import TeamCard from "../../components/cards/teamCard.jsx"
 import SearchBlock from "../../components/containers/searchBlock.jsx";
-import NoItems from "../../components/NoItems";
+import NoItems from "../../components/NoItems.js";
 import Filters from "../../components/containers/filtersBlock.jsx";
 import { RiArrowLeftWideLine } from "react-icons/ri";
 

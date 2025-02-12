@@ -14,9 +14,9 @@ import SignUpPage from "../pages/registration/signUpPage";
 import SignInPage from "../pages/registration/logInPage";
 import MainPage from "../pages/mainPage";
 import ForgotPasswordPage from "../pages/registration/forgotPasswordPage";
-import SportPage from "../pages/leagus/sportPage";
-import LeaguePage from "../pages/leagus/leaguePage";
-import TeamPage from "../pages/leagus/teamPage";
+import SportPage from "../pages/sport items/sportPage";
+import LeaguePage from "../pages/sport items/leaguePage";
+import TeamPage from "../pages/sport items/teamPage";
 import GamesPage from "../pages/games/gamesPage";
 import FAQpage from "../pages/misc/FAQ";
 
