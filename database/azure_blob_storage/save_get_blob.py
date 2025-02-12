@@ -55,7 +55,7 @@ SUSPICIOUS_PATTERNS = [
     r"\.exe|\.bat|\.sh|\.py"  # Небезпечні розширення
 ]
 
-
+subscription_manager = UserSubscriptionManager()
 
 def blob_autosave_api(json_data, api: Dict[str, str]) -> None:
     selected_sport = api["name"]
@@ -301,7 +301,7 @@ def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
                         )
                         session.add(team_index)
 
-                        UserSubscriptionManager.add_subscribers_to_temp_table(team_index.team_index_id)
+                        subscription_manager.try_add_subscribers_to_temp_table(team_index.team_index_id)
             else:
                 team_index_id = team_dict.get(team_name, None)
                 if team_index_id is not None:
@@ -312,7 +312,7 @@ def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
                     )
                     session.add(team_index)
 
-                    UserSubscriptionManager.add_subscribers_to_temp_table(team_index.team_index_id)
+                    subscription_manager.try_add_subscribers_to_temp_table(team_index.team_index_id)
 
         session.commit()
     except Exception as e:

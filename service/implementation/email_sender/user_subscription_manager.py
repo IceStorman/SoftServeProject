@@ -44,8 +44,8 @@ class UserSubscriptionManager(metaclass=UserSubscriptionManagerMeta):
 
         event.listen(TempSubscribersData, "after_insert", self.__on_subscribers_inserted)
 
-    def add_subscribers_to_temp_table(self, team_index):
-        self.__user_subscription_dal.add_subscribers_data(team_index)
+    def try_add_subscribers_to_temp_table(self, team_index):
+        self.__user_subscription_dal.try_add_subscribers_data(team_index)
 
     def __on_subscribers_inserted(self, mapper, connection, target):
         self.__try_send_email_to_users()
@@ -95,4 +95,4 @@ class UserSubscriptionManager(metaclass=UserSubscriptionManagerMeta):
         return creds
 
 manager = UserSubscriptionManager()
-manager.add_subscribers_to_temp_table(1)
+manager.try_add_subscribers_to_temp_table(1)

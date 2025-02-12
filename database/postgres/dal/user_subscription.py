@@ -8,7 +8,7 @@ class UserSubscriptionDAL:
     def __init__(self, db_session: Session):
         self.db_session = db_session
 
-    def add_subscribers_data(self, preference_index):
+    def try_add_subscribers_data(self, preference_index):
         users = self.__get_users_by_preference_index(preference_index)
 
         new_rows = [
