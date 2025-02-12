@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from database.models.token_blocklist import TokenBlocklist
+from database.models.token_Blocklist import Token_Blocklist
 from database.postgres.dto.jwt import jwtDTO
 from sqlalchemy.exc import SQLAlchemyError
 from typing import Optional, List
@@ -19,7 +19,7 @@ class jwtDAL:
                 jwt_entry.expires_at = jwt_dto.expires_at
                 jwt_entry.updated_at = datetime.utcnow()
             else:
-                jwt_entry = TokenBlocklist(
+                jwt_entry = Token_Blocklist(
                     user_id=jwt_dto.user_id,
                     jti=jwt_dto.jti,
                     token_type=jwt_dto.token_type,
@@ -41,11 +41,11 @@ class jwtDAL:
         for jwt in jwt_dto_list:
             self.save_jwt(jwt)
 
-    def get_jwt_by_id(self, jwt_id: int) -> Optional[TokenBlocklist]:
-        return self.db_session.query(TokenBlocklist).filter(TokenBlocklist.id == jwt_id).first()
+    def get_jwt_by_id(self, jwt_id: int) -> Optional[Token_Blocklist]:
+        return self.db_session.query(Token_Blocklist).filter(Token_Blocklist.id == jwt_id).first()
 
-    def get_jwt_by_jti(self, jti: str) -> Optional[TokenBlocklist]:
-        return self.db_session.query(TokenBlocklist).filter(TokenBlocklist.jti == jti).first()
+    def get_jwt_by_jti(self, jti: str) -> Optional[Token_Blocklist]:
+        return self.db_session.query(Token_Blocklist).filter(Token_Blocklist.jti == jti).first()
 
     def revoke_jwt(self, jti: str) -> bool:
  
@@ -78,8 +78,8 @@ class jwtDAL:
 
     def delete_expired_tokens(self) -> int:
         try:
-            expired_count = self.db_session.query(TokenBlocklist).filter(
-                TokenBlocklist.expires_at < datetime.datetime.utcnow()
+            expired_count = self.db_session.query(Token_Blocklist).filter(
+                Token_Blocklist.expires_at < datetime.datetime.utcnow()
             ).delete(synchronize_session=False)
             self.db_session.commit()
             return expired_count
