@@ -20,5 +20,5 @@ class LeagueFilterManager(BaseFilterManager, CommonFilters):
         return super().apply_country_filter(query, League, value)
 
     @staticmethod
-    def apply_name_filter(cls, query: Query, value: str) -> Query:
+    def apply_name_filter(query: Query, value: str) -> Query:
         return query.filter(League.name.ilike(f"%{value}%"))

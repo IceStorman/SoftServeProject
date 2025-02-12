@@ -64,6 +64,7 @@ class SearchDTO(BaseDTO):
     sport = fields.Str(required=False, missing=None)
     country_id = fields.Int(required=False, missing=None)
     letter = fields.Str(required=False, missing="")
+    name = fields.Str(required=False, missing=None)
     page = fields.Int(required=False, missing=0)
     per_page = fields.Int(required=False, missing=0)
 

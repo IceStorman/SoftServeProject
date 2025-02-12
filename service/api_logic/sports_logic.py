@@ -3,7 +3,6 @@ from database.models import Sport, League, Country
 from dto.api_output import SportsLeagueOutput, SportsOutput
 from dto.pagination import Pagination
 from exept.handle_exeptions import handle_exceptions
-from service.api_logic.scripts import apply_filters
 from database.session import SessionLocal
 from logger.logger import Logger
 from service.api_logic.filter_manager.filter_manager_factory import FilterManagerFactory
