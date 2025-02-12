@@ -20,22 +20,6 @@ def handle_db_timeout_error(e):
     response = {"error in data base": str(e)}
     return response
 
-
-@games_app.route('/today', methods=['POST'])
-@cache.cached(CACHE_TIMEOUT_SECONDS)
-@logger.log_function_call()
-def get_stream_info_endpoint():
-    try:
-        data = request.get_json()
-        dto = GamesDTO().load(data)
-        pagination = Pagination(**data)
-        games = get_games_today(dto, pagination)
-        return games
-    except CustomQSportException as e:
-        logger.error(f"Error in POST /: {str(e)}")
-        get_custom_error_response(e)
-
-
 @games_app.route('/specific', methods=['POST'])
 @cache.cached(CACHE_TIMEOUT_SECONDS, key_prefix=post_cache_key)
 @logger.log_function_call()

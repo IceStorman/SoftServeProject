@@ -46,7 +46,6 @@ class BaseDTO(Schema):
                 raise ValidationError("Invalid password format", field_name="password_hash")
         return data
 
-
 class TeamsLeagueDTO(BaseDTO):
     teams__sport_id = fields.Int(required=False, missing=None)
     leagues__api_id = fields.Int(required=False, missing=None)
@@ -62,25 +61,29 @@ class TeamsStatisticsOrPlayersDTO(BaseDTO):
 
 
 class SearchDTO(BaseDTO):
-    leagues__sport_id = fields.Int(required=False, missing=None)
-    countries__country_id = fields.Int(required=False, missing=None)
+    sport = fields.Str(required=False, missing=None)
+    country_id = fields.Int(required=False, missing=None)
     letter = fields.Str(required=False, missing="")
     page = fields.Int(required=False, missing=0)
     per_page = fields.Int(required=False, missing=0)
 
 
 class SportsLeagueDTO(BaseDTO):
-    leagues__sport_id = fields.Int(required=False, missing=None)
+    sport = fields.Str(required=False, missing=None)
     page = fields.Int(required=False, missing=0)
     per_page = fields.Int(required=False, missing=0)
 
 
 class GamesDTO(BaseDTO):
-    games__sport_id = fields.Int(required=False, missing=None)
-    games__league_id = fields.Int(required=False, missing=None)
-    games__country_id = fields.Int(required=False, missing=None)
+    sport = fields.Str(required=False, missing=None)
+    league_id = fields.Int(required=False, missing=None)
+    country_id = fields.Int(required=False, missing=None)
     status = fields.Str(required=False, missing=None)
-    games__date = fields.Date(required=False, missing=datetime.now().strftime('%Y-%m-%d'))
+    date = fields.Date(required=False, missing=datetime.now().strftime('%Y-%m-%d'))
+    date_from = fields.Date(required=False, allow_none=True)
+    date_to = fields.Date(required=False, allow_none=True)
+    time_to = fields.Time(required=False, allow_none=True)
+    time_from = fields.Time(required=False, allow_none=True)
     page = fields.Int(required=False, missing=0)
     per_page = fields.Int(required=False, missing=0)
 

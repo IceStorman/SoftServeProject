@@ -3,7 +3,6 @@ from dto.api_input import GamesDTO
 from database.models import Games, Country, TeamIndex, League, Sport
 from dto.pagination import Pagination
 from exept.handle_exeptions import handle_exceptions
-from service.api_logic.scripts import apply_filters
 from sqlalchemy.orm import aliased
 from database.session import SessionLocal
 from logger.logger import Logger

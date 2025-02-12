@@ -4,8 +4,10 @@ class BaseFilterManager:
     FILTERS ={}
 
     @classmethod
-    def apply_filters(cls, query: Query, filters: dict, session) -> Query:
-        for filter_name, filter_value in filters.items():
+    def apply_filters(cls, query: Query, filters, session) -> Query:
+        filters_dict = filters._asdict()
+
+        for filter_name, filter_value in filters_dict.items():
             if filter_name in cls.FILTERS and filter_value:
                 filter_method = getattr(cls, cls.FILTERS[filter_name])
                 if filter_name == "sport":

@@ -1,6 +1,6 @@
 from flask import Blueprint, request
 from exept.handle_exeptions import get_custom_error_response
-from service.api_logic.sports_logic import get_all_sports, get_all_leagues_by_sport, search_leagues
+from service.api_logic.sports_logic import get_all_sports, search_leagues
 from api.routes.scripts import post_cache_key
 from api.routes.cache import cache
 from exept.exeptions import DatabaseConnectionError, CustomQSportException
@@ -29,21 +29,6 @@ def get_all_sports_endpoint():
         return all_sports
     except CustomQSportException as e:
         logger.error(f"Error in GET /: {str(e)}")
-        get_custom_error_response(e)
-
-
-@sports_app.route('/league', methods=['POST'])
-@cache.cached(timeout=60*60, key_prefix=post_cache_key)
-@logger.log_function_call()
-def get_all_leagues_endpoint():
-    try:
-        data = request.get_json()
-        dto = SportsLeagueDTO().load(data)
-        pagintion = Pagination(**data)
-        league_sports = get_all_leagues_by_sport(dto, pagintion)
-        return league_sports
-    except CustomQSportException as e:
-        logger.error(f"Error in POST /: {str(e)}")
         get_custom_error_response(e)
 
 

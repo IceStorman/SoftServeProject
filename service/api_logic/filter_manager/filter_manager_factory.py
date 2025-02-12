@@ -1,3 +1,5 @@
+from service.api_logic.filter_manager.games_filter_manager import GamesFilterManager
+from service.api_logic.filter_manager.league_filter_manager import LeagueFilterManager
 from service.api_logic.filter_manager.news_filter_manager import NewsFilterManager
 from sqlalchemy.orm import Query
 
@@ -5,10 +7,12 @@ class FilterManagerFactory:
 
     MANAGERS = {
         "News": NewsFilterManager,
+        "Games": GamesFilterManager,
+        "League": LeagueFilterManager,
     }
 
     @classmethod
-    def apply_filters(cls, model, query: Query, filters: dict, session) -> Query:
+    def apply_filters(cls, model, query: Query, filters, session) -> Query:
 
         table_name = model.__tablename__
 

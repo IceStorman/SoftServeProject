@@ -82,14 +82,9 @@ def specific_article(service: NewsService = Provide[Container.news_service]):
 def get_filtered_news_endpoint(service: NewsService = Provide[Container.news_service]):
     try:
         filters = request.get_json() or {}
-
         dto = NewsDTO().load(filters)
-        dto_dict = NewsDTO().dump(dto)
-
-        pagination_dict = {key: value for key, value in dto_dict.items() if key in Pagination.__annotations__}
-        pagination = Pagination(**pagination_dict)
-
-        filtered_news = service.get_filtered_news(dto_dict, pagination)
+        pagination = Pagination(**filters)
+        filtered_news = service.get_filtered_news(dto, pagination)
         return filtered_news
     except CustomQSportException as e:
         logger.error(f"Error in POST /filtered: {str(e)}")
