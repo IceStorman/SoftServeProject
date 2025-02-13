@@ -29,7 +29,6 @@ const GridContainer = ({
         { value: "long", label: "This is a very long option" }
     ];
 
-
     return (
         <div className="grid-container">
             <div className="header">

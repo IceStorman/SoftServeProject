@@ -27,7 +27,6 @@ function MainPage() {
         newsRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
-    //sports
     useEffect(() => {
         axios.get(`${apiEndpoints.url}${apiEndpoints.sports.getAll}`)
             .then(res => {
@@ -39,11 +38,8 @@ function MainPage() {
             });
     }, []);
 
-    //games
-    // const [showcaseGames, setShowcaseGames] = useState([]);
     const [currentGames, setCurrentGames] = useState([]);
     const [slidesCount, setSlidesCount] = useState(0);
-    //const [paginationKey, setPaginationKey] = useState(0);
     const [currentSlide, setCurrentSlide] = useState(0);
     const [gamesPerSlide, setGamesPerSlide] = useState(6);
 
@@ -79,8 +75,6 @@ function MainPage() {
             toast.error(`Troubles With games Loading: ${error}`);
         }
     };
-
-
 
     const testNews = [
         {
@@ -164,9 +158,6 @@ function MainPage() {
             content: 'Forced to believе that the Heavens strike back Lined up to die in despair One-by-one torn to dust and all sworn to the black Signed up and ready to swear God given Sermon of swords bring sancted fire Sermon of swords, wake up Messiah Sermon of swords, we raise the pyre All we can set the night on fire'
         }
     ]
-
-
-    const newsPlaceHolder = testNews.slice(2, 7)
 
     const game_element_height = 85
     const game_element_width = 400
@@ -260,10 +251,7 @@ function MainPage() {
         },]
     }
 
-
-    //news pagination
     const [gridSize, setGridSize] = useState(cardSizes.large);
-
     const [currentNews, setCurrentNews] = useState([]);
     const [pageCount, setPageCount] = useState(0);
     const [paginationKey, setPaginationKey] = useState(0);
@@ -315,9 +303,7 @@ function MainPage() {
     const element_width = 350
     return (
         <>
-            {/*first screen*/}
             <div className="showcase">
-
                 <section>
                     <p className="block-title">Latest news</p>
                     <div className="news-column">
@@ -365,8 +351,6 @@ function MainPage() {
                     </div>
                 </section>
             </div>
-
-            {/*second screen +*/}
 
             <GridContainer
                 title="Recommendations"
@@ -421,12 +405,10 @@ function MainPage() {
                 <div className="games-slider-outer">
                     <GameSlider testGames1={testGames1}></GameSlider>
                 </div>
-
             </section>
 
             <div ref={newsRef}>
                 <GridContainer
-
                     title="News"
                     cardSizes={cardSizes}
                     gridSize={gridSize}
@@ -447,7 +429,6 @@ function MainPage() {
                         />
                     ))}>
                 </GridContainer ></div>
-
         </>
     );
 }

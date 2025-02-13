@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { NavLink, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
-
 import apiEndpoints from "../../apiEndpoints";
-
 import NoItems from "../../components/NoItems";
 
 function SportPage() {
@@ -30,7 +28,6 @@ function SportPage() {
             {
                 !(sports.length === 0) ?
                     <section className={"sportPage"}>
-
                         <h1>Select sport</h1>
                         <div className={`sport-selection-grid overflow-${overflow}`}>
                             {

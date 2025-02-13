@@ -35,21 +35,16 @@ function App() {
 
     return (
         <>
-
             <Router
                 future={{
                     v7_startTransition: true,
                     v7_relativeSplatPath: true,
-                }}
-            >
-
-
+                }}>
 
                 <Header />
                 <NavBar />
 
                 <Routes>
-
                     <Route exact path="/" element={<MainPage />} />
 
                     <Route path="/sign-in" element={<SignInPage />} />
@@ -68,8 +63,6 @@ function App() {
 
                     <Route path="/stream/:gameId" element={<InsideStreamPage />} />
 
-                    <Route path="/streamq" element={<InsideStreamPage />} />
-
                     <Route path="/news/:articleId" element={<InsideNewsPage />} />
 
                     <Route path="/not-existing" element={<NotExistingPage />} />
@@ -79,15 +72,11 @@ function App() {
                     <Route exact path="/FAQ" element={<FAQpage />} />
 
                     <Route exact path="/AboutUs" element={<AboutUsPage />} />
-
-                    <Route exact path="/SearchPageTamplate" element={<AboutUsPage/>}/>
-
                 </Routes>
 
                 {<Footer />}
 
             </Router>
-
         </>
     );
 }

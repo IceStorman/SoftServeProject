@@ -41,7 +41,7 @@ function TeamPage() {
         let page = Math.floor(passedPosts / teamsPerPage);
         setCurrentPage(page);
         getTeams(page);
-    }, [teamsPerPage]); 
+    }, [teamsPerPage]);
 
     const handleGridSizeChange = (size) => {
         console.log('size: ', size);
@@ -53,7 +53,6 @@ function TeamPage() {
             setGridSize(cardSizes.large);
         }
     };
-
 
     useEffect(() => {
         getTeams(0);
@@ -75,6 +74,7 @@ function TeamPage() {
             handleSearchClick();
         }
     };
+
     const getTeams = async (page) => {
 
         setPrevInputValue(inputValue);
@@ -87,7 +87,6 @@ function TeamPage() {
                 {
                     teams__sport_id: sportId,
                     leagues__league_id: leagueId,
-                    //  letter: inputValue,
                     page: page + 1,
                     per_page: teamsPerPage
                 },
@@ -132,28 +131,26 @@ function TeamPage() {
             </div>
             <Filters></Filters>
 
-{      !(currentTeams.length===0)?
-      <SearchBlock
-                cardSizes={cardSizes}
-                gridSize={gridSize}
-                postsPerPage={teamsPerPage}
-                onGridSizeChange={handleGridSizeChange}
-                pageCount={pageCount}
-                currentPage={currentPage}
-                onPageChange={handlePageClick}
-                loading={loading}
-                paginationKey={paginationKey}
-                children={currentTeams.map((item) => (
-
-                    <TeamCard
-                        leagueName={item.name}
-                        img={item.logo}
-                        sport={item.sport}
-                        id={item.id}
-                    />
-
-                ))}>
-            </SearchBlock>:<NoItems text='No teams were found' />}
+            {!(currentTeams.length === 0) ?
+                <SearchBlock
+                    cardSizes={cardSizes}
+                    gridSize={gridSize}
+                    postsPerPage={teamsPerPage}
+                    onGridSizeChange={handleGridSizeChange}
+                    pageCount={pageCount}
+                    currentPage={currentPage}
+                    onPageChange={handlePageClick}
+                    loading={loading}
+                    paginationKey={paginationKey}
+                    children={currentTeams.map((item) => (
+                        <TeamCard
+                            leagueName={item.name}
+                            img={item.logo}
+                            sport={item.sport}
+                            id={item.id}
+                        />
+                    ))}>
+                </SearchBlock> : <NoItems text='No teams were found' />}
         </div>
     );
 }

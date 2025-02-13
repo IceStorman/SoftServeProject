@@ -1,8 +1,4 @@
-import React, { Children, useState } from "react";
-
-import NewsCard from "../cards/newsCard"
-import NoItems from "../NoItems";
-
+import React from "react";
 
 function Column({ children }) {
     return (
@@ -13,7 +9,6 @@ function Column({ children }) {
                     {index < array.length - 1 && <hr />}
                 </div>
             ))}
-            
         </div>
     );
 }

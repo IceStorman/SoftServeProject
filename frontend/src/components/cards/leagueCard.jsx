@@ -5,7 +5,6 @@ function LeagueCard({ leagueName, img, id, width, height, sportId }) {
     const isVertical = height >= width;
 
     return (
-   
         <Link to={`league/${leagueName}`} state={{ leagueId: id, sportId:sportId}}>
         <div
             className={`league-card ${isVertical ? "vertical" : "horizontal"}`}

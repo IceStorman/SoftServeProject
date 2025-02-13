@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { RiFunctionFill, RiGridFill, RiListCheck2 } from "react-icons/ri";
-import { GoSortAsc, GoSortDesc } from "react-icons/go";
 import { SlArrowDown, SlArrowUp } from "react-icons/sl";
 import ReactPaginate from "react-paginate";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
@@ -29,7 +27,6 @@ const GamesContainer = ({
                 </button>
                 <h1>{title}</h1>
             </div>
-
 
             {!isCollapsed && (
                 <div className='games'>

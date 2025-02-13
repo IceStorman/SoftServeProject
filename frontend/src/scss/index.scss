@@ -30,7 +30,6 @@ $main-text-clr: #000;
 @import "pagination";
 
 
-
 @font-face {
   font-family: 'UnifrakturMaguntia';
   src: url('./fonts/UnifrakturMaguntia-Regular.ttf') format('woff2');
@@ -74,8 +73,6 @@ body {
   justify-self: center;
   align-self: center;
   margin: 2rem 0;
-  //align-items: start;
-  //  background-color: $bg-white;
   background-color: white;
   box-shadow: 0 4px 10px $main-shadow;
   width: fit-content;
@@ -83,10 +80,8 @@ body {
   padding-right: 1rem;
 
   .block-title {
-    // margin-left: 1.7rem;
     font-size: 2.2rem;
     color: $compl-clr;
-    //background-color: $bg-dark;
     background-color: $bg-white;
     width: fit-content;
     height: fit-content;
@@ -109,14 +104,15 @@ body {
     word-break: keep-all;
     height: 160px;
     text-align: center;
-    h1{
+
+    h1 {
       margin: 1rem;
     }
-    a{
+
+    a {
       text-decoration: underline;
     }
   }
-
 }
 
 hr {
@@ -125,10 +121,7 @@ hr {
   border: none;
 }
 
-
-
 button {
-
   &.filled {
     background: black;
     border: none;
@@ -155,7 +148,6 @@ button {
     margin-right: 1rem;
     padding: 0.3rem 0.5rem;
     height: fit-content;
-
     align-self: center;
     justify-self: center;
     color: $bg-white;
@@ -168,7 +160,6 @@ button {
     margin-right: 1rem;
     padding: 0.3rem 0.2rem;
     height: fit-content;
-
     align-self: center;
     justify-self: center;
 
@@ -189,7 +180,6 @@ button {
     color: #000000;
     display: flex;
     font-size: 1.2rem;
-    //font-weight: 700;
     justify-content: center;
     line-height: 1.75rem;
     padding: .5rem 1.4rem;
@@ -221,17 +211,12 @@ button {
     bottom: 2px;
     left: -2px;
   }
-
-
-
 }
 
 .input-field {
   width: fit-content;
   padding: 0.5rem 1rem;
-  // margin: 8px 0;
   border: 2px solid black;
-  // border-radius: 8px;
   font-size: 16px;
   outline: none;
   transition: border-color 0.3s ease-in-out;

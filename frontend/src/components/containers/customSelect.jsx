@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from "react";
-import { FaChevronDown } from "react-icons/fa";
 import { SlArrowDown } from "react-icons/sl";
 
 const CustomSelect = ({ options, maxWidth = 300 }) => {
@@ -24,6 +23,7 @@ const CustomSelect = ({ options, maxWidth = 300 }) => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
+
     return (
         <div className="custom-dropdown">
             <div className="dropdown-header" onClick={() => setIsOpen(!isOpen)}>

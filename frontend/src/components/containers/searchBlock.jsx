@@ -1,11 +1,8 @@
 import React, { useState } from "react";
 import { RiFunctionFill, RiGridFill, RiListCheck2 } from "react-icons/ri";
-import { GoSortAsc, GoSortDesc } from "react-icons/go";
 import ReactPaginate from "react-paginate";
-import { MdSearch } from "react-icons/md";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
 import { TfiLayoutLineSolid } from "react-icons/tfi";
-
 
 
 const SearchBlock = ({

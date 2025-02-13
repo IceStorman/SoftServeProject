@@ -45,19 +45,10 @@ header {
     }
 }
 
-.loginbtn {
-    position: absolute;
-    right: 2rem;
-    background-color: lightgray;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-}
-
 .navbar-outer {
     background-color: $bg-white;
     box-shadow: 0 4px 30px $main-shadow;
     hr {
-      //  margin: 0 2rem;
         height: 2px;
         background-color: black;
         border: none;
@@ -67,7 +58,6 @@ header {
         overflow: visible;
         display: unset;
         background-color: red;
-
     }
 
     .navbar {
@@ -76,14 +66,12 @@ header {
         z-index: 100;
         height: fit-content;
         background-color: $main-clr;
-     //   margin: 0.3rem 0;
         display: flex;
         font-size: 1.2rem;
         align-items: center;
         overflow: visible;
 
         .nav-link {
-          //  margin-left: 12rem;
             text-decoration: none;
             color: black;
             padding: 0.5rem 2rem;

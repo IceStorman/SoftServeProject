@@ -25,8 +25,6 @@
         }
 
         h2 {
-            //  margin: 1rem 0;
-            //font-family: "UnifrakturMaguntia";
             font-size: 2rem;
             font-family: "PirataOne";
         }
@@ -44,7 +42,6 @@
             margin-top: .6rem;
             margin-bottom: 1rem;
         }
-
     }
 
     a {
@@ -70,20 +67,15 @@
         font-size: 1.2rem;
         display: inline-flex;
 
-
         &.arrow {
             margin-right: .5rem;
         }
     }
 
-
     input {
         margin-left: .5rem;
         width: fit-content;
-        //   padding: 0.2rem 0.6rem;
-        // margin: 8px 0;
         border: 1px solid black;
-        // border-radius: 8px;
         font-size: 1.1rem;
         outline: none;
         transition: border-color 0.3s ease-in-out;

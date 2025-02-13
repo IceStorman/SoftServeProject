@@ -8,7 +8,6 @@ function GameCard({ nameHome, nameAway, logoHome, logoAway, scoreHome, scoreAway
     const isVertical = (width / height < 4);
     const isBig = true;
 
-
     return (
         <NavLink to={`/stream/${id}`} className="nav-link" activeClassName="active">
             <div

@@ -61,17 +61,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            button {
 
+            button {
                 font-family: "GrenzeGotisch";
                 background-color: $main-clr;
                 border: 0 solid #E5E7EB;
                 box-sizing: border-box;
                 color: #000000;
-              //  display: flex;
-               // font-weight: 700;
                 justify-content: center;
-               // line-height: 1.75rem;
                 padding: .75rem 1.75rem;
                 position: relative;
                 text-align: center;
@@ -83,7 +80,6 @@
                 user-select: none;
                 -webkit-user-select: none;
                 touch-action: manipulation;
-        
                 font-size: 1.3rem;
                 grid-column: span 2;
                 width: 100%;
@@ -91,6 +87,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
+
                 &:after {
                     content: '';
                     position: absolute;
@@ -100,12 +97,12 @@
                     width: calc(100% - 1px);
                     height: calc(100% - 1px);
                 }
-        
+
                 &:hover::after {
                     bottom: 2px;
                     left: -4px;
                 }
-        
+
                 &:active {
                     background-color: $main-clr-shadow;
                 }

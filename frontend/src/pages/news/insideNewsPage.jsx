@@ -1,12 +1,9 @@
 import React from "react";
 import img1 from '../imgs/1.jpg'
 import { FaRegHeart } from "react-icons/fa";
-import { FaHeart } from "react-icons/fa";
 
 
 export default function InsideNewsPage() {
-
-
     const title = 'Metallum Nostrum'
     const sport = 'Football'
     const date = '2025-01-23'
@@ -43,7 +40,6 @@ export default function InsideNewsPage() {
                 <hr />
                
             </section>
-
         </section>
     );
 }

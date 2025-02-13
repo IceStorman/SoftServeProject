@@ -1,9 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
-import ReactPaginate from 'react-paginate';
-import { toast } from "sonner";
-
-import NoItems from "../NoItems";
 import GameCard from "../cards/gameCard";
 import { useRef, useEffect } from "react";
 

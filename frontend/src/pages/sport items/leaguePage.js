@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import ReactPaginate from "react-paginate";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import apiEndpoints from "../../apiEndpoints.js";
@@ -7,7 +6,6 @@ import { toast } from "sonner";
 import SearchBlock from "../../components/containers/searchBlock.jsx";
 import LeagueCard from "../../components/cards/leagueCard"
 import NoItems from "../../components/NoItems";
-import { NavLink } from "react-router-dom";
 import Filters from "../../components/containers/filtersBlock.jsx";
 import { RiArrowLeftWideLine } from "react-icons/ri";
 
@@ -51,12 +49,10 @@ function LeaguePage() {
         }
     };
 
-
     const [loading, setLoading] = useState(false);
     const [inputValue, setInputValue] = useState('');
     const [prevInputValue, setPrevInputValue] = useState('');
     const [searchClicked, setSearchClicked] = useState(false);
-
 
     const handlePageClick = (event) => {
         const selectedPage = event.selected;
@@ -71,7 +67,6 @@ function LeaguePage() {
 
     const getLeagues = async (page) => {
 
-        //  setPrevCountryFilter(countryFilter);
         setPrevInputValue(inputValue);
 
         try {
@@ -81,8 +76,6 @@ function LeaguePage() {
                 `${apiEndpoints.url}${apiEndpoints.sports.getLeagueSearch}`,
                 {
                     leagues__sport_id: sportId,
-                    // countries__country_id: parseInt(countryFilter),
-                    // letter: inputValue,
                     page: page + 1,
                     per_page: leaguesPerPage
                 },
@@ -117,9 +110,6 @@ function LeaguePage() {
             )
     }, [loading]);
 
-
-
-
     return (
 
         <div className="leagues-page">
@@ -141,7 +131,6 @@ function LeaguePage() {
                     loading={loading}
                     paginationKey={paginationKey}
                     children={currentLeagues.map((item) => (
-
                         <LeagueCard
                             leagueName={item.name}
                             img={item.logo}
@@ -149,7 +138,6 @@ function LeaguePage() {
                             id={item.id}
                             sportId={sportId}
                         />
-
                     ))}
                 >
                 </SearchBlock> : <NoItems text='No leagues were found' />}

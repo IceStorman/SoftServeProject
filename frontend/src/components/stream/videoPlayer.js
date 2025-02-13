@@ -1,14 +1,12 @@
 import React, { useState } from "react";
 
+
 const VideoPlayer = ({game, youtubeLinks = [], otherLinks = [], matchInfo = {} }) => {
     const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
 
     const handleVideoSwitch = (index) => {
         setCurrentVideoIndex(index);
     };
-
-
-
 
     return (
         <div className="ramka">
@@ -50,14 +48,12 @@ const VideoPlayer = ({game, youtubeLinks = [], otherLinks = [], matchInfo = {} }
                 <div className="partnerLinks">
                     <h2>Or watch on our partners:</h2>
                     <div className="linksContainer">
-
                         {otherLinks.map((link, index) => (
                             <a href={link.url} target="_blank" rel="noopener noreferrer">
                                 <div className="partnerLink">
                                     {link.name || `Partner ${index + 1}`}
                                 </div>
                             </a>
-
                         ))}
                     </div>
                 </div>

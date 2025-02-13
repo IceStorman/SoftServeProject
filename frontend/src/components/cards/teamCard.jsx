@@ -31,7 +31,6 @@ function TeamCard({ leagueName: teamName, img, id, width, height, sportId }) {
                     <h2>hello</h2>
                     <p>how are u?</p>
                 </div>
-           
         </div>
     );
 }
