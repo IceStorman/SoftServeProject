@@ -115,3 +115,4 @@ def login_google():
     except CustomQSportException as e:
         logger.error(f"Error in GET /login/google: {str(e)}")
         return get_custom_error_response(e)
+
