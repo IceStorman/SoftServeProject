@@ -5,8 +5,8 @@ import { toast } from "sonner";
 import NoItems from "../components/NoItems";
 import { NavLink } from "react-router-dom";
 import NewsCard from "../components/cards/newsCard.jsx";
-import NewsBox from "../components/containers/newsBox.jsx";
-import NewsColumn from "../components/containers/newsColumn.jsx";
+import NewsShowcase from "../components/containers/newsShowcase.jsx";
+import Column from "../components/containers/column.jsx";
 import GameSlider from "../components/containers/gameSlider.jsx";
 import GameCard from "../components/cards/gameCard.jsx"
 import img1 from "./imgs/1.jpg"
@@ -15,13 +15,9 @@ import img3 from "./imgs/3.jpg"
 import img4 from "./imgs/4.jpg"
 import img5 from "./imgs/5.jpg"
 import GridContainer from "../components/containers/gridBlock.jsx";
-import GamesColumn from "../components/containers/gamesColumn.jsx";
 
 function MainPage() {
     const [loginStatus, setLoginStatus] = useState(false)
-
-
-
     const [loading, setLoading] = useState(false)
     const [sports, setSport] = useState([]);
 
@@ -172,8 +168,8 @@ function MainPage() {
 
     const newsPlaceHolder = testNews.slice(2, 7)
 
-    const gameelement_h = 85
-    const gameelement_w = 400
+    const game_element_height = 85
+    const game_element_width = 400
 
     const cardSizes = {
         large: { rows: 1, columns: 4, cardSize: { width: 320, height: 490 }, postsPerPage: 4 },
@@ -265,7 +261,6 @@ function MainPage() {
     }
 
 
-
     //news pagination
     const [gridSize, setGridSize] = useState(cardSizes.large);
 
@@ -280,7 +275,7 @@ function MainPage() {
         let page = Math.floor(passedPosts / postsPerPage);
         setCurrentPage(page);
         getNews(page);
-    }, [postsPerPage]);  
+    }, [postsPerPage]);
 
     const handleGridSizeChange = (size) => {
         console.log('size: ', size);
@@ -322,10 +317,11 @@ function MainPage() {
         <>
             {/*first screen*/}
             <div className="showcase">
-                <div className="news-showcase">
-                    <section>
-                        <p className="block-title">Latest news</p>
-                        <NewsColumn>
+
+                <section>
+                    <p className="block-title">Latest news</p>
+                    <div className="news-column">
+                        <Column>
                             {testNews.slice(0, 5).map((item, index) => (
                                 <NewsCard
                                     title={item.title}
@@ -337,34 +333,33 @@ function MainPage() {
                                     width={element_width}
                                     className="news-card"
                                 />))}
-                        </NewsColumn>
-                        <button onClick={scrollToTarget} className="boxed">more...</button>
-                    </section>
+                        </Column></div>
+                    <button onClick={scrollToTarget} className="boxed">more...</button>
+                </section>
 
-                    <NewsBox testNews={testNews} />
+                <NewsShowcase newsData={testNews.slice(0, 5)} />
 
-                </div>
                 <section>
                     <p className="block-title">Latest games</p>
-                    <GamesColumn>
-
-                        {
-                            showcaseGames.map((item, index) => (
-                                <GameCard
-                                    nameHome={item.home_team_name}
-                                    nameAway={item.away_team_name}
-                                    logoHome={item.home_team_logo}
-                                    logoAway={item.away_team_logo}
-                                    scoreHome={item.score_home_team}
-                                    scoreAway={item.score_away_team}
-                                    time={item.time}
-                                    height={gameelement_h}
-                                    width={gameelement_w}
-                                />
-                            ))
-                        }
-
-                    </GamesColumn>
+                    <div className="games-column">
+                        <Column>
+                            {
+                                showcaseGames.map((item, index) => (
+                                    <GameCard
+                                        nameHome={item.home_team_name}
+                                        nameAway={item.away_team_name}
+                                        logoHome={item.home_team_logo}
+                                        logoAway={item.away_team_logo}
+                                        scoreHome={item.score_home_team}
+                                        scoreAway={item.score_away_team}
+                                        time={item.time}
+                                        height={game_element_height }
+                                        width={game_element_width}
+                                    />
+                                ))
+                            }
+                        </Column>
+                    </div>
                     <div className="blue-placeholder">
                         <h1><NavLink to={"/sign-in"} className="nav-link" activeClassName="active">Sign In</NavLink> to track performance of your favorite teams</h1>
                     </div>
@@ -429,29 +424,29 @@ function MainPage() {
 
             </section>
 
-<div  ref={newsRef}>
-            <GridContainer
-               
-                title="News"
-                cardSizes={cardSizes}
-                gridSize={gridSize}
-                postsPerPage={postsPerPage}
-                onGridSizeChange={handleGridSizeChange}
-                pageCount={pageCount}
-                currentPage={currentPage}
-                onPageChange={handlePageClick}
-                loading={loading}
-                paginationKey={paginationKey}
-                children={currentNews.map((item) => (
-                    <NewsCard
-                        title={item.title}
-                        date={item.date}
-                        img={item.img}
-                        sport={item.sport}
-                        content={item.content}
-                    />
-                ))}>
-            </GridContainer ></div>
+            <div ref={newsRef}>
+                <GridContainer
+
+                    title="News"
+                    cardSizes={cardSizes}
+                    gridSize={gridSize}
+                    postsPerPage={postsPerPage}
+                    onGridSizeChange={handleGridSizeChange}
+                    pageCount={pageCount}
+                    currentPage={currentPage}
+                    onPageChange={handlePageClick}
+                    loading={loading}
+                    paginationKey={paginationKey}
+                    children={currentNews.map((item) => (
+                        <NewsCard
+                            title={item.title}
+                            date={item.date}
+                            img={item.img}
+                            sport={item.sport}
+                            content={item.content}
+                        />
+                    ))}>
+                </GridContainer ></div>
 
         </>
     );

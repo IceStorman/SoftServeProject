@@ -4,9 +4,9 @@ import NewsCard from "../cards/newsCard"
 import NoItems from "../NoItems";
 
 
-function NewsColumn({ children }) {
+function Column({ children }) {
     return (
-        <div className="newscolumn">
+        <div >
             {React.Children.toArray(children).map((child, index, array) => (
                 <div key={index}>
                     {child}
@@ -19,4 +19,4 @@ function NewsColumn({ children }) {
 }
 
 
-export default NewsColumn;
+export default Column;
