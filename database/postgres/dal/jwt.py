@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from database.models.token_Blocklist import Token_Blocklist
+from database.models.token_blocklist import Token_Blocklist
 from database.postgres.dto.jwt import jwtDTO
 from sqlalchemy.exc import SQLAlchemyError
 from typing import Optional, List
