@@ -1,135 +1,228 @@
-$main-background-color: #D3D9E9;
-$special-dark-purple: #31293F;
-$special-light-purple: #A6A9C8;
-$special-red: #B82426;
-$main-text-color: #D3D9E9;
-$purple-btn-color: #796EA8;
-$special-grey: #818398;
-$scroll-hover: #4a4453;
-$scroll-thumb: #60566f;
-$scroll-track: #f9eaff;
+$main-clr: #65c7ee;
+$main-clr-shadow: #46a5ca;
 
-@mixin scrollbar-style {
+$main-shadow: #436370cc;
 
-    &::-webkit-scrollbar {
-        width: 0.6rem;
-    }
+$secondary-clr: #5bbe64;
+$compl-clr: #911111;
 
-    &::-webkit-scrollbar-track {
-        background:  $scroll-track;
-    }
+$bg-main: #ecebeb;
+$bg-white: white;
+$bg-light: #f8f5f0;
+$bg-dark: #dbd3b2;
 
-    &::-webkit-scrollbar-thumb {
-        background: $scroll-thumb;
-        border-radius: 0.3rem;
-    }
+$main-text-clr: #000;
 
-    &::-webkit-scrollbar-thumb:hover {
-        background: $scroll-hover;
-    }
-}
-
-@mixin custom-form($customInput, $customLabel, $inputWidth, $borderAndTextColor, $backgroundColor, $labelColor){
-
-    #{$customInput} {
-        width: $inputWidth;
-        height: 2rem;
-        padding: 0 0.2rem;
-        border: 0.2rem solid $borderAndTextColor;
-        background-color: $backgroundColor;
-        color: $borderAndTextColor;
-        border-radius: 0.5rem;
-        outline: none;
-        font-size: 1rem;
-        font-weight: bold;
-    }
-
-    #{$customLabel} {
-        position: absolute;
-        pointer-events: none;
-        font-size: 1rem;
-        top: 20%;
-        left: 0.55rem;
-        color: $labelColor;
-        transition: all 0.1s linear;
-    }
-
-    #{$customInput}:focus ~ #{$customLabel},
-    #{$customInput}:not(:placeholder-shown) ~ #{$customLabel} {
-        top: -0.6rem;
-        left: 0.6rem;
-        font-size: 0.8rem;
-        background-color: $backgroundColor;
-        color: $borderAndTextColor;
-        padding: 0 0.3rem;
-        margin: 0;
-    }
-
-    #{$customInput}:hover ~ #{$customLabel},
-    #{$customInput}:focus ~ #{$customLabel} {
-        transform: scale(1.05);
-    }
-
-    #{$customInput}::-webkit-search-cancel-button {
-        -webkit-appearance: none;
-        appearance: none;
-    }
-}
 
 @import "header";
 @import "games";
 @import "news";
-@import "sportsBtn";
 @import "footer";
 @import "sportPage";
 @import "sign";
-@import "iconsBlock";
-@import "stream";
 @import "newsPage";
 @import "notExistingPage";
 @import "noItems";
 @import "loader";
-@import "searchSportPage";
 @import "leaguePage";
 @import "videoPlayer";
+@import "searchContainer";
+@import "pagination";
+
 
 @font-face {
-    font-family: 'RubikBubbles';
-    src: url('./fonts/RubikBubbles-Regular.ttf') format('woff2');
+  font-family: 'UnifrakturMaguntia';
+  src: url('./fonts/UnifrakturMaguntia-Regular.ttf') format('woff2');
 }
 
 @font-face {
-    font-family: 'Merriweather';
-    src: url('./fonts/Merriweather-Black.ttf') format('woff2');
+  font-family: 'PirataOne';
+  src: url('./fonts/PirataOne-Regular.ttf') format('woff2');
 }
 
-#root{
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+@font-face {
+  font-family: 'GrenzeGotisch';
+  src: url('./fonts/GrenzeGotisch-Regular.ttf') format('woff2');
 }
 
-*{
-    margin: 0;
-    padding: 0;
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+* {
+  margin: 0;
+  padding: 0;
 }
 
 body {
-    width: 100%;
-    font-family: "Merriweather";
-    background-color: $main-background-color;
-    @include scrollbar-style;
+  width: 100%;
+  font-family: "GrenzeGotisch";
+  background-color: $bg-main;
 }
 
-.hidden{
-    display: none;
+.hidden {
+  display: none;
 }
 
-.container{
-    display: flex;
-    flex-direction: row;
+.showcase {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  justify-self: center;
+  align-self: center;
+  margin: 2rem 0;
+  background-color: white;
+  box-shadow: 0 4px 10px $main-shadow;
+  width: fit-content;
+  padding-left: 2rem;
+  padding-right: 1rem;
+
+  .block-title {
+    font-size: 2.2rem;
+    color: $compl-clr;
+    background-color: $bg-white;
+    width: fit-content;
+    height: fit-content;
+    align-self: start;
+    padding: 0 5px;
+    font-family: 'PirataOne';
+  }
+
+  .blue-placeholder {
+    margin-top: 1rem;
+    width: 404px;
+    padding: 1rem 0;
+    align-content: center;
     justify-content: center;
-    gap: 3rem;
-    margin-bottom: 4vh;
+    align-self: center;
+    max-width: 400px;
+    background-color: $main-clr;
+    border: 2px solid $main-clr;
+    min-width: 25rem;
+    word-break: keep-all;
+    height: 160px;
+    text-align: center;
 
+    h1 {
+      margin: 1rem;
+    }
+
+    a {
+      text-decoration: underline;
+    }
+  }
+}
+
+hr {
+  height: 2px;
+  background-color: rgb(51, 51, 51);
+  border: none;
+}
+
+button {
+  &.filled {
+    background: black;
+    border: none;
+    border-radius: none;
+    position: absolute;
+    right: 2rem;
+    padding: 0.5rem 0.5rem;
+    transition: border-color 0.3s ease-in-out;
+
+    .nav-link {
+      color: $bg-white;
+      padding: 1rem;
+      font-size: 1.2rem;
+      font-family: "PirataOne";
+    }
+  }
+
+  &.filled:hover {
+    transform: rotate(-2deg);
+  }
+
+  &.text {
+    position: inherit;
+    margin-right: 1rem;
+    padding: 0.3rem 0.5rem;
+    height: fit-content;
+    align-self: center;
+    justify-self: center;
+    color: $bg-white;
+    font-family: "PirataOne";
+    margin: 0;
+  }
+
+  &.arrow {
+    position: inherit;
+    margin-right: 1rem;
+    padding: 0.3rem 0.2rem;
+    height: fit-content;
+    align-self: center;
+    justify-self: center;
+
+    .arrow {
+      color: $bg-white;
+      font-size: 2rem;
+      padding: 0rem 0.3rem;
+    }
+  }
+
+  &.boxed {
+    align-self: center;
+    justify-self: center;
+    margin-top: 1.5rem;
+    background-color: $main-clr;
+    border: 0 solid #E5E7EB;
+    box-sizing: border-box;
+    color: #000000;
+    display: flex;
+    font-size: 1.2rem;
+    justify-content: center;
+    line-height: 1.75rem;
+    padding: .5rem 1.4rem;
+    position: relative;
+    text-align: center;
+    text-decoration: none #000000 solid;
+    text-decoration-thickness: auto;
+    width: fit-content;
+    position: relative;
+    cursor: pointer;
+    transform: rotate(-2deg);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    font-family: "PirataOne";
+  }
+
+  &.boxed:after {
+    content: '';
+    position: absolute;
+    border: 1px solid #000000;
+    bottom: 4px;
+    left: -4px;
+    width: calc(100% - 1px);
+    height: calc(100% - 1px);
+  }
+
+  &.boxed:hover:after {
+    bottom: 2px;
+    left: -2px;
+  }
+}
+
+.input-field {
+  width: fit-content;
+  padding: 0.5rem 1rem;
+  border: 2px solid black;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s ease-in-out;
+  overflow: scroll;
+}
+
+.input-field:focus {
+  border-color: $main-clr-shadow;
 }
