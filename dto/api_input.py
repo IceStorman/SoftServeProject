@@ -1,12 +1,15 @@
 import re
 from collections import namedtuple
 from datetime import datetime
-from marshmallow import Schema, fields, pre_load, post_load, ValidationError
+from marshmallow import Schema, fields, pre_load, post_load, ValidationError, EXCLUDE, validates
 
 from exept.exeptions import IncorrectTypeOfPreferencesError
 
 
 class BaseDTO(Schema):
+    class Meta:
+        unknown = EXCLUDE
+
     @pre_load
     def check_min_value(self, data, **kwargs):
         for field in data:
@@ -18,6 +21,12 @@ class BaseDTO(Schema):
     def clean_letter(self, data, **kwargs):
         if 'letter' in data and data['letter']:
             data['letter'] = ' '.join(data['letter'].split()).lower()
+        return data
+
+    @pre_load
+    def to_lower(self, data, **kwargs):
+        if 'auth_provider' in data and data['auth_provider']:
+            data['auth_provider'] = data['auth_provider'].lower()
         return data
 
     @post_load
@@ -115,11 +124,6 @@ class NewPasswordDTO(BaseDTO):
     email = fields.Str(required=True)
 
 
-class InputUserLoginDTO(BaseDTO):
-    email_or_username = fields.Str(required=True)
-    password_hash = fields.Str(required=True)
-
-
 class UpdateUserPreferencesDTO(BaseDTO):
     preferences = fields.List(fields.Int, required=True)
     user_id = fields.Int(required=False, missing=None)
@@ -131,11 +135,20 @@ class GetUserPreferencesDTO(BaseDTO):
     type = fields.Str(required=False, missing=None)
 
 
+class InputUserByIdDTO(BaseDTO):
+    user_id = fields.Int(required=False, missing=None)
+
+
 class InputUserByGoogleDTO(BaseDTO):
     email = fields.Str(required=True)
     id = fields.Str(required=False, missing=None)
-    verified_email = fields.Bool(required=False, missing=None)
-    picture = fields.Str(required=False, missing=None)
+    auth_provider = fields.String(required=False, missing=None)
+
+
+class InputUserLogInDTO(BaseDTO):
+    email = fields.Str(required=False, missing=None)
+    email_or_username = fields.Str(required=False, missing=None)
+    password_hash = fields.Str(required=False, missing=None)
 
 
 class SportPreferenceDTO:
@@ -182,5 +195,3 @@ class PreferenceTypeDTO(Schema):
             return TeamPreferenceDTO()
         else:
             raise IncorrectTypeOfPreferencesError()
-
-
