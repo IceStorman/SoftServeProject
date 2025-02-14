@@ -26,7 +26,12 @@ class Container(containers.DeclarativeContainer):
     news_dal = providers.Factory(NewsDAL, session = db_session)
     sport_dal = providers.Factory(SportDAL, db_session=db_session)
 
-    user_service = providers.Factory(UserService, user_dal=user_dal, preferences_dal=preferences_dal)
+    user_service = providers.Factory(
+        UserService,
+        user_dal=user_dal,
+        preferences_dal=preferences_dal,
+        sport_dal=sport_dal,
+    )
 
     news_service = providers.Factory(
         NewsService,

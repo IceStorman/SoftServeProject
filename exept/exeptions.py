@@ -93,14 +93,6 @@ class IncorrectPreferencesError(CustomQSportException):
         super().__init__(message)
 
 
-class NotUserIdOrPreferencesError(CustomQSportException):
-    status_code = 401
-
-    def __init__(self):
-        message = f"User ID or preferences are not correct"
-        super().__init__(message)
-
-
 class IncorrectTypeOfPreferencesError(CustomQSportException):
     status_code = 400
 

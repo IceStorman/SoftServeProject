@@ -9,14 +9,14 @@ from api.container.container import Container
 
 
 
-api_routes_logger = Logger("api_routes_logger", "api_routes_logger.log")
+logger = Logger("api_routes_logger", "api_routes_logger.log")
 
 preferences_app = Blueprint('preferences_app', __name__)
 
 
 @preferences_app.errorhandler(DatabaseConnectionError)
 def handle_db_timeout_error(e):
-    api_routes_logger.error(f"Database error: {str(e)}")
+    logger.error(f"Database error: {str(e)}")
     response = {"error in data base": str(e)}
 
     return response
@@ -25,7 +25,7 @@ def handle_db_timeout_error(e):
 @preferences_app.route('/', methods=['POST', 'DELETE'])
 @inject
 @handle_exceptions
-@api_routes_logger.log_function_call()
+@logger.log_function_call()
 def sport_preferences_endpoint(service: UserService = Provide[Container.user_service]):
     try:
         data = request.get_json()
@@ -42,14 +42,14 @@ def sport_preferences_endpoint(service: UserService = Provide[Container.user_ser
             return result
 
     except CustomQSportException as e:
-        api_routes_logger.error(f"Error in POST /: {str(e)}")
+        logger.error(f"Error in POST /: {str(e)}")
         return get_custom_error_response(e)
 
 
 @preferences_app.route('/get', methods=['POST'])
 @inject
 @handle_exceptions
-@api_routes_logger.log_function_call()
+@logger.log_function_call()
 def get_user_sport_preferences_endpoint(service: UserService = Provide[Container.user_service]):
     try:
         data = request.get_json()
@@ -59,20 +59,20 @@ def get_user_sport_preferences_endpoint(service: UserService = Provide[Container
         return result
 
     except CustomQSportException as e:
-        api_routes_logger.error(f"Error in POST /: {str(e)}")
+        logger.error(f"Error in POST /: {str(e)}")
         return get_custom_error_response(e)
 
 
 @preferences_app.route('/all', methods=['GET'])
 @inject
 @handle_exceptions
-@api_routes_logger.log_function_call()
+@logger.log_function_call()
 def get_all_sport_preferences_endpoint(service: UserService = Provide[Container.user_service]):
     try:
-        result = service.get_all_preferences()
+        result = service.get_all_sport_preferences()
 
         return result
 
     except CustomQSportException as e:
-        api_routes_logger.error(f"Error in POST /: {str(e)}")
+        logger.error(f"Error in POST /: {str(e)}")
         return get_custom_error_response(e)

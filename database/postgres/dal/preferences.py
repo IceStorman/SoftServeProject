@@ -1,7 +1,7 @@
+from functools import lru_cache
 from database.models import UserPreference, Sport
 import database.models
-from dto.api_input import TablesAndColumnsDTO
-from service.api_logic.sports_logic import get_all_sports
+from dto.api_input import TablesAndColumnsForUserPreferencesDTO
 
 
 class PreferencesDAL:
@@ -19,7 +19,7 @@ class PreferencesDAL:
         related_logo = getattr(related_table, type_dto.related_logo, None)
         related_id = getattr(related_table, type_dto.related_id, None)
 
-        return TablesAndColumnsDTO(
+        return TablesAndColumnsForUserPreferencesDTO(
             main_table=main_table,
             related_table=related_table,
             user_id_field=user_id_field,
@@ -28,24 +28,6 @@ class PreferencesDAL:
             related_logo=related_logo,
             related_id=related_id
         )
-
-
-    def get_all_sport_preferences(self):
-        return get_all_sports()
-
-
-    def add_user_preferences(self, type_dto, dto, valid_preferences):
-        tables_and_cols_dto = self.getattr_tables_and_columns_by_type(type_dto)
-
-        for pref in valid_preferences:
-            exists = self.session.query(tables_and_cols_dto.main_table).filter(tables_and_cols_dto.user_id_field == dto.user_id, tables_and_cols_dto.type_id_field == pref).first()
-            if not exists:
-                new_pref = tables_and_cols_dto.main_table(**{
-                    type_dto.user_id_field: dto.user_id,
-                    type_dto.type_id_field: pref
-                })
-                self.session.add(new_pref)
-        self.session.commit()
 
 
     def get_user_preferences(self, type_dto, dto):
@@ -80,8 +62,32 @@ class PreferencesDAL:
         self.session.commit()
 
 
+    @lru_cache(maxsize=1)
     def get_all_sport_preference_indexes(self):
         return [
             sport.sport_id for sport in
             self.session.query(Sport.sport_id).order_by(Sport.sport_name.asc()).all()
         ]
+
+
+    def get_existing_preferences(self, user_id, tables_and_cols_dto):
+        return set(self.session.query(tables_and_cols_dto.type_id_field)
+                   .filter(tables_and_cols_dto.user_id_field == user_id)
+                   .all())
+
+
+    def insert_new_preferences(self, new_prefs):
+        self.session.add_all(new_prefs)
+        self.session.commit()
+
+
+    def delete_redundant_user_preferences(self, user_id, preferences_to_delete, tables_and_cols_dto):
+        if not preferences_to_delete:
+            return
+
+        self.session.query(tables_and_cols_dto.main_table).filter(
+            tables_and_cols_dto.user_id_field == user_id,
+            tables_and_cols_dto.type_id_field.in_(preferences_to_delete)
+        ).delete(synchronize_session=False)
+
+        self.session.commit()
