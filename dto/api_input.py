@@ -1,10 +1,13 @@
 import re
 from collections import namedtuple
 from datetime import datetime
-from marshmallow import Schema, fields, pre_load, post_load, ValidationError
+from marshmallow import Schema, fields, pre_load, post_load, ValidationError, EXCLUDE
 
 
 class BaseDTO(Schema):
+    class Meta:
+        unknown = EXCLUDE
+
     @pre_load
     def check_min_value(self, data, **kwargs):
         for field in data:
@@ -133,6 +136,4 @@ class InputUserLogInDTO(BaseDTO):
     email_or_username = fields.Str(required=False, missing=None)
     password_hash = fields.Str(required=False, missing=None)
     id = fields.Str(required=False, missing=None)
-    verified_email = fields.Bool(required=False, missing=None)
-    picture = fields.Str(required=False, missing=None)
     auth_provider = fields.String(required=False, missing=None)

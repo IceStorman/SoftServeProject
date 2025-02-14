@@ -1,12 +1,8 @@
-from flask import current_app, url_for, jsonify, make_response
-import json
+from flask import current_app, url_for, jsonify
 from flask_mail import Message
 from itsdangerous import URLSafeTimedSerializer
 from dto.api_input import InputUserLogInDTO
 from dto.api_output import OutputUser, OutputLogin
-from database.postgres.dto.refresh import refreshDTO
-from database.postgres.dto.jwt import jwtDTO
-from datetime import datetime
 from database.models import User
 from dto.common_response import CommonResponse, CommonResponseWithUser
 from exept.exeptions import UserDoesNotExistError, UserAlreadyExistError
@@ -14,44 +10,48 @@ import bcrypt
 from logger.logger import Logger
 from jinja2 import Environment, FileSystemLoader
 import os
-from flask_jwt_extended import create_access_token,create_refresh_token, set_access_cookies, set_refresh_cookies, decode_token\
-    , get_jwt_identity
+from flask_jwt_extended import create_access_token,create_refresh_token, set_access_cookies, set_refresh_cookies
 from service.api_logic.auth_strategy import AuthManager
-from typing import Optional
 
 
 class UserService:
 
-    def __init__(self, user_dal, jwt_dal: Optional[dict]):
+    def __init__(self, user_dal):
         self._user_dal = user_dal
-        self._jwt_dal = jwt_dal
         self._serializer = URLSafeTimedSerializer(current_app.secret_key)
         self._logger = Logger("logger", "all.log").logger
-        
 
 
-    def get_user_by_email_or_username(self, email_front=None, username_front=None):
-        return self._user_dal.get_user_by_email_or_username(email_front, username_front)
+    def get_user_by_email_or_username(self, email=None, username=None):
+        return self._user_dal.get_user_by_email_or_username(email, username)
 
 
-    async def create_user(self, email_front, username_front, password_front):
-        existing_user = self.get_user_by_email_or_username(email_front, username_front)
+    def get_existing_user(self, email=None, username=None):
+        return self._user_dal.get_existing_user(email, username)
+
+
+    async def sign_up_user(self, email, username, password):
+        existing_user = self.get_existing_user(email = email, username = username)
         if existing_user:
             self._logger.debug("User already exist")
-            raise UserAlreadyExistError(existing_user)
+            raise UserAlreadyExistError()
 
         salt = bcrypt.gensalt()
-        hashed_password = bcrypt.hashpw(password_front.encode('utf-8'), salt)
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
 
-        new_user = User(email = email_front, username = username_front, password_hash = hashed_password.decode('utf-8'))
-        self._user_dal.create_user(new_user)
-        token = await self.__generate_auth_token(new_user)
+        new_user = User(email = email, username = username, password_hash = hashed_password.decode('utf-8'))
+        self.create_user(new_user)
+        token = await self.get_generate_auth_token(new_user)
 
         return OutputLogin(email = new_user.email, token = token, id = new_user.user_id)
 
 
+    def create_user(self, new_user):
+        return self._user_dal.create_user(new_user)
+
+
     def request_password_reset(self, email: str):
-        existing_user = self.get_user_by_email_or_username(email)
+        existing_user = self.get_user_by_email_or_username(email = email)
         if not existing_user:
             raise UserDoesNotExistError(email)
 
@@ -82,7 +82,7 @@ class UserService:
 
 
     def __get_reset_token(self, email) -> str:
-        user = self.get_user_by_email_or_username(email)
+        user = self.get_user_by_email_or_username(email = email)
         if not user:
             raise UserDoesNotExistError(email)
 
@@ -90,11 +90,14 @@ class UserService:
 
 
     def reset_user_password(self, email, new_password: str):
-        user = self.get_user_by_email_or_username(email)
+        user = self.get_user_by_email_or_username(email = email)
         if not user:
             raise UserDoesNotExistError(email)
 
-        self._user_dal.update_user_password(user, new_password)
+        salt = bcrypt.gensalt()
+        hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), salt)
+
+        self._user_dal.update_user_password(user, hashed_password.decode('utf-8'))
         new_jwt = create_access_token(identity=user.email)
         new_refresh = create_refresh_token(identity=user.email)
 
@@ -107,126 +110,29 @@ class UserService:
 
     def confirm_token(self, token: str, expiration=3600):
         username = self._serializer.loads(token, salt = "email-confirm", max_age = expiration)
-        user = self.get_user_by_email_or_username(None, username)
+        user = self.get_user_by_email_or_username(username = username)
 
         return OutputUser().dump(user)
 
 
-    
-
-
-    async def __generate_auth_token(self, user):
-            return self._serializer.dumps(user.email, salt = "user-auth-token")
-
-
-    def get_generate_auth_token(self, user):
-        return self.__generate_auth_token(user)
-
-
-    async def save_tokens_to_db(self, user, access_token: str, refresh_token: str):
-        
-        decode_access_token = decode_token(access_token)
-        decode_refresh_token = decode_token(refresh_token)
-        
-        access_expires_at = datetime.utcfromtimestamp(decode_access_token['exp'])
-        refresh_expires_at = datetime.utcfromtimestamp(decode_refresh_token['exp'])
-
-
-        access_jwt_dto = jwtDTO(
-            user_id=user.id,
-            jti=decode_access_token['jti'],   
-            token_type="access",
-            revoked=False,
-            expires_at=access_expires_at
-        )
-        self._jwt_dal.save_jwt(access_jwt_dto)
-
-
-        refresh_jwt_dto = jwtDTO(
-            user_id=user.id,
-            jti=decode_refresh_token['jti'],
-            token_type="refresh",
-            revoked=False,
-            expires_at=refresh_expires_at  
-        )
-        self._jwt_dal.save_jwt(refresh_jwt_dto)
-
-
-        refresh_dto = refreshDTO(
-            user_id=user.id,
-            last_ip=get_user_ip_country(user),
-            last_device=get_user_device(user),
-            refresh_token=refresh_token
-        )
-        self._refresh_dal.save_refresh_token(refresh_dto)
-
-
-    async def create_access_token_response(self, user, return_tokens: bool = False):
-
-
-        access_token = create_access_token(identity=user.email)
-        refresh_token = create_refresh_token(identity=user.email)
-
-        await self.save_tokens_to_db(user, access_token, refresh_token)
-
-    
-        response_data = {
-            "user_id": user.id,
-            "user_email": user.email
-        }
-        if return_tokens:
-            response_data["access_token"] = access_token
-            response_data["refresh_token"] = refresh_token
-
-        response = make_response(jsonify(response_data))
-        set_access_cookies(response, access_token)
-        set_refresh_cookies(response, refresh_token)
-
-        return response
-
-
-    
-    
     async def log_in(self, credentials: InputUserLogInDTO):
         login_context = AuthManager(self)
-        user = await login_context.execute_log_in(credentials.auth_provider, credentials)
-        response = await self.create_access_token_response(user, return_tokens=True)
+        user = await login_context.execute_log_in(credentials)
+        response = await self.create_access_token_response(user)
         return response
 
-    def create_new_access_token(self, identity):
-        if not identity:
-            return jsonify({"error": "Invalid identity"}), 400
+    async def __generate_auth_token(self, user, salt):
+        return self._serializer.dumps(user.email, salt = salt)
 
-        new_access_token = create_access_token(identity=identity)
 
-        decoded_access_token = decode_token(new_access_token)
-        new_access_expires_at = datetime.utcfromtimestamp(decoded_access_token['exp'])
-        
-        access_jwt_dto = jwtDTO(
-            user_id=identity['id'],  
-            jti=decoded_access_token['jti'],   
-            token_type="access",
-            revoked=False,
-            expires_at=new_access_expires_at
-        )
+    async def get_generate_auth_token(self, user):
+        return await self.__generate_auth_token(user, salt = "user-auth-token")
 
-        self._jwt_dal.save_jwt(access_jwt_dto) 
-        return jsonify(access_token=new_access_token)
 
-    
-    # async def create_access_token_response(self, user):
-    #     access_token = create_access_token(identity = user.email)
-    #     response = CommonResponseWithUser(user_id = user.id, user_email = user.email).to_dict()
-    #     response_json = jsonify(response)
-    #     set_access_cookies(response_json, access_token)
+    async def create_access_token_response(self, user):
+        access_token = create_access_token(identity = user.email)
+        response = CommonResponseWithUser(user_id = user.id, user_email = user.email).to_dict()
+        response_json = jsonify(response)
+        set_access_cookies(response_json, access_token)
 
-    #     return response_json    
-    # async def log_in(self, credentials: InputUserLogInDTO):
-    #     login_context = AuthManager(self)
-    #     user = await login_context.execute_log_in(credentials.auth_provider, credentials)
-    #     response = await self.create_access_token_response(user)
-    #     return response
-    # async def log_in(self, credentials: InputUserLogInDTO, return_tokens: bool = False):
-        #     login_context = AuthManager(self)
-        #     user = await login_context.execute_log_in(credentials.auth_provider, credentials)
-        #     return await self.create_access_token_response(user, return_tokens)
+        return response_json

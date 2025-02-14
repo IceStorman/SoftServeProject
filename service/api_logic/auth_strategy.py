@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from enum import Enum
 import bcrypt
 import requests
 from flask import current_app, request
@@ -7,15 +6,12 @@ from oauthlib.oauth2 import WebApplicationClient
 from database.models import User
 from dto.api_input import InputUserLogInDTO
 from dto.api_output import OutputLogin
-from exept.exeptions import IncorrectUserDataError, UserDoesNotExistError, IncorrectLogInStrategyMethod, \
-    InvalidDataForGoogleLogIn
+from exept.exeptions import IncorrectUserDataError, UserDoesNotExistError, IncorrectLogInStrategyError, \
+    InvalidAuthenticationDataError
 from typing import Generic, TypeVar
+from service.api_logic.models.api_models import AuthStrategies
 
 T = TypeVar("T")
-
-class AuthMethods(Enum):
-    SIMPLE = "simple"
-    GOOGLE = "google"
 
 
 class AuthHandler(ABC, Generic[T]):
@@ -31,15 +27,16 @@ class AuthManager:
     def __init__(self, user_service):
         self._user_service = user_service
         self.strategies = {
-            AuthMethods.SIMPLE.value: SimpleAuthHandler(user_service=self._user_service),
-            AuthMethods.GOOGLE.value: GoogleAuthHandler(user_service=self._user_service),
+            AuthStrategies.SIMPLE.value: SimpleAuthHandler(user_service = self._user_service),
+            AuthStrategies.GOOGLE.value: GoogleAuthHandler(user_service = self._user_service),
         }
 
-    async def execute_log_in(self, method: str, credentials: T):
-        if method not in self.strategies:
-            raise IncorrectLogInStrategyMethod(method)
+    async def execute_log_in(self, credentials: T):
+        strategy = credentials.auth_provider
+        if strategy not in self.strategies:
+            raise IncorrectLogInStrategyError(strategy)
 
-        login_strategy = await self.strategies[method].authenticate(credentials)
+        login_strategy = await self.strategies[strategy].authenticate(credentials)
         return login_strategy
 
 
@@ -52,12 +49,12 @@ class SimpleAuthHandler(AuthHandler[T]):
             raise UserDoesNotExistError(user.email)
 
         if not bcrypt.checkpw(credentials.password_hash.encode('utf-8'), user.password_hash.encode('utf-8')):
-            self._user_service._logger.warning("Passwords do not match")
+            self._user_service._logger.warning("Some log in data is incorrect")
             raise IncorrectUserDataError()
 
         token = await self._user_service.get_generate_auth_token(user)
 
-        return OutputLogin(email=user.email, token=token, id=user.user_id)
+        return OutputLogin(email = user.email, token = token, id = user.user_id)
 
 
 class GoogleAuthHandler(AuthHandler[T]):
@@ -70,9 +67,9 @@ class GoogleAuthHandler(AuthHandler[T]):
                 authorization_response=request.url,
                 redirect_url=current_app.config['REDIRECT_URI']
             )
-        token_response = requests.post(token_url, headers=headers, data=body)
+        token_response = requests.post(token_url, headers = headers, data = body)
         if token_response.status_code != 200:
-            raise InvalidDataForGoogleLogIn()
+            raise InvalidAuthenticationDataError()
 
         client.parse_request_body_response(token_response.text)
 
@@ -81,16 +78,16 @@ class GoogleAuthHandler(AuthHandler[T]):
             headers={'Authorization': f'Bearer {client.token["access_token"]}'}
         )
         if user_info_response.status_code != 200:
-            raise InvalidDataForGoogleLogIn()
+            raise InvalidAuthenticationDataError()
 
         data = user_info_response.json()
         user_info = InputUserLogInDTO().load(data)
 
-        user = self._user_service.get_user_by_email_or_username(user_info.email)
+        user = self._user_service.get_user_by_email_or_username(email = user_info.email)
         if not user:
-            user = User(email=data.email, username=data.email.split('@')[0])
+            user = User(email = user_info.email, username = user_info.email.split('@')[0])
             self._user_service.create_user(user)
 
         token = await self._user_service.get_generate_auth_token(user)
 
-        return OutputLogin(email=user.email, token=token, id=user.user_id)
+        return OutputLogin(email = user.email, token = token, id = user.user_id)
