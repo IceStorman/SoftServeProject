@@ -11,11 +11,10 @@ class RefreshTokenDAL:
     def __init__(self, db_session: Session):
         self.db_session = db_session
 
-    def save_refresh_token(self, jwt_dto: jwtDTO, last_ip: str, last_device: str) -> Optional[int]:
+    def save_refresh_token(self, refresh_dto: jwtDTO, last_ip: str, last_device: str) -> Optional[int]:
         try:
-            # Перевіряємо, чи вже є такий токен
-            if jwt_dto.id and (refresh_entry := self.get_refresh_token_by_id(jwt_dto.id)):
-                refresh_entry.user_id = jwt_dto.user_id
+            if refresh_dto.id and (refresh_entry := self.get_refresh_token_by_id(refresh_dto.id)):
+                refresh_entry.user_id = refresh_dto.user_id
                 refresh_entry.last_ip = last_ip
                 refresh_entry.last_device = last_device
             else:

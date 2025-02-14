@@ -4,7 +4,7 @@ from flask_mail import Message
 from itsdangerous import URLSafeTimedSerializer
 from dto.api_input import InputUserLogInDTO
 from dto.api_output import OutputUser, OutputLogin
-from database.postgres.dal.jwt import jwtDAL
+from database.postgres.dto.refresh import refreshDTO
 from database.postgres.dto.jwt import jwtDTO
 from datetime import datetime
 from database.models import User
@@ -123,15 +123,13 @@ class UserService:
         return self.__generate_auth_token(user)
 
 
-    async def create_access_token_response(self, user, return_tokens: bool = False):
-        access_token = create_access_token(identity=user.email)
-        refresh_token = create_refresh_token(identity=user.email)
+    async def save_tokens_to_db(self, user, access_token: str, refresh_token: str):
         
         decode_access_token = decode_token(access_token)
         decode_refresh_token = decode_token(refresh_token)
         
-        access_expiers_at = datetime.utcfromtimestamp(decode_access_token['exp'])
-        refresh_expiers_at = datetime.utcfromtimestamp(decode_refresh_token['exp'])
+        access_expires_at = datetime.utcfromtimestamp(decode_access_token['exp'])
+        refresh_expires_at = datetime.utcfromtimestamp(decode_refresh_token['exp'])
 
 
         access_jwt_dto = jwtDTO(
@@ -139,20 +137,39 @@ class UserService:
             jti=decode_access_token['jti'],   
             token_type="access",
             revoked=False,
-            expires_at=access_expiers_at
+            expires_at=access_expires_at
         )
         self._jwt_dal.save_jwt(access_jwt_dto)
 
 
         refresh_jwt_dto = jwtDTO(
             user_id=user.id,
-            jti=refresh_token,
+            jti=decode_refresh_token['jti'],
             token_type="refresh",
             revoked=False,
-            expires_at=refresh_expiers_at  
+            expires_at=refresh_expires_at  
         )
         self._jwt_dal.save_jwt(refresh_jwt_dto)
 
+
+        refresh_dto = refreshDTO(
+            user_id=user.id,
+            last_ip=get_user_ip_country(user),
+            last_device=get_user_device(user),
+            refresh_token=refresh_token
+        )
+        self._refresh_dal.save_refresh_token(refresh_dto)
+
+
+    async def create_access_token_response(self, user, return_tokens: bool = False):
+
+
+        access_token = create_access_token(identity=user.email)
+        refresh_token = create_refresh_token(identity=user.email)
+
+        await self.save_tokens_to_db(user, access_token, refresh_token)
+
+    
         response_data = {
             "user_id": user.id,
             "user_email": user.email
@@ -166,6 +183,7 @@ class UserService:
         set_refresh_cookies(response, refresh_token)
 
         return response
+
 
     
     
