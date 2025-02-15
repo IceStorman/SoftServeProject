@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect, useContext} from "react";
 import {
     BrowserRouter as Router,
     Routes,
@@ -29,9 +29,12 @@ import apiEndpoints from "../apiEndpoints";
 import NavBar from "../components/basic/nav";
 import InsideNewsPage from "../pages/news/insideNewsPage";
 import AboutUsPage from "../pages/misc/aboutAs";
+import {AuthContext} from "../pages/registration/AuthContext";
 
 function App() {
 
+    const { user } = useContext(AuthContext);
+    console.log(user)
 
     return (
         <>

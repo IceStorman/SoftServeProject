@@ -1,29 +1,58 @@
-import React, { useState } from "react";
+import React, {useContext, useState} from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import apiEndpoints from "../../apiEndpoints";
+import {toast} from "sonner";
+import {AuthContext} from "./AuthContext";
 
 
 function SignUpPage() {
-    function handleSubmit(e) {
-        e.preventDefault();
+    const authContext = useContext(AuthContext);
+    const [emailOrNick, setEmailOrNick] = useState('');
+    const [password, setPassword] = useState('');
 
-        const form = e.target;
-        const formData = new FormData(form);
-
-        fetch('/some-api', { method: form.method, body: formData });
-
-        const formJson = Object.fromEntries(formData.entries());
-        console.log(formJson);
+    // Перевіряємо, чи контекст не null
+    if (!authContext) {
+        return <p>404</p>;
     }
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const { login } = authContext;
+    async function handleSubmit(e) {
+        e.preventDefault();
+
+
+        try {
+            const response = await axios.post(
+                `${apiEndpoints.url}${apiEndpoints.login.login}`,
+                {
+                    email_or_username: emailOrNick,
+                    password_hash: password,
+                    auth_provider: "simple"
+                },
+                {
+                    headers: { 'Content-Type': 'application/json' },
+                }
+            );
+
+            console.log("Успішна авторизація:", response.data);
+            console.log(response.data.email);
+
+            // Передаємо користувача у контекст (зберігаємо в кукі)
+            login({ email: response?.data?.user?.email, username: response?.data?.user?.username });
+
+            toast.success("Реєстрація успішна! Ви увійшли в акаунт.");
+        } catch (error) {
+            console.error("Помилка реєстрації:", error);
+            toast.error("Не вдалося зареєструватися. Спробуйте ще раз.");
+        }
+    }
 
     return (
         <section className="registration">
             <form method="post" onSubmit={handleSubmit}>
                 <h2>Log In</h2>
                 <p>
-                Email: <input value={email} onChange={e => setEmail(e.target.value)} />
+                Email: <input value={emailOrNick} onChange={e => setEmailOrNick(e.target.value)} />
                 </p>
                 <p>
                 Password: <input type="password" value={password} onChange={e => setPassword(e.target.value)} />

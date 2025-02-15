@@ -1,22 +1,57 @@
-import React, { useState } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import apiEndpoints from "../../apiEndpoints";
+import {toast} from "sonner";
+import {AuthContext} from "./AuthContext";
 
 function SignUpPage() {
-    function handleSubmit(e) {
-        e.preventDefault();
+    const authContext = useContext(AuthContext);
 
-        const form = e.target;
-        const formData = new FormData(form);
-
-        fetch('/some-api', { method: form.method, body: formData });
-
-        const formJson = Object.fromEntries(formData.entries());
-        console.log(formJson);
-    }
     const [nickname, setNickname] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [repeatPassword, setRepPassword] = useState('');
+    // Перевіряємо, чи контекст не null
+    if (!authContext) {
+        return <p>404</p>;
+    }
+
+    const { login } = authContext;
+
+
+    async function handleSubmit(e) {
+        e.preventDefault();
+
+        if (password !== repeatPassword) {
+            console.log("Паролі не співпадають!");
+            return;
+        }
+
+        try {
+            const response = await axios.post(
+                `${apiEndpoints.url}${apiEndpoints.login.signUp}`,
+                {
+                    email: email,
+                    username: nickname,
+                    password_hash: password
+                },
+                {
+                    headers: { 'Content-Type': 'application/json' },
+                }
+            );
+
+            console.log("Успішна реєстрація:", response.data);
+
+            // Передаємо користувача у контекст (зберігаємо в кукі)
+            login({ email: response?.data?.user?.email, username: response?.data?.user?.username });
+
+            toast.success("Реєстрація успішна! Ви увійшли в акаунт.");
+        } catch (error) {
+            console.error("Помилка реєстрації:", error);
+            toast.error("Не вдалося зареєструватися. Спробуйте ще раз.");
+        }
+    }
 
     return (
         <section className="registration">
