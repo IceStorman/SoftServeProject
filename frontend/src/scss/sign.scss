@@ -60,6 +60,20 @@
     .redirect {
         align-self: center;
         margin: 1rem;
+
+        .authBtn{
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+
+            button{
+                width: 2rem;
+
+                img{
+                    width: 100%;
+                }
+            }
+        }
     }
 
     button {

@@ -4,6 +4,7 @@ import axios from "axios";
 import apiEndpoints from "../../apiEndpoints";
 import {toast} from "sonner";
 import {AuthContext} from "./AuthContext";
+import AuthBtn from "../../components/containers/authBtn";
 
 function SignUpPage() {
     const authContext = useContext(AuthContext);
@@ -99,6 +100,7 @@ function SignUpPage() {
             </form>
             <div className="redirect">
                 <p>Already have an account? <Link to={"/sign-in"}>Log in</Link></p>
+                <AuthBtn />
             </div>
         </section>
     );

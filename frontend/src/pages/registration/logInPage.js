@@ -4,10 +4,10 @@ import axios from "axios";
 import apiEndpoints from "../../apiEndpoints";
 import { AuthContext } from "./AuthContext";
 import globalVariables from "../../globalVariables";
-import GoogleButton from 'react-google-button'
+import AuthBtn from "../../components/containers/authBtn";
 
 
-function SignUpPage() {
+function SignInPage() {
     const authContext = useContext(AuthContext);
     const navigate = useNavigate();
     const [emailOrUserName, setEmailOrUserName] = useState('');
@@ -49,16 +49,6 @@ function SignUpPage() {
         }
     }
 
-    function handleGoogleLogin() {
-        const clientId = globalVariables.googleAuth.clientId;
-        const redirectUri = globalVariables.googleAuth.redirectUri;
-        const scope = globalVariables.googleAuth.scope;
-        const responseType = globalVariables.googleAuth.responseType;
-
-        const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}`;
-        window.location.href = authUrl;
-    }
-
     if (!authContext) {
         return <p>404</p>;
     }
@@ -80,13 +70,10 @@ function SignUpPage() {
             </div>
             <div className="redirect">
                 <p>Do not have an account? <Link to={"/sign-up"}>Create</Link></p>
-                {/*<GoogleButton*/}
-                {/*    onClick={() => console.log("Google button clicked")}*/}
-                {/*/>*/}
-                <button className='google-login' onClick={handleGoogleLogin}>Log in with Google</button>
+                <AuthBtn />
             </div>
         </section>
     );
 }
 
-export default SignUpPage;
+export default SignInPage;
