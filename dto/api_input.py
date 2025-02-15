@@ -34,14 +34,14 @@ class BaseDTO(Schema):
 
     @pre_load
     def validate_email(self, data, **kwargs):
-        if 'email' in data and data['email']:
+        if 'email' in data:
             if not re.match(r'^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', data['email']):
                 raise ValidationError("Invalid email format", field_name="email")
         return data
 
     @pre_load
     def validate_email(self, data, **kwargs):
-        if 'username' in data and data['username']:
+        if 'username' in data:
             regex = re.compile(r'[ @!#$%^&*()<>?/\|}{~:;,+=]')
             if regex.search(data['username']):
                 raise ValidationError("Invalid username format", field_name="username")
@@ -49,7 +49,7 @@ class BaseDTO(Schema):
 
     @pre_load
     def validate_password(self, data, **kwargs):
-        if 'password_hash' in data and data['password_hash']:
+        if 'password_hash' in data:
             regex = re.compile(r'(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?!.*\s){8,}')
             if not re.match(regex, data['password_hash']):
                 raise ValidationError("Invalid password format", field_name="password_hash")
@@ -145,3 +145,4 @@ class InputUserLogInDTO(BaseDTO):
     email = fields.Str(required=False, missing=None)
     email_or_username = fields.Str(required=False, missing=None)
     password_hash = fields.Str(required=False, missing=None)
+    auth_provider = fields.String(required=False, missing=None)
