@@ -84,6 +84,15 @@ class UserAlreadyExistError(CustomQSportException):
         message = f"User with such data already exist'"
         super().__init__(message)
 
+
+class NoRecommendationListForUserError(CustomQSportException):
+    status_code = 204
+
+    def __init__(self, user_id):
+        message = f"There are no recommendations for user '{user_id} at this moment'"
+        super().__init__(message)
+
+
 class IncorrectLogInStrategyError(CustomQSportException):
     status_code = 404
 
@@ -98,3 +107,4 @@ class InvalidAuthenticationDataError(CustomQSportException):
     def __init__(self, auth_provider_name):
         message = f"{auth_provider_name} data is invalid"
         super().__init__(message)
+
