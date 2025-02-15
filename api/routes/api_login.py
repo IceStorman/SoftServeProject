@@ -7,6 +7,7 @@ from logger.logger import Logger
 from dependency_injector.wiring import inject, Provide
 from service.api_logic.user_logic import UserService
 from api.container.container import Container
+from flask_jwt_extended import jwt_required, get_jwt_identity
 import os
 
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
@@ -115,3 +116,15 @@ def login_google():
     except CustomQSportException as e:
         logger.error(f"Error in GET /login/google: {str(e)}")
         return get_custom_error_response(e)
+    
+@login_app.route("/refresh", methods=['POST'])
+@inject
+@handle_exceptions
+@logger.log_function_call()
+@jwt_required(refresh=True)
+def refresh(service: UserService = Provide[Container.user_service]):
+    identity = get_jwt_identity()   
+    return service.create_new_access_token(identity)
+
+
+

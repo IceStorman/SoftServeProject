@@ -26,6 +26,9 @@ class UserDAL:
 
     def get_user_by_id(self, user_id: int) -> User:
         return self.session.query(User).filter(User.user_id == user_id).first()
+    
+    def get_user_by_email(self, email: str) -> User:
+        return self.session.query(User).filter(User.email == email).first()
 
     def update_user_password(self, user: User, new_password):
         user.password_hash = new_password
