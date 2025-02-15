@@ -178,7 +178,25 @@ def blob_get_news(news_index: str) -> dict:
         return json_data
     except Exception as e:
         return {"error": str(e)}
-    
+
+
+def blob_get_news_bulk(news_indices: list) -> dict:
+    try:
+        key = sastokens_dict["news"]
+        blob_service_client = BlobServiceClient(account_url=account_url, credential=key)
+        container_client = blob_service_client.get_container_client("news")
+
+        results = {}
+        for news_index in news_indices:
+            blob_client = container_client.get_blob_client(news_index)
+            blob_data = blob_client.download_blob().readall()
+            results[news_index] = json.loads(blob_data)
+
+        return results
+    except Exception as e:
+        return {"error": str(e)}
+
+
 def blob_get_specific_article(session, index_id: int) -> dict:
     try:
     
@@ -272,6 +290,7 @@ def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
         if existing_news:
             print_error_message(f"News '{blob_name}' already exists in the database.")
             return
+        print(json_data["team_names"])
         sport = session.query(Sport).filter_by(sport_name=json_data["S_P_O_R_T"]).first()
         if not sport:
             return
@@ -285,17 +304,28 @@ def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
         session.commit()
         teams = session.query(TeamIndex).all()
         team_dict = {team.name: team.team_index_id for team in teams}
-
-        for team_name in json_data["team_names"]:
-            team_index_id = team_dict.get(team_name, None)
-            print(team_index_id, "*"*40)
-
-            team_index = TeamInNews(
-                news_id=news_index.news_id,
-                name=team_name,
-                team_index_id=team_index_id
-            )
-            session.add(team_index)
+        teams = json_data["team_names"]
+        print(teams)
+        for team_name in teams:
+            if isinstance(team_name, list):
+                for name in team_name:
+                    team_index_id = team_dict.get(name, None)
+                    if team_index_id is not None:
+                        team_index = TeamInNews(
+                            news_id=news_index.news_id,
+                            name=name,
+                            team_index_id=team_index_id
+                        )
+                        session.add(team_index)
+            else:
+                team_index_id = team_dict.get(team_name, None)
+                if team_index_id is not None:
+                    team_index = TeamInNews(
+                        news_id=news_index.news_id,
+                        name=team_name,
+                        team_index_id=team_index_id
+                    )
+                    session.add(team_index)
 
         session.commit()
     except Exception as e:

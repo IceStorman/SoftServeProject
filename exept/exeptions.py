@@ -1,4 +1,4 @@
-class SoftServeException(Exception):
+class CustomQSportException(Exception):
     status_code = 400
 
     def __init__(self, message="An error occurred"):
@@ -9,7 +9,7 @@ class SoftServeException(Exception):
         return {"error": self.message}, self.status_code
 
 
-class SportNotFoundError(SoftServeException):
+class SportNotFoundError(CustomQSportException):
     status_code = 404
 
     def __init__(self, sport_name):
@@ -18,7 +18,7 @@ class SportNotFoundError(SoftServeException):
         super().__init__(message)
 
 
-class BlobFetchError(SoftServeException):
+class BlobFetchError(CustomQSportException):
     status_code = 401
 
     def __init__(self, blob_id):
@@ -27,7 +27,7 @@ class BlobFetchError(SoftServeException):
         super().__init__(message)
 
 
-class InvalidDateFormatError(SoftServeException):
+class InvalidDateFormatError(CustomQSportException):
     status_code = 422
 
     def __init__(self, date_value):
@@ -36,14 +36,14 @@ class InvalidDateFormatError(SoftServeException):
         super().__init__(message)
 
 
-class DatabaseConnectionError(SoftServeException):
+class DatabaseConnectionError(CustomQSportException):
     status_code = 503
 
     def __init__(self, message="Database is currently unavailable. Please try again later."):
         super().__init__(message)
 
 
-class InvalidResetPasswordError(SoftServeException):
+class InvalidResetPasswordError(CustomQSportException):
     status_code = 400
 
     def __init__(self, date_value):
@@ -52,7 +52,7 @@ class InvalidResetPasswordError(SoftServeException):
         super().__init__(message)
 
 
-class UserDoNotExistError(SoftServeException):
+class UserDoesNotExistError(CustomQSportException):
     status_code = 404
 
     def __init__(self, date_value):
@@ -61,7 +61,7 @@ class UserDoNotExistError(SoftServeException):
         super().__init__(message)
 
 
-class NotCorrectUsernameOrEmailError(SoftServeException):
+class IncorrectUsernameOrEmailError(CustomQSportException):
     status_code = 401
 
     def __init__(self):
@@ -69,7 +69,7 @@ class NotCorrectUsernameOrEmailError(SoftServeException):
         super().__init__(message)
 
 
-class NotCorrectPasswordError(SoftServeException):
+class IncorrectUserDataError(CustomQSportException):
     status_code = 401
 
     def __init__(self):
@@ -77,10 +77,34 @@ class NotCorrectPasswordError(SoftServeException):
         super().__init__(message)
 
 
-class UserAlreadyExistError(SoftServeException):
+class UserAlreadyExistError(CustomQSportException):
     status_code = 409
 
-    def __init__(self, date_value):
-        self.date_value = date_value
+    def __init__(self):
         message = f"User with such data already exist'"
         super().__init__(message)
+
+
+class NoRecommendationListForUserError(CustomQSportException):
+    status_code = 204
+
+    def __init__(self, user_id):
+        message = f"There are no recommendations for user '{user_id} at this moment'"
+        super().__init__(message)
+
+
+class IncorrectLogInStrategyError(CustomQSportException):
+    status_code = 404
+
+    def __init__(self, data_value):
+        message = f"{data_value} is not a log in method in this app"
+        super().__init__(message)
+
+
+class InvalidAuthenticationDataError(CustomQSportException):
+    status_code = 404
+
+    def __init__(self, auth_provider_name):
+        message = f"{auth_provider_name} data is invalid"
+        super().__init__(message)
+

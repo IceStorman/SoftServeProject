@@ -5,7 +5,8 @@ const apiEndpoints = {
         getRecent: 'news/recent',
         getSport: 'news/',
         getArticle: 'news/article',
-        getCurrentNews: ''
+        getCurrentNews: '',
+        likeArticle: 'like',
     },
 
     sports:{
@@ -19,11 +20,25 @@ const apiEndpoints = {
     },
     
     games:{
-        getGames: 'games/'
+        getGames: 'games/specific',
+        getThisGame: 'games/this',
+        getGame: 'games/today',
     },
 
     countries:{
         getAll: 'countries'
+    },
+
+    stream:{
+        getAll: 'streams/all',
+        getInfo: 'streams/info'
+    },
+
+    login:{
+        signUp: 'login/sign-up',
+        login: 'login/login',
+        resetPasswordRequest: 'login/reset-password-request',
+        resetPassword: 'login/reset-password'
     }
 };
 

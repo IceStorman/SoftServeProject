@@ -8,7 +8,7 @@ from sqlalchemy.exc import OperationalError
 from sqlalchemy.util import await_only
 from tensorflow.python.eager.context import async_wait
 
-from exept.exeptions import SoftServeException, DatabaseConnectionError
+from exept.exeptions import CustomQSportException, DatabaseConnectionError
 
 
 def handle_exceptions(func):

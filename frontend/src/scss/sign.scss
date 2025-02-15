@@ -1,117 +1,202 @@
-.signPage {
+.registration {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    margin: 2rem 0;
+    padding: 1rem;
+    height: fit-content;
+    width: fit-content;
+    border: 2px solid #000;
+    box-shadow: 10px 10px #000;
+    align-self: center;
+    margin: 2rem;
+    background-color: $bg-white;
+    justify-self: center;
+    align-self: center;
+    font-size: 1.2rem;
 
-    .signContainer {
+    form {
         display: flex;
         flex-direction: column;
+        justify-content: center;
         align-items: center;
-        width: 45rem;
-        padding: 2vh;
-        background-color: $special-light-purple;
-        border-radius: 1rem;
-        font-weight: bold;
 
-        .signBox {
-            width: 37rem;
+        .title {
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            flex-direction: row;
+        }
 
-            //.inputBox {
-            //    margin: 0;
-            //    box-sizing: border-box;
-            //
-            //    .nameInput, .emailInput, .passwordInput, .codeInput {
-            //        box-sizing: inherit;
-            //        width: 100%;
-            //        height: 2rem;
-            //        font-size: 1rem;
-            //        margin: 1vh 0 0;
-            //        border-radius: 0.5rem;
-            //        padding: 0.2rem;
-            //    }
-            //}
+        h2 {
+            font-size: 2rem;
+            font-family: "PirataOne";
+        }
 
-            .inputBox{
-                display: flex;
-                flex-direction: column;
-                gap: 1rem;
+        p {
+            margin-left: auto;
+            padding: 1rem;
+        }
 
-                .inputBoxField{
-                    position: relative;
-                    width: 37rem;
-                    height: 2rem;
+        input {
+            padding: 0.3rem;
+        }
 
-                    @include custom-form(input, label, 100%, $scroll-hover, $special-light-purple, $scroll-thumb);
+        button {
+            margin-top: .6rem;
+            margin-bottom: 1rem;
+        }
+    }
+
+    a {
+        color: $main-clr-shadow;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    .reset-passwrd {
+        align-self: end;
+        margin: 1rem;
+    }
+
+    .redirect {
+        align-self: center;
+        margin: 1rem;
+
+        .authBtn{
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+
+            button{
+                width: 2rem;
+
+                img{
+                    width: 100%;
                 }
             }
-
-            h1 {
-                color: $special-dark-purple;
-                font-size: 3rem;
-                margin: 1vh auto;
-            }
-
-            .signError {
-                margin: 0;
-                color: red;
-            }
-
-            a {
-                margin: 1rem 0 0;
-                align-self: end;
-                font-size: 1.1rem;
-                cursor: pointer;
-                color: $special-dark-purple;
-                transition: all 0.3s ease;
-            }
-
-            .signBtn {
-                all: unset;
-                margin: 1rem auto 0;
-                font-size: 1.5rem;
-                background-color: $special-dark-purple;
-                border-radius: 0.5rem;
-                color: $main-text-color;
-                padding: 1vh;
-                cursor: pointer;
-                transition: all 0.3s ease;
-            }
-
-            a:hover, .signBtn:hover{
-                transform: scale(1.03);
-            }
         }
     }
 
-    .signRedirect {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        font-size: 1.1rem;
-        color: $special-dark-purple;
+    button {
+        color: $bg-white;
+        font-size: 1.2rem;
+        display: inline-flex;
 
-        a {
-            margin: 1rem 0.2rem;
-            text-decoration: none;
+        &.arrow {
+            margin-right: .5rem;
+        }
+    }
+
+    .backButton{
+        text-decoration: none;
+        color: $bg-white;
+
+        &.filled {
+            background: black;
+            border: none;
+            border-radius: 0;
+            position: absolute;
+            right: 2rem;
+            padding: 0.5rem 0.5rem;
+            transition: border-color 0.3s ease-in-out;
+
+            .nav-link {
+                color: $bg-white;
+                padding: 1rem;
+                font-size: 1.2rem;
+                font-family: "PirataOne";
+            }
+        }
+
+        &.filled:hover {
+            transform: rotate(-2deg);
+        }
+
+        &.text {
+            position: inherit;
+            margin-right: 1rem;
+            padding: 0.3rem 0.5rem;
+            height: fit-content;
+            align-self: center;
+            justify-self: center;
+            color: $bg-white;
+            font-family: "PirataOne";
+            margin: 0;
+        }
+
+        &.arrow {
+            position: inherit;
+            margin-right: 1rem;
+            padding: 0.3rem 0.2rem;
+            height: fit-content;
+            align-self: center;
+            justify-self: center;
+
+            .arrow {
+                color: $bg-white;
+                font-size: 2rem;
+                padding: 0rem 0.3rem;
+            }
+        }
+
+        &.boxed {
+            align-self: center;
+            justify-self: center;
+            margin-top: 1.5rem;
+            background-color: $main-clr;
+            border: 0 solid #E5E7EB;
+            box-sizing: border-box;
+            color: #000000;
+            display: flex;
+            font-size: 1.2rem;
+            justify-content: center;
+            line-height: 1.75rem;
+            padding: .5rem 1.4rem;
+            position: relative;
+            text-align: center;
+            text-decoration: none #000000 solid;
+            text-decoration-thickness: auto;
+            width: fit-content;
+            position: relative;
             cursor: pointer;
-            color: $purple-btn-color;
-            transition: all 0.3s ease;
+            transform: rotate(-2deg);
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            font-family: "PirataOne";
         }
 
-        a:hover{
-            transform: scale(1.03);
-            text-decoration: underline;
+        &.boxed:after {
+            content: '';
+            position: absolute;
+            border: 1px solid #000000;
+            bottom: 4px;
+            left: -4px;
+            width: calc(100% - 1px);
+            height: calc(100% - 1px);
+        }
+
+        &.boxed:hover:after {
+            bottom: 2px;
+            left: -2px;
         }
     }
-}
 
-input,
-select {
-    -webkit-background-clip: text !important;
-    background-clip: text !important;
+    .input-field:focus {
+        border-color: $main-clr-shadow;
+    }
+
+    input {
+        margin-left: .5rem;
+        width: fit-content;
+        border: 1px solid black;
+        font-size: 1.1rem;
+        outline: none;
+        transition: border-color 0.3s ease-in-out;
+        overflow: scroll;
+        font-family: "GrenzeGotisch";
+    }
+
+    input:focus {
+        border-color: $main-clr-shadow;
+    }
 }
