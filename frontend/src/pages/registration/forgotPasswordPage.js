@@ -7,19 +7,6 @@ import apiEndpoints from "../../apiEndpoints";
 function ForgotPasswordPage() {
     const [email, setEmail] = useState('');
     const navigate = useNavigate();
-    const [token, setToken] = useState('');
-
-    useEffect(() => {
-        const pathParts = window.location.pathname.split("/");
-        const token = pathParts[pathParts.length - 1];
-
-        if (token) {
-            localStorage.setItem("resetPasswordToken", token);
-        }
-    }, []);
-
-
-    console.log("Token:", token);
 
 
     function isValidEmail(email) {
