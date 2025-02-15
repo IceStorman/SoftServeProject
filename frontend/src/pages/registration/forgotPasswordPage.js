@@ -15,7 +15,7 @@ function ForgotPasswordPage() {
     }
 
     async function handleSubmit(e) {
-        e.preventDefault(); // Щоб форма не оновлювала сторінку
+        e.preventDefault();
 
         if (!isValidEmail(email)) {
             console.log("Incorrect email format!");

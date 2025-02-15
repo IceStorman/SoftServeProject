@@ -35,7 +35,7 @@ function GoogleAuthCallback() {
         return <p>404</p>;
     }
 
-    return <p>Authenticating...</p>;
+    return <></>;
 }
 
 export default GoogleAuthCallback;
