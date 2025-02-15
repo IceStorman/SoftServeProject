@@ -16,8 +16,9 @@ from service.api_logic.auth_strategy import AuthManager
 
 class UserService:
 
-    def __init__(self, user_dal):
+    def __init__(self, user_dal, jwt_dal):
         self._user_dal = user_dal
+        self._jwt_dal = jwt_dal
         self._serializer = URLSafeTimedSerializer(current_app.secret_key)
         self._logger = Logger("logger", "all.log").logger
 
