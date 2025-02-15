@@ -347,9 +347,17 @@ function MainPage() {
                             }
                         </Column>
                     </div>
-                    <div className="blue-placeholder">
-                        <h1><NavLink to={"/sign-in"} className="nav-link" activeClassName="active">Sign In</NavLink> to track performance of your favorite teams</h1>
-                    </div>
+
+                    {
+                        !user ? (
+                            <div className="blue-placeholder">
+                                <h1><NavLink to={"/sign-in"} className="nav-link" activeClassName="active">Sign
+                                    In</NavLink> to track performance of your favorite teams</h1>
+                            </div>
+                        ) : null
+                    }
+
+
                 </section>
             </div>
 

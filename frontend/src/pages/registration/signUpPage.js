@@ -8,17 +8,16 @@ import {AuthContext} from "./AuthContext";
 function SignUpPage() {
     const authContext = useContext(AuthContext);
 
-    const [nickname, setNickname] = useState('');
+    const [userName, setUserName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [repeatPassword, setRepPassword] = useState('');
-    // Перевіряємо, чи контекст не null
+
     if (!authContext) {
         return <p>404</p>;
     }
 
     const { login } = authContext;
-
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -33,7 +32,7 @@ function SignUpPage() {
                 `${apiEndpoints.url}${apiEndpoints.login.signUp}`,
                 {
                     email: email,
-                    username: nickname,
+                    username: userName,
                     password_hash: password
                 },
                 {
@@ -43,13 +42,9 @@ function SignUpPage() {
 
             console.log("Успішна реєстрація:", response.data);
 
-            // Передаємо користувача у контекст (зберігаємо в кукі)
             login({ email: response?.data?.user?.email, username: response?.data?.user?.username });
-
-            toast.success("Реєстрація успішна! Ви увійшли в акаунт.");
         } catch (error) {
             console.error("Помилка реєстрації:", error);
-            toast.error("Не вдалося зареєструватися. Спробуйте ще раз.");
         }
     }
 
@@ -58,7 +53,7 @@ function SignUpPage() {
             <form method="post" onSubmit={handleSubmit}>
                 <h2>Sign Up</h2>
                 <p>
-                Nickname: <input value={nickname} onChange={e => setNickname(e.target.value)} />
+                Nickname: <input value={userName} onChange={e => setUserName(e.target.value)} />
                 </p>
                 <p>
                 Email: <input value={email} onChange={e => setEmail(e.target.value)} />

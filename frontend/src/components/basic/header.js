@@ -5,13 +5,13 @@ import {AuthContext} from "../../pages/registration/AuthContext";
 
 
 function Header() {
-    const { user } = useContext(AuthContext);
+    const { user, logout } = useContext(AuthContext);
 
     return (
         <header>
             <Logo />
             {
-                !user ? <LoginBtn /> : null
+                !user ? <LoginBtn /> : <button onClick={logout}>logout</button>
             }
         </header>
     );

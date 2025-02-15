@@ -4,14 +4,13 @@ import axios from "axios";
 import apiEndpoints from "../../apiEndpoints";
 import {toast} from "sonner";
 import {AuthContext} from "./AuthContext";
-
+import authStrategies from "../../authStrategies";
 
 function SignUpPage() {
     const authContext = useContext(AuthContext);
-    const [emailOrNick, setEmailOrNick] = useState('');
+    const [emailOrUserName, setEmailOrUserName] = useState('');
     const [password, setPassword] = useState('');
 
-    // Перевіряємо, чи контекст не null
     if (!authContext) {
         return <p>404</p>;
     }
@@ -20,14 +19,13 @@ function SignUpPage() {
     async function handleSubmit(e) {
         e.preventDefault();
 
-
         try {
             const response = await axios.post(
                 `${apiEndpoints.url}${apiEndpoints.login.login}`,
                 {
-                    email_or_username: emailOrNick,
+                    email_or_username: emailOrUserName,
                     password_hash: password,
-                    auth_provider: "simple"
+                    auth_provider: authStrategies.simpleStrategy
                 },
                 {
                     headers: { 'Content-Type': 'application/json' },
@@ -35,15 +33,10 @@ function SignUpPage() {
             );
 
             console.log("Успішна авторизація:", response.data);
-            console.log(response.data.email);
 
-            // Передаємо користувача у контекст (зберігаємо в кукі)
             login({ email: response?.data?.user?.email, username: response?.data?.user?.username });
-
-            toast.success("Реєстрація успішна! Ви увійшли в акаунт.");
         } catch (error) {
             console.error("Помилка реєстрації:", error);
-            toast.error("Не вдалося зареєструватися. Спробуйте ще раз.");
         }
     }
 
@@ -52,7 +45,7 @@ function SignUpPage() {
             <form method="post" onSubmit={handleSubmit}>
                 <h2>Log In</h2>
                 <p>
-                Email: <input value={emailOrNick} onChange={e => setEmailOrNick(e.target.value)} />
+                Email: <input value={emailOrUserName} onChange={e => setEmailOrUserName(e.target.value)} />
                 </p>
                 <p>
                 Password: <input type="password" value={password} onChange={e => setPassword(e.target.value)} />
