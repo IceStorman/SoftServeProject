@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from "react";
-import { Link } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import axios from "axios";
 import apiEndpoints from "../../apiEndpoints";
 import {toast} from "sonner";
@@ -7,7 +7,7 @@ import {AuthContext} from "./AuthContext";
 
 function SignUpPage() {
     const authContext = useContext(AuthContext);
-
+    const navigate = useNavigate();
     const [userName, setUserName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -16,16 +16,46 @@ function SignUpPage() {
     if (!authContext) {
         return <p>404</p>;
     }
-
     const { login } = authContext;
+
+    function isValidEmail(email) {
+        const emailRegex = /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
+        return emailRegex.test(email);
+    }
+
+    function isValidUserName(userName) {
+        const userNameRegex = /^[^ @!#$%^&*()<>?/\\|}{~:;,+=]+$/;
+        return userNameRegex.test(userName);
+    }
+
+    function isValidPassword(password) {
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?!.*\s).{8,}$/;
+        return passwordRegex.test(password);
+    }
 
     async function handleSubmit(e) {
         e.preventDefault();
 
-        if (password !== repeatPassword) {
-            console.log("Паролі не співпадають!");
+        if (!isValidUserName(userName)){
+            console.log("Incorrect username form!");
             return;
         }
+
+        if (!isValidEmail(email)){
+            console.log("Incorrect email form!");
+            return;
+        }
+
+        if (password !== repeatPassword) {
+            console.log("Passwords do not match!");
+            return;
+        }
+
+        if (!isValidPassword(password)){
+            console.log("Incorrect password form!");
+            return;
+        }
+
 
         try {
             const response = await axios.post(
@@ -40,11 +70,12 @@ function SignUpPage() {
                 }
             );
 
-            console.log("Успішна реєстрація:", response.data);
+            console.log("Successful Registration:", response.data);
 
             login({ email: response?.data?.user?.email, username: response?.data?.user?.username });
+            navigate('/')
         } catch (error) {
-            console.error("Помилка реєстрації:", error);
+            console.error("Registration Error:", error);
         }
     }
 

@@ -1,5 +1,5 @@
 import React, {useContext, useState} from "react";
-import { Link } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import axios from "axios";
 import apiEndpoints from "../../apiEndpoints";
 import {toast} from "sonner";
@@ -8,16 +8,28 @@ import authStrategies from "../../authStrategies";
 
 function SignUpPage() {
     const authContext = useContext(AuthContext);
+    const navigate = useNavigate();
     const [emailOrUserName, setEmailOrUserName] = useState('');
     const [password, setPassword] = useState('');
 
     if (!authContext) {
         return <p>404</p>;
     }
-
     const { login } = authContext;
+
+    function isValidPassword(password) {
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?!.*\s).{8,}$/;
+        return passwordRegex.test(password);
+    }
+
+
     async function handleSubmit(e) {
         e.preventDefault();
+
+        if (!isValidPassword(password)){
+            console.log("Incorrect password form!");
+            return;
+        }
 
         try {
             const response = await axios.post(
@@ -32,11 +44,11 @@ function SignUpPage() {
                 }
             );
 
-            console.log("Успішна авторизація:", response.data);
-
+            console.log("Successful auth:", response.data);
             login({ email: response?.data?.user?.email, username: response?.data?.user?.username });
+            navigate('/')
         } catch (error) {
-            console.error("Помилка реєстрації:", error);
+            console.error("Auth Error:", error);
         }
     }
 
