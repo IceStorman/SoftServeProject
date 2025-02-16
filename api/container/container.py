@@ -25,6 +25,7 @@ class Container(containers.DeclarativeContainer):
     news_dal = providers.Factory(NewsDAL, session = db_session)
     sport_dal = providers.Factory(SportDAL, db_session=db_session)
     jwt_dal = providers.Factory(jwtDAL, db_session=db_session)
+    refresh_dal = providers.Factory(RefreshDAL, db_session=db_session)
 
     user_service = providers.Factory(UserService, user_dal=user_dal, jwt_dal=jwt_dal)
 
