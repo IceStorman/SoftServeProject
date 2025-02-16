@@ -13,21 +13,30 @@ export const useTranslations = () => {
 export const TranslationsProvider = ({ children }) => {
 
     const { language, changeLanguage } = useLanguage();
-    const [translations, setTranslations] = useState(null);
+    const [translations, setTranslations] = useState(() => {
+        const cachedTranslations = localStorage.getItem(`translations_${language}`);
+        return cachedTranslations ? JSON.parse(cachedTranslations) : null;
+    });
 
     const loadTranslations = async (lang) => {
         try {
-            const response = await axios.get(`${apiEndpoints.url}${apiEndpoints.localization.userBaseLanguage}`, {
+            const cached = localStorage.getItem(`translations_${lang}`);
+            if (cached) {
+                setTranslations(JSON.parse(cached));
+                return;
+            }
+
+            const response = await axios.get(`${apiEndpoints.url}${apiEndpoints.localization.userBaseLanguage}`,{
                 headers: {
-                    'Accept-Language': lang,
-                }
+                    "Accept-Language": lang,
+                },
             });
 
+            localStorage.setItem(`translations_${lang}`, JSON.stringify(response.data));
             setTranslations(response.data);
         } catch (error) {
             toast.error(`Error fetching translations: ${error}`);
             setTranslations({});
-
         }
     };
 

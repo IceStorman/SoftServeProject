@@ -1,17 +1,29 @@
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import apiEndpoints from "./apiEndpoints";
 import axios from 'axios';
+import {toast} from "sonner";
+
+const getCookie = (name) => {
+    const match = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`));
+    return match ? match[2] : null;
+};
 
 const useLanguage = () => {
-    const [language, setLanguage] = useState('en');
+    const [language, setLanguage] = useState(() => {
+        return getCookie("lang") || localStorage.getItem("language") || "en";
+    });
+
+    useEffect(() => {
+        document.cookie = `lang=${language}; path=/;`;
+        localStorage.setItem("language", language);
+    }, [language]);
 
     const changeLanguage = async (newLang) => {
         try {
             await axios.get(`${apiEndpoints.url}${apiEndpoints.localization.setLanguage}/${newLang}`);
             setLanguage(newLang);
-            document.cookie = `lang=${newLang}; path=/;`;
         } catch (error) {
-            console.error("Error changing language:", error);
+            toast.error("Error changing language:", error);
         }
     };
 
