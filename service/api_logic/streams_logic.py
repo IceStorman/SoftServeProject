@@ -2,6 +2,8 @@ import json
 from database.models.streams import Stream
 from database.models.streams_status import Streams_Status
 from sqlalchemy.sql.expression import ClauseElement
+
+from database.session import SessionLocal
 from exept.handle_exeptions import handle_exceptions
 from logger.logger import Logger
 from service.api_logic.scripts import get_sport_index_by_name
@@ -10,6 +12,7 @@ from sqlalchemy.orm import aliased
 import datetime
 
 logger = Logger("logger", "all.log")
+session = SessionLocal()
 
 @logger.log_function_call()
 def fetch_streams(session, order_by: ClauseElement = None, limit: int = None, filters=None):
@@ -124,3 +127,14 @@ def json_streams(session):
         })
     return json.dumps(streams_data, ensure_ascii=False)
 
+@handle_exceptions
+@logger.log_function_call()
+def get_available_streams():
+    streams = session.query(Stream).all()
+    streams_data = []
+
+    for stream in streams:
+        streams_data.append({
+            "stream_id": stream.stream_id
+        })
+    return json.dumps(streams_data, ensure_ascii=False)
