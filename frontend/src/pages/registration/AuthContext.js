@@ -10,7 +10,7 @@ export const AuthProvider = ({ children }) => {
     });
 
     const login = (userData) => {
-        Cookies.set("user", JSON.stringify(userData), { expires: 7 });
+        Cookies.set("user", JSON.stringify(userData), { expires: 30 });
         setUser(userData);
     };
 
