@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import useTranslations from "../../translationsContext";
 
 function SignUpPage() {
     function handleSubmit(e) {
@@ -17,27 +18,28 @@ function SignUpPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [repeatPassword, setRepPassword] = useState('');
+    const { t } = useTranslations();
 
     return (
         <section className="registration">
             <form method="post" onSubmit={handleSubmit}>
-                <h2>Sign Up</h2>
+                <h2>{t("sign_in")}</h2>
                 <p>
-                Nickname: <input value={nickname} onChange={e => setNickname(e.target.value)} />
+                    {t("nickname")} <input value={nickname} onChange={e => setNickname(e.target.value)} />
                 </p>
                 <p>
-                Email: <input value={email} onChange={e => setEmail(e.target.value)} />
+                    {t("email")}: <input value={email} onChange={e => setEmail(e.target.value)} />
                 </p>
                 <p>
-                Password: <input type="password" value={password} onChange={e => setPassword(e.target.value)} />
+                    {t("password")} <input type="password" value={password} onChange={e => setPassword(e.target.value)} />
                 </p>
                 <p>
-                Repeat password: <input type="password" value={repeatPassword} onChange={e => setRepPassword(e.target.value)} />
+                    {t("repeat_password")} <input type="password" value={repeatPassword} onChange={e => setRepPassword(e.target.value)} />
                 </p>
-                <button className="filled text" type="submit">Sign up</button>
+                <button className="filled text" type="submit">{t("sign_in")}</button>
             </form>
             <div className="redirect">
-                <p>Already have an account? <Link to={"/sign-in"}>Log in</Link></p>
+                <p>{t("have_account")}<Link to={"/sign-in"}>{t("sign_in")}</Link></p>
             </div>
         </section>
     );

@@ -15,11 +15,13 @@ import img3 from "./imgs/3.jpg"
 import img4 from "./imgs/4.jpg"
 import img5 from "./imgs/5.jpg"
 import GridContainer from "../components/containers/gridBlock.jsx";
+import useTranslations from "../translationsContext";
 
 function MainPage() {
     const [loginStatus, setLoginStatus] = useState(false)
     const [loading, setLoading] = useState(false)
     const [sports, setSport] = useState([]);
+    const { t } = useTranslations();
 
     const newsRef = useRef(null);
 
@@ -320,13 +322,13 @@ function MainPage() {
                                     className="news-card"
                                 />))}
                         </Column></div>
-                    <button onClick={scrollToTarget} className="boxed">more...</button>
+                    <button onClick={scrollToTarget} className="boxed">{t("more")}</button>
                 </section>
 
                 <NewsShowcase newsData={testNews.slice(0, 5)} />
 
                 <section>
-                    <p className="block-title">Latest games</p>
+                    <p className="block-title">{t("latest_games")}</p>
                     <div className="games-column">
                         <Column>
                             {
@@ -347,7 +349,7 @@ function MainPage() {
                         </Column>
                     </div>
                     <div className="blue-placeholder">
-                        <h1><NavLink to={"/sign-in"} className="nav-link" activeClassName="active">Sign In</NavLink> to track performance of your favorite teams</h1>
+                        <h1><NavLink to={"/sign-in"} className="nav-link" activeClassName="active">{t("sign_in")}</NavLink><p>{t("follow_teams")}</p></h1>
                     </div>
                 </section>
             </div>

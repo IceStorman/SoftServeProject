@@ -37,7 +37,7 @@ def localization():
 def set_language(language):
     try:
         response = make_response(jsonify({"message": f"Language set to {language}"}))
-        response.set_cookie('lang', language)
+        response.set_cookie('lang', language, samesite='None', secure=True)
 
         return response
 
