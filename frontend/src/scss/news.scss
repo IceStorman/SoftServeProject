@@ -129,7 +129,7 @@
             color: #000000;
             font-size: 1.2rem;
             font-weight: 100;
-            font-family: "PirataOne";
+            font-family: "CyrillicGoth";
         }
 
         .subtitle {
@@ -172,7 +172,7 @@
                     display: flex;
                     align-items: center;
                     gap: 0.5em;
-                    font-family: 'PirataOne';
+                    font-family: 'CyrillicGoth';
                 }
             }
         }
@@ -252,7 +252,7 @@
     .header {
         display: flex;
         align-items: center;
-        font-family: 'PirataOne';
+        font-family: 'CyrillicGoth';
 
         .sorting-controls {
             width: fit-content;
@@ -263,7 +263,7 @@
             margin-right: 2rem;
             justify-content: center;
             align-items: center;
-            font-family: "GrenzeGotisch";
+            font-family: "CyrillicGoth";
 
             p {
                 font-size: 1.5rem;
@@ -384,7 +384,7 @@
         margin-top: .5rem;
         font-size: 2.5rem;
         height: fit-content;
-        font-family: 'PirataOne';
+        font-family: 'CyrillicGoth';
     }
 
     .content {
@@ -436,7 +436,7 @@
                 display: flex;
                 align-items: center;
                 gap: 0.5em;
-                font-family: 'PirataOne';
+                font-family: 'CyrillicGoth';
             }
         }
     }
