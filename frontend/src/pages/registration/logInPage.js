@@ -49,10 +49,6 @@ function SignInPage() {
         }
     }
 
-    if (!authContext) {
-        return <p>404</p>;
-    }
-
     return (
         <section className="registration">
             <form method="post" onSubmit={handleSubmit}>

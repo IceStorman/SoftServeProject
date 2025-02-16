@@ -14,9 +14,6 @@ function SignUpPage() {
     const [password, setPassword] = useState('');
     const [repeatPassword, setRepPassword] = useState('');
 
-    if (!authContext) {
-        return <p>404</p>;
-    }
     const { login } = authContext;
 
     function isValidEmail(email) {

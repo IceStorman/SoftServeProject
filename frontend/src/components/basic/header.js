@@ -11,7 +11,7 @@ function Header() {
         <header>
             <Logo />
             {
-                !user ? <LoginBtn /> : <button onClick={logout}>logout</button>
+                !user ? <LoginBtn /> : <button className={"filled white"} onClick={logout}>logout</button>
             }
         </header>
     );

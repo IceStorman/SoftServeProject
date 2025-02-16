@@ -31,10 +31,6 @@ function GoogleAuthCallback() {
 
     const { login } = authContext;
 
-    if (!authContext) {
-        return <p>404</p>;
-    }
-
     return <></>;
 }
 
