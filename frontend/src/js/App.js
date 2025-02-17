@@ -30,6 +30,8 @@ import NavBar from "../components/basic/nav";
 import InsideNewsPage from "../pages/news/insideNewsPage";
 import AboutUsPage from "../pages/misc/aboutAs";
 import { TranslationsProvider } from '../translationsContext';
+import ResetPasswordPage from "../components/passwordReset/resetPasswordPage";
+import CheckEmailPage from "../components/passwordReset/checkEmailPage";
 
 
 function App() {
@@ -54,6 +56,10 @@ function App() {
                         <Route path="/sign-up" element={<SignUpPage />} />
 
                         <Route path="/sign-in/reset-password" element={<ForgotPasswordPage />} />
+
+                        <Route path="/sign-in/reset-password/:token" element={<ResetPasswordPage />} />
+
+                        <Route path="/check-email" element={<CheckEmailPage />} />
 
                         <Route path="/sport" element={<SportPage />} />
 

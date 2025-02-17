@@ -119,7 +119,6 @@ class InputUserByEmailDTO(BaseDTO):
 
 class NewPasswordDTO(BaseDTO):
     new_password = fields.Str(required=True)
-    email = fields.Str(required=True)
 
 
 class UpdateUserPreferencesDTO(BaseDTO):
