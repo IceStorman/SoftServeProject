@@ -35,22 +35,22 @@ function SignUpPage() {
         e.preventDefault();
 
         if (!isValidUserName(userName)){
-            console.log("Incorrect username form!");
+            toast.error("Username can not contain such symbol or be empty!");
             return;
         }
 
         if (!isValidEmail(email)){
-            console.log("Incorrect email form!");
+            toast.error("Incorrect email form!");
             return;
         }
 
         if (password !== repeatPassword) {
-            console.log("Passwords do not match!");
+            toast.error("Passwords do not match!");
             return;
         }
 
         if (!isValidPassword(password)){
-            console.log("Incorrect password form!");
+            toast.error("Password must contain at least 8 symbols, where: 1 uppercase letter, 1 lowercase letter and 1 number!");
             return;
         }
 
@@ -71,9 +71,10 @@ function SignUpPage() {
             console.log("Successful Registration:", response.data);
 
             login({ email: response?.data?.user?.email, username: response?.data?.user?.username });
+            toast.success(`You are successfully signed up!`);
             navigate('/')
         } catch (error) {
-            console.error("Registration Error:", error);
+            toast.error(`Registration Error!\n ${error.response.status}`);
         }
     }
 
@@ -82,7 +83,7 @@ function SignUpPage() {
             <form method="post" onSubmit={handleSubmit}>
                 <h2>Sign Up</h2>
                 <p>
-                Nickname: <input value={userName} onChange={e => setUserName(e.target.value)} />
+                Username: <input value={userName} onChange={e => setUserName(e.target.value)} />
                 </p>
                 <p>
                 Email: <input value={email} onChange={e => setEmail(e.target.value)} />
