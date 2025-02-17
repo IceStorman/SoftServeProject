@@ -1,6 +1,7 @@
 import React from "react";
 import img1 from '../imgs/1.jpg'
 import { FaRegHeart } from "react-icons/fa";
+import useTranslations from "../../translationsContext";
 
 
 export default function InsideNewsPage() {
@@ -9,6 +10,7 @@ export default function InsideNewsPage() {
     const date = '2025-01-23'
     const likes = 10
     const content = 'Howling winds keep screaming around And the rain comes pouring down Doors are locked and bolted now As the thing crawls into town Straight out of hell One of a kind Stalking his victim Don t look behind you Night crawler Beware the beast in black Night crawler You know he s coming back Night crawler'
+    const { t } = useTranslations();
 
     return (
         <section className="news-block">
@@ -16,7 +18,7 @@ export default function InsideNewsPage() {
             <h1>{title}</h1>
 
             <div className="tags">
-                <p>Tags:</p>
+                <p>{t("tags")}</p>
                 <span className="tag">{sport}</span>
             </div>
 

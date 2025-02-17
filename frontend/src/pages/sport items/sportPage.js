@@ -4,6 +4,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import apiEndpoints from "../../apiEndpoints";
 import NoItems from "../../components/NoItems";
+import useTranslations from "../../translationsContext";
 
 function SportPage() {
     const [loading, setLoading] = useState(false);
@@ -22,13 +23,15 @@ function SportPage() {
 
     const amountOfColumns = 4
     const overflow = sports.length % amountOfColumns
+    const { t } = useTranslations();
+
 
     return (
         <>
             {
                 !(sports.length === 0) ?
                     <section className={"sportPage"}>
-                        <h1>Select sport</h1>
+                        <h1>{t("select_sport")}</h1>
                         <div className={`sport-selection-grid overflow-${overflow}`}>
                             {
                                 sports.map((item) => (

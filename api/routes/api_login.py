@@ -1,4 +1,4 @@
-from flask import Blueprint, request, current_app, redirect
+from flask import Blueprint, request, current_app, redirect, jsonify
 from oauthlib.oauth2 import WebApplicationClient
 from dto.api_input import InputUserDTO, InputUserByEmailDTO, NewPasswordDTO, InputUserLogInDTO
 from exept.exeptions import DatabaseConnectionError, CustomQSportException
@@ -7,6 +7,7 @@ from logger.logger import Logger
 from dependency_injector.wiring import inject, Provide
 from service.api_logic.user_logic import UserService
 from api.container.container import Container
+from flask_jwt_extended import jwt_required, get_jwt_identity
 import os
 
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
@@ -66,13 +67,17 @@ def reset_password(token, service: UserService = Provide[Container.user_service]
     try:
         if request.method == "GET":
             user_data = service.confirm_token(token)
+            if not user_data:
+                return None
 
-            return user_data
+            reset_front_url = f"http://localhost:3000/sign-in/reset-password/{token}"
+
+            return redirect(reset_front_url)
 
         if request.method == "POST":
             data = request.get_json()
             dto = NewPasswordDTO().load(data)
-            token = service.reset_user_password(dto.email, dto.new_password)
+            token = service.reset_user_password(token, dto.new_password)
 
             return token
 
@@ -115,3 +120,15 @@ def login_google():
     except CustomQSportException as e:
         logger.error(f"Error in GET /login/google: {str(e)}")
         return get_custom_error_response(e)
+    
+@login_app.route("/refresh", methods=['POST'])
+@inject
+@handle_exceptions
+@logger.log_function_call()
+@jwt_required(refresh=True)
+def refresh(service: UserService = Provide[Container.user_service]):
+    identity = get_jwt_identity()   
+    return service.create_new_access_token(identity)
+
+
+

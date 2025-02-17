@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import useTranslations from "../../translationsContext";
 
 
 function SignUpPage() {
@@ -17,24 +18,25 @@ function SignUpPage() {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const { t } = useTranslations();
 
     return (
         <section className="registration">
             <form method="post" onSubmit={handleSubmit}>
-                <h2>Log In</h2>
+                <h2>{t("log_in")}</h2>
                 <p>
-                Email: <input value={email} onChange={e => setEmail(e.target.value)} />
+                    {t("email")}: <input value={email} onChange={e => setEmail(e.target.value)} />
                 </p>
                 <p>
-                Password: <input type="password" value={password} onChange={e => setPassword(e.target.value)} />
+                    {t("password")} <input type="password" value={password} onChange={e => setPassword(e.target.value)} />
                 </p>
-                <button className='filled text' type="submit">log in</button>
+                <button className='filled text' type="submit">{t("log_in")}</button>
             </form>
             <div className="reset-passwrd">
-                <Link to={"/sign-in/reset-password"}>Forget password?</Link>
+                <Link to={"/sign-in/reset-password"}>{t("forget_password")}</Link>
             </div>
             <div className="redirect">
-                <p>Do not have an account? <Link to={"/sign-up"}>Create</Link></p>
+                <p> {t("no_account")} <Link to={"/sign-up"}>{t("create")}</Link></p>
             </div>
         </section>
     );

@@ -5,6 +5,7 @@ import ReactPaginate from "react-paginate";
 import CustomSelect from './customSelect';
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
 import { TfiLayoutLineSolid } from "react-icons/tfi";
+import useTranslations from "../../translationsContext";
 
 
 const GridContainer = ({
@@ -20,6 +21,7 @@ const GridContainer = ({
     loading,
     paginationKey,
 }) => {
+    const { t } = useTranslations();
     const [sortBy, setSortBy] = useState("popularity");
     const [sortOrder, setSortOrder] = useState("asc");
     const [selectedGrid, setSelectedGrid] = useState('large');
@@ -35,7 +37,7 @@ const GridContainer = ({
                 <h1>{title}</h1>
 
                 <div className="sorting-controls">
-                    <p>Sort by: </p>
+                    <p>{t("sort")}</p>
                     <CustomSelect options={options} maxWidth={300} />
 
                     <button onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}>

@@ -8,6 +8,7 @@ import LeagueCard from "../../components/cards/leagueCard"
 import NoItems from "../../components/NoItems";
 import Filters from "../../components/containers/filtersBlock.jsx";
 import { RiArrowLeftWideLine } from "react-icons/ri";
+import useTranslations from "../../translationsContext";
 
 function LeaguePage() {
     const { sportName } = useParams();
@@ -31,6 +32,8 @@ function LeaguePage() {
     const [leaguesPerPage, setLeaguesPerPage] = useState(cardSizes.large.postsPerPage);
     const [gridSize, setGridSize] = useState(cardSizes.large);
     const [passedPosts, setPassedPosts] = useState(0);
+    const { t } = useTranslations();
+
 
     useEffect(() => {
         let page = Math.floor(passedPosts / leaguesPerPage);
@@ -115,7 +118,7 @@ function LeaguePage() {
         <div className="leagues-page">
             <div className="title">
                 <button className="filled arrow" onClick={() => navigate(-1)}><RiArrowLeftWideLine className="arrow" /></button>
-                <h1>{sportName} leagues</h1>
+                <h1>{sportName} {t("leagues")}</h1>
             </div>
             <Filters></Filters>
 

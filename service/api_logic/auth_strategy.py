@@ -46,7 +46,7 @@ class SimpleAuthHandler(AuthHandler[T]):
 
         if not user:
             self._user_service._logger.warning("User does not exist")
-            raise UserDoesNotExistError(user.email)
+            raise UserDoesNotExistError(credentials.email_or_username)
 
         if not bcrypt.checkpw(credentials.password_hash.encode('utf-8'), user.password_hash.encode('utf-8')):
             self._user_service._logger.warning("Some log in data is incorrect")

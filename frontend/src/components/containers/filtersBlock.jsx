@@ -1,13 +1,16 @@
 import React from "react"
+import useTranslations from "../../translationsContext";
 
 const Filters = ({ }) => {
+    const { t } = useTranslations();
+
     return (
         <div className="filters">
-            <h1>Filters</h1>
+            <h1>{t("filters")}</h1>
             <hr />
-            <p>Option 1</p>
-            <p>Option 2</p>
-            <p>Option 3</p>
+            <p>{t("first_option")}</p>
+            <p>{t("second_option")}</p>
+            <p>{t("third_option")}</p>
         </div>
     );
 }

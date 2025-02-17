@@ -8,6 +8,7 @@ import SearchBlock from "../../components/containers/searchBlock.jsx";
 import NoItems from "../../components/NoItems.js";
 import Filters from "../../components/containers/filtersBlock.jsx";
 import { RiArrowLeftWideLine } from "react-icons/ri";
+import useTranslations from "../../translationsContext";
 
 function TeamPage() {
     const { leagueName } = useParams();
@@ -36,6 +37,8 @@ function TeamPage() {
     const [prevInputValue, setPrevInputValue] = useState('');
     const [searchClicked, setSearchClicked] = useState(false);
     const [passedPosts, setPassedPosts] = useState(0);
+    const { t } = useTranslations();
+
 
     useEffect(() => {
         let page = Math.floor(passedPosts / teamsPerPage);
@@ -127,7 +130,7 @@ function TeamPage() {
 
             <div className="title">
                 <button className="filled arrow" onClick={() => navigate(-1)}><RiArrowLeftWideLine className="arrow" /></button>
-                <h1>{leagueName} teams</h1>
+                <h1>{leagueName} {t("teams")}</h1>
             </div>
             <Filters></Filters>
 

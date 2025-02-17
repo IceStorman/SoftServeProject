@@ -41,3 +41,81 @@ def downgrade() -> None:
     op.drop_index(op.f('ix_Token_Blocklist_jti'), table_name='Token_Blocklist')
     op.drop_table('Token_Blocklist')
     # ### end Alembic commands ###
+
+
+    # op.execute("""
+    # CREATE OR REPLACE FUNCTION set_initial_status()
+    # RETURNS TRIGGER AS $$
+    # BEGIN
+    #     INSERT INTO Streams_Status (stream_id, status_id)
+    #     VALUES (NEW.stream_id, 0);
+    #     RETURN NEW;
+    # END;
+    # $$ LANGUAGE plpgsql;
+
+    # CREATE TRIGGER set_initial_status_trigger
+    # AFTER INSERT ON Streams
+    # FOR EACH ROW
+    # EXECUTE FUNCTION set_initial_status();
+    # """)
+
+    # op.execute("""
+    # CREATE OR REPLACE FUNCTION update_status_on_start()
+    # RETURNS TRIGGER AS $$
+    # BEGIN
+    #     IF NEW.start_time <= EXTRACT(EPOCH FROM NOW()) AND
+    #        (SELECT status_id FROM Streams_Status WHERE stream_id = NEW.stream_id ORDER BY status_id DESC LIMIT 1) = 0 THEN
+    #         UPDATE Streams_Status
+    #         SET status_id = 1
+    #         WHERE stream_id = NEW.stream_id;
+    #     END IF;
+    #     RETURN NEW;
+    # END;
+    # $$ LANGUAGE plpgsql;
+
+    # CREATE TRIGGER update_status_on_start_trigger
+    # AFTER UPDATE OF start_time ON Streams
+    # FOR EACH ROW
+    # EXECUTE FUNCTION update_status_on_start();
+    # """)
+
+    # op.execute("""
+    # CREATE OR REPLACE FUNCTION update_status_on_end()
+    # RETURNS TRIGGER AS $$
+    # BEGIN
+    #     IF NEW.start_time + (90 * 60) <= EXTRACT(EPOCH FROM NOW()) AND
+    #        (SELECT status_id FROM Streams_Status WHERE stream_id = NEW.stream_id ORDER BY status_id DESC LIMIT 1) = 1 THEN
+    #         UPDATE Streams_Status
+    #         SET status_id = 2
+    #         WHERE stream_id = NEW.stream_id;
+    #     END IF;
+    #     RETURN NEW;
+    # END;
+    # $$ LANGUAGE plpgsql;
+
+    # CREATE TRIGGER update_status_on_end_trigger
+    # AFTER UPDATE OF start_time ON Streams
+    # FOR EACH ROW
+    # EXECUTE FUNCTION update_status_on_end();
+    # """)
+
+    # op.execute("""
+    # CREATE OR REPLACE FUNCTION delete_old_streams()
+    # RETURNS TRIGGER AS $$
+    # BEGIN
+    #     DELETE FROM Streams_Status
+    #     WHERE stream_id = OLD.stream_id;
+
+    #     DELETE FROM Streams
+    #     WHERE stream_id = OLD.stream_id;
+
+    #     RETURN OLD;
+    # END;
+    # $$ LANGUAGE plpgsql;
+
+    # CREATE TRIGGER delete_streams_after_day_trigger
+    # AFTER UPDATE OF start_time ON Streams
+    # FOR EACH ROW
+    # WHEN (NEW.start_time + INTERVAL '1 day' <= NOW())
+    # EXECUTE FUNCTION delete_old_streams();
+    # """)

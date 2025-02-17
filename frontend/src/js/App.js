@@ -29,54 +29,63 @@ import apiEndpoints from "../apiEndpoints";
 import NavBar from "../components/basic/nav";
 import InsideNewsPage from "../pages/news/insideNewsPage";
 import AboutUsPage from "../pages/misc/aboutAs";
+import { TranslationsProvider } from '../translationsContext';
+import ResetPasswordPage from "../components/passwordReset/resetPasswordPage";
+import CheckEmailPage from "../components/passwordReset/checkEmailPage";
+
 
 function App() {
 
-
     return (
         <>
-            <Router
-                future={{
-                    v7_startTransition: true,
-                    v7_relativeSplatPath: true,
-                }}>
+            <TranslationsProvider>
+                <Router
+                    future={{
+                        v7_startTransition: true,
+                        v7_relativeSplatPath: true,
+                    }}>
 
-                <Header />
-                <NavBar />
+                    <Header />
+                    <NavBar />
 
-                <Routes>
-                    <Route exact path="/" element={<MainPage />} />
+                    <Routes>
+                        <Route exact path="/" element={<MainPage />} />
 
-                    <Route path="/sign-in" element={<SignInPage />} />
+                        <Route path="/sign-in" element={<SignInPage />} />
 
-                    <Route path="/sign-up" element={<SignUpPage />} />
+                        <Route path="/sign-up" element={<SignUpPage />} />
 
-                    <Route path="/sign-in/reset-password" element={<ForgotPasswordPage />} />
+                        <Route path="/sign-in/reset-password" element={<ForgotPasswordPage />} />
 
-                    <Route path="/sport" element={<SportPage />} />
+                        <Route path="/sign-in/reset-password/:token" element={<ResetPasswordPage />} />
 
-                    <Route path="/sport/:sportName" element={<LeaguePage />} />
+                        <Route path="/check-email" element={<CheckEmailPage />} />
 
-                    <Route path="/sport/:sportName/league/:leagueName" element={<TeamPage />} />
+                        <Route path="/sport" element={<SportPage />} />
 
-                    <Route path="/stream" element={<GamesPage />} />
+                        <Route path="/sport/:sportName" element={<LeaguePage />} />
 
-                    <Route path="/stream/:gameId" element={<InsideStreamPage />} />
+                        <Route path="/sport/:sportName/league/:leagueName" element={<TeamPage />} />
 
-                    <Route path="/news/:articleId" element={<InsideNewsPage />} />
+                        <Route path="/stream" element={<GamesPage />} />
 
-                    <Route path="/not-existing" element={<NotExistingPage />} />
+                        <Route path="/stream/:gameId" element={<InsideStreamPage />} />
 
-                    <Route path="*" element={<Navigate to="/not-existing" replace />} />
+                        <Route path="/news/:articleId" element={<InsideNewsPage />} />
 
-                    <Route exact path="/FAQ" element={<FAQpage />} />
+                        <Route path="/not-existing" element={<NotExistingPage />} />
 
-                    <Route exact path="/AboutUs" element={<AboutUsPage />} />
-                </Routes>
+                        <Route path="*" element={<Navigate to="/not-existing" replace />} />
 
-                {<Footer />}
+                        <Route exact path="/FAQ" element={<FAQpage />} />
 
-            </Router>
+                        <Route exact path="/AboutUs" element={<AboutUsPage />} />
+                    </Routes>
+
+                    {<Footer />}
+
+                </Router>
+            </TranslationsProvider>
         </>
     );
 }

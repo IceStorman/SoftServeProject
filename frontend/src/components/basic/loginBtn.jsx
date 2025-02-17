@@ -1,10 +1,13 @@
 import { NavLink } from "react-router-dom";
 import React from "react";
+import useTranslations from "../../translationsContext";
 
 function LoginBtn(){
+    const { t } = useTranslations();
+
     return (
-        <button className="filled">
-            <NavLink to={"/sign-in"} className="nav-link" activeClassName="active">Sign In</NavLink>
+        <button className="filled login">
+            <NavLink to={"/sign-in"} className="nav-link" activeClassName="active">{t("sign_in")}</NavLink>
         </button>
     );
 }
