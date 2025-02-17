@@ -5,18 +5,19 @@ from datetime import datetime
 
 from database.models.refresh_token_tracking import refresh_token_tracking
 from database.models.token_blocklist import Token_Blocklist
-from database.postgres.dto.jwt import jwtDTO
+from database.postgres.dto.refresh import refreshDTO
 
 class RefreshTokenDAL:
     def __init__(self, db_session: Session):
         self.db_session = db_session
 
-    def save_refresh_token(self, refresh_dto: jwtDTO, last_ip: str, last_device: str) -> Optional[int]:
+    def save_refresh_token(self, refresh_dto: refreshDTO, last_ip: str, last_device: str) -> Optional[int]:
         try:
             if refresh_dto.id and (refresh_entry := self.get_refresh_token_by_id(refresh_dto.id)):
                 refresh_entry.user_id = refresh_dto.user_id
                 refresh_entry.last_ip = last_ip
                 refresh_entry.last_device = last_device
+                refresh_entry.nonce = refresh_dto.nonce
             else:
                 refresh_entry = refresh_token_tracking(
                     id=refresh_dto.id, 
@@ -39,6 +40,26 @@ class RefreshTokenDAL:
 
     def get_refresh_token_by_user(self, user_id: int) -> Optional[refresh_token_tracking]:
         return self.db_session.query(refresh_token_tracking).filter(refresh_token_tracking.user_id == user_id).first()
+
+    def get_nonce_by_user_id(self, user_id: int) -> Optional[str]:
+        entry = self.db_session.query(refresh_token_tracking).filter(refresh_token_tracking.user_id == user_id).first()
+        return entry.nonce if entry else None
+    
+    def update_refresh_token(self, user_id: int, refresh_dto: refreshDTO):
+        try:
+            entry = self.db_session.query(refresh_token_tracking).filter(refresh_token_tracking.user_id == user_id).first()
+            if entry:
+                entry.refresh_token = refresh_dto.refresh_token
+                entry.nonce = refresh_dto.nonce
+                entry.last_ip = refresh_dto.last_ip
+                entry.last_device = refresh_dto.last_device
+                self.db_session.commit()
+            else:
+                self.save_refresh_token(refresh_dto)
+        except SQLAlchemyError as e:
+            self.db_session.rollback()
+            print(f"Error in update_refresh_token: {e}")
+
 
     def revoke_refresh_token(self, refresh_id: int) -> bool:
         try:
