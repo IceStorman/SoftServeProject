@@ -32,6 +32,13 @@ const apiEndpoints = {
     stream:{
         getAll: 'streams/all',
         getInfo: 'streams/info'
+    },
+
+    login:{
+        signUp: 'login/sign-up',
+        login: 'login/login',
+        resetPasswordRequest: 'login/reset-password-request',
+        resetPassword: 'login/reset-password'
     }
 };
 

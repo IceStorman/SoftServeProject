@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect, useContext} from "react";
 import {
     BrowserRouter as Router,
     Routes,
@@ -29,12 +29,22 @@ import apiEndpoints from "../apiEndpoints";
 import NavBar from "../components/basic/nav";
 import InsideNewsPage from "../pages/news/insideNewsPage";
 import AboutUsPage from "../pages/misc/aboutAs";
+import {AuthContext} from "../pages/registration/AuthContext";
+import GoogleAuthCallback from "../pages/registration/googleCallBack";
 
 function App() {
 
-
     return (
         <>
+            <Toaster
+                position="bottom-right"
+                richColors
+                expand={true}
+                duration={5000}
+                visibleToasts={3}
+                closeButton
+            />
+
             <Router
                 future={{
                     v7_startTransition: true,
@@ -50,6 +60,8 @@ function App() {
                     <Route path="/sign-in" element={<SignInPage />} />
 
                     <Route path="/sign-up" element={<SignUpPage />} />
+
+                    <Route path="/sign-in/google" element={<GoogleAuthCallback />} />
 
                     <Route path="/sign-in/reset-password" element={<ForgotPasswordPage />} />
 
@@ -67,11 +79,11 @@ function App() {
 
                     <Route path="/not-existing" element={<NotExistingPage />} />
 
-                    <Route path="*" element={<Navigate to="/not-existing" replace />} />
-
                     <Route exact path="/FAQ" element={<FAQpage />} />
 
                     <Route exact path="/AboutUs" element={<AboutUsPage />} />
+
+                    <Route path="*" element={<Navigate to="/not-existing" replace />} />
                 </Routes>
 
                 {<Footer />}

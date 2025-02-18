@@ -145,3 +145,4 @@ class InputUserLogInDTO(BaseDTO):
     email = fields.Str(required=False, missing=None)
     email_or_username = fields.Str(required=False, missing=None)
     password_hash = fields.Str(required=False, missing=None)
+    auth_provider = fields.String(required=False, missing=None)
