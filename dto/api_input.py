@@ -40,7 +40,7 @@ class BaseDTO(Schema):
         return data
 
     @pre_load
-    def validate_email(self, data, **kwargs):
+    def validate_username(self, data, **kwargs):
         if 'username' in data:
             regex = re.compile(r'[ @!#$%^&*()<>?/\|}{~:;,+=]')
             if regex.search(data['username']):
