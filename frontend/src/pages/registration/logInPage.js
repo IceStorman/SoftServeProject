@@ -52,7 +52,7 @@ function SignInPage() {
             toast.success(`You are successfully logged in!`);
             navigate('/');
         } catch (error) {
-            toast.error(`Registration Error!\n ${error.response.status} \n ${error.response.data.error}`);
+            toast.error(`Authentication Error!\n ${error.response.status} \n ${error.response.data.error}`);
         }
     }
 
