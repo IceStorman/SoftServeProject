@@ -3,8 +3,6 @@ from database.postgres.dal import SportDAL
 from database.session import SessionLocal
 from database.postgres.dal.user import UserDAL
 from database.postgres.dal.news import NewsDAL
-from database.postgres.dal.refresh import RefreshDAL
-from database.postgres.dal.jwt import jwtDAL
 from service.api_logic.managers.recommendation_menager import RecommendationManager
 from service.api_logic.user_logic import UserService
 from service.api_logic.news_logic import NewsService
@@ -24,9 +22,8 @@ class Container(containers.DeclarativeContainer):
     user_dal = providers.Factory(UserDAL, session=db_session)
     news_dal = providers.Factory(NewsDAL, session = db_session)
     sport_dal = providers.Factory(SportDAL, db_session=db_session)
-    jwt_dal = providers.Factory(jwtDAL, db_session=db_session)
 
-    user_service = providers.Factory(UserService, user_dal=user_dal, jwt_dal=jwt_dal)
+    user_service = providers.Factory(UserService, user_dal=user_dal)
 
     news_service = providers.Factory(
         NewsService,
