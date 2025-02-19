@@ -6,7 +6,7 @@ from service.api_logic.filter_manager.common_filters import CommonFilters
 class LeagueFilterManager(BaseFilterManager, CommonFilters):
 
     FILTERS = {
-        "sport": "apply_sport_filter",
+        "sport_id": "apply_sport_filter",
         "country_id": "apply_country_filter",
         "name":"apply_name_filter",
     }

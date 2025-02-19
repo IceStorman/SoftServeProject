@@ -64,7 +64,7 @@ class TeamsStatisticsOrPlayersDTO(BaseDTO):
     per_page = fields.Int(required=False, missing=0)
 
 class SearchDTO(BaseDTO):
-    sport = fields.Str(required=False, missing=None)
+    sport_id = fields.Int(required=False, missing=None)
     country_id = fields.Int(required=False, missing=None)
     letter = fields.Str(required=False, missing="")
     name = fields.Str(required=False, missing=None)
@@ -79,7 +79,7 @@ class SportsLeagueDTO(BaseDTO):
 
 
 class GamesDTO(BaseDTO):
-    sport = fields.Str(required=False, missing=None)
+    sport_id = fields.Int(required=False, missing=None)
     league_id = fields.Int(required=False, missing=None)
     country_id = fields.Int(required=False, missing=None)
     status = fields.Str(required=False, missing=None)

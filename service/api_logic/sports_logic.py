@@ -32,7 +32,7 @@ def search_leagues(filters_dto, pagination: Pagination):
         "countries": Country,
     }
 
-    query = FilterManagerFactory.apply_filters(League, query, filters_dto, session)
+    query = FilterManagerFactory.apply_filters(League, query, filters_dto)
     count = query.count()
 
     offset, limit = pagination.get_pagination()
