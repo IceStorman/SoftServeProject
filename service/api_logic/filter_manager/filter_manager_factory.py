@@ -14,7 +14,7 @@ class FilterManagerFactory:
     }
 
     @classmethod
-    def apply_filters(cls, model, query: Query, filters, session) -> Query:
+    def apply_filters(cls, model, query: Query, filters) -> Query:
 
         table_name = model.__tablename__
 
@@ -22,4 +22,4 @@ class FilterManagerFactory:
             raise ValueError(f"No filter manager found for model: {table_name}")
 
         filter_manager = cls.MANAGERS[table_name]
-        return filter_manager.apply_filters(query, filters, session)
+        return filter_manager.apply_filters(query, filters)

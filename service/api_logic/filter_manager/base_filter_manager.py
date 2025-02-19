@@ -4,7 +4,7 @@ class BaseFilterManager:
     FILTERS ={}
 
     @classmethod
-    def apply_filters(cls, query: Query, filters, session) -> Query:
+    def apply_filters(cls, query: Query, filters) -> Query:
         filters_dict = filters._asdict()
 
         for filter_name, filter_value in filters_dict.items():

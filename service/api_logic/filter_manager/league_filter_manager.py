@@ -12,8 +12,8 @@ class LeagueFilterManager(BaseFilterManager, CommonFilters):
     }
 
     @classmethod
-    def apply_sport_filter(cls, query: Query, value: str, session) -> Query:
-        return super().apply_sport_filter(query, League, value, session)
+    def apply_sport_filter(cls, query: Query, value: str) -> Query:
+        return super().apply_sport_filter(query, League, value)
 
     @classmethod
     def apply_country_filter(cls, query: Query, value: int) -> Query:

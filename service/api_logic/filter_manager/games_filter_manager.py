@@ -19,8 +19,8 @@ class GamesFilterManager(BaseFilterManager, CommonFilters):
     }
 
     @classmethod
-    def apply_sport_filter(cls, query: Query, value: str, session) -> Query:
-        return super().apply_sport_filter(query, Games, value, session)
+    def apply_sport_filter(cls, query: Query, value: str) -> Query:
+        return super().apply_sport_filter(query, Games, value)
 
     @staticmethod
     def apply_status_filter(query: Query, value: str) -> Query:

@@ -7,7 +7,7 @@ class NewsFilterManager(BaseFilterManager, CommonFilters):
 
     FILTERS = {
         "title_contains": "apply_title_contains",
-        "sport": "apply_sport_filter",
+        "sport_id": "apply_sport_filter",
         "date_from": "apply_date_from",
         "date_to": "apply_date_to",
         "team": "apply_team_filter",
@@ -18,8 +18,8 @@ class NewsFilterManager(BaseFilterManager, CommonFilters):
         return query.filter(News.blob_id.ilike(f"%{value}%"))
 
     @classmethod
-    def apply_sport_filter(cls, query: Query, value: str, session) -> Query:
-        return super().apply_sport_filter(query, News, value, session)
+    def apply_sport_filter(cls, query: Query, value: str) -> Query:
+        return super().apply_sport_filter(query, News, value)
 
     @staticmethod
     def apply_date_from(query: Query, value: str) -> Query:

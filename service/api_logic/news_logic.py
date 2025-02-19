@@ -53,14 +53,13 @@ class NewsService:
         )
 
     def get_filtered_news(self, filters: NewsDTO, pagination: Pagination):
-        session = SessionLocal()
-        query = session.query(News).order_by(desc(News.save_at))
+        query = self._news_dal.get_query().order_by(desc(News.save_at))
 
-        filtered_query = FilterManagerFactory.apply_filters(News, query, filters, session)
+        filtered_query = FilterManagerFactory.apply_filters(News, query, filters)
 
         offset, limit = pagination.get_pagination()
         if offset is not None and limit is not None:
             filtered_query = filtered_query.offset(offset).limit(limit)
 
-        news = filtered_query.all()
+        news = self._news_dal.execute_query(filtered_query)
         return self.json_news(news)

@@ -13,8 +13,8 @@ class TeamsFilterManager(BaseFilterManager, CommonFilters):
     }
 
     @classmethod
-    def apply_sport_filter(cls, query: Query, value: str, session) -> Query:
-        return super().apply_sport_filter(query, TeamIndex, value, session)
+    def apply_sport_filter(cls, query: Query, value: str) -> Query:
+        return super().apply_sport_filter(query, TeamIndex, value)
 
     @classmethod
     def apply_name_filter(cls, query: Query, value: str) -> Query:

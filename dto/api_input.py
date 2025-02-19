@@ -94,7 +94,7 @@ class GamesDTO(BaseDTO):
 
 class NewsDTO(BaseDTO):
     news_id = fields.Int(required=False, missing=None)
-    sport = fields.Str(required=False, missing=None)
+    sport_id = fields.Int(required=False, missing=None)
     interest_rate = fields.Int(required=False, missing=None)
     page = fields.Int(required=False, missing=0)
     per_page = fields.Int(required=False, missing=0)

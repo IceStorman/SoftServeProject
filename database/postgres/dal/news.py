@@ -27,3 +27,8 @@ class NewsDAL:
     def get_news_by_id(self, blob_id: str):
         return self.session.query(News).filter(News.blob_id == blob_id).first()
 
+    def get_query(self):
+        return self.session.query(News)
+
+    def execute_query(self, query):
+        return query.all()
