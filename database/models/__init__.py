@@ -1,6 +1,5 @@
 from .users import User
 from .blob_index import BlobIndex
-from .club_preferences import ClubPreference
 from .news import News
 from .sports import Sport
 from .sports_index import SportIndex
@@ -17,6 +16,8 @@ from .players import Players
 from .categories import Category
 from .streams_status import Streams_Status
 from .streams import Stream
-from .user_recommendation import UserRecommendations
+from .user_recommendations import UserNewsRecommendations
+from .user_club_preferences import UserClubPreferences
+from .token_blocklist import TokenBlocklist
 
 from .base import Base
