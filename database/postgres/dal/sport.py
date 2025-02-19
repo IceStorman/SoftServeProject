@@ -2,6 +2,8 @@ from sqlalchemy.orm import Session
 from database.models import Sport
 from database.postgres.dto import SportDTO
 from typing import Optional
+from dto.api_output import SportsOutput
+
 
 class SportDAL:
     def __init__(self, db_session = None):
@@ -40,4 +42,3 @@ class SportDAL:
         self.db_session.delete(sport)
         self.db_session.commit()
         return True
-
