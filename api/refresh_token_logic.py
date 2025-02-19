@@ -35,9 +35,3 @@ def generate_nonce():
 
 
 
-# def is_suspicious_login(user_id, new_ip, new_device):
-#     user = db.get_user(user_id)
-    
-#     if user.last_ip == new_ip or user.last_device == new_device:
-#         return False 
-#     return True

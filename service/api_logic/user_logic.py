@@ -16,6 +16,7 @@ from database.postgres.dto.jwt import jwtDTO
 from database.postgres.dto.refresh import refreshDTO
 import datetime
 from api.refresh_token_logic import get_client_ip, get_country_from_ip, get_user_device, generate_nonce
+from flask_jwt_extended import get_jwt_identity, get_jwt
 
 
 
@@ -196,7 +197,57 @@ class UserService:
         set_refresh_cookies(response, refresh_token)
 
         return response
+    
+    async def verify_nonce(self, user_email: str, token_nonce: str) -> bool:
+        user = await self._user_dal.get_user_by_email(user_email)
+        saved_nonce = self._refresh_dal.get_nonce_by_user_id(user.id)
 
+        return saved_nonce == token_nonce
+    
+    async def create_new_access_token(self, user_email: str, refresh: bool = False):
+        user = await self._user_dal.get_user_by_email(user_email)
+        
+        new_access_token = create_access_token(identity=user.email)
+        new_refresh_token = create_refresh_token(identity=user.email, additional_claims={"nonce": generate_nonce()})
+        
+        return new_access_token, new_refresh_token
+
+    async def update_refresh_token(self, user_email: str, new_refresh_token: str):
+        user = await self._user_dal.get_user_by_email(user_email)
+        
+        refresh_dto = refreshDTO(
+            user_id=user.id,
+            last_ip=get_country_from_ip(get_client_ip()),
+            last_device=get_user_device(),
+            refresh_token=new_refresh_token,
+            nonce=generate_nonce()
+        )
+
+        self._refresh_dal.update_refresh_token(user.id, refresh_dto)
+
+    async def refresh_tokens(self):
+        identity = get_jwt_identity()   
+        current_refresh_token = get_jwt()
+
+        token_nonce = current_refresh_token.get("nonce")
+
+        if not self._refresh_dal.verify_nonce(identity, token_nonce):
+            return jsonify({"msg": "Invalid refresh token"}), 401
+
+        new_access_token, new_refresh_token = await self.create_new_access_token(identity, refresh=True)
+
+        new_nonce = generate_nonce()
+        self._refresh_dal.update_refresh_token(identity, new_refresh_token, new_nonce)
+
+        response = make_response(jsonify({
+            "access_token": new_access_token,
+            "refresh_token": new_refresh_token
+        }))
+    
+        set_access_cookies(response, new_access_token)
+        set_refresh_cookies(response, new_refresh_token)
+
+        return response
 
 
     def get_user_sport_and_club_preferences(self, user_id: int) -> list[int] and list[int] | list[None] and list[None]:

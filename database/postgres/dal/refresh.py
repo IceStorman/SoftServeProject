@@ -45,6 +45,10 @@ class RefreshTokenDAL:
         entry = self.db_session.query(refresh_token_tracking).filter(refresh_token_tracking.user_id == user_id).first()
         return entry.nonce if entry else None
     
+    def verify_nonce(self, user_id: int, nonce: str) -> bool:
+        token_entry = self.db_session.query(refresh_token_tracking).filter_by(user_id=user_id, nonce=nonce).first()
+        return token_entry is not None
+    
     def update_refresh_token(self, user_id: int, refresh_dto: refreshDTO):
         try:
             entry = self.db_session.query(refresh_token_tracking).filter(refresh_token_tracking.user_id == user_id).first()
