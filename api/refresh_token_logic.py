@@ -25,9 +25,19 @@ def get_country():
     response = requests.get(f"https://ipinfo.io/{ip}/json")
     return response.json().get("country")
 
+def is_ip_country_changed(stored_country: str) -> bool:
+    current_country = get_country()
+    return stored_country != current_country
+
+def is_device_changed(stored_device: str) -> bool:
+    current_device = get_user_device()
+    return stored_device != current_device
+
 def generate_nonce():
     nonce = hashlib.sha256(f"{time.time()}{os.urandom(16)}".encode()).hexdigest()
     return nonce
+
+
 
 
 # def is_ip_suspicious(old_ip, new_ip):
