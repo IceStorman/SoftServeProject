@@ -175,16 +175,10 @@ class UserService:
             return  OutputTeamPreferences(many=True).dump(prefs)
 
 
-    def get_all_sport_preferences(self):
-        return self._sport_dal.get_all_sports()
-
-
     def delete_preferences(self, dto: UpdateUserPreferencesDTO):
         new_dto_by_type_of_preference = self.dto_for_type_of_preference(dto)
 
         self._preferences_dal.delete_user_preferences(new_dto_by_type_of_preference, dto)
-
-        return CommonResponse().to_dict()
 
 
     @staticmethod

@@ -1,5 +1,6 @@
 from flask import Blueprint, request
 from dto.api_input import UpdateUserPreferencesDTO, GetUserPreferencesDTO
+from dto.common_response import CommonResponse
 from exept.exeptions import DatabaseConnectionError, CustomQSportException
 from exept.handle_exeptions import get_custom_error_response, handle_exceptions
 from logger.logger import Logger
@@ -32,14 +33,14 @@ def sport_preferences_endpoint(service: UserService = Provide[Container.user_ser
         dto = UpdateUserPreferencesDTO().load(data)
 
         if request.method == "POST":
-            result = service.add_preferences(dto)
+            service.add_preferences(dto)
 
-            return result
+            return  CommonResponse().to_dict()
 
         if request.method == "DELETE":
-            result = service.delete_preferences(dto)
+            service.delete_preferences(dto)
 
-            return result
+            return CommonResponse().to_dict()
 
     except CustomQSportException as e:
         logger.error(f"Error in POST /: {str(e)}")
@@ -55,21 +56,6 @@ def get_user_sport_preferences_endpoint(service: UserService = Provide[Container
         data = request.get_json()
         dto = GetUserPreferencesDTO().load(data)
         result = service.get_user_preferences(dto)
-
-        return result
-
-    except CustomQSportException as e:
-        logger.error(f"Error in POST /: {str(e)}")
-        return get_custom_error_response(e)
-
-
-@preferences_app.route('/all', methods=['GET'])
-@inject
-@handle_exceptions
-@logger.log_function_call()
-def get_all_sport_preferences_endpoint(service: UserService = Provide[Container.user_service]):
-    try:
-        result = service.get_all_sport_preferences()
 
         return result
 

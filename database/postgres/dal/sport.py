@@ -42,9 +42,3 @@ class SportDAL:
         self.db_session.delete(sport)
         self.db_session.commit()
         return True
-
-    def get_all_sports(self):
-        sports = self.db_session.query(Sport).all()
-        schema = SportsOutput(many=True)
-        return schema.dump(sports)
-

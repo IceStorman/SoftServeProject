@@ -46,14 +46,14 @@ class PreferencesDAL:
         )
         return user_prefs
 
-
     def delete_user_preferences(self, type_dto, dto):
         tables_and_cols_dto = self.getattr_tables_and_columns_by_type(type_dto)
 
-        for pref in dto.preferences:
-            self.session.query(tables_and_cols_dto.main_table).filter(tables_and_cols_dto.type_id_field == pref, tables_and_cols_dto.user_id_field == dto.user_id).delete()
+        self.session.query(tables_and_cols_dto.main_table).filter(
+            tables_and_cols_dto.type_id_field.in_(dto.preferences),
+            tables_and_cols_dto.user_id_field == dto.user_id
+        ).delete(synchronize_session=False)
         self.session.commit()
-
 
     def delete_all_user_preferences(self, type_dto, dto):
         tables_and_cols_dto = self.getattr_tables_and_columns_by_type(type_dto)
