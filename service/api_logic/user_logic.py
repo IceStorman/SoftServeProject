@@ -131,66 +131,13 @@ class UserService:
         return await self.__generate_auth_token(user, salt = "user-auth-token")
 
 
-    async def save_tokens_to_db(self, user, access_token: str, refresh_token: str):
-        
-        decode_access_token = decode_token(access_token)
-        decode_refresh_token = decode_token(refresh_token)
-        
-        access_expires_at = datetime.utcfromtimestamp(decode_access_token['exp'])
-        refresh_expires_at = datetime.utcfromtimestamp(decode_refresh_token['exp'])
+    async def create_access_token_response(self, user):
+        access_token = create_access_token(identity = user.email)
+        response = CommonResponseWithUser(user_id = user.id, user_email = user.email).to_dict()
+        response_json = jsonify(response)
+        set_access_cookies(response_json, access_token)
 
-
-        access_jwt_dto = jwtDTO(
-            user_id=user.id,
-            jti=decode_access_token['jti'],   
-            token_type="access",
-            revoked=False,
-            expires_at=access_expires_at
-        )
-        self._jwt_dal.save_jwt(access_jwt_dto)
-
-
-        refresh_jwt_dto = jwtDTO(
-            user_id=user.id,
-            jti=decode_refresh_token['jti'],
-            token_type="refresh",
-            revoked=False,
-            expires_at=refresh_expires_at  
-        )
-        self._jwt_dal.save_jwt(refresh_jwt_dto)
-
-
-        refresh_dto = refreshDTO(
-            user_id=user.id,
-            last_ip=get_user_ip_country(user),
-            last_device=get_user_device(user),
-            refresh_token=refresh_token
-        )
-        self._refresh_dal.save_refresh_token(refresh_dto)
-
-
-    async def create_access_token_response(self, user, return_tokens: bool = False):
-
-
-        access_token = create_access_token(identity=user.email)
-        refresh_token = create_refresh_token(identity=user.email)
-
-        await self.save_tokens_to_db(user, access_token, refresh_token)
-
-    
-        response_data = {
-            "user_id": user.id,
-            "user_email": user.email
-        }
-        if return_tokens:
-            response_data["access_token"] = access_token
-            response_data["refresh_token"] = refresh_token
-
-        response = make_response(jsonify(response_data))
-        set_access_cookies(response, access_token)
-        set_refresh_cookies(response, refresh_token)
-
-        return response
+        return response_json
 
 
 
