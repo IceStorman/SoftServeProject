@@ -179,7 +179,25 @@ def blob_get_news(news_index: str) -> dict:
         return json_data
     except Exception as e:
         return {"error": str(e)}
-    
+
+
+def blob_get_news_bulk(news_indices: list) -> dict:
+    try:
+        key = sastokens_dict["news"]
+        blob_service_client = BlobServiceClient(account_url=account_url, credential=key)
+        container_client = blob_service_client.get_container_client("news")
+
+        results = {}
+        for news_index in news_indices:
+            blob_client = container_client.get_blob_client(news_index)
+            blob_data = blob_client.download_blob().readall()
+            results[news_index] = json.loads(blob_data)
+
+        return results
+    except Exception as e:
+        return {"error": str(e)}
+
+
 def blob_get_specific_article(session, index_id: int) -> dict:
     try:
     
