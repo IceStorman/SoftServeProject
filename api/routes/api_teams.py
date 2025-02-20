@@ -5,12 +5,14 @@ from service.implementation.auto_request_api.logic_request_by_react import baske
 from api.routes.cache import cache
 from dto.api_input import TeamsLeagueDTO, TeamsStatisticsOrPlayersDTO
 from exept.exeptions import DatabaseConnectionError, CustomQSportException
+from service.implementation.auto_request_api.sport_data_managers.players_data_manager import PlayersDataManager
 from service.implementation.auto_request_api.sport_data_managers.team_statistics_data_manager import \
     TeamStatisticsDataManager
 from logger.logger import Logger
 from dependency_injector.wiring import Provide, inject
 from api.container.container import Container
 from service.api_logic.teams_logic import TeamsService
+from service.implementation.auto_request_api.sport_data_managers.teams_data_manager import TeamsDataManager
 
 logger = Logger("logger", "all.log")
 
@@ -67,9 +69,10 @@ def get_teams_statistics_endpoint():
 def get_players_endpoint():
     try:
         data = request.get_json()
-        dto = TeamsStatisticsOrPlayersDTO(**data)
+        dto = TeamsStatisticsOrPlayersDTO().load(data)
 
-        team_players = basketball_players(dto)
+        data_manager = PlayersDataManager(dto)
+        team_players = data_manager.get_data()
 
         return team_players
     except CustomQSportException as e:

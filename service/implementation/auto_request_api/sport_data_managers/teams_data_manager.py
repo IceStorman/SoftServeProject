@@ -17,25 +17,25 @@ class TeamsDataManager(AbstractSportDataManager):
     _page_number: Optional[int]
     _elements_per_page: Optional[int]
 
-    def __init__(self, new_data: Dict):
+    def __init__(self, new_data):
         super().__init__(new_data)
         query = (
             SessionLocal().query(
                 Sport.sport_id,
                 Sport.sport_name
             )
-            .filter(Sport.sport_id == new_data.get("teams__sport_id"))
+            .filter(Sport.sport_id == new_data.teams__sport_id)
         )
 
         ix = query.first()
         if ix is not None:
             self._sport_name = ix.sport_name
 
-        self._leagues__api_id = new_data.get("leagues__api_id")
+        self._leagues__api_id = new_data.leagues__api_id
         self._host = get_host(self._sport_name)
 
-        self._page_number = new_data.get("page")
-        self._elements_per_page = new_data.get("per_page")
+        self._page_number = new_data.page
+        self._elements_per_page = new_data.per_page
 
     def get_teams_data(self, pagination):
         index = get_team_index(self._sport_name, self._leagues__api_id)
@@ -45,7 +45,7 @@ class TeamsDataManager(AbstractSportDataManager):
         url_first = get_host(self._sport_name)
         url = "https://"+url_first+"/"+index.replace("teams/","")
         try:
-            team = self.main_request(self._host, self._sport_name, url, index)
+            team = self._try_return_json_data(url, index)
             return team
         except Exception as e:
             return {"error": str(e)}

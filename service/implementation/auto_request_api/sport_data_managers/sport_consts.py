@@ -68,6 +68,40 @@ def get_team_index(sport_id: str, league_id: Optional[int]):
         case _:
             return f"teams/teams?season=2023&league={league_id}"
 
+def get_players_url(sport_id: str, team_id: Optional[int], league_id: Optional[int]):
+    sport_type = get_sport_type(sport_id)
+
+    match sport_type:
+        case SportType.handball:
+            return f"https://v1.handball.api-sports.io/teams/players?season=2024&team={team_id}&league={league_id}"
+        case SportType.hockey:
+            return f"https://v1.hockey.api-sports.io/teams/players?season=2024&team={team_id}&league={league_id}"
+        case SportType.afl:
+            return f"https://v1.afl.api-sports.io/teams/players?id={team_id}&season=2023"
+        case SportType.rugby:
+            return f"https://v1.rugby.api-sports.io/teams/players?season=2024&team={team_id}&league={league_id}"
+        case SportType.baseball:
+            return f"https://v1.baseball.api-sports.io/teams/players?league={league_id}&season=2024&team={team_id}"
+        case SportType.volleyball:
+            return f"https://v1.volleyball.api-sports.io/teams/players?season=2024&team={team_id}&league={league_id}"
+
+def get_players_index(sport_id: str, team_id: Optional[int], league_id: Optional[int]):
+    sport_type = get_sport_type(sport_id)
+
+    match sport_type:
+        case SportType.handball:
+            return f"teams/players?season=2024&team={team_id}&league={league_id}"
+        case SportType.hockey:
+            return f"teams/players?season=2024&team={team_id}&league={league_id}"
+        case SportType.afl:
+            return f"teams/players?id={team_id}&season=2023"
+        case SportType.rugby:
+            return f"teams/players?season=2024&team={team_id}&league={league_id}"
+        case SportType.baseball:
+            return f"teams/players?season=2024&team={team_id}&league={league_id}"
+        case SportType.volleyball:
+            return f"teams/players?league={league_id}&season=2024&team={team_id}"
+
 def get_host(sport_id: str) -> Optional[str]:
     print("Getting host")
 
