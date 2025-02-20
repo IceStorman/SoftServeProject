@@ -56,10 +56,11 @@ class BaseDTO(Schema):
         return data
 
 class TeamsLeagueDTO(BaseDTO):
-    teams__sport_id = fields.Int(required=False, missing=None)
-    leagues__api_id = fields.Int(required=False, missing=None)
-    countries__api_id = fields.Int(required=False, missing=None)
+    sport_id = fields.Int(required=False, missing=None)
+    league_id = fields.Int(required=False, missing=None)
+    country_id = fields.Int(required=False, missing=None)
     letter = fields.Str(required=False, missing="")
+    name = fields.Str(required=False, missing=None)
     page = fields.Int(required=False, missing=0)
     per_page = fields.Int(required=False, missing=0)
 

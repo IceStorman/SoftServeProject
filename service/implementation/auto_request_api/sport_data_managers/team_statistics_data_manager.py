@@ -1,8 +1,6 @@
 from typing import Dict, Optional
-from database.postgres.dal.sport import SportDAL
 from database.models import Sport
 from database.session import SessionLocal
-from dto.api_input import TeamsStatisticsOrPlayersDTO
 from service.implementation.auto_request_api.sport_data_managers.sport_consts import get_team_statistics_url, \
     get_team_statistics_index, get_host
 from service.implementation.auto_request_api.sport_data_managers.abstract_sport_data_manager import \
