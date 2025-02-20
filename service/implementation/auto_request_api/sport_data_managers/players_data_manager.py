@@ -1,5 +1,4 @@
-from typing import Dict, Optional
-
+from typing import Optional
 from database.models import Sport
 from database.session import SessionLocal
 from service.implementation.auto_request_api.sport_data_managers.abstract_sport_data_manager import \

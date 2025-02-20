@@ -1,15 +1,10 @@
 import requests
-from sqlalchemy.exc import NoResultFound
-
 from dto.api_input import BaseDTO
 from service.implementation.auto_request_api.logic_auto_request import token_usage, api_key
 from database.azure_blob_storage.save_get_blob import blob_save_specific_api, get_all_blob_indexes_from_db, get_blob_data_for_all_sports
 from database.session import SessionLocal
 from typing import Dict
-from datetime import datetime
-from database.models.sports import Sport
 from database.postgres.save_data import save_api_data
-from service.implementation.auto_request_api.sport_data_managers.sport_consts import get_host
 
 
 class AbstractSportDataManager:
