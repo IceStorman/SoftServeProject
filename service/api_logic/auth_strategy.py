@@ -46,7 +46,7 @@ class SimpleAuthHandler(AuthHandler[T]):
 
         if not user:
             self._user_service._logger.warning("User does not exist")
-            raise UserDoesNotExistError(user.email)
+            raise UserDoesNotExistError(credentials.email_or_username)
 
         if not bcrypt.checkpw(credentials.password_hash.encode('utf-8'), user.password_hash.encode('utf-8')):
             self._user_service._logger.warning("Some log in data is incorrect")
@@ -69,7 +69,7 @@ class GoogleAuthHandler(AuthHandler[T]):
             )
         token_response = requests.post(token_url, headers = headers, data = body)
         if token_response.status_code != 200:
-            raise InvalidAuthenticationDataError()
+            raise InvalidAuthenticationDataError(credentials.auth_provider)
 
         client.parse_request_body_response(token_response.text)
 
@@ -78,7 +78,7 @@ class GoogleAuthHandler(AuthHandler[T]):
             headers={'Authorization': f'Bearer {client.token["access_token"]}'}
         )
         if user_info_response.status_code != 200:
-            raise InvalidAuthenticationDataError()
+            raise InvalidAuthenticationDataError(credentials.auth_provider)
 
         data = user_info_response.json()
         user_info = InputUserLogInDTO().load(data)
