@@ -3,9 +3,10 @@ from database.models import League
 from database.postgres.dto import LeagueDTO
 from typing import Optional, List
 
+
 class LeagueDAL:
-    def __init__(self, db_session: Session):
-        self.db_session = db_session
+    def __init__(self, session: Session):
+        self.db_session = session
 
     def save_leagues(self, league_dto_list: List[LeagueDTO]):
         for league in league_dto_list:
@@ -59,3 +60,9 @@ class LeagueDAL:
         self.db_session.delete(league)
         self.db_session.commit()
         return True
+
+    def get_query(self):
+        return self.db_session.query(League)
+
+    def execute_query(self, query):
+        return query.all()

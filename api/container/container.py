@@ -1,15 +1,17 @@
 from dependency_injector import containers, providers
-from database.postgres.dal import SportDAL
+from database.postgres.dal import SportDAL, LeagueDAL
 from database.session import SessionLocal
 from database.postgres.dal.user import UserDAL
 from database.postgres.dal.preferences import PreferencesDAL
 from database.postgres.dal.news import NewsDAL
 from database.postgres.dal.game import GameDAL
+from database.postgres.dal.team import TeamDAL
 from service.api_logic.managers.recommendation_menager import RecommendationManager
+from service.api_logic.sports_logic import SportService
 from service.api_logic.user_logic import UserService
 from service.api_logic.news_logic import NewsService
 from service.api_logic.games_logic import GamesService
-
+from service.api_logic.teams_logic import TeamsService
 
 
 class Container(containers.DeclarativeContainer):
@@ -18,7 +20,9 @@ class Container(containers.DeclarativeContainer):
             "api.routes.api_login",
             "api.routes.api_news",
             "api.routes.api_user_preferences",
-            "api.routes.api_games"
+            "api.routes.api_games",
+            "api.routes.api_teams",
+            "api.routes.api_sports",
         ]
     )
 
@@ -52,6 +56,14 @@ class Container(containers.DeclarativeContainer):
     games_dal = providers.Factory(GameDAL, session=db_session)
 
     games_service = providers.Factory(GamesService, games_dal=games_dal)
+
+    teams_dal = providers.Factory(TeamDAL, session=db_session)
+
+    teams_service = providers.Factory(TeamsService, teams_dal=teams_dal)
+
+    leagues_dal = providers.Factory(LeagueDAL, session=db_session)
+
+    sports_service = providers.Factory(SportService, sports_dal=sport_dal, leagues_dal=leagues_dal)
 
 
 

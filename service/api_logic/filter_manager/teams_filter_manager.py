@@ -7,7 +7,7 @@ from service.api_logic.filter_manager.common_filters import CommonFilters
 class TeamsFilterManager(BaseFilterManager, CommonFilters):
 
     FILTERS = {
-        "sport": "apply_sport_filter",
+        "sport_id": "apply_sport_filter",
         "name": "apply_name_filter",
         "league_id": "apply_league_filter",
     }
@@ -20,3 +20,6 @@ class TeamsFilterManager(BaseFilterManager, CommonFilters):
     def apply_name_filter(cls, query: Query, value: str) -> Query:
         return super().apply_name_filter(query, TeamIndex, value)
 
+    @classmethod
+    def apply_league_filter(cls, query: Query, value: str) -> Query:
+        return super().apply_league_filter(query, TeamIndex, value)

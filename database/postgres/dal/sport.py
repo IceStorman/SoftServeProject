@@ -42,3 +42,9 @@ class SportDAL:
         self.db_session.delete(sport)
         self.db_session.commit()
         return True
+
+    def get_query(self):
+        return self.db_session.query(Sport)
+
+    def execute_query(self, query):
+        return query.all()

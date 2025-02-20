@@ -1,7 +1,6 @@
 from flask import Blueprint, request
 from dto.pagination import Pagination
 from exept.handle_exeptions import get_custom_error_response
-from service.api_logic.teams_logic import get_teams
 from service.implementation.auto_request_api.logic_request_by_react import basketball_players
 from api.routes.cache import cache
 from dto.api_input import TeamsLeagueDTO, TeamsStatisticsOrPlayersDTO
@@ -9,6 +8,9 @@ from exept.exeptions import DatabaseConnectionError, CustomQSportException
 from service.implementation.auto_request_api.sport_data_managers.team_statistics_data_manager import \
     TeamStatisticsDataManager
 from logger.logger import Logger
+from dependency_injector.wiring import Provide, inject
+from api.container.container import Container
+from service.api_logic.teams_logic import TeamsService
 
 logger = Logger("logger", "all.log")
 
@@ -75,13 +77,14 @@ def get_players_endpoint():
         get_custom_error_response(e)
 
 @teams_app.route('/filtered', methods=['POST'])
+@inject
 @logger.log_function_call()
-def get_team_filtered_endpoint():
+def get_team_filtered_endpoint(service: TeamsService = Provide[Container.teams_service]):
     try:
         data = request.get_json()
         dto = TeamsStatisticsOrPlayersDTO().load(data)
         pagination = Pagination(**data)
-        teams = get_teams(dto, pagination)
+        teams = service.get_teams(dto, pagination)
         return teams
     except CustomQSportException as e:
         logger.error(f"Error in POST /: {str(e)}")

@@ -3,9 +3,10 @@ from database.models import TeamIndex
 from database.postgres.dto import TeamDTO
 from typing import Optional, List
 
+
 class TeamDAL:
-    def __init__(self, db_session: Session):
-        self.db_session = db_session
+    def __init__(self, session: Session):
+        self.db_session = session
 
     def save_teams(self, team_dto_list : List[TeamDTO]) -> None:
         for team in team_dto_list:
@@ -58,3 +59,9 @@ class TeamDAL:
         self.db_session.delete(team_index)
         self.db_session.commit()
         return True
+
+    def get_query(self):
+        return self.db_session.query(TeamIndex)
+
+    def execute_query(self, query):
+        return query.all()

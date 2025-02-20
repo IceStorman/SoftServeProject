@@ -7,46 +7,46 @@ from database.session import SessionLocal
 from logger.logger import Logger
 from service.api_logic.filter_manager.filter_manager_factory import FilterManagerFactory
 
-logger = Logger("logger", "all.log")
+class SportService:
+    def __init__(self, sports_dal, leagues_dal):
+        self._sports_dal = sports_dal
+        self._leagues_dal = leagues_dal
+        self._logger = Logger("logger", "all.log").logger
 
-session = SessionLocal()
+    def get_all_sports(self):
+        sports = self._sports_dal.get_query()
+        execute_query = self._sports_dal.execute_query(sports)
+        schema = SportsOutput(many=True)
+        return schema.dump(execute_query)
 
-@handle_exceptions
-@logger.log_function_call()
-def get_all_sports():
-    sports = session.query(Sport).all()
-    schema = SportsOutput(many=True)
-    return schema.dump(sports)
+    def search_leagues(self, filters_dto, pagination: Pagination):
+        # query = (
+        #     session.query(League)
+        #     .join(Sport, League.sport_id == Sport.sport_id)
+        #     .join(Country, League.country_id == Country.country_id)
+        #     )
+        query = self._leagues_dal.get_query()
 
-@handle_exceptions
-@logger.log_function_call()
-def search_leagues(filters_dto, pagination: Pagination):
-    query = (
-        session.query(League)
-        .join(Sport, League.sport_id == Sport.sport_id)
-        .join(Country, League.country_id == Country.country_id)
-        )
-   
-    model_aliases = {
-        "leagues": League,
-        "countries": Country,
-    }
+        model_aliases = {
+            "leagues": League,
+            "countries": Country,
+        }
 
-    query = FilterManagerFactory.apply_filters(League, query, filters_dto)
-    count = query.count()
+        filtered_query = FilterManagerFactory.apply_filters(League, query, filters_dto)
+        count = filtered_query.count()
 
-    offset, limit = pagination.get_pagination()
-    if offset is not None and limit is not None:
-        query = query.offset(offset).limit(limit)
+        offset, limit = pagination.get_pagination()
+        if offset is not None and limit is not None:
+            filtered_query = filtered_query.offset(offset).limit(limit)
 
-    countries = query.all()
+        execute_query = self._leagues_dal.execute_query(filtered_query)
 
-    schema = SportsLeagueOutput(many=True)
-    leagues = schema.dump(countries)
-    return {
-        "count": count,
-        "leagues": leagues,
-    }
+        schema = SportsLeagueOutput(many=True)
+        leagues = schema.dump(execute_query)
+        return {
+            "count": count,
+            "leagues": leagues,
+        }
 
 
 
