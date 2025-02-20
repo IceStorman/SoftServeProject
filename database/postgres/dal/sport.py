@@ -2,9 +2,11 @@ from sqlalchemy.orm import Session
 from database.models import Sport
 from database.postgres.dto import SportDTO
 from typing import Optional
+from dto.api_output import SportsOutput
+
 
 class SportDAL:
-    def __init__(self, db_session: Session):
+    def __init__(self, db_session = None):
         self.db_session = db_session
 
     def create_sport(self, sport_dto: SportDTO) -> Sport:
