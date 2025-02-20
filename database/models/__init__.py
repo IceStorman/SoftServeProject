@@ -20,5 +20,6 @@ from .user_recommendations import UserNewsRecommendations
 from .user_club_preferences import UserClubPreferences
 from .temp_subscribers_data import TempSubscribersData
 from .token_blocklist import TokenBlocklist
+from .temp_subscribers_data import TempSubscribersData
 
 from .base import Base
