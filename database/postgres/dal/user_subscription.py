@@ -1,11 +1,7 @@
-from dask.array import delete
-from sqlalchemy.orm import Session
-
 from database.models import User, TempSubscribersData, UserClubPreferences
 
-
 class UserSubscriptionDAL:
-    def __init__(self, db_session: Session):
+    def __init__(self, db_session):
         self.db_session = db_session
 
     def try_add_subscribers_data(self, preference_index):

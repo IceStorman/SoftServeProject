@@ -1,4 +1,6 @@
 from dependency_injector import containers, providers
+
+from database.postgres.dal.user_subscription import UserSubscriptionDAL
 from database.session import SessionLocal
 from database.postgres.dal.user import UserDAL
 from database.postgres.dal.news import NewsDAL
@@ -21,5 +23,4 @@ class Container(containers.DeclarativeContainer):
 
     news_service = providers.Factory(NewsService, news_dal=news_dal)
 
-
-
+    user_subscription_dal = providers.Factory(UserSubscriptionDAL, session=db_session)

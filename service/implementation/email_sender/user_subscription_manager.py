@@ -1,7 +1,7 @@
 import os
 import base64
-from typing import Optional
 
+from dependency_injector.wiring import Provide, inject
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
@@ -9,14 +9,15 @@ from googleapiclient.discovery import build
 from email.mime.text import MIMEText
 
 from database.models import TempSubscribersData
-from database.postgres.dal.user_subscription import UserSubscriptionDAL
-from database.session import SessionLocal
 
 from pathlib import Path
-
 from dotenv import load_dotenv
 
 from sqlalchemy import event
+
+from api.container.container import Container
+from database.postgres.dal.user_subscription import UserSubscriptionDAL
+
 
 class UserSubscriptionManagerMeta(type):
     _instances = {}
@@ -30,20 +31,20 @@ class UserSubscriptionManagerMeta(type):
 class UserSubscriptionManager(metaclass=UserSubscriptionManagerMeta):
     __SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
 
-    def __init__(self):
-        self.__session = SessionLocal()
+    @inject
+    def __init__(self, user_subscription_dal: UserSubscriptionDAL = Provide[Container.user_subscription_dal]):
+        self.__user_subscription_dal = user_subscription_dal
 
         current_dir = Path(__file__).resolve().parent if "__file__" in locals() else Path.cwd()
         envars = current_dir / ".env"
         load_dotenv(envars)
-
-        self.__user_subscription_dal = UserSubscriptionDAL(self.__session)
 
         self.__sender_email = os.getenv("EMAIL")
         self.__sender_password = os.getenv("PASSWORD")
 
         event.listen(TempSubscribersData, "after_insert", self.__on_subscribers_inserted)
 
+    @inject
     def try_add_subscribers_to_temp_table(self, team_index):
         self.__user_subscription_dal.try_add_subscribers_data(team_index)
 

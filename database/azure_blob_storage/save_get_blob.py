@@ -9,7 +9,7 @@ from database.session import SessionLocal
 from exept.colors_text import print_error_message, print_good_message
 import re
 
-from service.implementation.email_sender.user_subscription_manager import UserSubscriptionManager
+#from service.implementation.email_sender.user_subscription_manager import UserSubscriptionManager
 
 load_dotenv()
 account_url = os.getenv("BLOBURL")
@@ -55,7 +55,7 @@ SUSPICIOUS_PATTERNS = [
     r"\.exe|\.bat|\.sh|\.py"  # Небезпечні розширення
 ]
 
-subscription_manager = UserSubscriptionManager()
+
 
 def blob_autosave_api(json_data, api: Dict[str, str]) -> None:
     selected_sport = api["name"]
@@ -268,6 +268,8 @@ def get_blob_data_for_all_sports(session, blob_indexes):
 
 
 def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
+    subscription_manager = UserSubscriptionManager()
+
     try:
         existing_news = session.query(News).filter_by(blob_id=blob_name).first()
         if existing_news:
