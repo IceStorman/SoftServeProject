@@ -43,8 +43,7 @@ class TeamsDataManager(AbstractSportDataManager):
         result = self._service.get_teams(self._data_dict, pagination)
         if result:
             return result
-        url_first = get_host(self._sport_name)
-        url = "https://"+url_first+"/"+index.replace("teams/","")
+        url = "https://"+self._host+"/"+index.replace("teams/","")
         try:
             team = self._try_return_json_data(url, index)
             return team
