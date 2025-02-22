@@ -45,11 +45,11 @@ class AbstractSportDataManager:
         except Exception as e:
             return {"error": str(e)}
 
-    def _return_specific_json_data(self, url: str, index: str) -> Dict[str, str]:
+    def _return_specific_json_data(self, url: str, index: str, sport_id: int) -> Dict[str, str]:
         with SessionLocal() as session:
-            check = get_specific_blob_filename_from_db(session, index)
+            check = get_specific_blob_filename_from_db(session, index, sport_id)
             if check:
-                result = get_blob_data_for_all_sports(session, check)
+                result = get_blob_data_for_all_sports(session, [check])
                 return result
         try:
             json_data = self.__main_request(self._host, self._sport_name, url, index)

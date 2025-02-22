@@ -68,6 +68,7 @@ class TeamsStatisticsOrPlayersDTO(BaseDTO):
     sport_id = fields.Int(required=False, missing=None)
     team_id = fields.Int(required=False, missing=None)
     league_id = fields.Int(required=False, missing=None)
+    name = fields.Str(required=False, missing=None)
 
 
 class SearchDTO(BaseDTO):

@@ -259,8 +259,8 @@ def get_specific_blob_index_from_db(session, index_id:int):
     index = session.query(BlobIndex).filter(BlobIndex.blob_id == index_id).first()
     return index
 
-def get_specific_blob_filename_from_db(session, index: str):
-    index = session.query(BlobIndex).filter(BlobIndex.filename == index).first()
+def get_specific_blob_filename_from_db(session, index: str, sport_id: int):
+    index = session.query(BlobIndex).filter(BlobIndex.filename == f"{index}.json", BlobIndex.sports_index_id == sport_id).first()
     return index
 
 def get_blob_data_for_all_sports(session, blob_indexes):
