@@ -6,7 +6,6 @@ from sqlalchemy import desc
 from database.models import News
 from database.azure_blob_storage.save_get_blob import blob_get_news
 from service.api_logic.scripts import get_sport_by_name
-from database.session import SessionLocal
 from logger.logger import Logger
 from service.api_logic.filter_manager.filter_manager_factory import FilterManagerFactory
 from dto.pagination import Pagination

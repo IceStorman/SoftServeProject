@@ -3,7 +3,6 @@ from database.models import Sport, League, Country
 from dto.api_output import SportsLeagueOutput, SportsOutput
 from dto.pagination import Pagination
 from exept.handle_exeptions import handle_exceptions
-from database.session import SessionLocal
 from logger.logger import Logger
 from service.api_logic.filter_manager.filter_manager_factory import FilterManagerFactory
 
@@ -20,11 +19,7 @@ class SportService:
         return schema.dump(execute_query)
 
     def search_leagues(self, filters_dto, pagination: Pagination):
-        # query = (
-        #     session.query(League)
-        #     .join(Sport, League.sport_id == Sport.sport_id)
-        #     .join(Country, League.country_id == Country.country_id)
-        #     )
+
         query = self._leagues_dal.get_query()
 
         model_aliases = {
