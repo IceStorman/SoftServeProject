@@ -9,7 +9,6 @@ from service.implementation.auto_request_api.sport_data_managers.sport_consts im
 class PlayersDataManager(AbstractSportDataManager):
     _team_id: Optional[int]
     _league_id: Optional[int]
-    _sport_id: Optional[int]
     _search: Optional[str]
 
     def __init__(self, new_data):

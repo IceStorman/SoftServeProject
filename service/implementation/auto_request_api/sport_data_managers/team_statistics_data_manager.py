@@ -30,6 +30,7 @@ class TeamStatisticsDataManager(AbstractSportDataManager):
 
         self._host = get_host(self._sport_name)
 
+        self._sport_id = new_data.sport_id
         self._team_id = new_data.team_id
         self._league_id = new_data.league_id
 
@@ -37,4 +38,4 @@ class TeamStatisticsDataManager(AbstractSportDataManager):
         url = get_team_statistics_url(self._sport_name, self._team_id, self._league_id)
         index = get_team_statistics_index(self._sport_name, self._team_id, self._league_id)
 
-        return self._try_return_json_data(url, index)
+        return self._return_specific_json_data(url, index, self._sport_id)

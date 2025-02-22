@@ -77,7 +77,7 @@ def get_players_url(sport_id: str, team_id: Optional[int], league_id: Optional[i
         case SportType.mma:
             return f"https://v1.mma.api-sports.io/fighters?{f"&team={team_id}" if team_id else ""}{f"&search={search}" if search else ""}"
         case SportType.football:
-            return f"https://v3.football.api-sports.io/players?{f"&team={team_id}&season=2022" if team_id else ""}{f"&league={league_id}&season=2022" if league_id else ""}{f"&search={search}" if search else ""}"
+            return f"https://v3.football.api-sports.io/players?season=2022{f"&team={team_id}" if team_id else ""}{f"&league={league_id}" if league_id else ""}{f"&search={search}" if search else ""}"
         case SportType.basketball:
             return f"https://v1.basketball.api-sports.io/players?{f"&team={team_id}&season=2022-2023" if team_id else ""}{f"&search={search}" if search else ""}"
 
@@ -90,7 +90,7 @@ def get_players_index(sport_id: str, team_id: Optional[int], league_id: Optional
         case SportType.mma:
             return f"teams/players?{f"&team={team_id}" if team_id else ""}{f"&search={search}" if search else ""}"
         case SportType.football:
-            return f"teams/players?{f"&team={team_id}&season=2022" if team_id else ""}{f"&league={league_id}&season=2022" if league_id else ""}{f"&search={search}" if search else ""}"
+            return f"teams/players?season=2022{f"&team={team_id}" if team_id else ""}{f"&league={league_id}" if league_id else ""}{f"&search={search}" if search else ""}"
         case SportType.basketball:
             return f"teams/players?{f"&team={team_id}&season=2022-2023" if team_id else ""}{f"&search={search}" if search else ""}"
 
