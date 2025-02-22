@@ -1,14 +1,12 @@
-from typing import Dict, Optional
+from typing import Optional
 from database.models import Sport
 from database.session import SessionLocal
-from service.implementation.auto_request_api.sport_data_managers.sport_consts import get_team_statistics_url, \
-    get_team_statistics_index, get_host
 from service.implementation.auto_request_api.sport_data_managers.abstract_sport_data_manager import \
     AbstractSportDataManager
+from service.implementation.auto_request_api.sport_data_managers.sport_consts import get_players_index, get_players_url, get_host
 
 
-class TeamStatisticsDataManager(AbstractSportDataManager):
-    _sport_id: Optional[int]
+class PlayersDataManager(AbstractSportDataManager):
     _team_id: Optional[int]
     _league_id: Optional[int]
 
@@ -27,14 +25,17 @@ class TeamStatisticsDataManager(AbstractSportDataManager):
 
         if ix is not None:
             self._sport_name = ix.sport_name
-
-        self._host = get_host(self._sport_name)
+            self._host = get_host(self._sport_name)
 
         self._team_id = new_data.team_id
         self._league_id = new_data.league_id
 
-    def get_teams_statistics(self) -> Dict[str, str]:
-        url = get_team_statistics_url(self._sport_name, self._team_id, self._league_id)
-        index = get_team_statistics_index(self._sport_name, self._team_id, self._league_id)
+    def get_data(self):
+        index = get_players_index(self._sport_name, self._team_id, self._league_id)
+        url = get_players_url(self._sport_name, self._team_id, self._league_id)
 
-        return self._try_return_json_data(url, index)
+        try:
+            team = self._try_return_json_data(url, index)
+            return team
+        except Exception as e:
+            return {"error": str(e)}

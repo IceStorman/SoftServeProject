@@ -1,23 +1,16 @@
 import React from "react";
+import GoogleButton from "react-google-button";
 import globalVariables from "../../globalVariables";
 
 function AuthBtn() {
-
     function handleGoogleLogin() {
-        const clientId = globalVariables.googleAuth.clientId;
-        const redirectUri = globalVariables.googleAuth.redirectUri;
-        const scope = globalVariables.googleAuth.scope;
-        const responseType = globalVariables.googleAuth.responseType;
-
-        const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}`;
-        window.location.href = authUrl;
+        const { clientId, redirectUri, scope, responseType } = globalVariables.googleAuth;
+        window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}`;
     }
 
     return (
         <div className="authBtn">
-            <button className="google-login" onClick={handleGoogleLogin}>
-                <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo" />
-            </button>
+            <GoogleButton onClick={handleGoogleLogin} />
         </div>
     );
 }

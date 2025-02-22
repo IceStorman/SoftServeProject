@@ -85,6 +85,22 @@ class UserAlreadyExistError(CustomQSportException):
         super().__init__(message)
 
 
+class IncorrectPreferencesError(CustomQSportException):
+    status_code = 400
+
+    def __init__(self):
+        message = f"No valid preferences"
+        super().__init__(message)
+
+
+class IncorrectTypeOfPreferencesError(CustomQSportException):
+    status_code = 400
+
+    def __init__(self):
+        message = f"Invalid preferences type"
+        super().__init__(message)
+
+
 class NoRecommendationListForUserError(CustomQSportException):
     status_code = 204
 

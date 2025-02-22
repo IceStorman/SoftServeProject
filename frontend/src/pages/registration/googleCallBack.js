@@ -4,6 +4,7 @@ import axios from "axios";
 import apiEndpoints from "../../apiEndpoints";
 import {AuthContext} from "./AuthContext";
 import globalVariables from "../../globalVariables";
+import {toast} from "sonner";
 
 function GoogleAuthCallback() {
     const authContext = useContext(AuthContext);
@@ -19,16 +20,16 @@ function GoogleAuthCallback() {
                     auth_provider: globalVariables.authStrategies.googleStrategy
                 },)
                 .then(response => {
-                    console.log("Successful auth:", response.data);
                     login({ email: response?.data?.user?.email, username: response?.data?.user?.username });
+                    toast.success(`You are successfully logged in!`);
                     navigate('/')
                 })
                 .catch(error => {
-                    console.error("Google auth error:", error);
+                    toast.error(`Google Authentication Error!\n ${error.response.status} \n ${error.response.data.error}`);
                 });
         }
     }, []);
-
+    
     const { login } = authContext;
 
     return <></>;

@@ -5,6 +5,7 @@ import apiEndpoints from "../../apiEndpoints";
 import { AuthContext } from "./AuthContext";
 import globalVariables from "../../globalVariables";
 import AuthBtn from "../../components/containers/authBtn";
+import {toast} from "sonner";
 
 
 function SignInPage() {
@@ -23,8 +24,13 @@ function SignInPage() {
     async function handleSubmit(e) {
         e.preventDefault();
 
+        if (!emailOrUserName.trim()) {
+            toast.error("Username or email can not be empty!");
+            return;
+        }
+
         if (!isValidPassword(password)) {
-            console.log("Incorrect password form!");
+            toast.error("Password must contain at least 8 symbols, where: 1 uppercase letter, 1 lowercase letter and 1 number!");
             return;
         }
 
@@ -41,11 +47,11 @@ function SignInPage() {
                 }
             );
 
-            console.log("Successful auth:", response.data);
             login({ email: response?.data?.user?.email, username: response?.data?.user?.username });
+            toast.success(`You are successfully logged in!`);
             navigate('/');
         } catch (error) {
-            console.error("Auth Error:", error);
+            toast.error(`Authentication Error!\n ${error.response.status} \n ${error.response.data.error}`);
         }
     }
 

@@ -34,11 +34,17 @@ import GoogleAuthCallback from "../pages/registration/googleCallBack";
 
 function App() {
 
-    const { user } = useContext(AuthContext);
-    console.log(user)
-
     return (
         <>
+            <Toaster
+                position="bottom-right"
+                richColors
+                expand={true}
+                duration={5000}
+                visibleToasts={3}
+                closeButton
+            />
+
             <Router
                 future={{
                     v7_startTransition: true,
