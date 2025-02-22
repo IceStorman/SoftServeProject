@@ -68,8 +68,6 @@ function SignUpPage() {
                 }
             );
 
-            console.log("Successful Registration:", response.data);
-
             login({ email: response?.data?.user?.email, username: response?.data?.user?.username });
             toast.success(`You are successfully signed up!`);
             navigate('/')

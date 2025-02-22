@@ -47,7 +47,6 @@ function SignInPage() {
                 }
             );
 
-            console.log("Successful auth:", response.data);
             login({ email: response?.data?.user?.email, username: response?.data?.user?.username });
             toast.success(`You are successfully logged in!`);
             navigate('/');
