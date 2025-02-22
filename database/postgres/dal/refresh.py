@@ -38,8 +38,16 @@ class RefreshTokenDAL:
     def get_refresh_token_by_id(self, refresh_id: int) -> Optional[refresh_token_tracking]:
         return self.db_session.query(refresh_token_tracking).filter(refresh_token_tracking.id == refresh_id).first()
 
-    def get_refresh_token_by_user(self, user_id: int) -> Optional[refresh_token_tracking]:
-        return self.db_session.query(refresh_token_tracking).filter(refresh_token_tracking.user_id == user_id).first()
+    def get_valid_refresh_token_by_user(self, user_id: int) -> Optional[refresh_token_tracking]:
+        return (
+            self.db_session.query(refresh_token_tracking)
+            .filter(
+                refresh_token_tracking.user_id == user_id,
+                refresh_token_tracking.refresh_token.has(revoked=False),  
+                Token_Blocklist.expires_at > datetime.utcnow()
+            )
+            .first()
+        )
 
     def get_nonce_by_user_id(self, user_id: int) -> Optional[str]:
         entry = self.db_session.query(refresh_token_tracking).filter(refresh_token_tracking.user_id == user_id).first()
@@ -51,7 +59,11 @@ class RefreshTokenDAL:
     
     def update_refresh_token(self, user_id: int, refresh_dto: refreshDTO):
         try:
-            entry = self.db_session.query(refresh_token_tracking).filter(refresh_token_tracking.user_id == user_id).first()
+            entry = (self.db_session.query(refresh_token_tracking)
+                .filter(refresh_token_tracking.user_id == user_id)
+                .with_for_update()
+                .first()
+            )
             if entry:
                 entry.refresh_token = refresh_dto.refresh_token
                 entry.nonce = refresh_dto.nonce
@@ -83,21 +95,21 @@ class RefreshTokenDAL:
 
     def revoke_all_refresh_tokens_for_user(self, user_id: int) -> int:
         try:
-            refresh_entries = self.db_session.query(refresh_token_tracking).filter(
-                refresh_token_tracking.user_id == user_id
-            ).all()
-            
-            revoked_count = 0
-            for entry in refresh_entries:
-                token_entry = self.db_session.query(Token_Blocklist).filter(Token_Blocklist.id == entry.id).first()
-                if token_entry and token_entry.token_type == "refresh":
-                    token_entry.revoked = True
-                    token_entry.updated_at = datetime.utcnow()
-                    revoked_count += 1
-            
+            revoked_count = (
+                self.db_session.query(Token_Blocklist)
+                .filter(
+                    Token_Blocklist.id.in_(
+                        self.db_session.query(refresh_token_tracking.id)
+                        .filter(refresh_token_tracking.user_id == user_id)
+                    ),
+                    Token_Blocklist.token_type == "refresh"
+                )
+                .update({"revoked": True, "updated_at": datetime.utcnow()}, synchronize_session=False)
+            )
+
             self.db_session.commit()
+            
             return revoked_count
         except SQLAlchemyError as e:
             self.db_session.rollback()
-            print(f"Error in revoke_all_refresh_tokens_for_user: {e}")
             return 0

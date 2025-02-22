@@ -11,7 +11,8 @@ class jwtDAL:
 
     def save_jwt(self, jwt_dto: jwtDTO) -> Optional[int]:
         try:
-            if jwt_dto.id and (jwt_entry := self.get_jwt_by_id(jwt_dto.id)):
+            jwt_entry = self.get_jwt_by_id(jwt_dto.id) if jwt_dto.id else None
+            if jwt_entry:
                 jwt_entry.user_id = jwt_dto.user_id
                 jwt_entry.jti = jwt_dto.jti
                 jwt_entry.token_type = jwt_dto.token_type
@@ -19,14 +20,7 @@ class jwtDAL:
                 jwt_entry.expires_at = jwt_dto.expires_at
                 jwt_entry.updated_at = datetime.utcnow()
             else:
-                jwt_entry = Token_Blocklist(
-                    user_id=jwt_dto.user_id,
-                    jti=jwt_dto.jti,
-                    token_type=jwt_dto.token_type,
-                    revoked=jwt_dto.revoked,
-                    expires_at=jwt_dto.expires_at,
-                    updated_at=datetime.utcnow()
-                )
+                jwt_entry = Token_Blocklist(**jwt_dto.dict(exclude={"id"}), updated_at=datetime.utcnow())
                 self.db_session.add(jwt_entry)
 
             self.db_session.commit()
@@ -36,6 +30,7 @@ class jwtDAL:
             self.db_session.rollback()
             print(f"Error in save_jwt: {e}")
             return None
+
 
     def save_jwts(self, jwt_dto_list: List[jwtDTO]):
         for jwt in jwt_dto_list:
@@ -53,7 +48,7 @@ class jwtDAL:
             jwt_entry = self.get_jwt_by_jti(jti)
             if jwt_entry:
                 jwt_entry.revoked = True
-                jwt_entry.updated_at = datetime.datetime.utcnow()
+                jwt_entry.updated_at = datetime.utcnow()
                 self.db_session.commit()
                 return True
             return False
@@ -67,7 +62,7 @@ class jwtDAL:
             jwt_entry = self.get_jwt_by_jti(jti)
             if jwt_entry and jwt_entry.token_type == "refresh":
                 jwt_entry.revoked = True
-                jwt_entry.updated_at = datetime.datetime.utcnow()
+                jwt_entry.updated_at = datetime.utcnow()
                 self.db_session.commit()
                 return True
             return False

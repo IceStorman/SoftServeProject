@@ -15,7 +15,7 @@ from service.api_logic.auth_strategy import AuthManager
 from database.postgres.dto.jwt import jwtDTO
 from database.postgres.dto.refresh import refreshDTO
 import datetime
-from api.refresh_token_logic import get_client_ip, get_country_from_ip, get_user_device, generate_nonce
+from api.refresh_token_logic import get_client_ip, get_country_from_ip, get_user_device, generate_nonce, is_ip_country_changed, is_device_changed
 from flask_jwt_extended import get_jwt_identity, get_jwt
 
 
@@ -228,26 +228,39 @@ class UserService:
     async def refresh_tokens(self):
         identity = get_jwt_identity()   
         current_refresh_token = get_jwt()
-
         token_nonce = current_refresh_token.get("nonce")
 
+
+        stored_data = self._refresh_dal.get_stored_token_data(identity)
+        if not stored_data:
+            return jsonify({"msg": "Invalid refresh token"}), 401
+
+
+        if is_ip_country_changed(stored_data["country"]) or is_device_changed(stored_data["device"]):
+            return jsonify({"msg": "Suspicious login detected. Please reauthenticate."}), 401
+
+ 
         if not self._refresh_dal.verify_nonce(identity, token_nonce):
             return jsonify({"msg": "Invalid refresh token"}), 401
 
+  
         new_access_token, new_refresh_token = await self.create_new_access_token(identity, refresh=True)
+
 
         new_nonce = generate_nonce()
         self._refresh_dal.update_refresh_token(identity, new_refresh_token, new_nonce)
+
 
         response = make_response(jsonify({
             "access_token": new_access_token,
             "refresh_token": new_refresh_token
         }))
-    
+        
         set_access_cookies(response, new_access_token)
         set_refresh_cookies(response, new_refresh_token)
 
         return response
+
 
 
     def get_user_sport_and_club_preferences(self, user_id: int) -> list[int] and list[int] | list[None] and list[None]:
