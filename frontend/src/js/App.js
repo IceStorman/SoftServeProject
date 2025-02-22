@@ -54,7 +54,7 @@ function App() {
                 <NavBar />
 
                 <Routes>
-                    <Route exact path="/" element={<MainPage />} />
+                    <Route path="/" element={<MainPage />} />
 
                     <Route path="/sign-in" element={<SignInPage />} />
 
@@ -78,9 +78,9 @@ function App() {
 
                     <Route path="/not-existing" element={<NotExistingPage />} />
 
-                    <Route exact path="/FAQ" element={<FAQpage />} />
+                    <Route path="/FAQ" element={<FAQpage />} />
 
-                    <Route exact path="/AboutUs" element={<AboutUsPage />} />
+                    <Route path="/AboutUs" element={<AboutUsPage />} />
 
                     <Route path="*" element={<Navigate to="/not-existing" replace />} />
                 </Routes>
