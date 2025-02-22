@@ -25,7 +25,7 @@ function GoogleAuthCallback() {
                     navigate('/')
                 })
                 .catch(error => {
-                    toast.error(`Google Authentication Error!\n ${error.response.status} \n ${error.response.data.error}`);
+                    toast.error(`Google Authentication Error!\n ${error?.response?.status} \n ${error?.response?.data?.error}`);
                 });
         }
     }, []);

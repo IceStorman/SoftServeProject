@@ -72,7 +72,7 @@ function SignUpPage() {
             toast.success(`You are successfully signed up!`);
             navigate('/')
         } catch (error) {
-            toast.error(`Registration Error!\n ${error.response.status} \n ${error.response.data.error}`);
+            toast.error(`Registration Error!\n ${error?.response?.status} \n ${error?.response?.data?.error}`);
         }
     }
 
