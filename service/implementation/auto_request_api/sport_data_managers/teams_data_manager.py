@@ -32,6 +32,7 @@ class TeamsDataManager(AbstractSportDataManager):
         if ix is not None:
             self._sport_name = ix.sport_name
 
+        self._sport_id = new_data.sport_id
         self._leagues_id = new_data.league_id
         self._host = get_host(self._sport_name)
 
@@ -45,7 +46,7 @@ class TeamsDataManager(AbstractSportDataManager):
             return result
         url = "https://"+self._host+"/"+index.replace("teams/","")
         try:
-            team = self._try_return_json_data(url, index)
+            team = self._return_specific_json_data(url, index, self._sport_id)
             return team
         except Exception as e:
             return {"error": str(e)}

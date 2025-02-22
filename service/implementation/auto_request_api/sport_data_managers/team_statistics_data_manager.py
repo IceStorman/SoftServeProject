@@ -8,7 +8,6 @@ from service.implementation.auto_request_api.sport_data_managers.abstract_sport_
 
 
 class TeamStatisticsDataManager(AbstractSportDataManager):
-    _sport_id: Optional[int]
     _team_id: Optional[int]
     _league_id: Optional[int]
 
