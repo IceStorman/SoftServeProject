@@ -60,7 +60,7 @@ function SignInPage() {
             <form method="post" onSubmit={handleSubmit}>
                 <h2>Log In</h2>
                 <p>
-                    Email: <input value={emailOrUserName} onChange={e => setEmailOrUserName(e.target.value)} />
+                    Email/Username: <input value={emailOrUserName} onChange={e => setEmailOrUserName(e.target.value)} />
                 </p>
                 <p>
                     Password: <input type="password" value={password} onChange={e => setPassword(e.target.value)} />

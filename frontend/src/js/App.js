@@ -29,7 +29,6 @@ import apiEndpoints from "../apiEndpoints";
 import NavBar from "../components/basic/nav";
 import InsideNewsPage from "../pages/news/insideNewsPage";
 import AboutUsPage from "../pages/misc/aboutAs";
-import {AuthContext} from "../pages/registration/AuthContext";
 import GoogleAuthCallback from "../pages/registration/googleCallBack";
 
 function App() {

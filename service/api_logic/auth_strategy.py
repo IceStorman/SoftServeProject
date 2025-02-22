@@ -68,7 +68,7 @@ class GoogleAuthHandler(AuthHandler[T]):
                 redirect_url=current_app.config['REDIRECT_URI']
             )
         token_response = requests.post(token_url, headers = headers, data = body)
-        if token_response.status_code != 200:
+        if not token_response.ok:
             raise InvalidAuthenticationDataError(credentials.auth_provider)
 
         client.parse_request_body_response(token_response.text)
@@ -77,7 +77,7 @@ class GoogleAuthHandler(AuthHandler[T]):
             current_app.config['USER_INFO_URL'],
             headers={'Authorization': f'Bearer {client.token["access_token"]}'}
         )
-        if user_info_response.status_code != 200:
+        if not user_info_response.ok:
             raise InvalidAuthenticationDataError(credentials.auth_provider)
 
         data = user_info_response.json()
