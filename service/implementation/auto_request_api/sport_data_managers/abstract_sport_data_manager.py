@@ -32,6 +32,7 @@ class AbstractSportDataManager:
             save_api_data(json_data, name)
             return json_data
         blob_save_specific_api(name, blob_name, json_data)
+        save_api_data(json_data, self._sport_name)
         return json_data
 
     # def _try_return_json_data(self, url: str, index: str) -> Dict[str, str]:
