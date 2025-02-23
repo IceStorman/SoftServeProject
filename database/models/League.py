@@ -7,4 +7,4 @@ class League(Base):
     name = Column(String)
     logo = Column(String)
     sport_id = Column(ForeignKey('Sports.sport_id'))
-    country = Column(ForeignKey('Country.country_id'))
+    country_id = Column(ForeignKey('Country.country_id'))
