@@ -3,7 +3,7 @@ from dependency_injector.wiring import Provide
 from api.container.container import Container
 from database.models import Sport
 from database.session import SessionLocal
-from service.api_logic.teams_logic import TeamsService
+#from service.api_logic.teams_logic import TeamsService
 from service.implementation.auto_request_api.sport_data_managers.abstract_sport_data_manager import \
     AbstractSportDataManager
 from service.implementation.auto_request_api.sport_data_managers.sport_consts import get_host, get_team_index
@@ -16,7 +16,7 @@ class TeamsDataManager(AbstractSportDataManager):
     _page: Optional[int]
     _per_page: Optional[int]
 
-    _service: TeamsService = Provide[Container.teams_service]
+    #_service: TeamsService = Provide[Container.teams_service]
 
     def __init__(self, new_data):
         super().__init__(new_data)

@@ -5,9 +5,9 @@ from .sports import Sport
 from .sports_index import SportIndex
 from .streams import Stream
 from .user_preferences import UserPreference
-from .teams_index import TeamIndex
+from .Teams_index import TeamIndex
 from .country import Country
-from .league import League
+from .League import League
 from .games import Games
 from .teams_in_news import TeamInNews
 from .likes import Likes
