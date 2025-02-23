@@ -2,6 +2,8 @@ import {useEffect, useState} from 'react';
 import apiEndpoints from "./apiEndpoints";
 import axios from 'axios';
 import {toast} from "sonner";
+import Cookies from 'js-cookie';
+
 
 const getCookie = (name) => {
     const match = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`));
@@ -14,7 +16,7 @@ const useLanguage = () => {
     });
 
     useEffect(() => {
-        document.cookie = `lang=${language}; path=/;`;
+        Cookies.set('lang', language, { path: '/' });
         localStorage.setItem("language", language);
     }, [language]);
 

@@ -1,5 +1,23 @@
 .language-switcher-container {
   display: flex;
-  justify-content: center;
   align-items: center;
+}
+
+.language-button {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  font-size: 14px;
+  text-transform: uppercase;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.language-button.active {
+  background-color: $main-clr-shadow;
+  color: white;
+}
+
+.language-separator {
+  margin: 0 5px;
+  font-size: 14px;
 }

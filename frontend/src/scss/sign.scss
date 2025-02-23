@@ -26,7 +26,6 @@
 
         h2 {
             font-size: 2rem;
-            font-family: "CyrillicGoth";
         }
 
         p {
@@ -80,10 +79,15 @@
         outline: none;
         transition: border-color 0.3s ease-in-out;
         overflow: scroll;
-        font-family: "CyrillicGoth";
+
+        &.input-error {
+            border-color: #dc3545;
+            background-color: rgba(220, 53, 69, 0.05);
+        }
     }
 
     input:focus {
         border-color: $main-clr-shadow;
     }
+
 }

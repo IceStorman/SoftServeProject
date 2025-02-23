@@ -8,8 +8,11 @@ from dependency_injector.wiring import inject, Provide
 from service.api_logic.user_logic import UserService
 from api.container.container import Container
 import os
+from dotenv import load_dotenv
 
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+load_dotenv()
+FRONT_RESET_PASSWORD_URL = os.getenv('FRONT_RESET_PASSWORD_URL')
 
 logger = Logger("logger", "all.log")
 
@@ -69,7 +72,7 @@ def reset_password(token, service: UserService = Provide[Container.user_service]
             if not user_data:
                 return None
 
-            reset_front_url = f"http://localhost:3000/sign-in/reset-password/{token}"
+            reset_front_url = f"{FRONT_RESET_PASSWORD_URL}/{token}"
 
             return redirect(reset_front_url)
 

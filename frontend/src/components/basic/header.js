@@ -7,8 +7,8 @@ function Header() {
     return (
         <header>
             <Logo />
-            <LoginBtn />
             <LanguageBtn />
+            <LoginBtn />
         </header>
     );
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import useTranslations from '../../translationsContext';
 
 const LanguageSwitcher = () => {
-    const { t, changeLanguage } = useTranslations();
+    const { t, changeLanguage, language } = useTranslations();
 
     const handleLanguageChange = (newLang) => {
         changeLanguage(newLang);
@@ -11,16 +11,17 @@ const LanguageSwitcher = () => {
     return (
         <div className="language-switcher-container">
             <button
-                className="filled translate-first"
+                className={`language-button ${language === 'en' ? 'active' : ''}`}
                 onClick={() => handleLanguageChange('en')}
             >
-                {t("english")}
+                EN
             </button>
+            <span className="language-separator">/</span>
             <button
-                className="filled translate-second"
+                className={`language-button ${language === 'uk' ? 'active' : ''}`}
                 onClick={() => handleLanguageChange('uk')}
             >
-                {t("ukrainian")}
+                UA
             </button>
         </div>
     );

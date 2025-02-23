@@ -53,7 +53,7 @@ msgid "Follow Us on Social Media"
 msgstr "Слідкуйте за нами в соціальних мережах"
 
 msgid "Subscribe to our newsletter"
-msgstr "Підпишіться на нашу розсилку"
+msgstr "Підписатись на нашу розсилку"
 
 msgid "Sign In"
 msgstr "Зареєструватись"
@@ -125,13 +125,13 @@ msgid "Create"
 msgstr "Створити"
 
 msgid "Nickname:"
-msgstr "Кличка:"
+msgstr "Імʼя:"
 
 msgid "Repeat password:"
 msgstr "Повторити пароль:"
 
 msgid "Already have an account?"
-msgstr "Вже маєш акаунт?"
+msgstr "Вже є акаунт?"
 
 msgid "Select sport"
 msgstr "Виберіть вид спорту"

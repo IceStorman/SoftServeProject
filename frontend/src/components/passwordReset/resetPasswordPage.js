@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import useTranslations from "../../translationsContext";
 import apiEndpoints from "../../apiEndpoints";
+import {toast} from "sonner";
 
 function ResetPasswordPage() {
     const { token } = useParams();
@@ -29,12 +30,13 @@ function ResetPasswordPage() {
             });
 
             if (!response.ok) {
-                throw new Error("Failed to reset password");
+                toast.error("Failed to reset password")
             }
 
+            toast.success("You success reset password")
             navigate("/sign-in");
         } catch (err) {
-            setError(t("error_resetting_password"));
+            toast.error(t("error_resetting_password"))
         }
     };
 

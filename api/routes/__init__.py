@@ -23,6 +23,7 @@ from flask_jwt_extended import JWTManager
 from datetime import timedelta
 import os
 from dotenv import load_dotenv
+from pathlib import Path
 
 
 load_dotenv()
@@ -69,9 +70,11 @@ def create_app():
     app.config['USER_INFO_URL'] = 'https://www.googleapis.com/oauth2/v2/userinfo'
     app.config['SCOPES'] = 'https://www.googleapis.com/auth/userinfo.email'
 
+    BASE_DIR = Path(__file__).resolve().parent
+    TRANSLATIONS_DIR = BASE_DIR / 'translations'
     app.config['BABEL_DEFAULT_LOCALE'] = 'en'
     app.config['BABEL_SUPPORTED_LOCALES'] = ['en', 'uk']
-    app.config['BABEL_TRANSLATION_DIRECTORIES'] = '/Users/mac/Desktop/Unik/SoftProg/SportHuinia/api/translations'
+    app.config['BABEL_TRANSLATION_DIRECTORIES'] = str(TRANSLATIONS_DIR)
     babel.init_app(app, locale_selector=get_locale)
 
     SWAGGER_URL = '/swagger'
