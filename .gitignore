@@ -537,3 +537,5 @@ apiEndpoints.js
 
 credentials.json
 token.json
+
+package-lock.json
