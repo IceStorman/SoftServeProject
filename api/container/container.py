@@ -17,7 +17,8 @@ class Container(containers.DeclarativeContainer):
         modules=[
             "api.routes.api_login",
             "api.routes.api_news",
-            "api.routes.api_user_preferences"
+            "api.routes.api_user_preferences",
+            "service.implementation.email_sender.user_subscription_manager"
         ]
     )
 
@@ -27,6 +28,7 @@ class Container(containers.DeclarativeContainer):
     preferences_dal = providers.Factory(PreferencesDAL, session=db_session)
     news_dal = providers.Factory(NewsDAL, session = db_session)
     sport_dal = providers.Factory(SportDAL, db_session=db_session)
+    user_subscription_dal = providers.Factory(UserSubscriptionDAL, session=db_session)
 
     user_service = providers.Factory(
         UserService,
@@ -47,9 +49,3 @@ class Container(containers.DeclarativeContainer):
         user_service,
         news_service
     )
-
-
-
-
-
-    user_subscription_dal = providers.Factory(UserSubscriptionDAL, session=db_session)

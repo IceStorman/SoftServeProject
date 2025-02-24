@@ -1,8 +1,8 @@
 from database.models import User, TempSubscribersData, UserClubPreferences
 
 class UserSubscriptionDAL:
-    def __init__(self, db_session):
-        self.db_session = db_session
+    def __init__(self, session):
+        self.db_session = session
 
     def try_add_subscribers_data(self, preference_index):
         users = self.__get_users_by_preference_index(preference_index)

@@ -2,6 +2,7 @@ import os
 import base64
 
 from dependency_injector.wiring import Provide, inject
+from google.api_core import exceptions
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
@@ -32,8 +33,8 @@ class UserSubscriptionManager(metaclass=UserSubscriptionManagerMeta):
     __SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
 
     @inject
-    def __init__(self, user_subscription_dal: UserSubscriptionDAL = Provide[Container.user_subscription_dal]):
-        self.__user_subscription_dal = user_subscription_dal
+    def __init__(self):
+        self.__user_subscription_dal = Container.user_subscription_dal()
 
         current_dir = Path(__file__).resolve().parent if "__file__" in locals() else Path.cwd()
         envars = current_dir / ".env"
@@ -44,7 +45,6 @@ class UserSubscriptionManager(metaclass=UserSubscriptionManagerMeta):
 
         event.listen(TempSubscribersData, "after_insert", self.__on_subscribers_inserted)
 
-    @inject
     def try_add_subscribers_to_temp_table(self, team_index):
         self.__user_subscription_dal.try_add_subscribers_data(team_index)
 
@@ -83,12 +83,9 @@ class UserSubscriptionManager(metaclass=UserSubscriptionManagerMeta):
             creds = Credentials.from_authorized_user_file("token.json", self.__SCOPES)
 
         if not creds or not creds.valid:
-            if creds and creds.expired and creds.refresh_token:
-                creds.refresh(Request())
-            else:
-                credentials_path = r"C:\Users\LEGION\Documents\Softserve\SoftServeProject\credentials.json"
-                flow = InstalledAppFlow.from_client_secrets_file(credentials_path, self.__SCOPES)
-                creds = flow.run_local_server(port=0)
+            credentials_path = "credentials.json"
+            flow = InstalledAppFlow.from_client_secrets_file(credentials_path, self.__SCOPES)
+            creds = flow.run_local_server(port=0)
 
             with open("token.json", "w") as token:
                 token.write(creds.to_json())
