@@ -26,6 +26,8 @@ class UserService:
         self._user_dal = user_dal
         self._jwt_dal = jwt_dal
         self._refresh_dal = refresh_dal
+        self._preferences_dal = preferences_dal
+        self._sport_dal = sport_dal
         self._serializer = URLSafeTimedSerializer(current_app.secret_key)
         self._logger = Logger("logger", "all.log").logger
 

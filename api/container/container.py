@@ -4,6 +4,8 @@ from database.session import SessionLocal
 from database.postgres.dal.user import UserDAL
 from database.postgres.dal.preferences import PreferencesDAL
 from database.postgres.dal.news import NewsDAL
+from database.postgres.dal.jwt import jwtDAL
+from database.postgres.dal.refresh import RefreshTokenDAL 
 from service.api_logic.managers.recommendation_menager import RecommendationManager
 from service.api_logic.user_logic import UserService
 from service.api_logic.news_logic import NewsService
@@ -25,6 +27,8 @@ class Container(containers.DeclarativeContainer):
     preferences_dal = providers.Factory(PreferencesDAL, session=db_session)
     news_dal = providers.Factory(NewsDAL, session = db_session)
     sport_dal = providers.Factory(SportDAL, db_session=db_session)
+    jwt_dal = providers.Factory(jwtDAL, db_session = db_session)
+    refresh_dal = providers.Factory(RefreshTokenDAL, db_session = db_session)
 
     user_service = providers.Factory(
         UserService,
