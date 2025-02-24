@@ -1,6 +1,9 @@
 from flask import current_app, url_for, jsonify, make_response
 from flask_mail import Message
 from itsdangerous import URLSafeTimedSerializer
+from dto.api_input import UpdateUserPreferencesDTO
+from dto.api_output import OutputSportPreferences, OutputTeamPreferences
+from exept.exeptions import IncorrectPreferencesError, IncorrectTypeOfPreferencesError
 from dto.api_input import InputUserLogInDTO
 from dto.api_output import OutputUser, OutputLogin
 from database.models import User
@@ -12,19 +15,16 @@ from jinja2 import Environment, FileSystemLoader
 import os
 from flask_jwt_extended import create_access_token,create_refresh_token, set_access_cookies, set_refresh_cookies, decode_token
 from service.api_logic.auth_strategy import AuthManager
-from database.postgres.dto.jwt import jwtDTO
-from database.postgres.dto.refresh import refreshDTO
-import datetime
-from api.refresh_token_logic import get_client_ip, get_country_from_ip, get_user_device, generate_nonce, is_ip_country_changed, is_device_changed
-from flask_jwt_extended import get_jwt_identity, get_jwt
 
 
+from service.api_logic.models.api_models import SportPreferenceFields, TeamPreferenceFields
+
+
+SPORT_TYPE = "sport"
+TEAM_TYPE = "team"
 
 class UserService:
-
-    def __init__(self, user_dal, jwt_dal):
-        self._user_dal = user_dal
-        self._jwt_dal = jwt_dal
+    def __init__(self, user_dal, preferences_dal, sport_dal):
         self._serializer = URLSafeTimedSerializer(current_app.secret_key)
         self._logger = Logger("logger", "all.log").logger
 
@@ -262,6 +262,51 @@ class UserService:
         return response
 
 
+    def add_preferences(self, dto: UpdateUserPreferencesDTO):
+        new_dto_by_type_of_preference = self.dto_for_type_of_preference(dto)
+
+        existing_sports = self._preferences_dal.get_all_sport_preference_indexes()
+        if dto.type == SPORT_TYPE:
+            valid_preferences = set([sport_id for sport_id in dto.preferences if sport_id in existing_sports])
+
+        if dto.type == TEAM_TYPE:
+            valid_preferences = set([team_id for team_id in dto.preferences])
+
+        if not valid_preferences:
+            raise IncorrectPreferencesError()
+
+        self.add_valid_user_preferences(new_dto_by_type_of_preference, dto, valid_preferences)
+
+        return CommonResponse().to_dict()
+
+
+    def get_user_preferences(self, dto: UpdateUserPreferencesDTO):
+        new_dto_by_type_of_preference = self.dto_for_type_of_preference(dto)
+
+        prefs = self._preferences_dal.get_user_preferences(new_dto_by_type_of_preference, dto)
+        if dto.type == SPORT_TYPE:
+            return OutputSportPreferences(many=True).dump(prefs)
+
+        if dto.type == TEAM_TYPE:
+            return  OutputTeamPreferences(many=True).dump(prefs)
+
+
+    def delete_preferences(self, dto: UpdateUserPreferencesDTO):
+        new_dto_by_type_of_preference = self.dto_for_type_of_preference(dto)
+
+        self._preferences_dal.delete_user_preferences(new_dto_by_type_of_preference, dto)
+
+
+    @staticmethod
+    def dto_for_type_of_preference(dto):
+        if dto.type == SPORT_TYPE:
+            return SportPreferenceFields()
+        elif dto.type == TEAM_TYPE:
+            return TeamPreferenceFields()
+        else:
+            raise IncorrectTypeOfPreferencesError()
+
+
     def get_user_sport_and_club_preferences(self, user_id: int) -> list[int] and list[int] | list[None] and list[None]:
         user_preferences = self._user_dal.get_user_sport_and_club_preferences_by_id(user_id)
 
@@ -272,3 +317,32 @@ class UserService:
         user_preferred_sports = list({row.sports_id for row in user_preferences if row.sports_id is not None})
 
         return user_preferred_teams, user_preferred_sports
+
+    def add_valid_user_preferences(self, type_dto, dto, valid_preferences):
+        tables_and_cols_dto = self._preferences_dal.getattr_tables_and_columns_by_type(type_dto)
+
+        existing_prefs = [
+            pref[0] for pref in self._preferences_dal.get_existing_preferences(dto.user_id, tables_and_cols_dto)
+        ]
+
+        new_prefs = [
+            tables_and_cols_dto.main_table(**{
+                type_dto.user_id_field: dto.user_id,
+                type_dto.type_id_field: pref
+            })
+            for pref in valid_preferences if pref not in existing_prefs
+        ]
+
+        if new_prefs:
+            self._preferences_dal.insert_new_preferences(new_prefs)
+
+        self.__delete_old_user_preferences(dto, existing_prefs, valid_preferences, tables_and_cols_dto)
+
+
+    def __delete_old_user_preferences(self, dto, existing_prefs, valid_preferences, tables_and_cols_dto):
+        to_delete = [
+            pref for pref in existing_prefs if pref not in valid_preferences
+        ]
+
+        if to_delete:
+            self._preferences_dal.delete_redundant_user_preferences(dto.user_id, to_delete, tables_and_cols_dto)

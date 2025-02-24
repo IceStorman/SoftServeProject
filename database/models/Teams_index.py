@@ -7,4 +7,4 @@ class TeamIndex(Base):
     name = Column(String)
     logo = Column(String)
     api_id = Column(Integer)
-    league = Column(ForeignKey('League.league_id'))
+    league_id = Column(ForeignKey('League.league_id'))
