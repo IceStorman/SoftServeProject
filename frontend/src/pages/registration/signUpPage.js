@@ -14,22 +14,7 @@ function SignUpPage() {
     const [password, setPassword] = useState('');
     const [repeatPassword, setRepPassword] = useState('');
 
-    const { login } = authContext;
-
-    function isValidEmail(email) {
-        const emailRegex = /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
-        return emailRegex.test(email);
-    }
-
-    function isValidUserName(userName) {
-        const userNameRegex = /^[^ @!#$%^&*()<>?/\\|}{~:;,+=]+$/;
-        return userNameRegex.test(userName);
-    }
-
-    function isValidPassword(password) {
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?!.*\s).{8,}$/;
-        return passwordRegex.test(password);
-    }
+    const { login, isValidEmail, isValidUserName, isValidPassword } = authContext;
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -72,7 +57,12 @@ function SignUpPage() {
             toast.success(`You are successfully signed up!`);
             navigate('/')
         } catch (error) {
-            toast.error(`Registration Error!\n ${error?.response?.status} \n ${error?.response?.data?.error}`);
+            const errorStatus = error?.response?.status
+            const errorMessage = error?.response?.data?.error;
+            toast.error(
+                `Registration Error! 
+                ${errorStatus ? errorStatus : ''} 
+                ${errorMessage ? errorMessage : ''}`);
         }
     }
 
@@ -81,16 +71,36 @@ function SignUpPage() {
             <form method="post" onSubmit={handleSubmit}>
                 <h2>Sign Up</h2>
                 <p>
-                Username: <input value={userName} onChange={e => setUserName(e.target.value)} />
+                Username:
+                    <input
+                        value={userName}
+                        onChange={e => setUserName(e.target.value)}
+                    />
                 </p>
                 <p>
-                Email: <input value={email} onChange={e => setEmail(e.target.value)} />
+                Email:
+                    <input
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
+                        onFocus={ () => toast.info('email: example@email.com') }
+                    />
                 </p>
                 <p>
-                Password: <input type="password" value={password} onChange={e => setPassword(e.target.value)} />
+                Password:
+                    <input
+                        type="password"
+                        value={password}
+                        onChange={e => setPassword(e.target.value)}
+                        onFocus={ () => toast.info('Password must contain at least 8 symbols, where: 1 uppercase letter, 1 lowercase letter and 1 number!') }
+                    />
                 </p>
                 <p>
-                Repeat password: <input type="password" value={repeatPassword} onChange={e => setRepPassword(e.target.value)} />
+                Repeat password:
+                    <input
+                        type="password"
+                        value={repeatPassword}
+                        onChange={e => setRepPassword(e.target.value)}
+                    />
                 </p>
                 <button className="filled text" type="submit">Sign up</button>
             </form>

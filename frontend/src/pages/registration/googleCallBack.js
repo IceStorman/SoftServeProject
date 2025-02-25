@@ -25,7 +25,13 @@ function GoogleAuthCallback() {
                     navigate('/')
                 })
                 .catch(error => {
-                    toast.error(`Google Authentication Error!\n ${error?.response?.status} \n ${error?.response?.data?.error}`);
+                    const errorStatus = error?.response?.status
+                    const errorMessage = error?.response?.data?.error;
+                    toast.error(
+                            `Google Authentication Error! 
+                        ${errorStatus ? errorStatus : ''} 
+                        ${errorMessage ? errorMessage : ''}`
+                    );
                 });
         }
     }, []);

@@ -14,18 +14,24 @@ function SignInPage() {
     const [emailOrUserName, setEmailOrUserName] = useState('');
     const [password, setPassword] = useState('');
 
-    const { login } = authContext;
+    const { login, isValidEmail, isValidUserName, isValidPassword } = authContext;
 
-    function isValidPassword(password) {
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?!.*\s).{8,}$/;
-        return passwordRegex.test(password);
+    function isValidEmailOrUserName(emailOrUserName) {
+        if (!emailOrUserName.trim())
+            return false;
+
+        const isEmailRegex = /^[^@]$/
+        if (isEmailRegex.test(emailOrUserName))
+            return isValidEmail(emailOrUserName);
+
+        return isValidUserName(emailOrUserName);
     }
 
     async function handleSubmit(e) {
         e.preventDefault();
 
-        if (!emailOrUserName.trim()) {
-            toast.error("Username or email can not be empty!");
+        if (!isValidEmailOrUserName(emailOrUserName)) {
+            toast.error("Username or email can not be empty or contain such symbols!");
             return;
         }
 
@@ -51,7 +57,12 @@ function SignInPage() {
             toast.success(`You are successfully logged in!`);
             navigate('/');
         } catch (error) {
-            toast.error(`Authentication Error!\n ${error?.response?.status} \n ${error?.response?.data?.error}`);
+            const errorStatus = error?.response?.status
+            const errorMessage = error?.response?.data?.error;
+            toast.error(
+                `Authentication Error! 
+                ${errorStatus ? errorStatus : ''} 
+                ${errorMessage ? errorMessage : ''}`);
         }
     }
 
@@ -60,10 +71,20 @@ function SignInPage() {
             <form method="post" onSubmit={handleSubmit}>
                 <h2>Log In</h2>
                 <p>
-                    Email/Username: <input value={emailOrUserName} onChange={e => setEmailOrUserName(e.target.value)} />
+                    Email/Username:
+                    <input
+                        value={emailOrUserName}
+                        onChange={e => setEmailOrUserName(e.target.value)}
+                        onFocus={ () => toast.info('email: example@email.com') }
+                    />
                 </p>
                 <p>
-                    Password: <input type="password" value={password} onChange={e => setPassword(e.target.value)} />
+                    Password:
+                    <input
+                        type="password"
+                        value={password} onChange={e => setPassword(e.target.value)}
+                        onFocus={ () => toast.info('Password must contain at least 8 symbols, where: 1 uppercase letter, 1 lowercase letter and 1 number!') }
+                    />
                 </p>
                 <button className='filled text' type="submit">Log in</button>
             </form>

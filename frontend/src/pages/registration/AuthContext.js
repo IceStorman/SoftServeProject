@@ -1,5 +1,6 @@
 import { createContext, useState } from "react";
 import Cookies from "js-cookie";
+import {toast} from "sonner";
 
 export const AuthContext = createContext(null);
 
@@ -19,8 +20,24 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
     };
 
+    function isValidEmail(email) {
+        const emailRegex = /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
+        return emailRegex.test(email);
+    }
+
+    function isValidUserName(userName) {
+        const userNameRegex = /^[^ @!#$%^&*()<>?/\\|}{~:;,+=]+$/;
+        return userNameRegex.test(userName);
+    }
+
+    function isValidPassword(password) {
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?!.*\s).{8,}$/;
+        return passwordRegex.test(password);
+    }
+
+
     return (
-        <AuthContext.Provider value={{ user, login, logout }}>
+        <AuthContext.Provider value={{ user, login, logout, isValidEmail, isValidUserName, isValidPassword }}>
             {children}
         </AuthContext.Provider>
     );
