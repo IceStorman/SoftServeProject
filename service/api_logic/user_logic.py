@@ -17,7 +17,7 @@ from flask_jwt_extended import create_access_token,create_refresh_token, set_acc
 from service.api_logic.auth_strategy import AuthManager
 from database.postgres.dto.jwt import jwtDTO
 from database.postgres.dto.refresh import refreshDTO
-import datetime
+from datetime import datetime
 from api.refresh_token_logic import get_client_ip, get_country_from_ip, get_user_device, generate_nonce
 from flask_jwt_extended import get_jwt_identity, get_jwt
 from service.api_logic.models.api_models import SportPreferenceFields, TeamPreferenceFields
@@ -176,7 +176,7 @@ class UserService:
 
         refresh_dto = refreshDTO(
             user_id=user.id,
-            last_ip=get_country_from_ip(get_client_ip()),
+            last_ip=get_country_from_ip(),
             last_device=get_user_device(),
             refresh_token=refresh_token,
             nonce=generate_nonce()

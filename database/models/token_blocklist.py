@@ -2,8 +2,9 @@ from .base import Base, Column, Integer, String, ForeignKey, Boolean, DateTime
 from sqlalchemy.orm import relationship
 import datetime 
 
-class Token_Blocklist(Base):
-    __tablename__ = 'Token_blocklist'
+class TokenBlocklist(Base):
+    __tablename__ = 'token_blocklist'
+
     id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey("Users.user_id"))
     jti = Column(String, nullable=False, index=True)
@@ -12,4 +13,5 @@ class Token_Blocklist(Base):
     expires_at = Column(DateTime, nullable=False)
     updated_at = Column(DateTime)  
 
-    refresh_tokens = relationship("refresh_token_tracking", back_populates="token_blocklist")
+
+    refresh_tokens = relationship("RefreshTokenTracking", back_populates="token_blocklist")
