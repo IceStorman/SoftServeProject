@@ -20,13 +20,13 @@ def get_user_device():
 def get_client_ip():
     return request.headers.get("X-Forwarded-For", request.remote_addr)
 
-def get_country():
+def get_country_from_ip():
     ip = get_client_ip()
     response = requests.get(f"https://ipinfo.io/{ip}/json")
     return response.json().get("country")
 
 def is_ip_country_changed(stored_country: str) -> bool:
-    current_country = get_country()
+    current_country = get_country_from_ip()
     return stored_country != current_country
 
 def is_device_changed(stored_device: str) -> bool:
@@ -36,6 +36,7 @@ def is_device_changed(stored_device: str) -> bool:
 def generate_nonce():
     nonce = hashlib.sha256(f"{time.time()}{os.urandom(16)}".encode()).hexdigest()
     return nonce
+
 
 
 

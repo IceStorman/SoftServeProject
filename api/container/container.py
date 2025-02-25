@@ -35,6 +35,8 @@ class Container(containers.DeclarativeContainer):
         user_dal=user_dal,
         preferences_dal=preferences_dal,
         sport_dal=sport_dal,
+        jwt_dal=jwt_dal,
+        refresh_dal=refresh_dal
     )
 
     news_service = providers.Factory(

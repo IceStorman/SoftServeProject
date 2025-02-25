@@ -1,4 +1,5 @@
 from .base import Base, Column, Integer, String, ForeignKey, Boolean, DateTime
+from sqlalchemy.orm import relationship
 import datetime 
 
 class Token_Blocklist(Base):
@@ -10,3 +11,5 @@ class Token_Blocklist(Base):
     revoked = Column(Boolean, default=False, nullable=False)
     expires_at = Column(DateTime, nullable=False)
     updated_at = Column(DateTime)  
+
+    refresh_tokens = relationship("refresh_token_tracking", back_populates="token_blocklist")
