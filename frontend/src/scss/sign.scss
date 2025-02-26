@@ -72,6 +72,10 @@
         color: $bg-white;
         font-size: 1.2rem;
         display: inline-flex;
+
+        &.arrow {
+            margin-right: .5rem;
+        }
     }
 
     .input-field:focus {
