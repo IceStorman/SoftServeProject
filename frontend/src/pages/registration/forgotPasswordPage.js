@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { RiArrowLeftWideLine } from "react-icons/ri";
 
 function ForgotPasswordPage() {
+    
     const [email, setEmail] = useState('');
     const navigate = useNavigate();
 
