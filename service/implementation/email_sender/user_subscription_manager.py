@@ -32,7 +32,6 @@ class UserSubscriptionManagerMeta(type):
 class UserSubscriptionManager(metaclass=UserSubscriptionManagerMeta):
     __SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
 
-    @inject
     def __init__(self):
         self.__user_subscription_dal = Container.user_subscription_dal()
 
@@ -74,8 +73,6 @@ class UserSubscriptionManager(metaclass=UserSubscriptionManagerMeta):
             body={"raw": raw_message}
         ).execute()
 
-        print(f"Email sent successfully! Message ID: {send_message['id']}")
-
     def __authenticate_gmail(self):
         creds = None
 
@@ -91,6 +88,3 @@ class UserSubscriptionManager(metaclass=UserSubscriptionManagerMeta):
                 token.write(creds.to_json())
 
         return creds
-
-manager = UserSubscriptionManager()
-manager.try_add_subscribers_to_temp_table(1)
