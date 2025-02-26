@@ -49,9 +49,9 @@ class BaseDTO(Schema):
 
     @pre_load
     def validate_password(self, data, **kwargs):
-        if 'password_hash' in data:
+        if 'password' in data:
             regex = re.compile(r'(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?!.*\s){8,}')
-            if not re.match(regex, data['password_hash']):
+            if not re.match(regex, data['password']):
                 raise ValidationError("Invalid password format", field_name="password_hash")
         return data
 
