@@ -31,21 +31,21 @@ function SignInPage() {
         e.preventDefault();
 
         if (!isValidEmailOrUserName(emailOrUserName)) {
-            toast.error("Username or email can not be empty or contain such symbols!");
+            toast.error(globalVariables.authMessages.UsernameOrEmailError);
             return;
         }
 
         if (!isValidPassword(password)) {
-            toast.error("Password must contain at least 8 symbols, where: 1 uppercase letter, 1 lowercase letter and 1 number!");
+            toast.error(globalVariables.authMessages.passwordMessage);
             return;
         }
 
         try {
             const response = await axios.post(
-                `${apiEndpoints.url}${apiEndpoints.login.login}`,
+                `${apiEndpoints.url}${apiEndpoints.user.login}`,
                 {
                     email_or_username: emailOrUserName,
-                    password_hash: password,
+                    password: password,
                     auth_provider: globalVariables.authStrategies.simpleStrategy
                 },
                 {
@@ -54,13 +54,13 @@ function SignInPage() {
             );
 
             login({ email: response?.data?.user?.email, username: response?.data?.user?.username });
-            toast.success(`You are successfully logged in!`);
+            toast.success(globalVariables.authMessages.successLogIn);
             navigate('/');
         } catch (error) {
             const errorStatus = error?.response?.status
             const errorMessage = error?.response?.data?.error;
             toast.error(
-                `Authentication Error! 
+                `Authentication Error 
                 ${errorStatus ? errorStatus : ''} 
                 ${errorMessage ? errorMessage : ''}`);
         }
@@ -75,7 +75,7 @@ function SignInPage() {
                     <input
                         value={emailOrUserName}
                         onChange={e => setEmailOrUserName(e.target.value)}
-                        onFocus={ () => toast.info('email: example@email.com') }
+                        onFocus={ () => toast.info(globalVariables.authMessages.EmailMessage)}
                     />
                 </p>
                 <p>
@@ -83,7 +83,7 @@ function SignInPage() {
                     <input
                         type="password"
                         value={password} onChange={e => setPassword(e.target.value)}
-                        onFocus={ () => toast.info('Password must contain at least 8 symbols, where: 1 uppercase letter, 1 lowercase letter and 1 number!') }
+                        onFocus={ () => toast.info(globalVariables.authMessages.passwordMessage)}
                     />
                 </p>
                 <button className='filled text' type="submit">Log in</button>

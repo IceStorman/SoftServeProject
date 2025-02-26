@@ -15,20 +15,20 @@ function GoogleAuthCallback() {
         const code = urlParams.get("code");
 
         if (code) {
-            axios.post(`${apiEndpoints.url}${apiEndpoints.login.login}?code=${code}`,
+            axios.post(`${apiEndpoints.url}${apiEndpoints.user.login}?code=${code}`,
                 {
                     auth_provider: globalVariables.authStrategies.googleStrategy
                 },)
                 .then(response => {
                     login({ email: response?.data?.user?.email, username: response?.data?.user?.username });
-                    toast.success(`You are successfully logged in!`);
+                    toast.success(globalVariables.authMessages.successLogIn);
                     navigate('/')
                 })
                 .catch(error => {
                     const errorStatus = error?.response?.status
                     const errorMessage = error?.response?.data?.error;
                     toast.error(
-                            `Google Authentication Error! 
+                            `Google Authentication Error
                         ${errorStatus ? errorStatus : ''} 
                         ${errorMessage ? errorMessage : ''}`
                     );

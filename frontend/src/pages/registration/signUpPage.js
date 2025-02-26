@@ -5,6 +5,7 @@ import apiEndpoints from "../../apiEndpoints";
 import {toast} from "sonner";
 import {AuthContext} from "./AuthContext";
 import AuthBtn from "../../components/containers/authBtn";
+import globalVariables from "../../globalVariables";
 
 function SignUpPage() {
     const authContext = useContext(AuthContext);
@@ -20,33 +21,33 @@ function SignUpPage() {
         e.preventDefault();
 
         if (!isValidUserName(userName)){
-            toast.error("Username can not contain such symbol or be empty!");
+            toast.error(globalVariables.authMessages.UsernameError);
             return;
         }
 
         if (!isValidEmail(email)){
-            toast.error("Incorrect email form!");
+            toast.error("Incorrect email form");
             return;
         }
 
         if (password !== repeatPassword) {
-            toast.error("Passwords do not match!");
+            toast.error("Passwords do not match");
             return;
         }
 
         if (!isValidPassword(password)){
-            toast.error("Password must contain at least 8 symbols, where: 1 uppercase letter, 1 lowercase letter and 1 number!");
+            toast.error(globalVariables.authMessages.passwordMessage);
             return;
         }
 
 
         try {
             const response = await axios.post(
-                `${apiEndpoints.url}${apiEndpoints.login.signUp}`,
+                `${apiEndpoints.url}${apiEndpoints.user.signUp}`,
                 {
                     email: email,
                     username: userName,
-                    password_hash: password
+                    password: password
                 },
                 {
                     headers: { 'Content-Type': 'application/json' },
@@ -54,13 +55,13 @@ function SignUpPage() {
             );
 
             login({ email: response?.data?.user?.email, username: response?.data?.user?.username });
-            toast.success(`You are successfully signed up!`);
+            toast.success(globalVariables.authMessages.successLogIn);
             navigate('/')
         } catch (error) {
             const errorStatus = error?.response?.status
             const errorMessage = error?.response?.data?.error;
             toast.error(
-                `Registration Error! 
+                `Registration Error 
                 ${errorStatus ? errorStatus : ''} 
                 ${errorMessage ? errorMessage : ''}`);
         }
@@ -82,7 +83,7 @@ function SignUpPage() {
                     <input
                         value={email}
                         onChange={e => setEmail(e.target.value)}
-                        onFocus={ () => toast.info('email: example@email.com') }
+                        onFocus={ () => toast.info(globalVariables.authMessages.EmailMessage) }
                     />
                 </p>
                 <p>
@@ -91,7 +92,7 @@ function SignUpPage() {
                         type="password"
                         value={password}
                         onChange={e => setPassword(e.target.value)}
-                        onFocus={ () => toast.info('Password must contain at least 8 symbols, where: 1 uppercase letter, 1 lowercase letter and 1 number!') }
+                        onFocus={ () => toast.info(globalVariables.authMessages.passwordMessage) }
                     />
                 </p>
                 <p>

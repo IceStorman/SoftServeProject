@@ -111,7 +111,7 @@ class StreamsDTO(BaseDTO):
 class InputUserDTO(BaseDTO):
     username = fields.Str(required=True)
     email = fields.Str(required=True)
-    password_hash = fields.Str(required=True)
+    password = fields.Str(required=True)
 
 
 class InputUserByEmailDTO(BaseDTO):
@@ -142,7 +142,7 @@ class InputUserByIdDTO(BaseDTO):
 class InputUserLogInDTO(BaseDTO):
     email = fields.Str(required=False, missing=None)
     email_or_username = fields.Str(required=False, missing=None)
-    password_hash = fields.Str(required=False, missing=None)
+    password = fields.Str(required=False, missing=None)
     auth_provider = fields.String(required=False, missing=None)
 
 
