@@ -124,3 +124,10 @@ class InvalidAuthenticationDataError(CustomQSportException):
         message = f"{auth_provider_name} data is invalid"
         super().__init__(message)
 
+class IncorrectModelFromFilterManager(CustomQSportException):
+    status_code = 401
+
+    def __init__(self, table_name):
+        message = f"No filter manager found for model: {table_name}"
+        super().__init__(message)
+

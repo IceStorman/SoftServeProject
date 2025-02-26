@@ -79,7 +79,7 @@ def get_players_endpoint():
         logger.error(f"Error in POST /: {str(e)}")
         get_custom_error_response(e)
 
-@teams_app.route('/filtered', methods=['POST'])
+@teams_app.route('/search', methods=['POST'])
 @inject
 @logger.log_function_call()
 def get_team_filtered_endpoint(service: TeamsService = Provide[Container.teams_service]):

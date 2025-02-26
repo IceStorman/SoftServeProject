@@ -81,7 +81,7 @@ def specific_article(service: NewsService = Provide[Container.news_service]):
         logger.error(f"Error in POST /: {str(e)}")
         get_custom_error_response(e)
 
-@news_app.route('/filtered', methods=['POST'])
+@news_app.route('/search', methods=['POST'])
 @inject
 @logger.log_function_call()
 def get_filtered_news_endpoint(service: NewsService = Provide[Container.news_service]):

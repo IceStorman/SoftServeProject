@@ -2,8 +2,9 @@ from sqlalchemy.orm import Session
 from database.models import Games
 from database.postgres.dto import GameDTO
 from typing import Optional, List
+from database.postgres.dal.base import BaseDAL
 
-class GameDAL:
+class GameDAL(BaseDAL):
     def __init__(self, session: Session):
         self.session = session
 
@@ -62,9 +63,3 @@ class GameDAL:
         self.session.delete(game)
         self.session.commit()
         return True
-
-    def get_query(self):
-        return self.session.query(Games)
-
-    def execute_query(self, query):
-        return query.all()

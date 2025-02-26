@@ -22,7 +22,7 @@ def handle_db_timeout_error(e):
     response = {"error in data base": str(e)}
     return response
 
-@games_app.route('/specific', methods=['POST'])
+@games_app.route('/search', methods=['POST'])
 @cache.cached(CACHE_TIMEOUT_SECONDS, key_prefix=post_cache_key)
 @inject
 @logger.log_function_call()

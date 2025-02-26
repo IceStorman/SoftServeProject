@@ -14,7 +14,7 @@ class TeamsService:
 
     def get_teams(self, filters_dto, pagination: Pagination):
 
-        query = self._teams_dal.get_query()
+        query = self._teams_dal.get_query(TeamIndex)
 
         query = FilterManagerFactory.apply_filters(TeamIndex, query, filters_dto)
         count = query.count()

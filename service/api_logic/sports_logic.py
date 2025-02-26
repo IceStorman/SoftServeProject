@@ -20,7 +20,7 @@ class SportService:
 
     def search_leagues(self, filters_dto, pagination: Pagination):
 
-        query = self._leagues_dal.get_query()
+        query = self._leagues_dal.get_query(League)
 
         model_aliases = {
             "leagues": League,

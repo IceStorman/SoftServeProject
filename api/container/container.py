@@ -31,7 +31,14 @@ class Container(containers.DeclarativeContainer):
     user_dal = providers.Factory(UserDAL, session=db_session)
     preferences_dal = providers.Factory(PreferencesDAL, session=db_session)
     news_dal = providers.Factory(NewsDAL, session = db_session)
-    sport_dal = providers.Factory(SportDAL, db_session=db_session)
+    sport_dal = providers.Factory(SportDAL, session=db_session)
+    games_dal = providers.Factory(GameDAL, session=db_session)
+    teams_dal = providers.Factory(TeamDAL, session=db_session)
+    leagues_dal = providers.Factory(LeagueDAL, session=db_session)
+
+    games_service = providers.Factory(GamesService, games_dal=games_dal)
+    teams_service = providers.Factory(TeamsService, teams_dal=teams_dal)
+    sports_service = providers.Factory(SportService, sports_dal=sport_dal, leagues_dal=leagues_dal)
 
     user_service = providers.Factory(
         UserService,
@@ -53,17 +60,7 @@ class Container(containers.DeclarativeContainer):
         news_service
     )
 
-    games_dal = providers.Factory(GameDAL, session=db_session)
 
-    games_service = providers.Factory(GamesService, games_dal=games_dal)
-
-    teams_dal = providers.Factory(TeamDAL, session=db_session)
-
-    teams_service = providers.Factory(TeamsService, teams_dal=teams_dal)
-
-    leagues_dal = providers.Factory(LeagueDAL, session=db_session)
-
-    sports_service = providers.Factory(SportService, sports_dal=sport_dal, leagues_dal=leagues_dal)
 
 
 

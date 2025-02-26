@@ -3,6 +3,7 @@ from service.api_logic.filter_manager.league_filter_manager import LeagueFilterM
 from service.api_logic.filter_manager.news_filter_manager import NewsFilterManager
 from service.api_logic.filter_manager.teams_filter_manager import TeamsFilterManager
 from sqlalchemy.orm import Query
+from exept.exeptions import IncorrectModelFromFilterManager
 
 class FilterManagerFactory:
 
@@ -19,7 +20,7 @@ class FilterManagerFactory:
         table_name = model.__tablename__
 
         if table_name not in cls.MANAGERS:
-            raise ValueError(f"No filter manager found for model: {table_name}")
+            raise IncorrectModelFromFilterManager(table_name)
 
         filter_manager = cls.MANAGERS[table_name]
         return filter_manager.apply_filters(query, filters)

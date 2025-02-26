@@ -14,7 +14,7 @@ class GamesService:
 
     def get_games_today(self, filters_dto: GamesDTO(), pagination: Pagination):
 
-        query = self._games_dal.get_query()
+        query = self._games_dal.get_query(Games)
 
         filtered_query = FilterManagerFactory.apply_filters(Games, query, filters_dto)
 
