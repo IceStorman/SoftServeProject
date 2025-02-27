@@ -32,7 +32,7 @@ async def create_account_endpoint(service: UserService = Provide[Container.user_
     try:
         data = request.get_json()
         dto = InputUserDTO().load(data)
-        user = await service.sign_up_user(dto.email, dto.username, dto.password_hash)
+        user = await service.sign_up_user(dto.email, dto.username, dto.password)
         response = await service.create_access_token_response(user)
 
         return response
@@ -97,26 +97,6 @@ async def log_in(service: UserService = Provide[Container.user_service]):
         logger.error(f"Error in POST /login: {str(e)}")
         return get_custom_error_response(e)
 
-@login_app.route("/login/google", methods=['GET'])
-@inject
-@handle_exceptions
-@logger.log_function_call()
-def login_google():
-    try:
-        with current_app.app_context():
-            client = WebApplicationClient(current_app.config['GOOGLE_CLIENT_ID'])
-            authorization_url = client.prepare_request_uri(
-                current_app.config['AUTHORIZATION_BASE_URL'],
-                redirect_uri = current_app.config['REDIRECT_URI'],
-                scope=current_app.config['SCOPES']
-            )
-
-        return redirect(authorization_url)
-
-    except CustomQSportException as e:
-        logger.error(f"Error in GET /login/google: {str(e)}")
-        return get_custom_error_response(e)
-    
 @login_app.route("/refresh", methods=['POST'])
 @inject
 @handle_exceptions
@@ -124,7 +104,3 @@ def login_google():
 @jwt_required(refresh=True)
 async def refresh(service: UserService = Provide[Container.user_service]):
     return await service.refresh_tokens()
-
-
-
-
