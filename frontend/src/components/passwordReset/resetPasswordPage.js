@@ -1,21 +1,29 @@
-import { useState } from "react";
+import {useContext, useState} from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import useTranslations from "../../translationsContext";
 import apiEndpoints from "../../apiEndpoints";
 import {toast} from "sonner";
+import {AuthContext} from "../../pages/registration/AuthContext";
+import globalVariables from "../../globalVariables";
 
 function ResetPasswordPage() {
     const { token } = useParams();
     const navigate = useNavigate();
     const { t } = useTranslations();
-
+    const authContext = useContext(AuthContext);
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState(null);
+    const { isValidPassword } = authContext;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);
+
+        if (!isValidPassword(newPassword)) {
+            toast.error(globalVariables.authMessages.passwordMessage);
+            return;
+        }
 
         if (newPassword !== confirmPassword) {
             setError(t("passwords_do_not_match"));
@@ -26,7 +34,7 @@ function ResetPasswordPage() {
             const response = await fetch(`${apiEndpoints.url}${apiEndpoints.user.resetPassword}/${token}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ token, new_password: newPassword }),
+                body: JSON.stringify({ token, password: newPassword }),
             });
 
             if (!response.ok) {

@@ -40,18 +40,18 @@ class BaseDTO(Schema):
         return data
 
     @pre_load
-    def validate_email(self, data, **kwargs):
+    def validate_username(self, data, **kwargs):
         if 'username' in data:
             regex = re.compile(r'[ @!#$%^&*()<>?/\|}{~:;,+=]')
-            if regex.search(data['username']):
+            if regex.search(data['username']) or not data['username']:
                 raise ValidationError("Invalid username format", field_name="username")
         return data
 
     @pre_load
     def validate_password(self, data, **kwargs):
-        if 'password_hash' in data:
+        if 'password' in data:
             regex = re.compile(r'(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?!.*\s){8,}')
-            if not re.match(regex, data['password_hash']):
+            if not re.match(regex, data['password']):
                 raise ValidationError("Invalid password format", field_name="password_hash")
         return data
 
@@ -64,6 +64,7 @@ class TeamsLeagueDTO(BaseDTO):
     name = fields.Str(required=False, missing=None)
     page = fields.Int(required=False, missing=0)
     per_page = fields.Int(required=False, missing=0)
+
 
 class TeamsStatisticsOrPlayersDTO(BaseDTO):
     sport_id = fields.Int(required=False, missing=None)
@@ -111,7 +112,7 @@ class StreamsDTO(BaseDTO):
 class InputUserDTO(BaseDTO):
     username = fields.Str(required=True)
     email = fields.Str(required=True)
-    password_hash = fields.Str(required=True)
+    password = fields.Str(required=True)
 
 
 class InputUserByEmailDTO(BaseDTO):
@@ -119,7 +120,7 @@ class InputUserByEmailDTO(BaseDTO):
 
 
 class NewPasswordDTO(BaseDTO):
-    new_password = fields.Str(required=True)
+    password = fields.Str(required=True)
 
 
 class UpdateUserPreferencesDTO(BaseDTO):
@@ -137,16 +138,10 @@ class InputUserByIdDTO(BaseDTO):
     user_id = fields.Int(required=False, missing=None)
 
 
-class InputUserByGoogleDTO(BaseDTO):
-    email = fields.Str(required=True)
-    id = fields.Str(required=False, missing=None)
-    auth_provider = fields.String(required=False, missing=None)
-
-
 class InputUserLogInDTO(BaseDTO):
     email = fields.Str(required=False, missing=None)
     email_or_username = fields.Str(required=False, missing=None)
-    password_hash = fields.Str(required=False, missing=None)
+    password = fields.Str(required=False, missing=None)
     auth_provider = fields.String(required=False, missing=None)
 
 

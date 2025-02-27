@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect, useContext} from "react";
 import {
     BrowserRouter as Router,
     Routes,
@@ -32,7 +32,7 @@ import AboutUsPage from "../pages/misc/aboutAs";
 import { TranslationsProvider } from '../translationsContext';
 import ResetPasswordPage from "../components/passwordReset/resetPasswordPage";
 import CheckEmailPage from "../components/passwordReset/checkEmailPage";
-
+import GoogleAuthCallback from "../pages/registration/googleCallBack";
 
 function App() {
 
@@ -45,15 +45,27 @@ function App() {
                         v7_relativeSplatPath: true,
                     }}>
 
+                <Toaster
+                    position="bottom-right"
+                    richColors
+                    expand={true}
+                    duration={5000}
+                    visibleToasts={3}
+                    closeButton
+                />
+
                     <Header />
                     <NavBar />
 
+
                     <Routes>
-                        <Route exact path="/" element={<MainPage />} />
+                        <Route path="/" element={<MainPage />} />
 
                         <Route path="/sign-in" element={<SignInPage />} />
 
                         <Route path="/sign-up" element={<SignUpPage />} />
+
+                        <Route path="/sign-in/google" element={<GoogleAuthCallback />} />
 
                         <Route path="/sign-in/reset-password" element={<ForgotPasswordPage />} />
 
@@ -77,9 +89,11 @@ function App() {
 
                         <Route path="*" element={<Navigate to="/not-existing" replace />} />
 
-                        <Route exact path="/FAQ" element={<FAQpage />} />
+                        <Route path="/FAQ" element={<FAQpage />} />
 
-                        <Route exact path="/AboutUs" element={<AboutUsPage />} />
+                        <Route path="/AboutUs" element={<AboutUsPage />} />
+
+                        <Route path="*" element={<Navigate to="/not-existing" replace />} />
                     </Routes>
 
                     {<Footer />}

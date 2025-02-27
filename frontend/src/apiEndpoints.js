@@ -40,8 +40,10 @@ const apiEndpoints = {
     },
 
     user:{
-        resetPasswordRequest: 'login/reset-password-request',
-        resetPassword: 'login/reset-password',
+        signUp: 'user/sign-up',
+        login: 'user/login',
+        resetPasswordRequest: 'user/reset-password-request',
+        resetPassword: 'user/reset-password'
     }
 };
 

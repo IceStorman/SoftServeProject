@@ -34,7 +34,7 @@ async def create_account_endpoint(service: UserService = Provide[Container.user_
     try:
         data = request.get_json()
         dto = InputUserDTO().load(data)
-        user = await service.sign_up_user(dto.email, dto.username, dto.password_hash)
+        user = await service.sign_up_user(dto.email, dto.username, dto.password)
         response = await service.create_access_token_response(user)
 
         return response
@@ -68,7 +68,7 @@ def request_password_reset(service: UserService = Provide[Container.user_service
 def reset_password(token, service: UserService = Provide[Container.user_service]):
     try:
         if request.method == "GET":
-            service.confirm_token(token)
+            user = service.confirm_token(token)
 
             reset_front_url = f"{FRONT_RESET_PASSWORD_URL}/{token}"
 
@@ -77,7 +77,7 @@ def reset_password(token, service: UserService = Provide[Container.user_service]
         if request.method == "POST":
             data = request.get_json()
             dto = NewPasswordDTO().load(data)
-            token = service.reset_user_password(token, dto.new_password)
+            token = service.reset_user_password(token, dto.password)
 
             return token
 
@@ -100,28 +100,3 @@ async def log_in(service: UserService = Provide[Container.user_service]):
     except CustomQSportException as e:
         logger.error(f"Error in POST /login: {str(e)}")
         return get_custom_error_response(e)
-
-@login_app.route("/login/google", methods=['GET'])
-@inject
-@handle_exceptions
-@logger.log_function_call()
-def login_google():
-    try:
-        with current_app.app_context():
-            client = WebApplicationClient(current_app.config['GOOGLE_CLIENT_ID'])
-            authorization_url = client.prepare_request_uri(
-                current_app.config['AUTHORIZATION_BASE_URL'],
-                redirect_uri = current_app.config['REDIRECT_URI'],
-                scope=current_app.config['SCOPES']
-            )
-
-        return redirect(authorization_url)
-
-    except CustomQSportException as e:
-        logger.error(f"Error in GET /login/google: {str(e)}")
-        return get_custom_error_response(e)
-    
-
-
-
-

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, {useState, useEffect, useRef, useContext} from "react";
 import axios from 'axios';
 import apiEndpoints from "../apiEndpoints";
 import { toast } from "sonner";
@@ -16,9 +16,10 @@ import img4 from "./imgs/4.jpg"
 import img5 from "./imgs/5.jpg"
 import GridContainer from "../components/containers/gridBlock.jsx";
 import useTranslations from "../translationsContext";
+import {AuthContext} from "./registration/AuthContext";
 
 function MainPage() {
-    const [loginStatus, setLoginStatus] = useState(false)
+    const { user } = useContext(AuthContext);
     const [loading, setLoading] = useState(false)
     const [sports, setSport] = useState([]);
     const { t } = useTranslations();
@@ -348,33 +349,43 @@ function MainPage() {
                             }
                         </Column>
                     </div>
-                    <div className="blue-placeholder">
-                        <h1><NavLink to={"/sign-in"} className="nav-link" activeClassName="active">{t("sign_in")}</NavLink><p>{t("follow_teams")}</p></h1>
-                    </div>
+
+                    {
+                        !user ? (
+                            <div className="blue-placeholder">
+                                <h1><NavLink to={"/sign-in"} className="nav-link" activeClassName="active">{t("sign_in")}</NavLink> {t("follow_teams")}</h1>
+                            </div>
+                        ) : null
+                    }
+
                 </section>
             </div>
 
-            <GridContainer
-                title="Recommendations"
-                cardSizes={cardSizes}
-                gridSize={gridSize}
-                postsPerPage={postsPerPage}
-                onGridSizeChange={handleGridSizeChange}
-                pageCount={pageCount}
-                currentPage={currentPage}
-                onPageChange={handlePageClick}
-                loading={loading}
-                paginationKey={paginationKey}
-                children={currentNews.map((item) => (
-                    <NewsCard
-                        title={item.title}
-                        date={item.date}
-                        img={item.img}
-                        sport={item.sport}
-                        content={item.content}
-                    />
-                ))}>
-            </GridContainer >
+            {
+                user ? (
+                    <GridContainer
+                        title="Recommendations"
+                        cardSizes={cardSizes}
+                        gridSize={gridSize}
+                        postsPerPage={postsPerPage}
+                        onGridSizeChange={handleGridSizeChange}
+                        pageCount={pageCount}
+                        currentPage={currentPage}
+                        onPageChange={handlePageClick}
+                        loading={loading}
+                        paginationKey={paginationKey}
+                        children={currentNews.map((item) => (
+                            <NewsCard
+                                title={item.title}
+                                date={item.date}
+                                img={item.img}
+                                sport={item.sport}
+                                content={item.content}
+                            />
+                        ))}>
+                    </GridContainer >
+                ): null
+            }
 
 
             <section className="game-slider-showcase">
