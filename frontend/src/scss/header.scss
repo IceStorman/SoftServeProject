@@ -6,6 +6,14 @@ header {
     align-items: center;
     position: relative;
     background-color: $bg-white;
+
+    .white{
+        color: $bg-white;
+        padding: 1rem;
+        font-size: 1.2rem;
+        font-family: "PirataOne";
+    }
+
 }
 
 .logo {
