@@ -43,7 +43,7 @@ class BaseDTO(Schema):
     def validate_username(self, data, **kwargs):
         if 'username' in data:
             regex = re.compile(r'[ @!#$%^&*()<>?/\|}{~:;,+=]')
-            if regex.search(data['username']):
+            if regex.search(data['username']) or not data['username']:
                 raise ValidationError("Invalid username format", field_name="username")
         return data
 
