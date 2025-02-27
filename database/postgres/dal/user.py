@@ -1,4 +1,4 @@
-from sqlalchemy import or_
+from sqlalchemy import or_, delete
 from database.models import User, UserClubPreferences, UserPreference
 
 
@@ -22,6 +22,10 @@ class UserDAL:
 
     def create_user(self, new_user):
         self.session.add(new_user)
+        self.session.commit()
+
+    def delete_user(self, user):
+        self.session.delete(user)
         self.session.commit()
 
     def get_user_by_id(self, user_id: int) -> User:

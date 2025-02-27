@@ -41,6 +41,18 @@ async def create_account_endpoint(service: UserService = Provide[Container.user_
         return get_custom_error_response(e)
 
 
+@login_app.route('/delete-account', methods=['DELETE'])
+@inject
+@handle_exceptions
+@logger.log_function_call()
+async def delete_account_endpoint(service: UserService = Provide[Container.user_service]):
+    try:
+        pass
+
+    except CustomQSportException as e:
+        logger.error(f"Error in DELETE /: {str(e)}")
+        return get_custom_error_response(e)
+
 
 @login_app.route('/reset-password-request', methods=['POST'])
 @inject
