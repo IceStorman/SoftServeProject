@@ -1,25 +1,27 @@
-import React, { useState } from "react";
+import React, {useContext, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import { RiArrowLeftWideLine } from "react-icons/ri";
 import useTranslations from "../../translationsContext";
 import apiEndpoints from "../../apiEndpoints";
 import {toast} from "sonner";
+import {AuthContext} from "./AuthContext";
+import globalVariables from "../../globalVariables";
 
 
 function ForgotPasswordPage() {
+    const authContext = useContext(AuthContext);
     const [email, setEmail] = useState('');
     const [error, setError] = useState(null);
     const navigate = useNavigate();
     const { t } = useTranslations();
+    const {isValidEmail} = authContext;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);
 
-        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-        if (!email || !emailRegex.test(email)) {
-            toast.error("Please enter a valid email address");
+        if (!isValidEmail(email)){
+            toast.error("Incorrect email form");
             return;
         }
 
