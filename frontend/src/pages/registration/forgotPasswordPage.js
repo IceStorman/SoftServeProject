@@ -38,7 +38,7 @@ function ForgotPasswordPage() {
             toast.success("Success")
             navigate("/check-email");
         } catch (err) {
-            toast.error("error_sending_email")
+            toast.error("Error when sending email")
         }
     };
 

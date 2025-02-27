@@ -124,3 +124,18 @@ class InvalidAuthenticationDataError(CustomQSportException):
         message = f"{auth_provider_name} data is invalid"
         super().__init__(message)
 
+
+class SignatureExpiredError(CustomQSportException):
+    status_code = 401
+
+    def __init__(self):
+        message = f"Signature has expired"
+        super().__init__(message)
+
+
+class IncorrectSignatureError(CustomQSportException):
+    status_code = 401
+
+    def __init__(self):
+        message = f"Incorrect type of signature"
+        super().__init__(message)

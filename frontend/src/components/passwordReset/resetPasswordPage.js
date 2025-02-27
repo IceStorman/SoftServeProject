@@ -33,7 +33,7 @@ function ResetPasswordPage() {
                 toast.error("Failed to reset password")
             }
 
-            toast.success("You success reset password")
+            toast.success("You successfully reset password")
             navigate("/sign-in");
         } catch (err) {
             toast.error(t("error_resetting_password"))

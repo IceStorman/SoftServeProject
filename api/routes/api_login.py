@@ -68,9 +68,7 @@ def request_password_reset(service: UserService = Provide[Container.user_service
 def reset_password(token, service: UserService = Provide[Container.user_service]):
     try:
         if request.method == "GET":
-            user_data = service.confirm_token(token)
-            if not user_data:
-                return None
+            service.confirm_token(token)
 
             reset_front_url = f"{FRONT_RESET_PASSWORD_URL}/{token}"
 

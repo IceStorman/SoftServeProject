@@ -29,18 +29,3 @@ def localization():
     except CustomQSportException as e:
         logger.error(f"Error in GET /localization: {str(e)}")
         return get_custom_error_response(e)
-
-
-@localization_app.route('/set_language/<language>', methods=['GET'])
-@handle_exceptions
-@logger.log_function_call()
-def set_language(language):
-    try:
-        response = make_response(jsonify({"message": f"Language set to {language}"}))
-        response.set_cookie('lang', language, samesite='None', secure=True)
-
-        return response
-
-    except CustomQSportException as e:
-        logger.error(f"Error in GET /set_language: {str(e)}")
-        return get_custom_error_response(e)
