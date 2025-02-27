@@ -29,65 +29,77 @@ import apiEndpoints from "../apiEndpoints";
 import NavBar from "../components/basic/nav";
 import InsideNewsPage from "../pages/news/insideNewsPage";
 import AboutUsPage from "../pages/misc/aboutAs";
+import { TranslationsProvider } from '../translationsContext';
+import ResetPasswordPage from "../components/passwordReset/resetPasswordPage";
+import CheckEmailPage from "../components/passwordReset/checkEmailPage";
 import GoogleAuthCallback from "../pages/registration/googleCallBack";
 
 function App() {
 
     return (
         <>
-            <Toaster
-                position="bottom-right"
-                richColors
-                expand={true}
-                duration={5000}
-                visibleToasts={3}
-                closeButton
-            />
+            <TranslationsProvider>
+                <Router
+                    future={{
+                        v7_startTransition: true,
+                        v7_relativeSplatPath: true,
+                    }}>
 
-            <Router
-                future={{
-                    v7_startTransition: true,
-                    v7_relativeSplatPath: true,
-                }}>
+                <Toaster
+                    position="bottom-right"
+                    richColors
+                    expand={true}
+                    duration={5000}
+                    visibleToasts={3}
+                    closeButton
+                />
 
-                <Header />
-                <NavBar />
+                    <Header />
+                    <NavBar />
 
-                <Routes>
-                    <Route path="/" element={<MainPage />} />
 
-                    <Route path="/sign-in" element={<SignInPage />} />
+                    <Routes>
+                        <Route path="/" element={<MainPage />} />
 
-                    <Route path="/sign-up" element={<SignUpPage />} />
+                        <Route path="/sign-in" element={<SignInPage />} />
 
-                    <Route path="/sign-in/google" element={<GoogleAuthCallback />} />
+                        <Route path="/sign-up" element={<SignUpPage />} />
 
-                    <Route path="/sign-in/reset-password" element={<ForgotPasswordPage />} />
+                        <Route path="/sign-in/google" element={<GoogleAuthCallback />} />
 
-                    <Route path="/sport" element={<SportPage />} />
+                        <Route path="/sign-in/reset-password" element={<ForgotPasswordPage />} />
 
-                    <Route path="/sport/:sportName" element={<LeaguePage />} />
+                        <Route path="/sign-in/reset-password/:token" element={<ResetPasswordPage />} />
 
-                    <Route path="/sport/:sportName/league/:leagueName" element={<TeamPage />} />
+                        <Route path="/check-email" element={<CheckEmailPage />} />
 
-                    <Route path="/stream" element={<GamesPage />} />
+                        <Route path="/sport" element={<SportPage />} />
 
-                    <Route path="/stream/:gameId" element={<InsideStreamPage />} />
+                        <Route path="/sport/:sportName" element={<LeaguePage />} />
 
-                    <Route path="/news/:articleId" element={<InsideNewsPage />} />
+                        <Route path="/sport/:sportName/league/:leagueName" element={<TeamPage />} />
 
-                    <Route path="/not-existing" element={<NotExistingPage />} />
+                        <Route path="/stream" element={<GamesPage />} />
 
-                    <Route path="/FAQ" element={<FAQpage />} />
+                        <Route path="/stream/:gameId" element={<InsideStreamPage />} />
 
-                    <Route path="/AboutUs" element={<AboutUsPage />} />
+                        <Route path="/news/:articleId" element={<InsideNewsPage />} />
 
-                    <Route path="*" element={<Navigate to="/not-existing" replace />} />
-                </Routes>
+                        <Route path="/not-existing" element={<NotExistingPage />} />
 
-                {<Footer />}
+                        <Route path="*" element={<Navigate to="/not-existing" replace />} />
 
-            </Router>
+                        <Route path="/FAQ" element={<FAQpage />} />
+
+                        <Route path="/AboutUs" element={<AboutUsPage />} />
+
+                        <Route path="*" element={<Navigate to="/not-existing" replace />} />
+                    </Routes>
+
+                    {<Footer />}
+
+                </Router>
+            </TranslationsProvider>
         </>
     );
 }

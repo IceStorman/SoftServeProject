@@ -14,14 +14,12 @@
         }
 
         .score {
-            font-family: 'PirataOne';
             font-size: 1.5rem;
             flex-direction: row;
             justify-content: space-between;
         }
 
         .time {
-            font-family: 'PirataOne';
             font-size: 1rem;
             margin-top: 1rem;
 
@@ -140,7 +138,7 @@
     button {
         background-color: $main-clr;
         border: none;
-        font-family: "GrenzeGotisch";
+        font-family: "CyrillicGoth";
         padding: 0.2rem 2rem;
         font-size: 1.5rem;
         transition: background-color 0.2s;
@@ -336,7 +334,7 @@
     background: #222;
     color: white;
     padding: 10px;
-    font-family: 'PirataOne';
+    font-family: 'CyrillicGoth';
     display: flex;
     justify-content: center;
     align-items: center;

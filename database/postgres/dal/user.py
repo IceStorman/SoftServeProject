@@ -27,6 +27,7 @@ class UserDAL:
     def get_user_by_id(self, user_id: int) -> User:
         return self.session.query(User).filter(User.user_id == user_id).first()
 
+
     def update_user_password(self, user: User, new_password):
         user.password_hash = new_password
         self.session.commit()
