@@ -3,6 +3,8 @@ import axios from 'axios';
 import apiEndpoints from "./apiEndpoints";
 import {toast} from "sonner";
 import useLanguage from './useLanguage';
+import Cookies from 'js-cookie';
+
 
 const TranslationsContext = createContext();
 
@@ -14,13 +16,13 @@ export const TranslationsProvider = ({ children }) => {
 
     const { language, changeLanguage } = useLanguage();
     const [translations, setTranslations] = useState(() => {
-        const cachedTranslations = localStorage.getItem(`translations_${language}`);
+        const cachedTranslations = Cookies.get(`translations_${language}`);
         return cachedTranslations ? JSON.parse(cachedTranslations) : null;
     });
 
     const loadTranslations = async (lang) => {
         try {
-            const cached = localStorage.getItem(`translations_${lang}`);
+            const cached = Cookies.get(`translations_${lang}`);
             if (cached) {
                 setTranslations(JSON.parse(cached));
                 return;
@@ -32,7 +34,7 @@ export const TranslationsProvider = ({ children }) => {
                 },
             });
 
-            localStorage.setItem(`translations_${lang}`, JSON.stringify(response.data));
+            Cookies.set(`translations_${lang}`, JSON.stringify(response.data));
             setTranslations(response.data);
         } catch (error) {
             toast.error(`Error fetching translations: ${error}`);
@@ -47,7 +49,6 @@ export const TranslationsProvider = ({ children }) => {
     }, [language]);
 
     const t = (key) => translations && translations[key] ? translations[key] : key;
-
     return(
         <TranslationsContext.Provider value={{ t, changeLanguage, language }}>
             {children}

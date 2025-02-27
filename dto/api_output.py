@@ -87,6 +87,7 @@ def get_script_phrases():
         "contact_info":       _("Contact info"),
         "address":            _("Address"),
         "phone":              _("Phone"),
+        "email":              _("Email"),
         "our_social_media":   _("Follow Us on Social Media"),
         "our_newsletter":     _("Subscribe to our newsletter"),
 

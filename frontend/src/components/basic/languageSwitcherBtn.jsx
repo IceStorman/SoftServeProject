@@ -4,25 +4,26 @@ import useTranslations from '../../translationsContext';
 const LanguageSwitcher = () => {
     const { t, changeLanguage, language } = useTranslations();
 
+    const languages = [
+        { code: 'en', label: 'EN' },
+        { code: 'uk', label: 'UA' },
+    ];
+
     const handleLanguageChange = (newLang) => {
         changeLanguage(newLang);
     };
 
     return (
         <div className="language-switcher-container">
-            <button
-                className={`language-button ${language === 'en' ? 'active' : ''}`}
-                onClick={() => handleLanguageChange('en')}
-            >
-                EN
-            </button>
-            <span className="language-separator">/</span>
-            <button
-                className={`language-button ${language === 'uk' ? 'active' : ''}`}
-                onClick={() => handleLanguageChange('uk')}
-            >
-                UA
-            </button>
+            {languages.map((lang) => (
+                <button
+                    key={lang.code}
+                    className={`language-button ${language === lang.code ? 'active' : ''}`}
+                    onClick={() => handleLanguageChange(lang.code)}
+                >
+                    {lang.label}
+                </button>
+            ))}
         </div>
     );
 };

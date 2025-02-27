@@ -5,19 +5,15 @@ import {toast} from "sonner";
 import Cookies from 'js-cookie';
 
 
-const getCookie = (name) => {
-    const match = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`));
-    return match ? match[2] : null;
-};
+const getCookie = (name) => Cookies.get(name);
 
 const useLanguage = () => {
     const [language, setLanguage] = useState(() => {
-        return getCookie("lang") || localStorage.getItem("language") || "en";
+        return getCookie("lang") || "en";
     });
 
     useEffect(() => {
         Cookies.set('lang', language, { path: '/' });
-        localStorage.setItem("language", language);
     }, [language]);
 
     const changeLanguage = async (newLang) => {
