@@ -1,13 +1,6 @@
 import os
-import base64
 
-from dependency_injector.wiring import Provide, inject
-from google.api_core import exceptions
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
-from googleapiclient.discovery import build
-from email.mime.text import MIMEText
+from flask import current_app
 
 from database.models import TempSubscribersData
 
@@ -17,7 +10,11 @@ from dotenv import load_dotenv
 from sqlalchemy import event
 
 from api.container.container import Container
-from database.postgres.dal.user_subscription import UserSubscriptionDAL
+
+from jinja2 import Environment, FileSystemLoader
+from flask_mail import Message
+
+from dto.common_response import CommonResponse
 
 
 class UserSubscriptionManagerMeta(type):
@@ -30,17 +27,12 @@ class UserSubscriptionManagerMeta(type):
         return cls._instances[cls]
 
 class UserSubscriptionManager(metaclass=UserSubscriptionManagerMeta):
-    __SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
-
     def __init__(self):
         self.__user_subscription_dal = Container.user_subscription_dal()
 
         current_dir = Path(__file__).resolve().parent if "__file__" in locals() else Path.cwd()
         envars = current_dir / ".env"
         load_dotenv(envars)
-
-        self.__sender_email = os.getenv("EMAIL")
-        self.__sender_password = os.getenv("PASSWORD")
 
         event.listen(TempSubscribersData, "after_insert", self.__on_subscribers_inserted)
 
@@ -53,38 +45,30 @@ class UserSubscriptionManager(metaclass=UserSubscriptionManagerMeta):
     def __try_send_email_to_users(self):
         subscribed_users = self.__user_subscription_dal.get_subscribed_users_data_and_delete_rows()
 
-        email_subject = "News notification"
-        email_body = "The news with the team that you subscribed in have just been released"
+        template_dir = os.path.join(os.path.dirname(__file__), "templates")
+        env = Environment(loader=FileSystemLoader(template_dir))
+        template = env.get_template("news_notification_email.html")
 
         for user in subscribed_users:
-            self.__send_email_to_user(user.subscriber_emails, email_subject, email_body)
+            self.__send_email_to_user(user.subscriber_emails, template)
 
     def __send_email_to_user(self, user_email: str, subject, body):
-        creds = self.__authenticate_gmail()
-        service = build("gmail", "v1", credentials=creds)
+        msg = Message(
+            "News notification",
+            sender=current_app.config['MAIL_USERNAME'],
+            recipients=[user_email],
+            html=self.__get_email_template()
+        )
+        current_app.extensions['mail'].send(msg)
 
-        message = MIMEText(body)
-        message["to"] = user_email
-        message["subject"] = subject
-        raw_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
+        return CommonResponse().to_dict()
 
-        send_message = service.users().messages().send(
-            userId="me",
-            body={"raw": raw_message}
-        ).execute()
+    def __get_email_template(self):
+        template_dir = os.path.join(os.path.dirname(__file__), "templates")
+        env = Environment(loader=FileSystemLoader(template_dir))
+        template = env.get_template("news_notification.html")
 
-    def __authenticate_gmail(self):
-        creds = None
+        return template.render()
 
-        if os.path.exists("token.json"):
-            creds = Credentials.from_authorized_user_file("token.json", self.__SCOPES)
-
-        if not creds or not creds.valid:
-            credentials_path = "credentials.json"
-            flow = InstalledAppFlow.from_client_secrets_file(credentials_path, self.__SCOPES)
-            creds = flow.run_local_server(port=0)
-
-            with open("token.json", "w") as token:
-                token.write(creds.to_json())
-
-        return creds
+instance = UserSubscriptionManager()
+instance.try_add_subscribers_to_temp_table(1)
