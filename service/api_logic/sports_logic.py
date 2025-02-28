@@ -13,8 +13,8 @@ class SportService:
         self._logger = Logger("logger", "all.log").logger
 
     def get_all_sports(self):
-        sports = self._sports_dal.get_query()
-        execute_query = self._sports_dal.execute_query(sports)
+        sports_query = self._sports_dal.get_query(Sport)
+        execute_query = self._sports_dal.execute_query(sports_query)
         schema = SportsOutput(many=True)
         return schema.dump(execute_query)
 

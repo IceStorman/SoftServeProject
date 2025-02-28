@@ -6,7 +6,7 @@ class CommonFilters():
 
     @staticmethod
     def apply_sport_filter(query: Query, model, value: int) -> Query:
-        return query.filter(getattr(model, "sport_id") == value)
+       return query.filter(getattr(model, "sport_id") == value)
 
     @staticmethod
     def apply_country_filter(query: Query, model, value: int) -> Query:

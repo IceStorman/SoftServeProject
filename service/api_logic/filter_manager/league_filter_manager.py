@@ -1,24 +1,23 @@
 from sqlalchemy.orm import Query
 from database.models import League
 from service.api_logic.filter_manager.base_filter_manager import BaseFilterManager
-from service.api_logic.filter_manager.common_filters import CommonFilters
 
-class LeagueFilterManager(BaseFilterManager, CommonFilters):
+class LeagueFilterManager(BaseFilterManager):
+
+    @staticmethod
+    def apply_sport_filter(query: Query, value: int) -> Query:
+        return query.filter(League.sport_id == value)
+
+    @staticmethod
+    def apply_country_filter(query: Query, value: int) -> Query:
+        return query.filter(League.country_id == value)
+
+    @staticmethod
+    def apply_name_filter(query: Query, value: str) -> Query:
+        return query.filter(League.name.ilike(f"%{value}%"))
 
     FILTERS = {
-        "sport_id": "apply_sport_filter",
-        "country_id": "apply_country_filter",
-        "name":"apply_name_filter",
+        "sport_id": apply_sport_filter,
+        "country_id": apply_country_filter,
+        "name": apply_name_filter,
     }
-
-    @classmethod
-    def apply_sport_filter(cls, query: Query, value: int) -> Query:
-        return super().apply_sport_filter(query, League, value)
-
-    @classmethod
-    def apply_country_filter(cls, query: Query, value: int) -> Query:
-        return super().apply_country_filter(query, League, value)
-
-    @classmethod
-    def apply_name_filter(cls, query: Query, value: str) -> Query:
-        return super().apply_name_filter(query, League, value)
