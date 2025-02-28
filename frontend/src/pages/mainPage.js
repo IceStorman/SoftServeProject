@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, {useState, useEffect, useRef, useContext} from "react";
 import axios from 'axios';
 import apiEndpoints from "../apiEndpoints";
 import { toast } from "sonner";
@@ -15,11 +15,14 @@ import img3 from "./imgs/3.jpg"
 import img4 from "./imgs/4.jpg"
 import img5 from "./imgs/5.jpg"
 import GridContainer from "../components/containers/gridBlock.jsx";
+import useTranslations from "../translationsContext";
+import {AuthContext} from "./registration/AuthContext";
 
 function MainPage() {
-    const [loginStatus, setLoginStatus] = useState(false)
+    const { user } = useContext(AuthContext);
     const [loading, setLoading] = useState(false)
     const [sports, setSport] = useState([]);
+    const { t } = useTranslations();
 
     const newsRef = useRef(null);
 
@@ -320,13 +323,13 @@ function MainPage() {
                                     className="news-card"
                                 />))}
                         </Column></div>
-                    <button onClick={scrollToTarget} className="boxed">more...</button>
+                    <button onClick={scrollToTarget} className="boxed">{t("more")}</button>
                 </section>
 
                 <NewsShowcase newsData={testNews.slice(0, 5)} />
 
                 <section>
-                    <p className="block-title">Latest games</p>
+                    <p className="block-title">{t("latest_games")}</p>
                     <div className="games-column">
                         <Column>
                             {
@@ -346,33 +349,43 @@ function MainPage() {
                             }
                         </Column>
                     </div>
-                    <div className="blue-placeholder">
-                        <h1><NavLink to={"/sign-in"} className="nav-link" activeClassName="active">Sign In</NavLink> to track performance of your favorite teams</h1>
-                    </div>
+
+                    {
+                        !user ? (
+                            <div className="blue-placeholder">
+                                <h1><NavLink to={"/sign-in"} className="nav-link" activeClassName="active">{t("sign_in")}</NavLink> {t("follow_teams")}</h1>
+                            </div>
+                        ) : null
+                    }
+
                 </section>
             </div>
 
-            <GridContainer
-                title="Recommendations"
-                cardSizes={cardSizes}
-                gridSize={gridSize}
-                postsPerPage={postsPerPage}
-                onGridSizeChange={handleGridSizeChange}
-                pageCount={pageCount}
-                currentPage={currentPage}
-                onPageChange={handlePageClick}
-                loading={loading}
-                paginationKey={paginationKey}
-                children={currentNews.map((item) => (
-                    <NewsCard
-                        title={item.title}
-                        date={item.date}
-                        img={item.img}
-                        sport={item.sport}
-                        content={item.content}
-                    />
-                ))}>
-            </GridContainer >
+            {
+                user ? (
+                    <GridContainer
+                        title="Recommendations"
+                        cardSizes={cardSizes}
+                        gridSize={gridSize}
+                        postsPerPage={postsPerPage}
+                        onGridSizeChange={handleGridSizeChange}
+                        pageCount={pageCount}
+                        currentPage={currentPage}
+                        onPageChange={handlePageClick}
+                        loading={loading}
+                        paginationKey={paginationKey}
+                        children={currentNews.map((item) => (
+                            <NewsCard
+                                title={item.title}
+                                date={item.date}
+                                img={item.img}
+                                sport={item.sport}
+                                content={item.content}
+                            />
+                        ))}>
+                    </GridContainer >
+                ): null
+            }
 
 
             <section className="game-slider-showcase">

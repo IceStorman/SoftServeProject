@@ -1,15 +1,18 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import useTranslations from "../../translationsContext";
 
 function Logo() {
+    const { t } = useTranslations();
+
     return (
         <NavLink to={"/"}className="nav-link" activeClassName="active">
         <div className="logo">
             <hr />
-            <p> Certatum Nostrum </p>
+            <p>{t("certatum_nostrum")}</p>
             <section className="subtitle">
                 <hr/>
-                    <p>since 1990</p>
+                    <p>{t("since")}</p>
                 <hr/>
             </section>
             <hr />

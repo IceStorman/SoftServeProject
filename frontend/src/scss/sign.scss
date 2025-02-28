@@ -26,7 +26,6 @@
 
         h2 {
             font-size: 2rem;
-            font-family: "PirataOne";
         }
 
         p {
@@ -60,6 +59,12 @@
     .redirect {
         align-self: center;
         margin: 1rem;
+
+        .authBtn{
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
     }
 
     button {
@@ -72,6 +77,10 @@
         }
     }
 
+    .input-field:focus {
+        border-color: $main-clr-shadow;
+    }
+
     input {
         margin-left: .5rem;
         width: fit-content;
@@ -80,10 +89,15 @@
         outline: none;
         transition: border-color 0.3s ease-in-out;
         overflow: scroll;
-        font-family: "GrenzeGotisch";
+
+        &.input-error {
+            border-color: #dc3545;
+            background-color: rgba(220, 53, 69, 0.05);
+        }
     }
 
     input:focus {
         border-color: $main-clr-shadow;
     }
+
 }

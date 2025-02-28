@@ -32,6 +32,18 @@ const apiEndpoints = {
     stream:{
         getAll: 'streams/all',
         getInfo: 'streams/info'
+    },
+
+    localization:{
+        userBaseLanguage: 'localization',
+        setLanguage: 'set_language',
+    },
+
+    user:{
+        signUp: 'user/sign-up',
+        login: 'user/login',
+        resetPasswordRequest: 'user/reset-password-request',
+        resetPassword: 'user/reset-password'
     }
 };
 
