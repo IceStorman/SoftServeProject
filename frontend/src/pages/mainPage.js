@@ -17,6 +17,7 @@ import img5 from "./imgs/5.jpg"
 import GridContainer from "../components/containers/gridBlock.jsx";
 import useTranslations from "../translationsContext";
 import {AuthContext} from "./registration/AuthContext";
+import Cookies from "js-cookie";
 
 function MainPage() {
     const { user } = useContext(AuthContext);
@@ -45,6 +46,7 @@ function MainPage() {
     const [slidesCount, setSlidesCount] = useState(0);
     const [currentSlide, setCurrentSlide] = useState(0);
     const [gamesPerSlide, setGamesPerSlide] = useState(6);
+    const [recommendationNews, setRecommendationNews] = useState([]);
 
 
     useEffect(() => {
@@ -78,6 +80,40 @@ function MainPage() {
             toast.error(`Troubles With games Loading: ${error}`);
         }
     };
+
+    useEffect(() => {
+        const userCookie = Cookies.get("user");
+        if (!userCookie) return;
+
+        try {
+            const userData = JSON.parse(decodeURIComponent(userCookie));
+            const userEmail = userData.email;
+
+            if (!userEmail) return;
+
+            setLoading(true);
+
+            axios.post(`${apiEndpoints.url}${apiEndpoints.news.getRecommendations}`,
+                {
+                    email: userEmail
+                },
+                {
+                    headers: { 'Content-Type': 'application/json' },
+                })
+                .then(res => {
+                    console.log(res.data);
+                    setRecommendationNews(res.data);
+
+                })
+                .catch(error => {
+                    toast.error(`:( Troubles With Recommendation News Loading: ${error}`);
+                })
+
+        } catch (error) {
+            toast.error(`Error parsing user cookie:", ${error}`);
+        }
+
+    }, [user]);
 
     const testNews = [
         {
@@ -363,28 +399,34 @@ function MainPage() {
 
             {
                 user ? (
-                    <GridContainer
-                        title="Recommendations"
-                        cardSizes={cardSizes}
-                        gridSize={gridSize}
-                        postsPerPage={postsPerPage}
-                        onGridSizeChange={handleGridSizeChange}
-                        pageCount={pageCount}
-                        currentPage={currentPage}
-                        onPageChange={handlePageClick}
-                        loading={loading}
-                        paginationKey={paginationKey}
-                        children={currentNews.map((item) => (
-                            <NewsCard
-                                title={item.title}
-                                date={item.date}
-                                img={item.img}
-                                sport={item.sport}
-                                content={item.content}
-                            />
-                        ))}>
-                    </GridContainer >
-                ): null
+                    <>
+                        {recommendationNews.recommendations_list_by_user_preferences && recommendationNews.recommendations_list_by_user_preferences.length > 0 && (
+                            <GridContainer
+                                title="Recommended news by your Preferences"
+                                cardSizes={cardSizes}
+                                gridSize={gridSize}
+                                postsPerPage={postsPerPage}
+                                onGridSizeChange={handleGridSizeChange}
+                                pageCount={pageCount}
+                                currentPage={currentPage}
+                                onPageChange={handlePageClick}
+                                loading={loading}
+                                paginationKey={paginationKey}
+                            >
+                                {recommendationNews.recommendations_list_by_user_preferences.map((item) => (
+                                    <NewsCard
+                                        key={item.article.id} // You might need to adjust this depending on your data structure
+                                        title={item.article.title}
+                                        date={item.article.timestamp}
+                                        img={item.article?.images[0]}
+                                        sport={item.article.S_P_O_R_T}
+                                        content={item.article.article.section_1.content}
+                                    />
+                                ))}
+                            </GridContainer>
+                        )}
+                    </>
+                ) : null
             }
 
 
@@ -442,6 +484,38 @@ function MainPage() {
                         />
                     ))}>
                 </GridContainer ></div>
+
+            {
+                user ? (
+                    <>
+                        {recommendationNews.recommendations_list_by_user_last_watch && recommendationNews.recommendations_list_by_user_last_watch.length > 0 && (
+                            <GridContainer
+                                title="Recommended by your Last Watch"
+                                cardSizes={cardSizes}
+                                gridSize={gridSize}
+                                postsPerPage={postsPerPage}
+                                onGridSizeChange={handleGridSizeChange}
+                                pageCount={pageCount}
+                                currentPage={currentPage}
+                                onPageChange={handlePageClick}
+                                loading={loading}
+                                paginationKey={paginationKey}
+                            >
+                                {recommendationNews.recommendations_list_by_user_last_watch.map((item) => (
+                                    <NewsCard
+                                        key={item.news_id}
+                                        title={item.article.title}
+                                        date={item.timestamp}
+                                        img={item.article.images[0] || ''}
+                                        sport={item.article.S_P_O_R_T}
+                                        content={item.article.article.section_1.content}
+                                    />
+                                ))}
+                            </GridContainer>
+                        )}
+                    </>
+                ) : null
+            }
         </>
     );
 }

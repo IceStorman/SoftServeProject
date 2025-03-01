@@ -9,7 +9,7 @@ from logger.logger import Logger
 from exept.handle_exeptions import handle_exceptions
 from service.api_logic.managers.recommendation_menager import RecommendationManager
 from service.api_logic.news_logic import NewsService
-from dto.api_input import InputUserByIdDTO
+from dto.api_input import InputUserByIdDTO, InputUserByEmailDTO
 
 logger = Logger("logger", "all.log")
 
@@ -80,7 +80,6 @@ def specific_article(service: NewsService = Provide[Container.news_service]):
         get_custom_error_response(e)
 
 
-#
 @news_app.route("/recommendation", methods=["POST"])
 @cache.cached(key_prefix=post_cache_key, timeout=60*60*2)
 @inject
@@ -89,8 +88,8 @@ def specific_article(service: NewsService = Provide[Container.news_service]):
 async def recommendations_for_user(recommendation_manager: RecommendationManager = Provide[Container.recommendation_manager]):
     try:
         data = request.get_json()
-        dto = InputUserByIdDTO().load(data)
-        user_recommendations = recommendation_manager.get_recommended_news_for_user(dto.user_id)
+        dto = InputUserByEmailDTO().load(data)
+        user_recommendations = recommendation_manager.get_recommended_news_for_user(dto.email)
         return user_recommendations
 
     except CustomQSportException as e:
