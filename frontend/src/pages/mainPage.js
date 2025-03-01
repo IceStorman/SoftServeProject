@@ -82,20 +82,14 @@ function MainPage() {
     };
 
     useEffect(() => {
-        const userCookie = Cookies.get("user");
-        if (!userCookie) return;
-
         try {
-            const userData = JSON.parse(decodeURIComponent(userCookie));
-            const userEmail = userData.email;
-
-            if (!userEmail) return;
+            if (!user?.email) return;
 
             setLoading(true);
 
             axios.post(`${apiEndpoints.url}${apiEndpoints.news.getRecommendations}`,
                 {
-                    email: userEmail
+                    email: user.email,
                 },
                 {
                     headers: { 'Content-Type': 'application/json' },
