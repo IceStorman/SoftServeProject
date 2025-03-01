@@ -415,12 +415,14 @@ function MainPage() {
                             >
                                 {recommendationNews.recommendations_list_by_user_preferences.map((item) => (
                                     <NewsCard
-                                        key={item.article.id} // You might need to adjust this depending on your data structure
-                                        title={item.article.title}
-                                        date={item.article.timestamp}
-                                        img={item.article?.images[0]}
-                                        sport={item.article.S_P_O_R_T}
-                                        content={item.article.article.section_1.content}
+                                        key={item?.news_id}
+                                        title={item?.article?.title}
+                                        id={item?.news_id}
+                                        date={item?.timestamp}
+                                        img={item?.article?.images[0] || ''}
+                                        sport={item?.article?.S_P_O_R_T}
+                                        content={item?.article?.article?.section_1?.content}
+                                        article={item?.article}
                                     />
                                 ))}
                             </GridContainer>
@@ -503,12 +505,14 @@ function MainPage() {
                             >
                                 {recommendationNews.recommendations_list_by_user_last_watch.map((item) => (
                                     <NewsCard
-                                        key={item.news_id}
-                                        title={item.article.title}
-                                        date={item.timestamp}
-                                        img={item.article.images[0] || ''}
-                                        sport={item.article.S_P_O_R_T}
-                                        content={item.article.article.section_1.content}
+                                        key={item?.news_id}
+                                        title={item?.article?.title}
+                                        id={item?.news_id}
+                                        date={item?.timestamp}
+                                        img={item?.article?.images[0] || ''}
+                                        sport={item?.article?.S_P_O_R_T}
+                                        content={item?.article?.article?.section_1?.content}
+                                        article={item?.article}
                                     />
                                 ))}
                             </GridContainer>

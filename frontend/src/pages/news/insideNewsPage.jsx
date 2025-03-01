@@ -1,35 +1,39 @@
 import React from "react";
-import img1 from '../imgs/1.jpg'
+import { useLocation } from 'react-router-dom';
 import { FaRegHeart } from "react-icons/fa";
 import useTranslations from "../../translationsContext";
 
 
 export default function InsideNewsPage() {
-    const title = 'Metallum Nostrum'
-    const sport = 'Football'
-    const date = '2025-01-23'
-    const likes = 10
-    const content = 'Howling winds keep screaming around And the rain comes pouring down Doors are locked and bolted now As the thing crawls into town Straight out of hell One of a kind Stalking his victim Don t look behind you Night crawler Beware the beast in black Night crawler You know he s coming back Night crawler'
     const { t } = useTranslations();
+    const location = useLocation();
+    const newsData = location.state?.newsData;
+    if (!newsData) {
+
+        //    ТУТ АНДРІЙ ТИ В ТЕОРІЇ СВІЙ ЗАПИТ ПИСАТИ БУДЕШ
+
+        return <div>{t("newsNotFound")}</div>;
+    }
+    const { article, id, likes} = newsData;
 
     return (
         <section className="news-block">
 
-            <h1>{title}</h1>
+            <h1>{article?.title}</h1>
 
             <div className="tags">
                 <p>{t("tags")}</p>
-                <span className="tag">{sport}</span>
+                <span className="tag">{article?.S_P_O_R_T}</span>
             </div>
 
-            <img src={img1} alt={title} />
+            <img src={article?.images[0]} alt={article?.title} />
 
             <section className="content">
-                {content}
+                {article?.article.section_1.content}
             </section>
 
             <div className="details">
-                <div className="date">{date}</div>
+                <div className="date">{article?.timestamp}</div>
                 <button className="like-vrapper">
                     <div className="like-content">
                     <FaRegHeart /> {likes}
