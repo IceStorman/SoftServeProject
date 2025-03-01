@@ -109,7 +109,7 @@ function MainPage() {
 
     }, [user]);
 
-    const testNews = [
+    const news = [
         {
             title: 'Metallum Nostrum',
             date: '2025-01-23',
@@ -320,9 +320,9 @@ function MainPage() {
 
     const getNews = (page) => {
         try {
-            const slicedNews = testNews.slice(page * postsPerPage, (page + 1) * postsPerPage);
+            const slicedNews = news.slice(page * postsPerPage, (page + 1) * postsPerPage);
             setCurrentNews(slicedNews);
-            const totalPosts = testNews.length;
+            const totalPosts = news.length;
             setPageCount(Math.ceil(totalPosts / postsPerPage));
 
         } catch (error) {
@@ -341,7 +341,7 @@ function MainPage() {
                     <p className="block-title">Latest news</p>
                     <div className="news-column">
                         <Column>
-                            {testNews.slice(0, 5).map((item, index) => (
+                            {news.slice(0, 5).map((item, index) => (
                                 <NewsCard
                                     title={item.title}
                                     date={item.date}
@@ -356,7 +356,7 @@ function MainPage() {
                     <button onClick={scrollToTarget} className="boxed">{t("more")}</button>
                 </section>
 
-                <NewsShowcase newsData={testNews.slice(0, 5)} />
+                <NewsShowcase newsData={news.slice(0, 5)} />
 
                 <section>
                     <p className="block-title">{t("latest_games")}</p>

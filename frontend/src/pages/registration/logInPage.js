@@ -22,9 +22,9 @@ function SignInPage() {
         if (!emailOrUserName.trim())
             return false;
 
-        const isEmailRegex = /^[^@]$/
-        if (isEmailRegex.test(emailOrUserName))
+        if (emailOrUserName.includes('@')) {
             return isValidEmail(emailOrUserName);
+        }
 
         return isValidUserName(emailOrUserName);
     }
