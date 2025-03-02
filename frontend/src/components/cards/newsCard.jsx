@@ -5,8 +5,6 @@ import { useNavigate } from "react-router-dom";
 
 
 function NewsCard({ title, date, img, sport, id = 1, content, likes = 10, width, height, isFoil, article}) {
-  const navigate = useNavigate();
-
   const isVertical = height >= width;
   const isSmall = width < 301 || height < 301;
   const maxLines = isVertical ? 3 : 2;
