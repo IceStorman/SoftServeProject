@@ -9,7 +9,7 @@ from logger.logger import Logger
 from exept.handle_exeptions import handle_exceptions
 from service.api_logic.managers.recommendation_menager import RecommendationManager
 from service.api_logic.news_logic import NewsService
-from dto.api_input import InputUserByIdDTO, InputUserByEmailDTO
+from dto.api_input import InputUserByEmailDTO
 
 logger = Logger("logger", "all.log")
 
