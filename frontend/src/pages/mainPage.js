@@ -239,7 +239,7 @@ function MainPage() {
     };
     useEffect(() => {
         getNews(0);
-    }, []);
+    }, [,news]);
 
     const handlePageClick = (event) => {
         const selectedPage = event.selected;
@@ -272,6 +272,7 @@ function MainPage() {
                         <Column>
                             {news.map((item, index) => (
                                 <NewsCard
+                                    key={index}
                                     title={item?.data?.title}
                                     date={item?.data?.timestamp}
                                     img={item?.data?.images[0] || null}
@@ -298,6 +299,7 @@ function MainPage() {
                             {
                                 showcaseGames.map((item, index) => (
                                     <GameCard
+                                        key={index}
                                         nameHome={item.home_team_name}
                                         nameAway={item.away_team_name}
                                         logoHome={item.home_team_logo}
@@ -387,7 +389,7 @@ function MainPage() {
                     }
                 </div>
                 <div className="games-slider-outer">
-                    <GameSlider testGames1={testGames1}></GameSlider>
+                    <GameSlider games={testGames1}></GameSlider>
                 </div>
             </section>
 
@@ -403,13 +405,16 @@ function MainPage() {
                     onPageChange={handlePageClick}
                     loading={loading}
                     paginationKey={paginationKey}
-                    children={currentNews.map((item) => (
+                    children={currentNews.map((item, index) => (
                         <NewsCard
-                            title={item.title}
-                            date={item.date}
-                            img={item.img}
-                            sport={item.sport}
-                            content={item.content}
+                            key={index}
+                            title={item?.data?.title}
+                            date={item?.data?.timestamp}
+                            img={item?.data?.images[0] || null}
+                            sport={item?.data?.S_P_O_R_T}
+                            content={item?.data?.article?.section_1?.content}
+                            id={item?.blob_id}
+                            article={item?.data}
                         />
                     ))}>
                 </GridContainer ></div>

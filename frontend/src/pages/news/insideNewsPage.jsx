@@ -17,7 +17,6 @@ export default function InsideNewsPage() {
     const { article, id, likes} = newsData;
 
     const sections = Object.values(article?.article)
-    console.log(article)
 
     return (
         <section className="news-block">
