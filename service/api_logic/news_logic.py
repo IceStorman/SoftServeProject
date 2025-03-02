@@ -65,7 +65,7 @@ class NewsService:
         )
 
     def get_filtered_news(self, filters: NewsDTO):
-        query = self._news_dal.get_query(News).order_by(desc(News.save_at))
+        query = self._news_dal.get_query(News)
 
         filtered_query = FilterManagerFactory.apply_filters(News, query, filters)
 

@@ -95,6 +95,8 @@ class FilterDTO(BaseDTO):
     date_from = fields.Date(required=False, allow_none=True)
     time_to = fields.Time(required=False, allow_none=True)
     time_from = fields.Time(required=False, allow_none=True)
+    order_by_newest = fields.Bool(required=False, missing=None)
+    order_by_oldest = fields.Bool(required=False, missing=None)
 
 class PaginationDTO(BaseDTO):
     page = fields.Int(required=False, missing=0)
