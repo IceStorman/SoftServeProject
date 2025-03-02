@@ -6,6 +6,8 @@ import {toast} from "sonner";
 import {AuthContext} from "./AuthContext";
 import AuthBtn from "../../components/containers/authBtn";
 import globalVariables from "../../globalVariables";
+import useTranslations from "../../translationsContext";
+
 
 function SignUpPage() {
     const authContext = useContext(AuthContext);
@@ -14,6 +16,7 @@ function SignUpPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [repeatPassword, setRepPassword] = useState('');
+    const { t } = useTranslations();
 
     const { login, isValidEmail, isValidUserName, isValidPassword } = authContext;
 
@@ -70,16 +73,16 @@ function SignUpPage() {
     return (
         <section className="registration">
             <form method="post" onSubmit={handleSubmit}>
-                <h2>Sign Up</h2>
+                <h2>{t("sign_in")}</h2>
                 <p>
-                Username:
+                    {t("nickname")}
                     <input
                         value={userName}
                         onChange={e => setUserName(e.target.value)}
                     />
                 </p>
                 <p>
-                Email:
+                    {t("email")}:
                     <input
                         value={email}
                         onChange={e => setEmail(e.target.value)}
@@ -87,7 +90,7 @@ function SignUpPage() {
                     />
                 </p>
                 <p>
-                Password:
+                    {t("password")}
                     <input
                         type="password"
                         value={password}
@@ -96,17 +99,18 @@ function SignUpPage() {
                     />
                 </p>
                 <p>
-                Repeat password:
+                    {t("repeat_password")}
                     <input
                         type="password"
                         value={repeatPassword}
                         onChange={e => setRepPassword(e.target.value)}
                     />
                 </p>
-                <button className="filled text" type="submit">Sign up</button>
+                <button className="filled text" type="submit">{t("sign_in")}</button>
             </form>
+
             <div className="redirect">
-                <p>Already have an account? <Link to={"/sign-in"}>Log in</Link></p>
+                <p> {t("have_account")} <Link to={"/sign-in"}>{t("log_in")}</Link></p>
                 <AuthBtn />
             </div>
         </section>

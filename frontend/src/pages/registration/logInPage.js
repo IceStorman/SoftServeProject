@@ -5,6 +5,7 @@ import apiEndpoints from "../../apiEndpoints";
 import { AuthContext } from "./AuthContext";
 import globalVariables from "../../globalVariables";
 import AuthBtn from "../../components/containers/authBtn";
+import useTranslations from "../../translationsContext";
 import {toast} from "sonner";
 
 
@@ -13,6 +14,7 @@ function SignInPage() {
     const navigate = useNavigate();
     const [emailOrUserName, setEmailOrUserName] = useState('');
     const [password, setPassword] = useState('');
+    const { t } = useTranslations();
 
     const { login, isValidEmail, isValidUserName, isValidPassword } = authContext;
 
@@ -69,7 +71,7 @@ function SignInPage() {
     return (
         <section className="registration">
             <form method="post" onSubmit={handleSubmit}>
-                <h2>Log In</h2>
+                <h2>{t("log_in")}</h2>
                 <p>
                     Email/Username:
                     <input
@@ -79,22 +81,25 @@ function SignInPage() {
                     />
                 </p>
                 <p>
-                    Password:
+                    {t("password")}
                     <input
                         type="password"
                         value={password} onChange={e => setPassword(e.target.value)}
                         onFocus={ () => toast.info(globalVariables.authMessages.passwordMessage)}
                     />
                 </p>
-                <button className='filled text' type="submit">Log in</button>
+                <button className='filled text' type="submit">{t("log_in")}</button>
             </form>
+
             <div className="reset-passwrd">
-                <Link to={"/sign-in/reset-password"}>Forget password?</Link>
+                <Link to={"/sign-in/reset-password"}>{t("forget_password")}</Link>
             </div>
+
             <div className="redirect">
-                <p>Do not have an account? <Link to={"/sign-up"}>Create</Link></p>
+                <p> {t("no_account")} <Link to={"/sign-up"}>{t("create")}</Link></p>
                 <AuthBtn />
             </div>
+
         </section>
     );
 }

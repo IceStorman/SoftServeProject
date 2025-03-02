@@ -1,9 +1,10 @@
 from flask import current_app, url_for, jsonify, make_response
 from flask_mail import Message
-from itsdangerous import URLSafeTimedSerializer
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 from dto.api_input import UpdateUserPreferencesDTO
 from dto.api_output import OutputSportPreferences, OutputTeamPreferences
-from exept.exeptions import IncorrectPreferencesError, IncorrectTypeOfPreferencesError
+from exept.exeptions import IncorrectPreferencesError, IncorrectTypeOfPreferencesError, SignatureExpiredError, \
+    IncorrectSignatureError
 from dto.api_input import InputUserLogInDTO
 from dto.api_output import OutputUser, OutputLogin
 from database.models import User
@@ -105,10 +106,11 @@ class UserService:
         return self._serializer.dumps(user.username, salt = "email-confirm")
 
 
-    def reset_user_password(self, email, new_password: str):
-        user = self.get_user_by_email_or_username(email = email)
+    def reset_user_password(self, token, new_password: str):
+        username = self.confirm_token(token)
+        user = self.get_user_by_email_or_username(username = username)
         if not user:
-            raise UserDoesNotExistError(email)
+            raise UserDoesNotExistError(username)
 
         salt = bcrypt.gensalt()
         hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), salt)
@@ -125,10 +127,14 @@ class UserService:
 
 
     def confirm_token(self, token: str, expiration=3600):
-        username = self._serializer.loads(token, salt = "email-confirm", max_age = expiration)
-        user = self.get_user_by_email_or_username(username = username)
+        try:
+            user = self._serializer.loads(token, salt = "email-confirm", max_age = expiration)
+            return user
 
-        return OutputUser().dump(user)
+        except SignatureExpired:
+            raise SignatureExpiredError()
+        except BadSignature:
+            raise IncorrectSignatureError()
 
 
     async def log_in(self, credentials: InputUserLogInDTO):

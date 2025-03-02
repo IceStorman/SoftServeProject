@@ -34,6 +34,11 @@ const apiEndpoints = {
         getInfo: 'streams/info'
     },
 
+    localization:{
+        userBaseLanguage: 'localization',
+        setLanguage: 'set_language',
+    },
+
     user:{
         signUp: 'user/sign-up',
         login: 'user/login',

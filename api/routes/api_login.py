@@ -1,4 +1,4 @@
-from flask import Blueprint, request, current_app, redirect
+from flask import Blueprint, request, current_app, redirect, jsonify
 from oauthlib.oauth2 import WebApplicationClient
 from dto.api_input import InputUserDTO, InputUserByEmailDTO, NewPasswordDTO, InputUserLogInDTO
 from exept.exeptions import DatabaseConnectionError, CustomQSportException
@@ -9,8 +9,11 @@ from service.api_logic.user_logic import UserService
 from api.container.container import Container
 from flask_jwt_extended import jwt_required
 import os
+from dotenv import load_dotenv
 
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+load_dotenv()
+FRONT_RESET_PASSWORD_URL = os.getenv('FRONT_RESET_PASSWORD_URL')
 
 logger = Logger("logger", "all.log")
 
@@ -66,14 +69,16 @@ def request_password_reset(service: UserService = Provide[Container.user_service
 def reset_password(token, service: UserService = Provide[Container.user_service]):
     try:
         if request.method == "GET":
-            user_data = service.confirm_token(token)
+            user = service.confirm_token(token)
 
-            return user_data
+            reset_front_url = f"{FRONT_RESET_PASSWORD_URL}/{token}"
+
+            return redirect(reset_front_url)
 
         if request.method == "POST":
             data = request.get_json()
             dto = NewPasswordDTO().load(data)
-            token = service.reset_user_password(dto.email, dto.new_password)
+            token = service.reset_user_password(token, dto.password)
 
             return token
 
@@ -104,3 +109,5 @@ async def log_in(service: UserService = Provide[Container.user_service]):
 @jwt_required(refresh=True)
 async def refresh(service: UserService = Provide[Container.user_service]):
     return await service.refresh_tokens()
+        
+

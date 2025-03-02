@@ -22,5 +22,4 @@ from .token_blocklist import TokenBlocklist
 from .temp_subscribers_data import TempSubscribersData
 from .refresh_token_tracking import RefreshTokenTracking
 
-
 from .base import Base

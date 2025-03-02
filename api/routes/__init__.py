@@ -19,6 +19,7 @@ from flask_jwt_extended import JWTManager
 from datetime import timedelta
 import os
 from dotenv import load_dotenv
+from pathlib import Path
 
 
 load_dotenv()
@@ -64,6 +65,13 @@ def create_app():
     app.config['USER_INFO_URL'] = os.getenv('GOOGLE_USER_INFO_URL')
     app.config['SCOPES'] = os.getenv('GOOGLE_SCOPES')
 
+    BASE_DIR = Path(__file__).resolve().parent
+    TRANSLATIONS_DIR = BASE_DIR / 'translations'
+    app.config['BABEL_DEFAULT_LOCALE'] = 'en'
+    app.config['BABEL_SUPPORTED_LOCALES'] = ['en', 'uk']
+    app.config['BABEL_TRANSLATION_DIRECTORIES'] = str(TRANSLATIONS_DIR)
+    babel.init_app(app, locale_selector=get_locale)
+
     SWAGGER_URL = '/swagger'
     API_URL = '/static/swagger.json'
 
@@ -81,6 +89,7 @@ def create_app():
     app.register_blueprint(api_sports.sports_app, url_prefix='/sports')
     app.register_blueprint(api_teams.teams_app, url_prefix='/teams')
     app.register_blueprint(api_countries.countries_app, url_prefix='/countries')
+    app.register_blueprint(api_localization.localization_app, url_prefix='/')
     app.register_blueprint(api_login.login_app, url_prefix='/user')
     app.register_blueprint(api_user_preferences.preferences_app, url_prefix='/preferences')
 

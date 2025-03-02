@@ -43,7 +43,7 @@ class BaseDTO(Schema):
     def validate_username(self, data, **kwargs):
         if 'username' in data:
             regex = re.compile(r'[ @!#$%^&*()<>?/\|}{~:;,+=]')
-            if regex.search(data['username']):
+            if regex.search(data['username']) or not data['username']:
                 raise ValidationError("Invalid username format", field_name="username")
         return data
 
@@ -64,6 +64,7 @@ class TeamsLeagueDTO(BaseDTO):
     name = fields.Str(required=False, missing=None)
     page = fields.Int(required=False, missing=0)
     per_page = fields.Int(required=False, missing=0)
+
 
 class TeamsStatisticsOrPlayersDTO(BaseDTO):
     sport_id = fields.Int(required=False, missing=None)
@@ -119,8 +120,7 @@ class InputUserByEmailDTO(BaseDTO):
 
 
 class NewPasswordDTO(BaseDTO):
-    new_password = fields.Str(required=True)
-    email = fields.Str(required=True)
+    password = fields.Str(required=True)
 
 
 class UpdateUserPreferencesDTO(BaseDTO):
@@ -136,7 +136,6 @@ class GetUserPreferencesDTO(BaseDTO):
 
 class InputUserByIdDTO(BaseDTO):
     user_id = fields.Int(required=False, missing=None)
-
 
 
 class InputUserLogInDTO(BaseDTO):
