@@ -4,6 +4,8 @@ from database.models import Likes, Views, News, TeamInNews, Sport
 from sqlalchemy import union_all, literal, func, ClauseElement
 from datetime import timedelta, datetime
 
+PERIOD_OF_TIME = 90
+
 class NewsDAL:
     def __init__(self, session = None):
         self.session = session
@@ -43,7 +45,7 @@ class NewsDAL:
         )
 
 
-    def get_user_interactions_with_news_by_period_of_time(self, user_id: int, period_of_time: int =21) -> list[tuple]:
+    def get_user_interactions_with_news_by_period_of_time(self, user_id: int, period_of_time: int = PERIOD_OF_TIME) -> list[tuple]:
         period_of_time = datetime.now() - timedelta(days=period_of_time)
 
         likes_query = (
