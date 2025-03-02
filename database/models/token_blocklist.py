@@ -14,4 +14,4 @@ class TokenBlocklist(Base):
     updated_at = Column(DateTime)  
 
 
-    refresh_tokens = relationship("RefreshTokenTracking", back_populates="token_blocklist")
+    
