@@ -6,8 +6,7 @@ from exept.handle_exeptions import get_custom_error_response, get_exception_erro
 from api.container.container import Container
 from exept.exeptions import DatabaseConnectionError, CustomQSportException
 from logger.logger import Logger
-from dto.pagination import Pagination
-from dto.api_input import NewsDTO
+from dto.api_input import SearchDTO
 from exept.handle_exeptions import handle_exceptions
 from service.api_logic.managers.recommendation_menager import RecommendationManager
 from service.api_logic.news_logic import NewsService
@@ -87,9 +86,8 @@ def specific_article(service: NewsService = Provide[Container.news_service]):
 def get_filtered_news_endpoint(service: NewsService = Provide[Container.news_service]):
     try:
         filters = request.get_json() or {}
-        dto = NewsDTO().load(filters)
-        pagination = Pagination(**filters)
-        filtered_news = service.get_filtered_news(dto, pagination)
+        dto = SearchDTO().load(filters)
+        filtered_news = service.get_filtered_news(dto)
         return filtered_news
     except CustomQSportException as e:
         logger.error(f"Error in POST /filtered: {str(e)}")

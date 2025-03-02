@@ -42,8 +42,7 @@ def search_countries(service: SportService = Provide[Container.sports_service]):
     try:
         data = request.get_json()
         dto = SearchDTO().load(data)
-        pagintion = Pagination(**data)
-        leagues = service.search_leagues(dto, pagintion)
+        leagues = service.search_leagues(dto)
         return leagues
     except CustomQSportException as e:
         logger.error(f"Error in POST /: {str(e)}")

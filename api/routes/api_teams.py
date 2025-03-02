@@ -3,7 +3,7 @@ from dto.pagination import Pagination
 from exept.handle_exeptions import get_custom_error_response
 from service.implementation.auto_request_api.logic_request_by_react import basketball_players
 from api.routes.cache import cache
-from dto.api_input import TeamsLeagueDTO, TeamsStatisticsOrPlayersDTO
+from dto.api_input import TeamsLeagueDTO, TeamsStatisticsOrPlayersDTO, SearchDTO
 from exept.exeptions import DatabaseConnectionError, CustomQSportException
 from service.implementation.auto_request_api.sport_data_managers.players_data_manager import PlayersDataManager
 from service.implementation.auto_request_api.sport_data_managers.team_statistics_data_manager import \
@@ -85,9 +85,8 @@ def get_players_endpoint():
 def get_team_filtered_endpoint(service: TeamsService = Provide[Container.teams_service]):
     try:
         data = request.get_json()
-        dto = TeamsStatisticsOrPlayersDTO().load(data)
-        pagination = Pagination(**data)
-        teams = service.get_teams(dto, pagination)
+        dto = SearchDTO().load(data)
+        teams = service.get_teams(dto)
         return teams
     except CustomQSportException as e:
         logger.error(f"Error in POST /: {str(e)}")

@@ -12,16 +12,12 @@ class TeamsService:
         self._teams_dal = teams_dal
         self._logger = Logger("logger", "all.log").logger
 
-    def get_teams(self, filters_dto, pagination: Pagination):
+    def get_teams(self, filters_dto):
 
         query = self._teams_dal.get_query(TeamIndex)
 
         query = FilterManagerFactory.apply_filters(TeamIndex, query, filters_dto)
         count = query.count()
-
-        offset, limit = pagination.get_pagination()
-        if offset is not None and limit is not None:
-            query = query.offset(offset).limit(limit)
 
         teams = self._teams_dal.execute_query(query)
         schema = TeamsLeagueOutput(many=True)

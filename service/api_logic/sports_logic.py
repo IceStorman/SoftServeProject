@@ -18,7 +18,7 @@ class SportService:
         schema = SportsOutput(many=True)
         return schema.dump(execute_query)
 
-    def search_leagues(self, filters_dto, pagination: Pagination):
+    def search_leagues(self, filters_dto):
 
         query = self._leagues_dal.get_query(League)
 
@@ -29,10 +29,6 @@ class SportService:
 
         filtered_query = FilterManagerFactory.apply_filters(League, query, filters_dto)
         count = filtered_query.count()
-
-        offset, limit = pagination.get_pagination()
-        if offset is not None and limit is not None:
-            filtered_query = filtered_query.offset(offset).limit(limit)
 
         execute_query = self._leagues_dal.execute_query(filtered_query)
 

@@ -1,6 +1,5 @@
 from flask import Blueprint, request
-from dto.api_input import GamesDTO
-from dto.pagination import Pagination
+from dto.api_input import SearchDTO
 from api.routes.cache import cache
 from api.routes.scripts import  post_cache_key
 from exept.exeptions import DatabaseConnectionError, CustomQSportException
@@ -29,9 +28,8 @@ def handle_db_timeout_error(e):
 def get_stream_info_with_filters_endpoint(service: GamesService = Provide[Container.games_service]):
     try:
         data = request.get_json()
-        dto = GamesDTO().load(data)
-        pagination = Pagination(**data)
-        games = service.get_games_today(dto, pagination)
+        dto = SearchDTO().load(data)
+        games = service.get_games_today(dto)
         return games
     except CustomQSportException as e:
         logger.error(f"Error in POST /: {str(e)}")

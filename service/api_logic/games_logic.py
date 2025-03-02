@@ -12,15 +12,11 @@ class GamesService:
         self._games_dal = games_dal
         self._logger = Logger("logger", "all.log").logger
 
-    def get_games_today(self, filters_dto: GamesDTO(), pagination: Pagination):
+    def get_games_today(self, filters_dto: GamesDTO()):
 
         query = self._games_dal.get_query(Games)
 
         filtered_query = FilterManagerFactory.apply_filters(Games, query, filters_dto)
-
-        offset, limit = pagination.get_pagination()
-        if offset is not None and limit is not None:
-            filtered_query = filtered_query.offset(offset).limit(limit)
 
         games = self._games_dal.execute_query(filtered_query)
 

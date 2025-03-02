@@ -64,14 +64,10 @@ class NewsService:
             content_type='application/json; charset=utf-8',
         )
 
-    def get_filtered_news(self, filters: NewsDTO, pagination: Pagination):
+    def get_filtered_news(self, filters: NewsDTO):
         query = self._news_dal.get_query(News).order_by(desc(News.save_at))
 
         filtered_query = FilterManagerFactory.apply_filters(News, query, filters)
-
-        offset, limit = pagination.get_pagination()
-        if offset is not None and limit is not None:
-            filtered_query = filtered_query.offset(offset).limit(limit)
 
         news = self._news_dal.execute_query(filtered_query)
         return self.json_news(news)
