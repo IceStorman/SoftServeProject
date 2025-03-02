@@ -31,7 +31,6 @@ export default function InsideNewsPage() {
                         }
 
                     );
-                    console.log(response)
                     setArticle(response.data[0].data);
                 }
                 fetchNews();
