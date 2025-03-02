@@ -289,7 +289,7 @@ function MainPage() {
                     <button onClick={scrollToTarget} className="boxed">{t("more")}</button>
                 </section>
 
-                <NewsShowcase newsData={news.slice(0, 5)} />
+                <NewsShowcase newsData={news} />
 
                 <section>
                     <p className="block-title">{t("latest_games")}</p>

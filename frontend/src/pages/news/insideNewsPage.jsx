@@ -34,8 +34,8 @@ export default function InsideNewsPage() {
             <section className="content">
                 {sections.map((item, index) => (
                     <React.Fragment key={index}>
-                        {index > 0 && article?.images[index] ? <img src={article?.images[index]}/> : null}
                         <h3>{item?.subheadings[index] || null}</h3>
+                        {index > 0 && article?.images[index] ? <img src={article?.images[index]}/> : null}
                         <p>{item?.content}</p>
                         <br/>
                     </React.Fragment>
