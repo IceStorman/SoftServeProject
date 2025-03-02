@@ -16,6 +16,9 @@ export default function InsideNewsPage() {
     }
     const { article, id, likes} = newsData;
 
+    const sections = Object.values(article?.article)
+    console.log(article)
+
     return (
         <section className="news-block">
 
@@ -26,14 +29,22 @@ export default function InsideNewsPage() {
                 <span className="tag">{article?.S_P_O_R_T}</span>
             </div>
 
-            <img src={article?.images[0]} alt={article?.title} />
+            {article?.images[0] ? <img src={article?.images[0]}/> : null}
 
             <section className="content">
-                {article?.article.section_1.content}
+                {sections.map((item, index) => (
+                    <React.Fragment key={index}>
+                        {index > 0 && article?.images[index] ? <img src={article?.images[index]}/> : null}
+                        <h3>{item?.subheadings[index] || null}</h3>
+                        <p>{item?.content}</p>
+                        <br/>
+                    </React.Fragment>
+                ))
+                }
             </section>
 
             <div className="details">
-                <div className="date">{article?.timestamp}</div>
+            <div className="date">{article?.timestamp}</div>
                 <button className="like-vrapper">
                     <div className="like-content">
                     <FaRegHeart /> {likes}

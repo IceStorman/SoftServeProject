@@ -47,7 +47,6 @@ function MainPage() {
         axios.get(`${apiEndpoints.url}${apiEndpoints.news.getRecent}`)
             .then(res => {
                 const returnedNews = res.data;
-                console.log(returnedNews)
                 setNews(returnedNews);
             })
             .catch(error => {
@@ -121,89 +120,6 @@ function MainPage() {
         }
 
     }, [user]);
-
-    // const news = [
-    //     {
-    //         title: 'Metallum Nostrum',
-    //         date: '2025-01-23',
-    //         img: img1,
-    //         sport: 'Football',
-    //         id: '1',
-    //         content: 'Howling winds keep screaming around And the rain comes pouring down Doors are locked and bolted now As the thing crawls into town Straight out of hell One of a kind Stalking his victim Don t look behind you Night crawler Beware the beast in black Night crawler You know he s coming back Night crawler'
-    //     },
-    //     {
-    //         title: 'Bible of the Beast',
-    //         date: '2025-01-23',
-    //         img: img3,
-    //         sport: 'NBA',
-    //         id: '3',
-    //         content: 'Resurrection by erection Raise your phallus to the sky and you never die It\'s resurrection by erection Raise your bone up to the sky and you\'re never gonna die Hallelujah, resurrection'
-    //     },
-    //     {
-    //         title: 'Preachers of the Night',
-    //         date: '2025-01-23',
-    //         img: img4,
-    //         sport: 'AAAAAAAAA',
-    //         id: '4',
-    //         content: 'Bring me pandemonium Speak the word of God All we need in life is flesh and blood Bring me sanctimonium Armageddon flood All we care is how to get more blood'
-    //     },
-    //     {
-    //         title: 'Wake up the Wiked',
-    //         date: '2025-01-23',
-    //         img: img2,
-    //         sport: 'Baseball',
-    //         id: '2',
-    //         content: 'Sails in the wind and the word of God in mind Hailed by the sin left our morals all behind Blessed by the crown and to shores ahead we ride Trails in the waves by the cross we are allied Christ in our hearts but for mercy we are blind Restless and damned we are knights of sacred might We fight the Bible by our side'
-    //     },
-    //     {
-    //         title: 'Call of the Wild',
-    //         date: '2025-01-23',
-    //         img: img5,
-    //         sport: 'hello?',
-    //         id: '5',
-    //         content: 'Forced to believе that the Heavens strike back Lined up to die in despair One-by-one torn to dust and all sworn to the black Signed up and ready to swear God given Sermon of swords bring sancted fire Sermon of swords, wake up Messiah Sermon of swords, we raise the pyre All we can set the night on fire'
-    //     },
-    //     {
-    //         title: 'Metallum Nostrum',
-    //         date: '2025-01-23',
-    //         img: img1,
-    //         sport: 'Football',
-    //         id: '1',
-    //         content: 'Howling winds keep screaming around And the rain comes pouring down Doors are locked and bolted now As the thing crawls into town Straight out of hell One of a kind Stalking his victim Don t look behind you Night crawler Beware the beast in black Night crawler You know he s coming back Night crawler'
-    //     },
-    //     {
-    //         title: 'Wake up the Wiked',
-    //         date: '2025-01-23',
-    //         img: img2,
-    //         sport: 'Baseball',
-    //         id: '2',
-    //         content: 'Sails in the wind and the word of God in mind Hailed by the sin left our morals all behind Blessed by the crown and to shores ahead we ride Trails in the waves by the cross we are allied Christ in our hearts but for mercy we are blind Restless and damned we are knights of sacred might We fight the Bible by our side'
-    //     },
-    //     {
-    //         title: 'Bible of the Beast',
-    //         date: '2025-01-23',
-    //         img: img3,
-    //         sport: 'NBA',
-    //         id: '3',
-    //         content: 'Resurrection by erection Raise your phallus to the sky and you never die It\'s resurrection by erection Raise your bone up to the sky and you\'re never gonna die Hallelujah, resurrection'
-    //     },
-    //     {
-    //         title: 'Preachers of the Night',
-    //         date: '2025-01-23',
-    //         img: img4,
-    //         sport: 'AAAAAAAAA',
-    //         id: '4',
-    //         content: 'Bring me pandemonium Speak the word of God All we need in life is flesh and blood Bring me sanctimonium Armageddon flood All we care is how to get more blood'
-    //     },
-    //     {
-    //         title: 'Call of the Wild',
-    //         date: '2025-01-23',
-    //         img: img5,
-    //         sport: 'hello?',
-    //         id: '5',
-    //         content: 'Forced to believе that the Heavens strike back Lined up to die in despair One-by-one torn to dust and all sworn to the black Signed up and ready to swear God given Sermon of swords bring sancted fire Sermon of swords, wake up Messiah Sermon of swords, we raise the pyre All we can set the night on fire'
-    //     }
-    // ]
 
     const game_element_height = 85
     const game_element_width = 400
@@ -361,10 +277,10 @@ function MainPage() {
                                     img={item?.data?.images[0] || null}
                                     sport={item?.data?.S_P_O_R_T}
                                     content={item?.data?.article?.section_1?.content}
+                                    id={item?.blob_id}
                                     article={item?.data}
                                     height={element_height}
                                     width={element_width}
-                                    id={item?.blob_id}
                                     className="news-card"
                                 />
                                 )
