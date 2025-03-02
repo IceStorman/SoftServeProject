@@ -137,8 +137,6 @@ button {
     padding: 0.5rem 0.5rem;
     transition: border-color 0.3s ease-in-out;
 
-
-
     .nav-link {
       color: $bg-white;
       padding: 1rem;
@@ -147,7 +145,7 @@ button {
   }
 
   &.login {
-    right: 12rem;
+    right: 3rem;
   }
 
   &.translate-first {

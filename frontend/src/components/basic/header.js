@@ -11,10 +11,12 @@ function Header() {
     return (
         <header>
             <Logo />
-            <LanguageBtn />
-            {
-                !user ? <LoginBtn /> : <button className={"filled white"} onClick={logout}>logout</button>
-            }
+            <div className={"header-btn"}>
+                <LanguageBtn />
+                {
+                    !user ? <LoginBtn /> : <button className={"filled white"} onClick={logout}>logout</button>
+                }
+            </div>
         </header>
     );
 }
