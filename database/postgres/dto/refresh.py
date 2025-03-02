@@ -7,7 +7,6 @@ class refreshDTO(BaseModel):
     user_id: int = Field(...)
     last_ip: str = Field(...)
     last_device: str = Field(...)
-    refresh_token: dict = Field(...)
     nonce: str = Field(...)
 
     class Config: 

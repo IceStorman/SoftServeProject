@@ -178,7 +178,6 @@ class UserService:
             user_id=user.id,
             last_ip=get_country_from_ip(),
             last_device=get_user_device(),
-            refresh_token=refresh_token,
             nonce=generate_nonce()
         )
         self._refresh_dal.save_refresh_token(refresh_dto)
