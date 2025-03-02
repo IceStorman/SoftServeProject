@@ -1,22 +1,57 @@
-import React from "react";
-import { useLocation } from 'react-router-dom';
+import React, {useEffect, useState} from "react";
+import {useLocation, useNavigate, useParams} from 'react-router-dom';
 import { FaRegHeart } from "react-icons/fa";
 import useTranslations from "../../translationsContext";
+import apiEndpoints from "../../apiEndpoints";
+import axios from "axios";
+import {toast} from "sonner";
 
 
 export default function InsideNewsPage() {
     const { t } = useTranslations();
+    const navigate = useNavigate();
+    const {articleId} = useParams();
     const location = useLocation();
     const newsData = location.state?.newsData;
-    if (!newsData) {
+    const [article, setArticle] = useState()
+    const [likes, setLikes] = useState()
+    const [sections, setSections] = useState()
 
-        //    ТУТ АНДРІЙ ТИ В ТЕОРІЇ СВІЙ ЗАПИТ ПИСАТИ БУДЕШ
+    useEffect(() => {
+        if (!newsData) {
+            try {
+                const fetchNews = async () => {
+                    const response = await axios.post(
+                        `${apiEndpoints.url}${apiEndpoints.news.getArticle}`,
+                        {
+                            blob_id: articleId,
+                        },
+                        {
+                            headers: { 'Content-Type': 'application/json' },
+                        }
 
-        return <div>{t("newsNotFound")}</div>;
-    }
-    const { article, id, likes} = newsData;
+                    );
+                    console.log(response)
+                    setArticle(response.data[0].data);
+                }
+                fetchNews();
+            } catch (error) {
+                if(article.length === 0) {
+                    navigate("/not-existing")
+                }
+                toast.error(`:( Troubles With This News Loading: ${error}`);
+            }
 
-    const sections = Object.values(article?.article)
+        } else {
+            setArticle(newsData?.article)
+            setLikes(newsData?.likes)
+        }
+    }, []);
+
+    useEffect(() => {
+        if(article) setSections(Object.values(article?.article))
+    }, [article]);
+
 
     return (
         <section className="news-block">
@@ -31,14 +66,17 @@ export default function InsideNewsPage() {
             {article?.images[0] ? <img src={article?.images[0]}/> : null}
 
             <section className="content">
-                {sections.map((item, index) => (
-                    <React.Fragment key={index}>
-                        {item?.subheadings.length > 0 ? <h3>{item?.subheadings[index]}</h3> : null}
-                        {index > 0 && article?.images[index] ? <img src={article?.images[index]}/> : null}
-                        <p>{item?.content}</p>
-                        <br/>
-                    </React.Fragment>
-                ))
+
+                {
+                    sections ?
+                        sections.map((item, index) => (
+                            <React.Fragment key={index}>
+                                {item?.subheadings.length > 0 ? <h3>{item?.subheadings[index]}</h3> : null}
+                                {index > 0 && article?.images[index] ? <img src={article?.images[index]}/> : null}
+                                <p>{item?.content}</p>
+                                <br/>
+                            </React.Fragment>
+                        )) : null
                 }
             </section>
 

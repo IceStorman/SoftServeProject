@@ -41,7 +41,7 @@ class NewsService:
 
 
     def get_news_by_id(self, blob_id: str):
-        news = self._news_dal.get_news_by_blob_id(blob_id)
+        news = self._news_dal.get_news_by_id(blob_id)
         if news:
             self._logger.warning(f"News were found: {news}")
             return self.json_news([news])

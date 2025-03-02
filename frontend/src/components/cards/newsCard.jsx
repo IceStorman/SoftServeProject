@@ -10,7 +10,6 @@ function NewsCard({ title, date, img, sport, id = 1, content, likes = 10, width,
   const maxLines = isVertical ? 3 : 2;
 
   const newsData = {
-    id,
     article,
     likes,
   };
