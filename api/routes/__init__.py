@@ -8,7 +8,8 @@ from api.routes import (
     api_teams,
     api_countries,
     api_login,
-    api_user_preferences
+    api_user_preferences,
+    api_localization
 )
 from api.routes.cache import cache
 from flask_swagger_ui import get_swaggerui_blueprint
@@ -20,6 +21,7 @@ from datetime import timedelta
 import os
 from dotenv import load_dotenv
 from pathlib import Path
+from api.routes.api_localization import babel, get_locale
 
 
 load_dotenv()
