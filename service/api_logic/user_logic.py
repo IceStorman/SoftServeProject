@@ -22,6 +22,7 @@ from datetime import datetime
 from api.refresh_token_logic import get_client_ip, get_country_from_ip, get_user_device, generate_nonce
 from flask_jwt_extended import get_jwt_identity, get_jwt
 from service.api_logic.models.api_models import SportPreferenceFields, TeamPreferenceFields
+from api.refresh_token_logic import UserInfo
 
 
 SPORT_TYPE = "sport"
@@ -152,6 +153,7 @@ class UserService:
 
 
     async def save_tokens_to_db(self, user, access_token: str, refresh_token: str):
+        user_info = UserInfo()
         
         decode_access_token = decode_token(access_token)
         decode_refresh_token = decode_token(refresh_token)
@@ -182,9 +184,9 @@ class UserService:
 
         refresh_dto = refreshDTO(
             user_id=user.id,
-            last_ip=get_country_from_ip(),
-            last_device=get_user_device(),
-            nonce=generate_nonce()
+            last_ip=user_info.get_country_from_ip(),
+            last_device= user_info.get_user_device(),
+            nonce=user_info.generate_nonce()
         )
         self._refresh_dal.save_refresh_token(refresh_dto)
 
