@@ -1,16 +1,15 @@
 from sqlalchemy.orm import Query
-from database.models import Games
+from database.models import Games, Country, League
 from service.api_logic.scripts import get_sport_by_name
 from service.api_logic.filter_manager.base_filter_manager import BaseFilterManager
-from service.api_logic.filter_manager.common_filters import CommonFilters
 from sqlalchemy import cast
 from sqlalchemy.sql.sqltypes import Time
 
-class GamesFilterManager(BaseFilterManager, CommonFilters):
+class GamesFilterManager(BaseFilterManager):
 
-    @classmethod
-    def apply_sport_filter(cls, query: Query, value: int) -> Query:
-        return super().apply_sport_filter(query, Games, value)
+    @staticmethod
+    def apply_sport_filter(query: Query, value: int) -> Query:
+        return query.filter(Games.sport_id == value)
 
     @staticmethod
     def apply_status_filter(query: Query, value: str) -> Query:
@@ -32,13 +31,13 @@ class GamesFilterManager(BaseFilterManager, CommonFilters):
     def apply_date_to(query: Query, value: str) -> Query:
         return query.filter(cast(Games.date, Date) <= value)
 
-    @classmethod
-    def apply_country_filter(cls, query: Query, value: int) -> Query:
-        return super().apply_country_filter(query, Games, value)
+    @staticmethod
+    def apply_country_filter(query: Query, value: int) -> Query:
+        return query.join(Country, Games.country_id == Country.country_id).filter(Country.api_id == value)
 
-    @classmethod
-    def apply_league_filter(cls, query: Query, value: int) -> Query:
-        return super().apply_league_filter(query, Games, value)
+    @staticmethod
+    def apply_league_filter(query: Query, value: int) -> Query:
+        return query.join(League, Games.league_id == League.league_id).filter(League.api_id == value)
 
     @staticmethod
     def apply_team_away_filter(query: Query, value: str) -> Query:

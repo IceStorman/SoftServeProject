@@ -20,8 +20,8 @@ class TeamsService:
         count = query.count()
 
         teams = self._teams_dal.execute_query(query)
-        schema = TeamsLeagueOutput(many=True)
-        team = schema.dump(teams)
+        teams_output = TeamsLeagueOutput(many=True)
+        team = teams_output.dump(teams)
         return {
             "count": count,
             "teams": team,

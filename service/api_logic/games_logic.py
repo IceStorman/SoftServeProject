@@ -20,7 +20,7 @@ class GamesService:
 
         games = self._games_dal.execute_query(filtered_query)
 
-        schema = GameOutput(many=True)
-        return schema.dump(games)
+        game_output = GameOutput(many=True)
+        return game_output.dump(games)
 
 

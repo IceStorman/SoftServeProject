@@ -2,8 +2,6 @@ import re
 from collections import namedtuple
 from datetime import datetime
 from marshmallow import Schema, fields, pre_load, post_load, ValidationError, EXCLUDE
-from sympy import false
-
 
 class BaseDTO(Schema):
     class Meta:

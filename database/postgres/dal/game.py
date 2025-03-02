@@ -35,6 +35,7 @@ class GameDAL(BaseDAL):
             date=games_dto.date,
             api_id=games_dto.api_id
         )
+
         self.session.add(new_game)
         self.session.commit()
         self.session.refresh(new_game)
@@ -54,6 +55,7 @@ class GameDAL(BaseDAL):
             setattr(game, field, value)
         self.session.commit()
         self.session.refresh(game)
+
         return game
 
     def delete_game(self, game_id: int) -> bool:

@@ -1,18 +1,17 @@
 from sqlalchemy.orm import Query
 from database.models import News, TeamInNews
 from service.api_logic.filter_manager.base_filter_manager import BaseFilterManager
-from service.api_logic.filter_manager.common_filters import CommonFilters
 from sqlalchemy import desc, asc
 
-class NewsFilterManager(BaseFilterManager, CommonFilters):
+class NewsFilterManager(BaseFilterManager):
 
     @staticmethod
     def apply_title_contains(query: Query, value: str) -> Query:
         return query.filter(News.blob_id.ilike(f"%{value}%"))
 
-    @classmethod
-    def apply_sport_filter(cls, query: Query, value: int) -> Query:
-        return super().apply_sport_filter(query, News, value)
+    @staticmethod
+    def apply_sport_filter(query: Query, value: int) -> Query:
+        return query.filter(News.sport_id == value)
 
     @staticmethod
     def apply_date_from(query: Query, value: str) -> Query:

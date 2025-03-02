@@ -3,9 +3,9 @@ from database.models import Sport
 from database.postgres.dto import SportDTO
 from typing import Optional
 from dto.api_output import SportsOutput
+from database.postgres.dal.base import BaseDAL
 
-
-class SportDAL:
+class SportDAL(BaseDAL):
     def __init__(self, session = None):
         self.session = session
 
@@ -42,9 +42,3 @@ class SportDAL:
         self.session.delete(sport)
         self.session.commit()
         return True
-
-    def get_query(self):
-        return self.session.query(Sport)
-
-    def execute_query(self, query):
-        return query.all()

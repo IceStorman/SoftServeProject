@@ -32,8 +32,8 @@ class SportService:
 
         execute_query = self._leagues_dal.execute_query(filtered_query)
 
-        schema = SportsLeagueOutput(many=True)
-        leagues = schema.dump(execute_query)
+        sport_output = SportsLeagueOutput(many=True)
+        leagues = sport_output.dump(execute_query)
         return {
             "count": count,
             "leagues": leagues,
