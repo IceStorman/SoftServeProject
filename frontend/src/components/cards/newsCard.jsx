@@ -42,7 +42,7 @@ function NewsCard({ title, date, img, sport, id = 1, content, likes = 10, width,
               <h2 className="title">{title}</h2>
               {!isSmall && (
                   <p className="subtitle" title={content} style={{WebkitLineClamp: maxLines}}>
-                    {content}
+                    {console.log(content)}
                   </p>
               )}
             </div>
