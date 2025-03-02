@@ -239,7 +239,7 @@ function MainPage() {
     };
     useEffect(() => {
         getNews(0);
-    }, [,news, user]);
+    }, [news, user]);
 
     const handlePageClick = (event) => {
         const selectedPage = event.selected;
