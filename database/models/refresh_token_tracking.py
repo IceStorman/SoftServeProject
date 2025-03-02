@@ -12,5 +12,4 @@ class RefreshTokenTracking(Base):
     last_device = Column(String, nullable=False)
     nonce = Column(String, nullable=False)
 
-    token_blocklist = relationship("TokenBlocklist", back_populates="refresh_tokens")
 

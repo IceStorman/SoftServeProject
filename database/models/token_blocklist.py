@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 import datetime 
 
 class TokenBlocklist(Base):
-    __tablename__ = 'token_blocklist'
+    __tablename__ = 'Token_blocklist'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey("Users.user_id"))

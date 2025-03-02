@@ -60,6 +60,12 @@
     .redirect {
         align-self: center;
         margin: 1rem;
+
+        .authBtn{
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
     }
 
     button {
@@ -70,6 +76,10 @@
         &.arrow {
             margin-right: .5rem;
         }
+    }
+
+    .input-field:focus {
+        border-color: $main-clr-shadow;
     }
 
     input {
