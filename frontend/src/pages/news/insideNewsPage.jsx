@@ -19,31 +19,24 @@ export default function InsideNewsPage() {
 
     useEffect(() => {
         if (!newsData) {
-            try {
-                const fetchNews = async () => {
-                    const response = await axios.post(
-                        `${apiEndpoints.url}${apiEndpoints.news.getArticle}`,
-                        {
-                            blob_id: articleId,
-                        },
-                        {
-                            headers: { 'Content-Type': 'application/json' },
-                        }
-
-                    );
-                    setArticle(response.data[0].data);
-                }
-                fetchNews();
-            } catch (error) {
-                if(article.length === 0) {
-                    navigate("/not-existing")
-                }
-                toast.error(`:( Troubles With This News Loading: ${error}`);
-            }
-
+            axios
+                .post(
+                    `${apiEndpoints.url}${apiEndpoints.news.getArticle}`,
+                    { blob_id: articleId },
+                    { headers: { 'Content-Type': 'application/json' } }
+                )
+                .then((response) => {
+                    setArticle(response?.data[0]?.data);
+                })
+                .catch((error) => {
+                    if (article?.length === 0) {
+                        navigate("/not-existing");
+                    }
+                    toast.error(`:( Troubles With This News Loading: ${error}`);
+                });
         } else {
-            setArticle(newsData?.article)
-            setLikes(newsData?.likes)
+            setArticle(newsData?.article);
+            setLikes(newsData?.likes);
         }
     }, []);
 
