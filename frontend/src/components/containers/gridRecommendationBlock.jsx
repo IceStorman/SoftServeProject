@@ -1,19 +1,10 @@
-import React, { useState } from 'react';
-import { RiFunctionFill, RiGridFill, RiListCheck2 } from "react-icons/ri";
-import { GoSortAsc, GoSortDesc } from "react-icons/go";
-import ReactPaginate from "react-paginate";
-import CustomSelect from './customSelect';
-import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
-import { TfiLayoutLineSolid } from "react-icons/tfi";
-import useTranslations from "../../translationsContext";
-
+import React from 'react';
 
 const GridRecommendationBlock = ({
-                           title,
-                           children,
-                           gridSize,
-                       }) => {
-
+   title,
+   children,
+   gridSize
+}) => {
     return (
         <div className="grid-container">
             <div className="header">

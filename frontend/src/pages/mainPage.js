@@ -51,7 +51,7 @@ function MainPage() {
                 setNews(returnedNews);
             })
             .catch(error => {
-                alert(`There was an error getting news :(\n${error}`);
+                toast.error(`There was an error getting news :( ${error}`);
             });
     }, []);
 
@@ -98,8 +98,6 @@ function MainPage() {
         try {
             if (!user?.email) return;
 
-            setLoading(true);
-
             axios.post(`${apiEndpoints.url}${apiEndpoints.news.getRecommendations}`,
                 {
                     email: user.email,
@@ -108,7 +106,6 @@ function MainPage() {
                     headers: { 'Content-Type': 'application/json' },
                 })
                 .then(res => {
-                    console.log(res.data);
                     setRecommendationNews(res.data);
 
                 })
@@ -215,6 +212,12 @@ function MainPage() {
     }
 
     const [gridSize, setGridSize] = useState(cardSizes.large);
+
+    const [preferenceNewsGridSize, setPreferenceNewsGridSize] = useState(cardSizes.large);
+    const [newsGridSize, setNewsGridSize] = useState(cardSizes.large);
+    const [lastWatchNewsGridSize, setLastWatchNewsGridSize] = useState(cardSizes.large);
+
+
     const [currentNews, setCurrentNews] = useState([]);
     const [pageCount, setPageCount] = useState(0);
     const [paginationKey, setPaginationKey] = useState(0);
@@ -228,7 +231,7 @@ function MainPage() {
         getNews(page);
     }, [postsPerPage]);
 
-    const handleGridSizeChange = (size) => {
+    const handleGridSizeChange = (setGridSize, size) => {
         if (cardSizes[size]) {
             setPassedPosts(gridSize.rows * gridSize.columns * currentPage);
             setPostsPerPage(cardSizes[size].postsPerPage);
@@ -240,7 +243,7 @@ function MainPage() {
 
     useEffect(() => {
         getNews(0);
-    }, [news, user]);
+    }, [news]);
 
     const handlePageClick = (event) => {
         const selectedPage = event.selected;
@@ -333,15 +336,15 @@ function MainPage() {
                         {recommendationNews.recommendations_list_by_user_preferences && recommendationNews.recommendations_list_by_user_preferences.length > 0 && (
                             <GridRecommendationBlock
                                 title="Recommended news by your Preferences"
-                                gridSize={gridSize}
-                                loading={loading}
+                                gridSize={preferenceNewsGridSize}
+                                onGridSizeChange={(size) => handleGridSizeChange(setPreferenceNewsGridSize, size)}
                             >
                                 {recommendationNews.recommendations_list_by_user_preferences.map((item) => (
                                     <NewsCard
                                         key={item?.news_id}
                                         title={item?.article?.title}
                                         id={item?.news_id}
-                                        date={item?.timestamp}
+                                        date={item?.article?.timestamp}
                                         img={item?.article?.images[0] || ''}
                                         sport={item?.article?.S_P_O_R_T}
                                         content={item?.article?.article?.section_1?.content}
@@ -391,9 +394,9 @@ function MainPage() {
                 <GridContainer
                     title="News"
                     cardSizes={cardSizes}
-                    gridSize={gridSize}
+                    gridSize={newsGridSize}
                     postsPerPage={postsPerPage}
-                    onGridSizeChange={handleGridSizeChange}
+                    onGridSizeChange={(size) => handleGridSizeChange(setNewsGridSize, size)}
                     pageCount={pageCount}
                     currentPage={currentPage}
                     onPageChange={handlePageClick}
@@ -419,8 +422,8 @@ function MainPage() {
                         {recommendationNews.recommendations_list_by_user_last_watch && recommendationNews.recommendations_list_by_user_last_watch.length > 0 && (
                             <GridRecommendationBlock
                                 title="Recommended by your Last Watch"
-                                gridSize={gridSize}
-                                loading={loading}
+                                gridSize={lastWatchNewsGridSize}
+                                onGridSizeChange={(size) => handleGridSizeChange(setLastWatchNewsGridSize, size)}
                             >
                                 {recommendationNews.recommendations_list_by_user_last_watch.map((item) => (
                                     <NewsCard
