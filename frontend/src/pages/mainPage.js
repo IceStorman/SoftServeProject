@@ -18,6 +18,7 @@ import GridContainer from "../components/containers/gridBlock.jsx";
 import useTranslations from "../translationsContext";
 import {AuthContext} from "./registration/AuthContext";
 import Cookies from "js-cookie";
+import GridRecommendationBlock from "../components/containers/gridRecommendationBlock";
 
 function MainPage() {
     const { user } = useContext(AuthContext);
@@ -228,7 +229,6 @@ function MainPage() {
     }, [postsPerPage]);
 
     const handleGridSizeChange = (size) => {
-        console.log('size: ', size);
         if (cardSizes[size]) {
             setPassedPosts(gridSize.rows * gridSize.columns * currentPage);
             setPostsPerPage(cardSizes[size].postsPerPage);
@@ -237,6 +237,7 @@ function MainPage() {
             setGridSize(cardSizes.large);
         }
     };
+
     useEffect(() => {
         getNews(0);
     }, [news, user]);
@@ -330,17 +331,10 @@ function MainPage() {
                 user ? (
                     <>
                         {recommendationNews.recommendations_list_by_user_preferences && recommendationNews.recommendations_list_by_user_preferences.length > 0 && (
-                            <GridContainer
+                            <GridRecommendationBlock
                                 title="Recommended news by your Preferences"
-                                cardSizes={cardSizes}
                                 gridSize={gridSize}
-                                postsPerPage={postsPerPage}
-                                onGridSizeChange={handleGridSizeChange}
-                                pageCount={pageCount}
-                                currentPage={currentPage}
-                                onPageChange={handlePageClick}
                                 loading={loading}
-                                paginationKey={paginationKey}
                             >
                                 {recommendationNews.recommendations_list_by_user_preferences.map((item) => (
                                     <NewsCard
@@ -354,7 +348,7 @@ function MainPage() {
                                         article={item?.article}
                                     />
                                 ))}
-                            </GridContainer>
+                            </GridRecommendationBlock>
                         )}
                     </>
                 ) : null
@@ -423,17 +417,10 @@ function MainPage() {
                 user ? (
                     <>
                         {recommendationNews.recommendations_list_by_user_last_watch && recommendationNews.recommendations_list_by_user_last_watch.length > 0 && (
-                            <GridContainer
+                            <GridRecommendationBlock
                                 title="Recommended by your Last Watch"
-                                cardSizes={cardSizes}
                                 gridSize={gridSize}
-                                postsPerPage={postsPerPage}
-                                onGridSizeChange={handleGridSizeChange}
-                                pageCount={pageCount}
-                                currentPage={currentPage}
-                                onPageChange={handlePageClick}
                                 loading={loading}
-                                paginationKey={paginationKey}
                             >
                                 {recommendationNews.recommendations_list_by_user_last_watch.map((item) => (
                                     <NewsCard
@@ -447,7 +434,7 @@ function MainPage() {
                                         article={item?.article}
                                     />
                                 ))}
-                            </GridContainer>
+                            </GridRecommendationBlock>
                         )}
                     </>
                 ) : null
