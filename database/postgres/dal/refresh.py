@@ -11,24 +11,24 @@ class RefreshTokenDAL:
     def __init__(self, db_session: Session):
         self.db_session = db_session
 
-    def save_refresh_token(self, refresh_dto: refreshDTO, last_ip: str, last_device: str, nonce: str) -> Optional[int]:
+    def save_refresh_token(self, refresh_dto: refreshDTO) -> Optional[int]:
         try:
-            refresh_entry = None
+            refresh_entry = None#move to another location :)
             
             if refresh_dto.id:
                 refresh_entry = self.get_refresh_token_by_id(refresh_dto.id)
 
             if refresh_entry:
                 refresh_entry.user_id = refresh_dto.user_id
-                refresh_entry.last_ip = last_ip
-                refresh_entry.last_device = last_device
+                refresh_entry.last_ip = refresh_dto.last_ip
+                refresh_entry.last_device = refresh_dto.last_device
                 refresh_entry.nonce = refresh_dto.nonce
             else:
                 refresh_entry = RefreshTokenTracking(
                     user_id=refresh_dto.user_id,
-                    last_ip=last_ip,
-                    last_device=last_device,
-                    nonce=nonce
+                    last_ip=refresh_dto.last_ip,
+                    last_device=refresh_dto.last_device,
+                    nonce=refresh_dto.nonce
                 )
                 self.db_session.add(refresh_entry)
 
@@ -36,7 +36,6 @@ class RefreshTokenDAL:
             self.db_session.refresh(refresh_entry)
             return refresh_entry.id
         except SQLAlchemyError as e:
-            self.db_session.rollback()
             print(f"Error in save_refresh_token: {e}")
             return None
 
