@@ -29,10 +29,8 @@ export default function InsideNewsPage() {
                     setArticle(response?.data[0]?.data);
                 })
                 .catch((error) => {
-                    if (article?.length === 0) {
-                        navigate("/not-existing");
-                    }
                     toast.error(`:( Troubles With This News Loading: ${error}`);
+                    navigate("/not-existing");
                 });
         } else {
             setArticle(newsData?.article);
