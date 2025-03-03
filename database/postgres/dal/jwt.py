@@ -5,7 +5,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from typing import Optional, List
 from datetime import datetime
 
-class jwtDAL:
+class AccessTokensDAL:
     def __init__(self, db_session: Session):
         self.db_session = db_session
 
