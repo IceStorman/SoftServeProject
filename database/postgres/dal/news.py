@@ -123,6 +123,15 @@ class NewsDAL:
         return news_coefficients_without_duplicates
 
 
+    def clean_duplicates_news(self, news_df: pd.DataFrame) -> pd.DataFrame:
+        news_df_without_duplicates = news_df.groupby('news_id').agg({
+            'sport_id': 'first',
+        }).reset_index()
+        news_df_without_duplicates = news_df_without_duplicates.set_index('news_id')
+
+        return news_df_without_duplicates
+
+
     def assign_adjusted_scores_for_masks(
             self,
             news_coefficients_without_duplicates: pd.DataFrame,
@@ -130,7 +139,8 @@ class NewsDAL:
             user_not_interact_with_this_news_mask: pd.DataFrame.mask,
     ) -> pd.DataFrame.mask and pd.DataFrame.mask:
 
-        user_interact_with_this_news_mask[['adjusted_score','blob_id']] = news_coefficients_without_duplicates[['adjusted_score','blob_id']]
+        if not user_interact_with_this_news_mask.empty:
+            user_interact_with_this_news_mask[['adjusted_score', 'blob_id']] = news_coefficients_without_duplicates[['adjusted_score', 'blob_id']]
         user_not_interact_with_this_news_mask[['adjusted_score','blob_id']] = news_coefficients_without_duplicates[['adjusted_score','blob_id']]
         self.delete_dataframe(news_coefficients_without_duplicates)
 

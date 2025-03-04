@@ -20,15 +20,18 @@ function NewsShowcase({ newsData }) {
         setCurrentPage(selected + 1);
     };
 
+
     return (
         <div className="newsbox">
             {newsData.length > 0 ? (
                 <NewsCard
-                    title={newsData[currentPage - 1].title}
-                    date={newsData[currentPage - 1].date}
-                    img={newsData[currentPage - 1].img}
-                    sport={newsData[currentPage - 1].sport}
-                    content={newsData[currentPage - 1].content}
+                    title={newsData[currentPage - 1]?.data?.title}
+                    date={newsData[currentPage - 1]?.data?.timestamp}
+                    img={newsData[currentPage - 1]?.data?.images[0] || null}
+                    sport={newsData[currentPage - 1]?.data?.S_P_O_R_T}
+                    content={newsData[currentPage - 1]?.data?.article?.section_1?.content}
+                    id={newsData[currentPage - 1]?.blob_id}
+                    article={newsData[currentPage - 1]?.data}
                     height={element_height}
                     width={element_width}
                     isFoil={true}

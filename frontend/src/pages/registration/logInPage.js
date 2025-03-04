@@ -22,9 +22,9 @@ function SignInPage() {
         if (!emailOrUserName.trim())
             return false;
 
-        const isEmailRegex = /^[^@]$/
-        if (isEmailRegex.test(emailOrUserName))
+        if (emailOrUserName.includes('@')) {
             return isValidEmail(emailOrUserName);
+        }
 
         return isValidUserName(emailOrUserName);
     }
@@ -96,7 +96,7 @@ function SignInPage() {
             </div>
 
             <div className="redirect">
-                <p> {t("no_account")} <Link to={"/sign-up"}>{t("create")}</Link></p>
+                <p className="space"> {t("no_account")} <Link to={"/sign-up"}>{t("create")}</Link></p>
                 <AuthBtn />
             </div>
 

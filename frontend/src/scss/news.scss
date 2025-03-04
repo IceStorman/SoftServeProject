@@ -370,6 +370,8 @@
     background-color: $bg-white;
     padding: 0 2rem;
     box-shadow: 0 4px 10px $main-shadow;
+    text-align: justify;
+    word-break: break-word;
 
     img {
         object-fit: contain;

@@ -59,7 +59,7 @@ msgid "Sign In"
 msgstr "Зареєструватись"
 
 msgid "Certatum Nostrum"
-msgstr "Certatum Nostrum"
+msgstr "Спорт Параша Йоу"
 
 msgid "since 1990"
 msgstr "з 1990"

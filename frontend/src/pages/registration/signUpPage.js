@@ -110,7 +110,7 @@ function SignUpPage() {
             </form>
 
             <div className="redirect">
-                <p> {t("have_account")} <Link to={"/sign-in"}>{t("log_in")}</Link></p>
+                <p className={"space"}> {t("have_account")} <Link to={"/sign-in"}>{t("log_in")}</Link></p>
                 <AuthBtn />
             </div>
         </section>
