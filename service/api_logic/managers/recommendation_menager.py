@@ -17,12 +17,13 @@ class RecommendationManager:
 
     def get_recommended_news_for_user(self, user_email: str):
         user_id = self.user_dal.get_user_id_by_email(user_email)
+        user_id = user_id[0]
         if not user_id:
             raise UserDoesNotExistError(user_id)
-        preferred_teams, preferred_sports = self.user_service.get_user_sport_and_club_preferences(user_id[0])
+        preferred_teams, preferred_sports = self.user_service.get_user_sport_and_club_preferences(user_id)
 
         user_unseen_news_df, recs_by_user_preferences, recs_by_user_last_watch = self.news_service.user_recommendations_based_on_preferences_and_last_watch(
-            user_id[0],
+            user_id,
             preferred_teams,
             preferred_sports,
             self.calculating_helper
@@ -32,7 +33,7 @@ class RecommendationManager:
              user_unseen_news_df,
              recs_by_user_preferences,
              recs_by_user_last_watch,
-             user_id[0]
+             user_id
         )
 
 
