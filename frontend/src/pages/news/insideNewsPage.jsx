@@ -29,7 +29,7 @@ export default function InsideNewsPage() {
                     setArticle(response?.data[0]?.data);
                 })
                 .catch((error) => {
-                    toast.error(`:( Troubles With This News Loading: ${error}`);
+                    toast.error(`:( Trouble loading news: ${error}`);
                     navigate("/not-existing");
                 });
         } else {
