@@ -54,9 +54,6 @@ class RefreshTokenDAL:
             .first()
         )
 
-    def get_nonce_by_user_id(self, user_id: int) -> Optional[str]:
-        entry = self.db_session.query(RefreshTokenTracking).filter(RefreshTokenTracking.user_id == user_id).first()
-        return entry.nonce if entry else None
     
     def verify_nonce(self, user_id: int, nonce: str) -> bool:
         token_entry = self.db_session.query(RefreshTokenTracking).filter_by(user_id=user_id, nonce=nonce).first()
