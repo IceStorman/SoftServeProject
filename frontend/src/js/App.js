@@ -33,6 +33,7 @@ import { TranslationsProvider } from '../translationsContext';
 import ResetPasswordPage from "../components/passwordReset/resetPasswordPage";
 import CheckEmailPage from "../components/passwordReset/checkEmailPage";
 import GoogleAuthCallback from "../pages/registration/googleCallBack";
+import PreferencesPage from "../pages/registration/PreferencesPage";
 
 function App() {
 
@@ -64,6 +65,8 @@ function App() {
                         <Route path="/sign-in" element={<SignInPage />} />
 
                         <Route path="/sign-up" element={<SignUpPage />} />
+
+                        <Route path="/user/preferences" element={<PreferencesPage />} />
 
                         <Route path="/sign-in/google" element={<GoogleAuthCallback />} />
 

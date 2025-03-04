@@ -31,6 +31,7 @@ $main-font: "CyrillicGoth";
 @import "searchContainer";
 @import "pagination";
 @import "languageToggleContainer";
+@import "preferencesPage";
 
 
 @font-face {
@@ -133,7 +134,6 @@ button {
     background: black;
     border: none;
     border-radius: none;
-    position: absolute;
     padding: 0.5rem 0.5rem;
     transition: border-color 0.3s ease-in-out;
 
