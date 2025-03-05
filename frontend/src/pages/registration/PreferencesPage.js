@@ -24,7 +24,7 @@ function PreferencesPage() {
             const response = await axios.post(
                 `${apiEndpoints.url}${apiEndpoints.preference.getUserPreferences}`,
                 {
-                    user_id: user?.id, //поки для перевірок заміняємо на потрібний, після тараса пр, можна не хардкодити
+                    user_id: user?.id,
                     type: 'sport',
                 },
                 {
