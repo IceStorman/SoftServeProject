@@ -4,6 +4,7 @@ import requests
 import hashlib
 import time
 import os
+from typing import Optional
 
 class UserInfo:
     def get_user_device(self) -> str:
@@ -41,6 +42,9 @@ class UserInfo:
     def generate_nonce(self):
         nonce = hashlib.sha256(f"{time.time()}{os.urandom(16)}".encode()).hexdigest()
         return nonce
+    
+    def is_suspicious_login(self):
+        pass
 
 
 

@@ -108,6 +108,9 @@ async def log_in(service: UserService = Provide[Container.user_service]):
 @logger.log_function_call()
 @jwt_required(refresh=True)
 async def refresh(service: UserService = Provide[Container.user_service]):
-    return await service.refresh_tokens()
+    try:
+        return await service.refresh_tokens()
+    except CustomQSportException as e:
+        logger.error(f"Error in POST /refresh: {str(e)}")
         
 

@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 from typing import Optional
 import datetime
 
-class refreshDTO(BaseModel):
+class RefreshTokenDTO(BaseModel):
     id: Optional[int] = Field(default=None)
     user_id: int = Field(...)
     last_ip: str = Field(...)

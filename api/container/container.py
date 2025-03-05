@@ -4,7 +4,7 @@ from database.session import SessionLocal
 from database.postgres.dal.user import UserDAL
 from database.postgres.dal.preferences import PreferencesDAL
 from database.postgres.dal.news import NewsDAL
-from database.postgres.dal.jwt import AccessTokensDAL
+from database.postgres.dal.access_token import AccessTokensDAL
 from database.postgres.dal.refresh import RefreshTokenDAL 
 from service.api_logic.managers.recommendation_menager import RecommendationManager
 from service.api_logic.user_logic import UserService

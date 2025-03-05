@@ -59,6 +59,32 @@ class RefreshTokenDAL:
         token_entry = self.db_session.query(RefreshTokenTracking).filter_by(user_id=user_id, nonce=nonce).first()
         return token_entry is not None
     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    
+    def is_nonce_used(self,user_id: int, nonce: str) -> bool:
+        nonce = self.db_session.query(RefreshTokenTracking).filter_by(user_id=user_id, nonce=nonce).first()
+        if nonce: 
+            return True
+        return False
+        
+
+
     def update_refresh_token(self, user_id: int, refresh_dto: refreshDTO):
         try:
             entry = (self.db_session.query(RefreshTokenTracking)
@@ -100,11 +126,10 @@ class RefreshTokenDAL:
             revoked_count = (
                 self.db_session.query(TokenBlocklist)
                 .filter(
-                    TokenBlocklist.id.in_(
-                        self.db_session.query(RefreshTokenTracking.id)
-                        .filter(RefreshTokenTracking.user_id == user_id)
-                    ),
-                    TokenBlocklist.token_type == "refresh"
+                    self.db_session.query(TokenBlocklist).join(RefreshTokenTracking, RefreshTokenTracking.id == TokenBlocklist.id).filter(
+                        RefreshTokenTracking.user_id == user_id,
+                        TokenBlocklist.token_type == "refresh"
+                    )
                 )
                 .update({"revoked": True, "updated_at": datetime.utcnow()}, synchronize_session=False)
             )
@@ -114,4 +139,3 @@ class RefreshTokenDAL:
             return revoked_count
         except SQLAlchemyError as e:
             self.db_session.rollback()
-            return 0

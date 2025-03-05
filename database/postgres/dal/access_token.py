@@ -10,7 +10,7 @@ class AccessTokensDAL:
     def __init__(self, db_session: Session):
         self.db_session = db_session
 
-    def save_jwt(self, jwt_dto: jwtDTO) -> Optional[int]:
+    def save_access_token(self, jwt_dto: jwtDTO) -> Optional[int]:
         user_dal = UserDAL(self.db_session)
         user = user_dal.get_user_by_id(jwt_dto.user_id)
         if user:
@@ -32,17 +32,17 @@ class AccessTokensDAL:
         else:
             return None
 
-    def save_jwts(self, jwt_dto_list: List[jwtDTO]):
+    def save_access_tokens(self, jwt_dto_list: List[jwtDTO]):
         for jwt in jwt_dto_list:
             self.save_jwt(jwt)
 
-    def get_jwt_by_id(self, jwt_id: int) -> Optional[TokenBlocklist]:
+    def get_access_token_by_id(self, jwt_id: int) -> Optional[TokenBlocklist]:
         return self.db_session.query(TokenBlocklist).filter(TokenBlocklist.id == jwt_id).first()
 
-    def get_jwt_by_jti(self, jti: str) -> Optional[TokenBlocklist]:
+    def get_access_token_by_jti(self, jti: str) -> Optional[TokenBlocklist]:
         return self.db_session.query(TokenBlocklist).filter(TokenBlocklist.jti == jti).first()
 
-    def revoke_jwt(self, jti: str) -> bool:
+    def revoke_access_token(self, jti: str) -> bool:
  
         try:
             jwt_entry = self.get_jwt_by_jti(jti)
