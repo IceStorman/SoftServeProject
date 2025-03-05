@@ -59,7 +59,7 @@ function SignUpPage() {
 
             login({ email: response?.data?.user?.email, username: response?.data?.user?.username, id: response?.data?.user?.id });
             toast.success(globalVariables.authMessages.successLogIn);
-            navigate('/')
+            navigate('/user/preferences')
         } catch (error) {
             const errorStatus = error?.response?.status
             const errorMessage = error?.response?.data?.error;
