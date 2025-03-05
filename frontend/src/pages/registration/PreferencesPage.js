@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { Check, Plus } from "lucide-react";
 import { AuthContext } from "./AuthContext";
-import globalVariables from "../../globalVariables";
+
 
 function PreferencesPage() {
     const authContext = useContext(AuthContext);
@@ -63,6 +63,7 @@ function PreferencesPage() {
             }
 
             toast.success('Your preferences have been updated!');
+            navigate('/');
         } catch (err) {
             toast.error("Error with changing user preferences!");
         }
