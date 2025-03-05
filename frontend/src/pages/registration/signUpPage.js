@@ -57,7 +57,7 @@ function SignUpPage() {
                 }
             );
 
-            login({ email: response?.data?.user?.email, username: response?.data?.user?.username });
+            login({ email: response?.data?.user?.email, username: response?.data?.user?.username, id: response?.data?.user?.id });
             toast.success(globalVariables.authMessages.successLogIn);
             navigate('/')
         } catch (error) {

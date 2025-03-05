@@ -5,13 +5,14 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { Check, Plus } from "lucide-react";
 import { AuthContext } from "./AuthContext";
+import globalVariables from "../../globalVariables";
 
 function PreferencesPage() {
     const authContext = useContext(AuthContext);
     const navigate = useNavigate();
     const [choices, setChoices] = useState([]);
     const [userPref, setUserPref] = useState([]);
-    const [isActive, setIsActive] = useState({}); // Об'єкт для зберігання активності за sports_id
+    const [isActive, setIsActive] = useState({});
 
     const { user } = authContext;
 
@@ -20,7 +21,7 @@ function PreferencesPage() {
             const response = await axios.post(
                 `${apiEndpoints.url}${apiEndpoints.preference.getUserPreferences}`,
                 {
-                    user_id: 38,
+                    user_id: user?.id, //поки для перевірок заміняємо на потрібний, після тараса пр, можна не хардкодити
                     type: 'sport',
                 },
                 {
@@ -40,7 +41,7 @@ function PreferencesPage() {
                     `${apiEndpoints.url}${apiEndpoints.preference.changeUserPreferences}`,
                     {
                         preferences: preferences,
-                        user_id: 38,
+                        user_id: user?.id,
                         type: 'sport',
                     },
                     {
@@ -52,14 +53,16 @@ function PreferencesPage() {
                     `${apiEndpoints.url}${apiEndpoints.preference.changeUserPreferences}`,
                     {
                         data: {
-                            preferences: preferences,
-                            user_id: 38,
+                            preferences: [],
+                            user_id: user?.id,
                             type: 'sport',
                         },
                         headers: { 'Content-Type': 'application/json' },
                     }
                 );
             }
+
+            toast.success('Your preferences have been updated!');
         } catch (err) {
             toast.error("Error with changing user preferences!");
         }
