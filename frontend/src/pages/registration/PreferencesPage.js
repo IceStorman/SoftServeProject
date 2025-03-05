@@ -5,9 +5,11 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { Check, Plus } from "lucide-react";
 import { AuthContext } from "./AuthContext";
+import useTranslations from "../../translationsContext";
 
 
 function PreferencesPage() {
+    const { t } = useTranslations();
     const authContext = useContext(AuthContext);
     const navigate = useNavigate();
     const [choices, setChoices] = useState([]);
@@ -15,6 +17,7 @@ function PreferencesPage() {
     const [isActive, setIsActive] = useState({});
 
     const { user } = authContext;
+
 
     const loadUserPreferences = async () => {
         try {
@@ -115,8 +118,8 @@ function PreferencesPage() {
     return (
         <section className={"preferences registration"}>
             <div className={"preferencesHeading"}>
-                <h1>What are you interested in?</h1>
-                <h3>Choose your favourite sports:</h3>
+                <h1>{t('what_interesting_in')}</h1>
+                <h3>{t('choose_sports')}</h3>
             </div>
 
             <section className={"preferencesChoices"}>
@@ -133,8 +136,8 @@ function PreferencesPage() {
             </section>
 
             <div className={"controlBtnBox"}>
-                <h3 onClick={() => navigate('/')}>Skip ></h3>
-                <button className={"filled"} onClick={handleSubmit}>Confirm?</button>
+                <h3 onClick={() => navigate('/')}>{t('skip')}</h3>
+                <button className={"filled"} onClick={handleSubmit}>{t('confirm')}</button>
             </div>
         </section>
     );
