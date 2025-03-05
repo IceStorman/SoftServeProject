@@ -7,6 +7,8 @@ import os
 from typing import Optional
 
 class UserInfo:
+    def __init__(self, accass_token_dal):
+        self._access_token_dal= accass_token_dal
     def get_user_device(self) -> str:
         user_agent = request.headers.get("User-Agent", "")
         parsed_agent = parse(user_agent)
@@ -43,8 +45,31 @@ class UserInfo:
         nonce = hashlib.sha256(f"{time.time()}{os.urandom(16)}".encode()).hexdigest()
         return nonce
     
-    def is_suspicious_login(self):
-        pass
+    def is_suspicious_login(self, user_id: int) -> bool:
+        refresh_entry = self._access_token_dal.get_valid_refresh_token_by_user(user_id)
+        if not refresh_entry:
+            return False  
+
+        current_ip = self.get_client_ip()
+        current_country = self.get_country_from_ip()
+        current_device = self.get_user_device()
+
+
+        if refresh_entry.last_ip and refresh_entry.last_ip != current_ip:
+            return True 
+
+        if refresh_entry.last_country and refresh_entry.last_country != current_country:
+            return True 
+
+       
+        if refresh_entry.last_device and refresh_entry.last_device != current_device:
+            return True  
+
+       
+        if self._access_token_dal.is_nonce_used(user_id, refresh_entry.nonce):
+            return True  
+
+        return False  
 
 
 
