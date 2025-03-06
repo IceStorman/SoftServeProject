@@ -27,12 +27,13 @@ class UserDAL:
     def get_user_by_id(self, user_id: int) -> User:
         return self.session.query(User).filter(User.user_id == user_id).first()
 
+
     def update_user_password(self, user: User, new_password):
         user.password_hash = new_password
         self.session.commit()
 
 
-    def get_user_id_be_email(self, email: str) -> User:
+    def get_user_id_by_email(self, email: str) -> User:
         return self.session.query(User.user_id).filter(User.email == email).first()
 
 
@@ -44,7 +45,7 @@ class UserDAL:
             )
             .select_from(User)
             .join(UserClubPreferences, UserClubPreferences.users_id == User.user_id)
-            .join(UserPreference, UserPreference.users_id == User.user_id)
+            .outerjoin(UserPreference, UserPreference.users_id == User.user_id)
             .filter(User.user_id == user_id)
         )
 

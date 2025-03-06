@@ -10,7 +10,7 @@ from dto.api_input import SearchDTO
 from exept.handle_exeptions import handle_exceptions
 from service.api_logic.managers.recommendation_menager import RecommendationManager
 from service.api_logic.news_logic import NewsService
-from dto.api_input import InputUserByIdDTO
+from dto.api_input import InputUserByEmailDTO
 
 logger = Logger("logger", "all.log")
 
@@ -102,8 +102,8 @@ def get_filtered_news_endpoint(news_service: NewsService = Provide[Container.new
 async def recommendations_for_user(recommendation_manager: RecommendationManager = Provide[Container.recommendation_manager]):
     try:
         data = request.get_json()
-        dto = InputUserByIdDTO().load(data)
-        user_recommendations = recommendation_manager.get_recommended_news_for_user(dto.user_id)
+        dto = InputUserByEmailDTO().load(data)
+        user_recommendations = recommendation_manager.get_recommended_news_for_user(dto.email)
         return user_recommendations
 
     except CustomQSportException as e:

@@ -48,7 +48,6 @@ def get_teams_sport_endpoint():
 
 
 @teams_app.route('/statistics', methods=['POST'])
-@cache.cached(timeout=CACHE_TEAMS)
 @logger.log_function_call()
 def get_teams_statistics_endpoint():
     try:

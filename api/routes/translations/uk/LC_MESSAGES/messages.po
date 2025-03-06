@@ -1,0 +1,140 @@
+# Ukrainian translations for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-02-13 09:18+0200\n"
+"PO-Revision-Date: 2025-02-13 09:20+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: uk\n"
+"Language-Team: uk <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+
+
+
+msgid "Page not found"
+msgstr "Сторінка не знайдена"
+
+msgid "Navigation"
+msgstr "Навігація"
+
+msgid "Main page"
+msgstr "Головна сторінка"
+
+msgid "About us"
+msgstr "Про нас"
+
+msgid "FAQ"
+msgstr "FAQ"
+
+msgid "Contact info"
+msgstr "Контактна інформація"
+
+msgid "Address"
+msgstr "Адреса"
+
+msgid "Phone"
+msgstr "Телефон"
+
+msgid "Email"
+msgstr "Електрона пошта"
+
+msgid "Follow Us on Social Media"
+msgstr "Слідкуйте за нами в соціальних мережах"
+
+msgid "Subscribe to our newsletter"
+msgstr "Підписатись на нашу розсилку"
+
+msgid "Sign In"
+msgstr "Зареєструватись"
+
+msgid "Certatum Nostrum"
+msgstr "Спорт Параша Йоу"
+
+msgid "since 1990"
+msgstr "з 1990"
+
+msgid "News"
+msgstr "Новини"
+
+msgid "Leagues"
+msgstr "Ліги"
+
+msgid "Games"
+msgstr "Матчі"
+
+msgid "Filters"
+msgstr "Фільтри"
+
+msgid "Option 1"
+msgstr "Option 1"
+
+msgid "Option 2"
+msgstr "Option 2"
+
+msgid "Option 3"
+msgstr "Option 3"
+
+msgid "Sort by:"
+msgstr "Сортувати по:"
+
+msgid "more..."
+msgstr "більше..."
+
+msgid "Latest games"
+msgstr "Останні матчі"
+
+msgid "Recommendations"
+msgstr "Рекомендації"
+
+msgid "to track performance of your favorite teams"
+msgstr "відстежувати досягнення ваших улюблених команд"
+
+msgid "Tags:"
+msgstr "Теги:"
+
+msgid "Password reset"
+msgstr "Скидання пароля"
+
+msgid "Continue?"
+msgstr "Продовжити?"
+
+msgid "Log In"
+msgstr "Увійти"
+
+msgid "Password:"
+msgstr "Пароль:"
+
+msgid "Forget password?"
+msgstr "Забув пароль?"
+
+msgid "Do not have an account?"
+msgstr "Немає облікового запису?"
+
+msgid "Create"
+msgstr "Створити"
+
+msgid "Nickname:"
+msgstr "Імʼя:"
+
+msgid "Repeat password:"
+msgstr "Повторити пароль:"
+
+msgid "Already have an account?"
+msgstr "Вже є акаунт?"
+
+msgid "Select sport"
+msgstr "Виберіть вид спорту"
+
+msgid "teams"
+msgstr "команди"

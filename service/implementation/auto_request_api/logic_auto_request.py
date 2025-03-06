@@ -145,6 +145,13 @@ apis = [
     },
     {
         "name": "formula-1",
+        "index": "teams",
+        "url": "https://v1.formula-1.api-sports.io/teams",
+        "host": "v1.formula-1.api-sports.io",
+        "frequency": 19999
+    },
+    {
+        "name": "formula-1",
         "index": "races",
         "url": "https://v1.formula-1.api-sports.io/races?date=DATE",
         "host": "v1.formula-1.api-sports.io",
@@ -198,6 +205,13 @@ apis = [
         "url": "https://v1.mma.api-sports.io/categories",
         "host": "v1.mma.api-sports.io",
         "frequency": 376
+    },
+    {
+        "name": "mma",
+        "index": "teams",
+        "url": "https://v1.mma.api-sports.io/teams",
+        "host": "v1.mma.api-sports.io",
+        "frequency": 19999
     },
     {
         "name": "mma",

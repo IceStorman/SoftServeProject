@@ -57,7 +57,8 @@ class Container(containers.DeclarativeContainer):
     recommendation_manager = providers.Factory(
         RecommendationManager,
         user_service,
-        news_service
+        news_service,
+        user_dal=user_dal,
     )
 
 
