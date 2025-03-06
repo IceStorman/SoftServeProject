@@ -287,7 +287,6 @@ def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
         teams = session.query(TeamIndex).all()
         team_dict = {team.name: team.team_index_id for team in teams}
         teams = json_data["team_names"]
-        print(teams)
         for team_name in teams:
             if isinstance(team_name, list):
                 for name in team_name:
