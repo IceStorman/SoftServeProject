@@ -1,7 +1,8 @@
 import requests
 from dto.api_input import BaseDTO
-from service.implementation.auto_request_api.logic_auto_request import token_usage, api_key
-from database.azure_blob_storage.save_get_blob import blob_save_specific_api, get_all_blob_indexes_from_db, get_blob_data_for_all_sports
+from service.implementation.auto_request_api.logic_auto_request import api_key
+from database.azure_blob_storage.save_get_blob import blob_save_specific_api, get_all_blob_indexes_from_db, \
+    get_blob_data_for_all_sports, get_specific_blob_filename_from_db
 from database.session import SessionLocal
 from typing import Dict
 from database.postgres.save_data import save_api_data
@@ -10,6 +11,7 @@ from database.postgres.save_data import save_api_data
 class AbstractSportDataManager:
     _host: str
     _sport_name: str
+    _sport_id: int
 
     _data_object: BaseDTO
     _data_dict: Dict
@@ -30,13 +32,15 @@ class AbstractSportDataManager:
             save_api_data(json_data, name)
             return json_data
         blob_save_specific_api(name, blob_name, json_data)
+        save_api_data(json_data, self._sport_name)
         return json_data
+    
 
-    def _try_return_json_data(self, url: str, index: str) -> Dict[str, str]:
+    def _return_specific_json_data(self, url: str, index: str, sport_id: int) -> Dict[str, str]:
         with SessionLocal() as session:
-            check = get_all_blob_indexes_from_db(session, index)
+            check = get_specific_blob_filename_from_db(session, index, sport_id)
             if check:
-                result = get_blob_data_for_all_sports(session, check)
+                result = get_blob_data_for_all_sports(session, [check])
                 return result
         try:
             json_data = self.__main_request(self._host, self._sport_name, url, index)
