@@ -82,11 +82,11 @@ def get_players_endpoint():
 @teams_app.route('/search', methods=['POST'])
 @inject
 @logger.log_function_call()
-def get_team_filtered_endpoint(service: TeamsService = Provide[Container.teams_service]):
+def get_team_filtered_endpoint(teams_service: TeamsService = Provide[Container.teams_service]):
     try:
         data = request.get_json()
         dto = SearchDTO().load(data)
-        teams = service.get_teams(dto)
+        teams = teams_service.get_teams_filtered(dto)
         return teams
     except CustomQSportException as e:
         logger.error(f"Error in POST /: {str(e)}")

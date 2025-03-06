@@ -40,7 +40,7 @@ class TeamsDataManager(AbstractSportDataManager):
 
     def get_teams_data(self, pagination):
         index = get_team_index(self._sport_name, self._leagues_id)
-        result = self._service.get_teams(self._data_dict, pagination)
+        result = self._service.get_teams_filtered(self._data_dict, pagination)
         if result:
             return result
         url_first = get_host(self._sport_name)

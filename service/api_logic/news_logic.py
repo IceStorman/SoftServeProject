@@ -7,7 +7,7 @@ from database.models import News
 from database.azure_blob_storage.save_get_blob import blob_get_news
 from service.api_logic.scripts import get_sport_by_name
 from logger.logger import Logger
-from service.api_logic.filter_manager.filter_manager_factory import FilterManagerFactory
+from service.api_logic.filter_manager.filter_manager_strategy import FilterManagerStrategy
 from dto.pagination import Pagination
 from dto.api_input import NewsDTO
 from service.api_logic.helpers.calculating_helper import CalculatingRecommendationHelper
@@ -65,9 +65,9 @@ class NewsService:
         )
 
     def get_filtered_news(self, filters: NewsDTO):
-        query = self._news_dal.get_query(News)
+        query = self._news_dal.get_base_query(News)
 
-        filtered_query = FilterManagerFactory.apply_filters(News, query, filters)
+        filtered_query = FilterManagerStrategy.apply_filters(News, query, filters)
 
         news = self._news_dal.execute_query(filtered_query)
         return self.json_news(news)

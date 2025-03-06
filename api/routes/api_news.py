@@ -83,14 +83,15 @@ def specific_article(service: NewsService = Provide[Container.news_service]):
 @news_app.route('/search', methods=['POST'])
 @inject
 @logger.log_function_call()
-def get_filtered_news_endpoint(service: NewsService = Provide[Container.news_service]):
+def get_filtered_news_endpoint(news_service: NewsService = Provide[Container.news_service]):
     try:
         filters = request.get_json() or {}
         dto = SearchDTO().load(filters)
-        filtered_news = service.get_filtered_news(dto)
+        filtered_news = news_service.get_filtered_news(dto)
         return filtered_news
     except CustomQSportException as e:
         logger.error(f"Error in POST /filtered: {str(e)}")
+
         return get_custom_error_response(e)
 
 @news_app.route("/recommendation", methods=["POST"])

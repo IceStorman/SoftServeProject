@@ -39,6 +39,7 @@ class GameDAL(BaseDAL):
         self.session.add(new_game)
         self.session.commit()
         self.session.refresh(new_game)
+        
         return new_game
 
     def get_game_by_game_id_and_api_id(self, game_id: int, game_api_id: int) -> Optional[Games]:
@@ -62,6 +63,8 @@ class GameDAL(BaseDAL):
         game = self.get_game_by_id(game_id)
         if not game:
             return False
+
         self.session.delete(game)
         self.session.commit()
+
         return True

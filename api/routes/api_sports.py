@@ -26,9 +26,9 @@ def handle_db_timeout_error(e):
 @inject
 @cache.cached(timeout=60*60)
 @logger.log_function_call()
-def get_all_sports_endpoint(service: SportService = Provide[Container.sports_service]):
+def get_all_sports_endpoint(league_service: SportService = Provide[Container.sports_service]):
     try:
-        all_sports = service.get_all_sports()
+        all_sports = league_service.get_all_sports()
         return all_sports
     except CustomQSportException as e:
         logger.error(f"Error in GET /: {str(e)}")
@@ -38,11 +38,11 @@ def get_all_sports_endpoint(service: SportService = Provide[Container.sports_ser
 @sports_app.route('/league/search', methods=['POST'])
 @inject
 @logger.log_function_call()
-def search_countries(service: SportService = Provide[Container.sports_service]):
+def search_countries(league_service: SportService = Provide[Container.sports_service]):
     try:
         data = request.get_json()
         dto = SearchDTO().load(data)
-        leagues = service.search_leagues(dto)
+        leagues = league_service.search_leagues(dto)
         return leagues
     except CustomQSportException as e:
         logger.error(f"Error in POST /: {str(e)}")

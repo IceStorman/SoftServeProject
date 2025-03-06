@@ -25,11 +25,11 @@ def handle_db_timeout_error(e):
 @cache.cached(CACHE_TIMEOUT_SECONDS, key_prefix=post_cache_key)
 @inject
 @logger.log_function_call()
-def get_stream_info_with_filters_endpoint(service: GamesService = Provide[Container.games_service]):
+def get_games_info_with_filters_endpoint(games_service: GamesService = Provide[Container.games_service]):
     try:
         data = request.get_json()
         dto = SearchDTO().load(data)
-        games = service.get_games_today(dto)
+        games = games_service.get_games_today(dto)
         return games
     except CustomQSportException as e:
         logger.error(f"Error in POST /: {str(e)}")

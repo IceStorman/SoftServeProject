@@ -21,7 +21,7 @@ class TeamsLeagueOutput(Schema):
     team_name = fields.Str(attribute="name")
     logo = fields.Str()
     id = fields.Str(attribute="api_id")
-
+    count = fields.Int()
 
 class SportsOutput(Schema):
     id = fields.Int(attribute="sport_id")

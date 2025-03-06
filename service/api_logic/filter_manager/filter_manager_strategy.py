@@ -5,7 +5,7 @@ from service.api_logic.filter_manager.teams_filter_manager import TeamsFilterMan
 from sqlalchemy.orm import Query
 from exept.exeptions import IncorrectModelFromFilterManager
 
-class FilterManagerFactory:
+class FilterManagerStrategy:
 
     MANAGERS = {
         "News": NewsFilterManager,
