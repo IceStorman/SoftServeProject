@@ -1,9 +1,10 @@
 from sqlalchemy.orm import Query
 from database.models import News, TeamInNews
 from service.api_logic.filter_manager.base_filter_manager import BaseFilterManager
+from service.api_logic.filter_manager.common_filters import CommonFilters
 from sqlalchemy import desc, asc
 
-class NewsFilterManager(BaseFilterManager):
+class NewsFilterManager(BaseFilterManager, CommonFilters):
 
     @staticmethod
     def apply_title_contains(query: Query, value: str) -> Query:
@@ -25,16 +26,11 @@ class NewsFilterManager(BaseFilterManager):
     def apply_team_filter(query: Query, value: str) -> Query:
         return query.join(TeamInNews, News.news_id == TeamInNews.news_id).filter(TeamInNews.name.ilike(f"%{value}%"))
 
-    @staticmethod
-    def order_by_newest(query: Query, value: bool) -> Query:
-        if value:
-            return query.order_by(desc(News.save_at))
-        return query
 
-    @staticmethod
-    def order_by_oldest(query: Query, value: bool) -> Query:
-        if value:
-            return query.order_by(asc(News.save_at))
+    def apply_order_by_filter(self, query: Query, filters) -> Query:
+        if filters.field and filters.order:
+            order = asc if filters.order.lower() == "asc" else desc
+            return self.apply_order_by(query, News, order, filters.field)
         return query
 
     FILTERS = {
@@ -43,6 +39,5 @@ class NewsFilterManager(BaseFilterManager):
         "date_from": apply_date_from,
         "date_to": apply_date_to,
         "team": apply_team_filter,
-        "order_by_newest": order_by_newest,
-        "order_by_oldest": order_by_oldest,
+        "order_by": apply_order_by_filter,
     }

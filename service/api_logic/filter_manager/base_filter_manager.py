@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Query
 from typing import Optional
 from dto.pagination import Pagination
+from sqlalchemy import desc, asc
 
 class BaseFilterManager:
     FILTERS ={}
@@ -28,6 +29,11 @@ class BaseFilterManager:
             elif field_name in cls.FILTERS:
                 filter_method = cls.FILTERS[field_name]
                 query = filter_method(query, field_value)
+
+        if hasattr(dto, "filters") and hasattr(dto.filters, "field") and hasattr(dto.filters, "order"):
+            if dto.filters.field and dto.filters.order:
+                filter_manager = cls()
+                query = filter_manager.apply_order_by_filter(query, dto.filters)
 
         pagination_dto = getattr(dto, "pagination", None)
         if pagination_dto:
