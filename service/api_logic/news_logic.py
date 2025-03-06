@@ -7,6 +7,7 @@ from database.models import News
 from database.azure_blob_storage.save_get_blob import blob_get_news
 from logger.logger import Logger
 from service.api_logic.helpers.calculating_helper import CalculatingRecommendationHelper
+from exept.exeptions import NewsNotFound
 
 
 class LimitsConsts(Enum):
@@ -42,9 +43,10 @@ class NewsService:
 
     def get_news_by_id(self, blob_id: str):
         news = self._news_dal.get_news_by_blob_id(blob_id)
-        if news:
-            self._logger.warning(f"News were found: {news}")
-            return self.json_news([news])
+        if not news:
+            self._logger.warning(f"Pizdec: nothing found")
+            raise NewsNotFound()
+        return self.json_news([news])
 
 
     def json_news(self, news_records):

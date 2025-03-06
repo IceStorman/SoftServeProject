@@ -108,3 +108,11 @@ class InvalidAuthenticationDataError(CustomQSportException):
         message = f"{auth_provider_name} data is invalid"
         super().__init__(message)
 
+class NewsNotFound(CustomQSportException):
+    status_code = 418
+
+    def __init__(self):
+        message = f"Pizdec, news not found"
+        super().__init__(message)
+
+
