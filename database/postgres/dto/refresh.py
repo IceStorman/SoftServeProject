@@ -1,13 +1,13 @@
-from pydantic import BaseModel, Field
+from marshmallow import Schema, fields
 from typing import Optional
 import datetime
 
-class RefreshTokenDTO(BaseModel):
-    id: Optional[int] = Field(default=None)
-    user_id: int = Field(...)
-    last_ip: str = Field(...)
-    last_device: str = Field(...)
-    nonce: str = Field(...)
+class RefreshTokenDTO(Schema):
+    id: Optional[int] = fields.Int(default=None)
+    user_id: int = fields.Int(...)
+    last_ip: str = fields.Strtr(...)
+    last_device: str = fields.Str(...)
+    nonce: str = fields.Str(...)
 
     class Config: 
         
