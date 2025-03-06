@@ -4,6 +4,7 @@ from database.postgres.dto import TeamDTO, CountryDTO, LeagueDTO, GameDTO, Sport
 from database.postgres.dal import TeamDAL, LeagueDAL, GameDAL, CountryDAL, SportDAL, PlayerDal
 from datetime import datetime
 
+
 TEAMS = 'teams'
 LEAGUES = 'leagues'
 GAMES = ["games", "fixtures", "fights", "races", "competitions"]
@@ -11,6 +12,17 @@ GAME = 'game'
 FIXTURE = 'fixture'
 SPORT_TO_SAVE_TEAM_AS_LEAGUE = ['mma', 'formula-1']
 PLAYERS = ['fighters', 'drivers', 'players']
+CUSTOM_GAMES = {
+    'cancelled': ['Cancelled', 'Suspended'],
+    'finished': ['Finished', 'Awarded', 'After Over Time', 'Completed', 'After Extra Time', 'After Penalties', 'Completed'],
+    'abandoned': ['Abandoned', 'Interrupted'],
+    'postponed': ['Postponed'],
+    'scheduled': ['Not Started', 'Time To Be Defined', 'Scheduled'],
+    'not_played': ['Technical Loss', 'WalkOver', ],
+
+}
+
+IN_PROGRESS = 'play'
 
 def save_api_data(json_data: Dict, sport_name: str) -> None:
     session = SessionLocal()
@@ -87,8 +99,21 @@ def save_api_data(json_data: Dict, sport_name: str) -> None:
                     date = None
 
 
-                if not isinstance(status, str) and isinstance(status, dict):
-                    status = status.get('long')
+                if isinstance(status, dict):
+                    status = status.get('long', '')
+
+                if not isinstance(status, str) or not status:
+                    status = IN_PROGRESS
+
+                status_lower = status.lower()
+                type = None
+                for game_type, phrases in CUSTOM_GAMES.items():
+                    if any(phrase.lower() in status_lower for phrase in phrases):
+                        type = game_type
+                        break
+
+                if not type:
+                    type = IN_PROGRESS
 
                 country_entry = game.get('location').get('country') if 'location' in game else game.get('country')
                 if country_entry:
@@ -127,6 +152,7 @@ def save_api_data(json_data: Dict, sport_name: str) -> None:
                                    score_away_team=score_away_data or None,
                                    score_home_team=score_home_data or None,
                                    status=status,
+                                   type=type or None,
                                    time=time,
                                    date=date,
                                    api_id=api_id)
