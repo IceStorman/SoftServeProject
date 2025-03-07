@@ -30,12 +30,13 @@ TEAM_TYPE = "team"
 
 class UserService:
 
-    def __init__(self, user_dal, preferences_dal, sport_dal, jwt_dal, refresh_dal):
+    def __init__(self, user_dal, preferences_dal, sport_dal, jwt_dal, refresh_dal, user_info):
         self._user_dal = user_dal
         self._jwt_dal = jwt_dal
         self._refresh_dal = refresh_dal
         self._preferences_dal = preferences_dal
         self._sport_dal = sport_dal
+        self._user_info = user_info
         self._serializer = URLSafeTimedSerializer(current_app.secret_key)
         self._logger = Logger("logger", "all.log").logger
 
@@ -139,10 +140,16 @@ class UserService:
 
 
     async def log_in(self, credentials: InputUserLogInDTO):
-        login_context = AuthManager(self)
-        user = await login_context.execute_log_in(credentials)
-        response = await self.create_access_token_response(user)
-        return response
+        user_info = UserInfo()
+        sus_login = user_info.is_suspicious_login()
+        if not sus_login:
+            login_context = AuthManager(self)
+            user = await login_context.execute_log_in(credentials)
+            response = await self.create_access_token_response(user)
+            return response
+        else:
+            pass
+
 
     async def __generate_auth_token(self, user, salt):
         return self._serializer.dumps(user.email, salt = salt)
