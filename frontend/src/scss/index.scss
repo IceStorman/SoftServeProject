@@ -13,6 +13,8 @@ $bg-dark: #dbd3b2;
 
 $main-text-clr: #000;
 
+$main-font: "CyrillicGoth";
+
 
 @import "header";
 @import "games";
@@ -28,6 +30,9 @@ $main-text-clr: #000;
 @import "videoPlayer";
 @import "searchContainer";
 @import "pagination";
+@import "languageToggleContainer";
+@import "preferencesPage";
+@import "account";
 
 
 @font-face {
@@ -45,6 +50,11 @@ $main-text-clr: #000;
   src: url('./fonts/GrenzeGotisch-Regular.ttf') format('woff2');
 }
 
+@font-face {
+  font-family: 'CyrillicGoth';
+  src: url('./fonts/CyrillicGoth.ttf') format('woff2');
+}
+
 #root {
   display: flex;
   flex-direction: column;
@@ -58,7 +68,7 @@ $main-text-clr: #000;
 
 body {
   width: 100%;
-  font-family: "GrenzeGotisch";
+  font-family: $main-font;
   background-color: $bg-main;
 }
 
@@ -87,7 +97,6 @@ body {
     height: fit-content;
     align-self: start;
     padding: 0 5px;
-    font-family: 'PirataOne';
   }
 
   .blue-placeholder {
@@ -126,8 +135,6 @@ button {
     background: black;
     border: none;
     border-radius: none;
-    position: absolute;
-    right: 2rem;
     padding: 0.5rem 0.5rem;
     transition: border-color 0.3s ease-in-out;
 
@@ -135,8 +142,21 @@ button {
       color: $bg-white;
       padding: 1rem;
       font-size: 1.2rem;
-      font-family: "PirataOne";
     }
+  }
+
+  &.login {
+    right: 3rem;
+  }
+
+  &.translate-first {
+    right: 6.5rem;
+    color: $bg-white;
+  }
+
+  &.translate-second {
+     right: 2rem;
+     color: $bg-white;
   }
 
   &.filled:hover {
@@ -151,7 +171,6 @@ button {
     align-self: center;
     justify-self: center;
     color: $bg-white;
-    font-family: "PirataOne";
     margin: 0;
   }
 
@@ -194,7 +213,6 @@ button {
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
-    font-family: "PirataOne";
   }
 
   &.boxed:after {

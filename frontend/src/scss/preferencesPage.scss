@@ -1,0 +1,43 @@
+.preferences{
+  max-width: 50vh;
+  position: relative;
+
+  .preferencesHeading{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .preferencesChoices{
+    max-width: 80%;
+    margin: 1.5rem auto 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 0.75rem;
+
+    .choice{
+      padding: 0.5rem 1rem;
+      border: solid 0.1rem;
+      border-radius: 5rem;
+    }
+  }
+
+  .controlBtnBox{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    margin: 2rem 0 0;
+
+    h3{
+      color: #4b5563;
+      cursor: pointer;
+    }
+
+    h3:hover{
+      transform: rotate(-5deg);
+    }
+  }
+}

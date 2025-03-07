@@ -25,7 +25,7 @@ class LeagueDAL:
             name=league_dto.name,
             logo=league_dto.logo,
             sport_id=league_dto.sport_id,
-            country=league_dto.country
+            country_id=league_dto.country
         )
         self.db_session.add(new_league)
         self.db_session.commit()

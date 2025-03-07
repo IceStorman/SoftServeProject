@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect, useContext} from "react";
 import {
     BrowserRouter as Router,
     Routes,
@@ -29,54 +29,83 @@ import apiEndpoints from "../apiEndpoints";
 import NavBar from "../components/basic/nav";
 import InsideNewsPage from "../pages/news/insideNewsPage";
 import AboutUsPage from "../pages/misc/aboutAs";
+import { TranslationsProvider } from '../translationsContext';
+import ResetPasswordPage from "../components/passwordReset/resetPasswordPage";
+import CheckEmailPage from "../components/passwordReset/checkEmailPage";
+import GoogleAuthCallback from "../pages/registration/googleCallBack";
+import PreferencesPage from "../pages/registration/PreferencesPage";
+import AccountPage from "../pages/registration/accountPage";
 
 function App() {
 
-
     return (
         <>
-            <Router
-                future={{
-                    v7_startTransition: true,
-                    v7_relativeSplatPath: true,
-                }}>
+            <TranslationsProvider>
+                <Router
+                    future={{
+                        v7_startTransition: true,
+                        v7_relativeSplatPath: true,
+                    }}>
 
-                <Header />
-                <NavBar />
+                <Toaster
+                    position="bottom-right"
+                    richColors
+                    expand={true}
+                    duration={5000}
+                    visibleToasts={3}
+                    closeButton
+                />
 
-                <Routes>
-                    <Route exact path="/" element={<MainPage />} />
+                    <Header />
+                    <NavBar />
 
-                    <Route path="/sign-in" element={<SignInPage />} />
 
-                    <Route path="/sign-up" element={<SignUpPage />} />
+                    <Routes>
+                        <Route path="/" element={<MainPage />} />
 
-                    <Route path="/sign-in/reset-password" element={<ForgotPasswordPage />} />
+                        <Route path="/sign-in" element={<SignInPage />} />
 
-                    <Route path="/sport" element={<SportPage />} />
+                        <Route path="/sign-up" element={<SignUpPage />} />
 
-                    <Route path="/sport/:sportName" element={<LeaguePage />} />
+                        <Route path="/user/preferences" element={<PreferencesPage />} />
 
-                    <Route path="/sport/:sportName/league/:leagueName" element={<TeamPage />} />
+                        <Route path="/user/account" element={<AccountPage />} />
 
-                    <Route path="/stream" element={<GamesPage />} />
+                        <Route path="/sign-in/google" element={<GoogleAuthCallback />} />
 
-                    <Route path="/stream/:gameId" element={<InsideStreamPage />} />
+                        <Route path="/sign-in/reset-password" element={<ForgotPasswordPage />} />
 
-                    <Route path="/news/:articleId" element={<InsideNewsPage />} />
+                        <Route path="/sign-in/reset-password/:token" element={<ResetPasswordPage />} />
 
-                    <Route path="/not-existing" element={<NotExistingPage />} />
+                        <Route path="/check-email" element={<CheckEmailPage />} />
 
-                    <Route path="*" element={<Navigate to="/not-existing" replace />} />
+                        <Route path="/sport" element={<SportPage />} />
 
-                    <Route exact path="/FAQ" element={<FAQpage />} />
+                        <Route path="/sport/:sportName" element={<LeaguePage />} />
 
-                    <Route exact path="/AboutUs" element={<AboutUsPage />} />
-                </Routes>
+                        <Route path="/sport/:sportName/league/:leagueName" element={<TeamPage />} />
 
-                {<Footer />}
+                        <Route path="/stream" element={<GamesPage />} />
 
-            </Router>
+                        <Route path="/stream/:gameId" element={<InsideStreamPage />} />
+
+                        <Route path="/news/:articleId" element={<InsideNewsPage />} />
+
+                        <Route path="/not-existing" element={<NotExistingPage />} />
+
+                        <Route path="*" element={<Navigate to="/not-existing" replace />} />
+
+                        <Route path="/FAQ" element={<FAQpage />} />
+
+                        <Route path="/AboutUs" element={<AboutUsPage />} />
+
+                        <Route path="*" element={<Navigate to="/not-existing" replace />} />
+                    </Routes>
+
+                    {<Footer />}
+
+                </Router>
+            </TranslationsProvider>
         </>
     );
 }
