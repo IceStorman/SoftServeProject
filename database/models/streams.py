@@ -6,3 +6,4 @@ class Stream(Base):
     stream_url = Column(String) 
     start_time = Column(DateTime)
     sport_id = Column(ForeignKey('Sports.sport_id'))
+    title = Column(String)
