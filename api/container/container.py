@@ -16,7 +16,8 @@ class Container(containers.DeclarativeContainer):
         modules=[
             "api.routes.api_login",
             "api.routes.api_news",
-            "api.routes.api_user_preferences"
+            "api.routes.api_user_preferences",
+            "api.routes.api_streams"
         ]
     )
 
