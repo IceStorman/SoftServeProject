@@ -7,7 +7,8 @@ from database.postgres.dal.news import NewsDAL
 from service.api_logic.managers.recommendation_menager import RecommendationManager
 from service.api_logic.user_logic import UserService
 from service.api_logic.news_logic import NewsService
-
+from database.postgres.dal import StreamDAL
+from service.api_logic.streams_logic import StreamService
 
 
 class Container(containers.DeclarativeContainer):
@@ -25,6 +26,12 @@ class Container(containers.DeclarativeContainer):
     preferences_dal = providers.Factory(PreferencesDAL, session=db_session)
     news_dal = providers.Factory(NewsDAL, session = db_session)
     sport_dal = providers.Factory(SportDAL, db_session=db_session)
+    stream_dal = providers.Factory(StreamDAL, session = db_session)
+
+    stream_service = providers.Factory(
+        StreamService,
+        streams_dal = stream_dal
+    )
 
     user_service = providers.Factory(
         UserService,
