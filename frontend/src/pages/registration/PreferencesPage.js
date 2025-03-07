@@ -33,7 +33,7 @@ function PreferencesPage() {
             );
             setUserPref(response.data);
         } catch (err) {
-            toast.error("Error with user preferences!");
+            toast.error("Error with user preferences");
         }
     };
 
@@ -65,10 +65,10 @@ function PreferencesPage() {
                 );
             }
 
-            toast.success('Your preferences have been updated!');
+            toast.success('Your preferences have been updated');
             navigate('/');
         } catch (err) {
-            toast.error("Error with changing user preferences!");
+            toast.error("Error with changing user preferences");
         }
     };
 
