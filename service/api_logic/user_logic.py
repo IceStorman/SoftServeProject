@@ -30,13 +30,13 @@ TEAM_TYPE = "team"
 
 class UserService:
 
-    def __init__(self, user_dal, preferences_dal, sport_dal, jwt_dal, refresh_dal, user_info):
+    def __init__(self, user_dal, preferences_dal, sport_dal, jwt_dal, refresh_dal, user_info_service):
         self._user_dal = user_dal
         self._jwt_dal = jwt_dal
         self._refresh_dal = refresh_dal
         self._preferences_dal = preferences_dal
         self._sport_dal = sport_dal
-        self._user_info = user_info
+        self._user_info_service = user_info_service
         self._serializer = URLSafeTimedSerializer(current_app.secret_key)
         self._logger = Logger("logger", "all.log").logger
 
@@ -139,16 +139,17 @@ class UserService:
             raise IncorrectSignatureError()
 
 
+
     async def log_in(self, credentials: InputUserLogInDTO):
-        user_info = UserInfo()
-        sus_login = user_info.is_suspicious_login()
-        if not sus_login:
-            login_context = AuthManager(self)
-            user = await login_context.execute_log_in(credentials)
-            response = await self.create_access_token_response(user)
-            return response
-        else:
-            pass
+        sus_login = self._user_info_service.is_suspicious_login()
+        if sus_login:
+            return {"error": "Suspicious login detected, access denied."}
+
+        login_context = AuthManager(self)
+        user = await login_context.execute_log_in(credentials)
+        response = await self.create_access_token_response(user)
+        
+        return response
 
 
     async def __generate_auth_token(self, user, salt):
@@ -157,10 +158,13 @@ class UserService:
 
     async def get_generate_auth_token(self, user):
         return await self.__generate_auth_token(user, salt = "user-auth-token")
-
+    
+    def __get_user_id_from_token(self):
+        jwt = get_jwt()
+        user_id = jwt.get('sub')
+        return user_id
 
     async def save_tokens_to_db(self, user, access_token: str, refresh_token: str):
-        user_info = UserInfo()
         
         decode_access_token = decode_token(access_token)
         decode_refresh_token = decode_token(refresh_token)
@@ -191,18 +195,21 @@ class UserService:
 
         refresh_dto = refreshDTO(
             user_id=user.id,
-            last_ip=user_info.get_country_from_ip(),
-            last_device= user_info.get_user_device(),
-            nonce=user_info.generate_nonce()
+            last_ip=self._user_info_service.get_country_from_ip(),
+            last_device=self._user_info_service.get_user_device(),
+            nonce=self._user_info_service.generate_nonce()
         )
         self._refresh_dal.save_refresh_token(refresh_dto)
 
 
     async def create_access_token_response(self, user, return_tokens: bool = False):
+        additional_claims = {
+            "email":user.email,
+            "username":user.username
+        }
 
-
-        access_token = create_access_token(identity=user.email)
-        refresh_token = create_refresh_token(identity=user.email)
+        access_token = create_access_token(identity=user.email, additional_claims=additional_claims)
+        refresh_token = create_refresh_token(identity=user.email, additional_claims=additional_claims)
 
         await self.save_tokens_to_db(user, access_token, refresh_token)
 
@@ -228,8 +235,6 @@ class UserService:
         return saved_nonce == token_nonce
     
     async def create_new_access_token(self, user_email: str, username: str, refresh: bool = False):
-        user_email = await self._user_dal.get_user_by_email(user_email)
-        username = await self._user_dal.get_user_by_name(username)
         additional_claims = {
             "email":user_email,
             "username":username

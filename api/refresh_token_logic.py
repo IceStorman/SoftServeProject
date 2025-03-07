@@ -6,7 +6,7 @@ import time
 import os
 from typing import Optional
 
-class UserInfo:
+class User_info_service:
     def __init__(self, accass_token_dal, refresh_token_dal):
         self._access_token_dal = accass_token_dal
         self._refresh_token_dal = refresh_token_dal

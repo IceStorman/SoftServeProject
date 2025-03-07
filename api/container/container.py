@@ -9,7 +9,7 @@ from database.postgres.dal.refresh import RefreshTokenDAL
 from service.api_logic.managers.recommendation_menager import RecommendationManager
 from service.api_logic.user_logic import UserService
 from service.api_logic.news_logic import NewsService
-from refresh_token_logic import UserInfo 
+from refresh_token_logic import User_info_service
 
 
 
@@ -30,18 +30,19 @@ class Container(containers.DeclarativeContainer):
     sport_dal = providers.Factory(SportDAL, db_session=db_session)
     access_tokens_dal = providers.Factory(AccessTokensDAL, db_session = db_session)
     refresh_dal = providers.Factory(RefreshTokenDAL, db_session = db_session)
-    user_info = providers.Factory(UserInfo, 
+    user_info_service = providers.Factory(User_info_service, 
                                   accass_token_dal=access_tokens_dal, 
                                   refresh_token_dal=RefreshTokenDAL
                                   )
 
     user_service = providers.Factory(
         UserService,
+        user_info_service=user_info_service,
         user_dal=user_dal,
         preferences_dal=preferences_dal,
         sport_dal=sport_dal,
         jwt_dal=access_tokens_dal,
-        refresh_dal=refresh_dal
+        refresh_dal=refresh_dal,
     )
 
     news_service = providers.Factory(
