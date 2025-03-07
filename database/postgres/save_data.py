@@ -18,7 +18,7 @@ CUSTOM_GAMES = {
     'abandoned': ['Abandoned', 'Interrupted'],
     'postponed': ['Postponed'],
     'scheduled': ['Not Started', 'Time To Be Defined', 'Scheduled'],
-    'not_played': ['Technical Loss', 'WalkOver', ],
+    'not_played': ['Technical Loss', 'WalkOver'],
 
 }
 
