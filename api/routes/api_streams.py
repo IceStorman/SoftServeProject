@@ -1,3 +1,4 @@
+from dependency_injector.wiring import inject
 from flask import Blueprint
 
 from logger.logger import Logger
@@ -7,7 +8,8 @@ logger = Logger("logger", "all.log")
 
 streams_app = Blueprint('streams_app', __name__)
 
-@streams_app.route('/available', methods=['GET'])
+@streams_app.route('/all', methods=['GET'])
+@inject
 @logger.log_function_call()
 def get_streams_endpoint():
     return get_available_streams()

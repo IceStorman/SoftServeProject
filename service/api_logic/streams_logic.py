@@ -2,17 +2,13 @@ import json
 from database.models.streams import Stream
 from database.models.streams_status import Streams_Status
 from sqlalchemy.sql.expression import ClauseElement
-
-from database.session import SessionLocal
 from exept.handle_exeptions import handle_exceptions
 from logger.logger import Logger
 from service.api_logic.scripts import get_sport_index_by_name
-from dto.pagination import Pagination
 from sqlalchemy.orm import aliased
 import datetime
 
 logger = Logger("logger", "all.log")
-session = SessionLocal()
 
 @logger.log_function_call()
 def fetch_streams(session, order_by: ClauseElement = None, limit: int = None, filters=None):
