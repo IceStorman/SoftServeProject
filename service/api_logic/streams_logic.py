@@ -2,6 +2,7 @@ import json
 from database.models.streams import Stream
 from database.models.streams_status import Streams_Status
 from sqlalchemy.sql.expression import ClauseElement
+from dto.api_output import StreamsOutput
 from exept.handle_exeptions import handle_exceptions
 from logger.logger import Logger
 from service.api_logic.scripts import get_sport_index_by_name
@@ -16,33 +17,20 @@ class StreamService:
         self._logger = Logger("logger", "all.log").logger
 
 
-    # def get_streams_today(self, pagination, session):
-    #
-    #     StreamsStatus = aliased(Streams_Status)
-    #
-    #
-    #     # query = (
-    #     #     session.query(
-    #     #         Stream.stream_id,
-    #     #         Stream.stream_url,
-    #     #         Stream.start_time,
-    #     #         Stream.sport_id,
-    #     #         StreamsStatus.status_id
-    #     #     )
-    #     #     .join(StreamsStatus, Stream.stream_id == StreamsStatus.stream_id)
-    #     # ) Roman filters applied later
-    #
-    #     today_start = datetime.combine(datetime.date.today(), datetime.min.time())
-    #     today_end = datetime.combine(datetime.date.today(), datetime.max.time())
-    #     query = query.filter(
-    #         Stream.start_time.between(today_start.timestamp(), today_end.timestamp())
-    #     )
-    #
-    #
-    #     if pagination:
-    #         query = query.offset(pagination.offset).limit(pagination.limit)
-    #
-    #     return query.all()
+    def get_streams_filtered(self, filters_dto): #not working for now without Roman's PR, Roman will fix in future
+        query = self._stream_dal.get_base_query(Stream)
+
+        # query = FilterManagerStrategy.apply_filters(Stream, query, filters_dto)
+        count = query.count()
+
+        streams = self._stream_dal.execute_query(query)
+        streams_output = StreamsOutput(many=True)
+        stream = streams_output.dump(streams)
+
+        return {
+            "count": count,
+            "stream": stream,
+        }
 
 
     def save_json_stream_to_streams_table(self, streams_data):
@@ -59,12 +47,7 @@ class StreamService:
 
     def all_streams(self):
         streams = self._stream_dal.get_all_streams()
-        streams_data = []
-        for stream in streams:
-            streams_data.append({
-                "stream_id":stream.stream_id,
-                "stream_url":stream.stream_url,
-                "start_time":stream.start_time,
-                "sport_id":stream.sport_id
-            })
-        return json.dumps(streams_data, ensure_ascii=False)
+        streams_output = StreamsOutput(many=True)
+        stream = streams_output.dump(streams)
+
+        return stream

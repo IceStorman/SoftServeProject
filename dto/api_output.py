@@ -1,3 +1,5 @@
+from dataclasses import Field
+
 from marshmallow import Schema, fields
 from flask_babel import _
 
@@ -22,6 +24,14 @@ class TeamsLeagueOutput(Schema):
     team_name = fields.Str(attribute="name")
     logo = fields.Str()
     id = fields.Str(attribute="api_id")
+
+
+class StreamsOutput(Schema):
+    id = fields.Str(attribute="stream_id")
+    sport = fields.Int(attribute="sport_id")
+    stream_url = fields.Str()
+    title = fields.Str()
+    start_time = fields.DateTime()
 
 
 class SportsOutput(Schema):
