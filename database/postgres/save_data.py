@@ -98,7 +98,6 @@ def save_api_data(json_data: Dict, sport_name: str) -> None:
                     print(f"error processing date data: {e}")
                     date = None
 
-
                 if isinstance(status, dict):
                     status = status.get('long', '')
 
@@ -106,14 +105,14 @@ def save_api_data(json_data: Dict, sport_name: str) -> None:
                     status = IN_PROGRESS
 
                 status_lower = status.lower()
-                type = None
+                game_type_result = None
                 for game_type, phrases in CUSTOM_GAMES.items():
-                    if any(phrase.lower() in status_lower for phrase in phrases):
-                        type = game_type
+                    if any(phrase in status_lower for phrase in map(str.lower, phrases)):
+                        game_type_result = game_type
                         break
 
-                if not type:
-                    type = IN_PROGRESS
+                if not game_type_result:
+                    game_type_result = IN_PROGRESS
 
                 country_entry = game.get('location').get('country') if 'location' in game else game.get('country')
                 if country_entry:
@@ -152,7 +151,7 @@ def save_api_data(json_data: Dict, sport_name: str) -> None:
                                    score_away_team=score_away_data or None,
                                    score_home_team=score_home_data or None,
                                    status=status,
-                                   type=type or None,
+                                   game_status=game_type_result or None,
                                    time=time,
                                    date=date,
                                    api_id=api_id)
