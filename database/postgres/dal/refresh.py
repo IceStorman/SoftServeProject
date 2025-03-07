@@ -6,6 +6,7 @@ from datetime import datetime
 from database.models.refresh_token_tracking import RefreshTokenTracking
 from database.models.token_blocklist import TokenBlocklist
 from database.postgres.dto.refresh import refreshDTO
+REFRESH = "refresh"
 
 class RefreshTokenDAL:
     def __init__(self, db_session: Session):
@@ -92,7 +93,7 @@ class RefreshTokenDAL:
             refresh_entry = self.get_refresh_token_by_id(refresh_id)
             if refresh_entry:
                 token_entry = self.db_session.query(TokenBlocklist).filter(TokenBlocklist.id == refresh_id).first()
-                if token_entry and token_entry.token_type == "refresh":
+                if token_entry and token_entry.token_type == REFRESH:
                     token_entry.revoked = True
                     token_entry.updated_at = datetime.utcnow()
                     self.db_session.commit()
