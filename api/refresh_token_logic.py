@@ -7,8 +7,9 @@ import os
 from typing import Optional
 
 class UserInfo:
-    def __init__(self, accass_token_dal):
-        self._access_token_dal= accass_token_dal
+    def __init__(self, accass_token_dal, refresh_token_dal):
+        self._access_token_dal = accass_token_dal
+        self._refresh_token_dal = refresh_token_dal
     def get_user_device(self) -> str:
         user_agent = request.headers.get("User-Agent", "")
         parsed_agent = parse(user_agent)
