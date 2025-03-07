@@ -45,7 +45,7 @@ class StreamService:
         self._stream_dal.save_stream_statuses(streams_status_list)
 
 
-    def all_streams(self):
+    def all_streams(self): # Honestly, don't really see a sense of this method, as we have filters, but as long as we didn't merge Roman's PR we need it
         streams = self._stream_dal.get_all_streams()
         streams_output = StreamsOutput(many=True)
         stream = streams_output.dump(streams)
