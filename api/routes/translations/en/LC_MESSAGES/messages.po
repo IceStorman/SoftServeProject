@@ -137,4 +137,37 @@ msgstr "Select sport"
 msgid "teams"
 msgstr "teams"
 
+msgid "Account"
+msgstr "Account"
+
+msgid "Change preferences"
+msgstr "Change preferences"
+
+msgid "Logout"
+msgstr "Logout"
+
+msgid "Delete account"
+msgstr "Delete account"
+
+msgid "Are you sure?"
+msgstr "Are you sure?"
+
+msgid "Once deleted, the account cannot be restored"
+msgstr "Once deleted, the account cannot be restored"
+
+msgid "Cancel"
+msgstr "Cancel"
+
+msgid "Confirm"
+msgstr "Confirm"
+
+msgid "Skip >"
+msgstr "Skip >"
+
+msgid "What are you interested in?"
+msgstr "What are you interested in?"
+
+msgid "Choose your favourite sports:"
+msgstr "Choose your favourite sports:"
+
 

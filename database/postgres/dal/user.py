@@ -44,7 +44,7 @@ class UserDAL:
                 UserPreference.sports_id
             )
             .select_from(User)
-            .join(UserClubPreferences, UserClubPreferences.users_id == User.user_id)
+            .outerjoin(UserClubPreferences, UserClubPreferences.users_id == User.user_id)
             .outerjoin(UserPreference, UserPreference.users_id == User.user_id)
             .filter(User.user_id == user_id)
         )
