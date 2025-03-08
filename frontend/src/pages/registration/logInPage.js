@@ -5,6 +5,8 @@ import apiEndpoints from "../../apiEndpoints";
 import { AuthContext } from "./AuthContext";
 import globalVariables from "../../globalVariables";
 import AuthBtn from "../../components/containers/authBtn";
+import useTranslations from "../../translationsContext";
+import {toast} from "sonner";
 
 
 function SignInPage() {
@@ -12,28 +14,40 @@ function SignInPage() {
     const navigate = useNavigate();
     const [emailOrUserName, setEmailOrUserName] = useState('');
     const [password, setPassword] = useState('');
+    const { t } = useTranslations();
 
-    const { login } = authContext;
+    const { login, isValidEmail, isValidUserName, isValidPassword } = authContext;
 
-    function isValidPassword(password) {
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?!.*\s).{8,}$/;
-        return passwordRegex.test(password);
+    function isValidEmailOrUserName(emailOrUserName) {
+        if (!emailOrUserName.trim())
+            return false;
+
+        if (emailOrUserName.includes('@')) {
+            return isValidEmail(emailOrUserName);
+        }
+
+        return isValidUserName(emailOrUserName);
     }
 
     async function handleSubmit(e) {
         e.preventDefault();
 
+        if (!isValidEmailOrUserName(emailOrUserName)) {
+            toast.error(globalVariables.authMessages.UsernameOrEmailError);
+            return;
+        }
+
         if (!isValidPassword(password)) {
-            console.log("Incorrect password form!");
+            toast.error(globalVariables.authMessages.passwordMessage);
             return;
         }
 
         try {
             const response = await axios.post(
-                `${apiEndpoints.url}${apiEndpoints.login.login}`,
+                `${apiEndpoints.url}${apiEndpoints.user.login}`,
                 {
                     email_or_username: emailOrUserName,
-                    password_hash: password,
+                    password: password,
                     auth_provider: globalVariables.authStrategies.simpleStrategy
                 },
                 {
@@ -41,37 +55,51 @@ function SignInPage() {
                 }
             );
 
-            console.log("Successful auth:", response.data);
             login({ email: response?.data?.user?.email, username: response?.data?.user?.username });
+            toast.success(globalVariables.authMessages.successLogIn);
             navigate('/');
         } catch (error) {
-            console.error("Auth Error:", error);
+            const errorStatus = error?.response?.status
+            const errorMessage = error?.response?.data?.error;
+            toast.error(
+                `Authentication Error 
+                ${errorStatus ? errorStatus : ''} 
+                ${errorMessage ? errorMessage : ''}`);
         }
-    }
-
-    if (!authContext) {
-        return <p>404</p>;
     }
 
     return (
         <section className="registration">
             <form method="post" onSubmit={handleSubmit}>
-                <h2>Log In</h2>
+                <h2>{t("log_in")}</h2>
                 <p>
-                    Email: <input value={emailOrUserName} onChange={e => setEmailOrUserName(e.target.value)} />
+                    Email/Username:
+                    <input
+                        value={emailOrUserName}
+                        onChange={e => setEmailOrUserName(e.target.value)}
+                        onFocus={ () => toast.info(globalVariables.authMessages.EmailMessage)}
+                    />
                 </p>
                 <p>
-                    Password: <input type="password" value={password} onChange={e => setPassword(e.target.value)} />
+                    {t("password")}
+                    <input
+                        type="password"
+                        value={password} onChange={e => setPassword(e.target.value)}
+                        onFocus={ () => toast.info(globalVariables.authMessages.passwordMessage)}
+                    />
                 </p>
-                <button className='filled text' type="submit">Log in</button>
+                <button className='filled text' type="submit">{t("log_in")}</button>
             </form>
+
             <div className="reset-passwrd">
-                <Link to={"/sign-in/reset-password"}>Forget password?</Link>
+                <Link to={"/sign-in/reset-password"}>{t("forget_password")}</Link>
             </div>
+
             <div className="redirect">
-                <p>Do not have an account? <Link to={"/sign-up"}>Create</Link></p>
+                <p className="space"> {t("no_account")} <Link to={"/sign-up"}>{t("create")}</Link></p>
                 <AuthBtn />
             </div>
+
         </section>
     );
 }

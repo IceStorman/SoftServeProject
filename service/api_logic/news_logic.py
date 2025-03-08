@@ -5,12 +5,16 @@ from flask import Response
 from sqlalchemy import desc
 from database.models import News
 from database.azure_blob_storage.save_get_blob import blob_get_news
+from service.api_logic.scripts import get_sport_by_name
 from logger.logger import Logger
+from service.api_logic.filter_manager.filter_manager_strategy import FilterManagerStrategy
+from dto.pagination import Pagination
+from dto.api_input import NewsDTO
 from service.api_logic.helpers.calculating_helper import CalculatingRecommendationHelper
 
 
 class LimitsConsts(Enum):
-    BASE_LIMIT_OF_NEWS_FOR_RECS = 5
+    BASE_LIMIT_OF_NEWS_FOR_RECS = 4
     PERIOD_OF_TIME = 21
 
 
@@ -41,7 +45,7 @@ class NewsService:
 
 
     def get_news_by_id(self, blob_id: str):
-        news = self._news_dal.get_news_by_blob_id(blob_id)
+        news = self._news_dal.get_news_by_id(blob_id)
         if news:
             self._logger.warning(f"News were found: {news}")
             return self.json_news([news])
@@ -60,6 +64,13 @@ class NewsService:
             content_type='application/json; charset=utf-8',
         )
 
+    def get_filtered_news(self, filters: NewsDTO):
+        query = self._news_dal.get_base_query(News)
+
+        filtered_query = FilterManagerStrategy.apply_filters(News, query, filters)
+
+        news = self._news_dal.execute_query(filtered_query)
+        return self.json_news(news)
 
     def user_recommendations_based_on_preferences_and_last_watch(
             self,
@@ -95,7 +106,9 @@ class NewsService:
         user_saw_this_news_df, user_not_saw_this_news_df = self._news_dal.assign_adjusted_scores_for_masks(
             news_with_adjusted_score_df,
             user_interact_with_this_news_mask,
-            user_not_interact_with_this_news_mask
+            self._news_dal.clean_duplicates_news(
+                user_not_interact_with_this_news_mask
+            )
         )
 
         recs_by_user_preferences = self.__get_recommendations_by_user_preferences(user_not_saw_this_news_df, top_n)

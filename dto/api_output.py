@@ -22,7 +22,7 @@ class TeamsLeagueOutput(Schema):
     team_name = fields.Str(attribute="name")
     logo = fields.Str()
     id = fields.Str(attribute="api_id")
-
+    count = fields.Int()
 
 class SportsOutput(Schema):
     id = fields.Int(attribute="sport_id")
@@ -45,6 +45,17 @@ class OutputUser(Schema):
     username = fields.Str(required=True)
     email = fields.Str(required=True)
 
+class OutputSportPreferences(Schema):
+    user_id = fields.Int(required=True)
+    sports_id = fields.Str(required=True)
+    sport_name = fields.Str(required=True)
+    sport_img = fields.Str(required=True)
+
+class OutputTeamPreferences(Schema):
+    user_id = fields.Int(required=True)
+    team_index_id = fields.Str(required=True)
+    name = fields.Str(required=True)
+    logo = fields.Str(required=True)
 
 class OutputLogin():
     def __init__(self, email: str, id: int, token: str):
@@ -76,6 +87,7 @@ def get_script_phrases():
         "contact_info":       _("Contact info"),
         "address":            _("Address"),
         "phone":              _("Phone"),
+        "email":              _("Email"),
         "our_social_media":   _("Follow Us on Social Media"),
         "our_newsletter":     _("Subscribe to our newsletter"),
 

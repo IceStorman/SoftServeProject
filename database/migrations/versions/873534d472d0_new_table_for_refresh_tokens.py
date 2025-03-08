@@ -1,8 +1,8 @@
-"""changed length of jti
+"""new table for refresh tokens
 
-Revision ID: dbfb5be56697
-Revises: bc453536968d
-Create Date: 2025-02-10 21:40:40.182509
+Revision ID: 873534d472d0
+Revises: 9ee0c3368f94
+Create Date: 2025-02-23 14:05:38.184009
 
 """
 from typing import Sequence, Union
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = 'dbfb5be56697'
-down_revision: Union[str, None] = 'bc453536968d'
+revision: str = '873534d472d0'
+down_revision: Union[str, None] = '9ee0c3368f94'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -32,6 +32,16 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_Token_blocklist_jti'), 'Token_blocklist', ['jti'], unique=False)
+    op.create_table('refresh_tokens',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('last_ip', sa.String(), nullable=False),
+    sa.Column('last_device', sa.String(), nullable=False),
+    sa.Column('nonce', sa.String(), nullable=False),
+    sa.ForeignKeyConstraint(['id'], ['Token_blocklist.id'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['Users.user_id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
     op.drop_index('ix_Token_Blocklist_jti', table_name='Token_Blocklist')
     op.drop_table('Token_Blocklist')
     # ### end Alembic commands ###
@@ -47,10 +57,12 @@ def downgrade() -> None:
     sa.Column('revoked', sa.BOOLEAN(), autoincrement=False, nullable=False),
     sa.Column('expires_at', postgresql.TIMESTAMP(), autoincrement=False, nullable=False),
     sa.Column('updated_at', postgresql.TIMESTAMP(), autoincrement=False, nullable=True),
+    sa.Column('created_at', postgresql.TIMESTAMP(), autoincrement=False, nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['Users.user_id'], name='Token_Blocklist_user_id_fkey'),
     sa.PrimaryKeyConstraint('id', name='Token_Blocklist_pkey')
     )
     op.create_index('ix_Token_Blocklist_jti', 'Token_Blocklist', ['jti'], unique=False)
+    op.drop_table('refresh_tokens')
     op.drop_index(op.f('ix_Token_blocklist_jti'), table_name='Token_blocklist')
     op.drop_table('Token_blocklist')
     # ### end Alembic commands ###

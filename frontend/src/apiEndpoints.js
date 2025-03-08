@@ -7,6 +7,7 @@ const apiEndpoints = {
         getArticle: 'news/article',
         getCurrentNews: '',
         likeArticle: 'like',
+        getRecommendations: 'news/recommendation',
     },
 
     sports:{
@@ -34,11 +35,16 @@ const apiEndpoints = {
         getInfo: 'streams/info'
     },
 
-    login:{
-        signUp: 'login/sign-up',
-        login: 'login/login',
-        resetPasswordRequest: 'login/reset-password-request',
-        resetPassword: 'login/reset-password'
+    localization:{
+        userBaseLanguage: 'localization',
+        setLanguage: 'set_language',
+    },
+
+    user:{
+        signUp: 'user/sign-up',
+        login: 'user/login',
+        resetPasswordRequest: 'user/reset-password-request',
+        resetPassword: 'user/reset-password'
     }
 };
 

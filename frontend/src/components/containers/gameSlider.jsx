@@ -3,7 +3,7 @@ import GameCard from "../cards/gameCard";
 import { useRef, useEffect } from "react";
 
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
-const GamesSlider = ({ testGames1 }) => {
+const GamesSlider = ({ games }) => {
     const sliderRef = useRef(null);
     const [canScrollLeft, setCanScrollLeft] = useState(false);
     const [canScrollRight, setCanScrollRight] = useState(true);
@@ -42,7 +42,7 @@ const GamesSlider = ({ testGames1 }) => {
                 <button  onClick={() => scroll("right")} disabled={!canScrollRight}><SlArrowRight /></button>
             </div>
             <div className="games-slider-outer" ref={sliderRef}>
-                {Object.entries(testGames1).map(([category, games]) => (
+                {Object.entries(games).map(([category, games]) => (
                     <div key={category} className="game-category">
                         <h2 className="category-title">{category}</h2>
                         <div className="games-row">

@@ -13,7 +13,3 @@ class refresh_token_tracking(Base):
     nonce = Column(String, nullable=False)
 
     refresh_token = relationship("Token_blocklist", backref="refresh_token", foreign_keys=[id])
-
-
-
-

@@ -1,7 +1,7 @@
 from database.session import SessionLocal
 from typing import Dict
-from database.postgres.dto import TeamDTO, CountryDTO, LeagueDTO, GameDTO, SportDTO
-from database.postgres.dal import TeamDAL, LeagueDAL, GameDAL, CountryDAL, SportDAL
+from database.postgres.dto import TeamDTO, CountryDTO, LeagueDTO, GameDTO, SportDTO, PlayerDTO
+from database.postgres.dal import TeamDAL, LeagueDAL, GameDAL, CountryDAL, SportDAL, PlayerDal
 from datetime import datetime
 
 TEAMS = 'teams'
@@ -10,6 +10,7 @@ GAMES = ["games", "fixtures", "fights", "races", "competitions"]
 GAME = 'game'
 FIXTURE = 'fixture'
 SPORT_TO_SAVE_TEAM_AS_LEAGUE = ['mma', 'formula-1']
+PLAYERS = ['fighters', 'drivers', 'players']
 
 def save_api_data(json_data: Dict, sport_name: str) -> None:
     session = SessionLocal()
@@ -29,8 +30,13 @@ def save_api_data(json_data: Dict, sport_name: str) -> None:
         country_dal = CountryDAL(session)
 
         if entity == TEAMS:
-            league_api_id = json_data.get('parameters').get('league')
+            league_api_id=None
             league_id=None
+
+            parameters = json_data.get('parameters', [])
+            if (isinstance(parameters, list) and len(parameters) > 0) or isinstance(parameters, dict):
+                league_api_id = json_data.get('parameters').get('league')
+
             if league_api_id:
                 league_dal = LeagueDAL(session)
                 league_entry = league_dal.get_league_by_api_id_and_sport_id(league_api_id, sport_id)
@@ -127,6 +133,15 @@ def save_api_data(json_data: Dict, sport_name: str) -> None:
                 game_dto_list.append(game_dto)
             game_dal.save_games(game_dto_list)
 
+        elif entity in PLAYERS:
+            team_api_id = None
+
+            parameters = json_data.get('parameters', [])
+            if (isinstance(parameters, list) and len(parameters) > 0) or isinstance(parameters, dict):
+                team_api_id = json_data.get('parameters').get('team')
+
+            process_entity_players(json_data_response, sport_id, session, team_api_id)
+
 
     except Exception as e:
         session.rollback()
@@ -153,7 +168,7 @@ def process_entity_teams(json_data, sport_id: int, session: SessionLocal, league
     for team in json_data:
         team_dto = TeamDTO(sport_id=sport_id,
                            name=team.get('name'),
-                           logo=team.get('logo'),
+                           logo=team.get('logo') or team.get('photo'),
                            api_id=team.get('id'),
                            league=league_id)
         team_dto_list.append(team_dto)
@@ -173,3 +188,31 @@ def process_entity_leagues(json_data, sport_id: int, country_dal: CountryDAL, se
                                country=country_id)
         league_dto_list.append(league_dto)
     league_dal.save_leagues(league_dto_list)
+
+def process_entity_players(json_data, sport_id: int, session: SessionLocal, team_id):
+    player_dal = PlayerDal(session)
+    team_dal = TeamDAL(session)
+    players_dto_list =[]
+
+    team = None
+    if team_id:
+        team = team_dal.get_team_by_api_id_and_sport_id(team_id, sport_id)
+
+    for player in json_data:
+        player_team = None
+
+        if not team_id:
+            teams = player.get("teams", [])
+            team_api_id = teams[0].get("team", {}).get("id") if teams else player.get("team").get("id")
+            player_team = team_dal.get_team_by_api_id_and_sport_id(team_api_id, sport_id)
+
+        player_bad_sport_info = player.get('player', {})
+
+        player_dto = PlayerDTO(name=player.get('name') or (player_bad_sport_info.get('name') if player_bad_sport_info else None),
+                               logo=player.get('image') or player.get('photo') or (player_bad_sport_info.get('photo') if player_bad_sport_info else None),
+                               sport_id=sport_id,
+                               api_id=player.get('id') or  (player_bad_sport_info.get('id') if player_bad_sport_info else None),
+                               team_index_id = team.team_index_id if team else (player_team.team_index_id if player_team else None))
+        players_dto_list.append(player_dto)
+
+    player_dal.save_players(players_dto_list)

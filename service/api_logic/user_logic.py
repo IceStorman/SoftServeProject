@@ -1,6 +1,10 @@
 from flask import current_app, url_for, jsonify, make_response
 from flask_mail import Message
-from itsdangerous import URLSafeTimedSerializer
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
+from dto.api_input import UpdateUserPreferencesDTO
+from dto.api_output import OutputSportPreferences, OutputTeamPreferences
+from exept.exeptions import IncorrectPreferencesError, IncorrectTypeOfPreferencesError, SignatureExpiredError, \
+    IncorrectSignatureError
 from dto.api_input import InputUserLogInDTO
 from dto.api_output import OutputUser, OutputLogin
 from database.models import User
@@ -12,14 +16,19 @@ from jinja2 import Environment, FileSystemLoader
 import os
 from flask_jwt_extended import create_access_token,create_refresh_token, set_access_cookies, set_refresh_cookies
 from service.api_logic.auth_strategy import AuthManager
+from service.api_logic.models.api_models import SportPreferenceFields, TeamPreferenceFields
 
+SPORT_TYPE = "sport"
+TEAM_TYPE = "team"
 
 
 class UserService:
 
-    def __init__(self, user_dal, jwt_dal):
+
+    def __init__(self, user_dal, preferences_dal, sport_dal):
         self._user_dal = user_dal
-        self._jwt_dal = jwt_dal
+        self._preferences_dal = preferences_dal
+        self._sport_dal = sport_dal
         self._serializer = URLSafeTimedSerializer(current_app.secret_key)
         self._logger = Logger("logger", "all.log").logger
 
@@ -91,10 +100,11 @@ class UserService:
         return self._serializer.dumps(user.username, salt = "email-confirm")
 
 
-    def reset_user_password(self, email, new_password: str):
-        user = self.get_user_by_email_or_username(email = email)
+    def reset_user_password(self, token, new_password: str):
+        username = self.confirm_token(token)
+        user = self.get_user_by_email_or_username(username = username)
         if not user:
-            raise UserDoesNotExistError(email)
+            raise UserDoesNotExistError(username)
 
         salt = bcrypt.gensalt()
         hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), salt)
@@ -111,10 +121,14 @@ class UserService:
 
 
     def confirm_token(self, token: str, expiration=3600):
-        username = self._serializer.loads(token, salt = "email-confirm", max_age = expiration)
-        user = self.get_user_by_email_or_username(username = username)
+        try:
+            user = self._serializer.loads(token, salt = "email-confirm", max_age = expiration)
+            return user
 
-        return OutputUser().dump(user)
+        except SignatureExpired:
+            raise SignatureExpiredError()
+        except BadSignature:
+            raise IncorrectSignatureError()
 
 
     async def log_in(self, credentials: InputUserLogInDTO):
@@ -131,67 +145,58 @@ class UserService:
         return await self.__generate_auth_token(user, salt = "user-auth-token")
 
 
-    async def save_tokens_to_db(self, user, access_token: str, refresh_token: str):
-        
-        decode_access_token = decode_token(access_token)
-        decode_refresh_token = decode_token(refresh_token)
-        
-        access_expires_at = datetime.utcfromtimestamp(decode_access_token['exp'])
-        refresh_expires_at = datetime.utcfromtimestamp(decode_refresh_token['exp'])
+    async def create_access_token_response(self, user):
+        access_token = create_access_token(identity = user.email)
+        response = CommonResponseWithUser(user_id = user.id, user_email = user.email).to_dict()
+        response_json = jsonify(response)
+        set_access_cookies(response_json, access_token)
+
+        return response_json
 
 
-        access_jwt_dto = jwtDTO(
-            user_id=user.id,
-            jti=decode_access_token['jti'],   
-            token_type="access",
-            revoked=False,
-            expires_at=access_expires_at
-        )
-        self._jwt_dal.save_jwt(access_jwt_dto)
+    def add_preferences(self, dto: UpdateUserPreferencesDTO):
+        new_dto_by_type_of_preference = self.dto_for_type_of_preference(dto)
+
+        existing_sports = self._preferences_dal.get_all_sport_preference_indexes()
+        if dto.type == SPORT_TYPE:
+            valid_preferences = set([sport_id for sport_id in dto.preferences if sport_id in existing_sports])
+
+        if dto.type == TEAM_TYPE:
+            valid_preferences = set([team_id for team_id in dto.preferences])
+
+        if not valid_preferences:
+            raise IncorrectPreferencesError()
+
+        self.add_valid_user_preferences(new_dto_by_type_of_preference, dto, valid_preferences)
+
+        return CommonResponse().to_dict()
 
 
-        refresh_jwt_dto = jwtDTO(
-            user_id=user.id,
-            jti=decode_refresh_token['jti'],
-            token_type="refresh",
-            revoked=False,
-            expires_at=refresh_expires_at  
-        )
-        self._jwt_dal.save_jwt(refresh_jwt_dto)
+    def get_user_preferences(self, dto: UpdateUserPreferencesDTO):
+        new_dto_by_type_of_preference = self.dto_for_type_of_preference(dto)
+
+        prefs = self._preferences_dal.get_user_preferences(new_dto_by_type_of_preference, dto)
+        if dto.type == SPORT_TYPE:
+            return OutputSportPreferences(many=True).dump(prefs)
+
+        if dto.type == TEAM_TYPE:
+            return  OutputTeamPreferences(many=True).dump(prefs)
 
 
-        refresh_dto = refreshDTO(
-            user_id=user.id,
-            last_ip=get_user_ip_country(user),
-            last_device=get_user_device(user),
-            refresh_token=refresh_token
-        )
-        self._refresh_dal.save_refresh_token(refresh_dto)
+    def delete_preferences(self, dto: UpdateUserPreferencesDTO):
+        new_dto_by_type_of_preference = self.dto_for_type_of_preference(dto)
+
+        self._preferences_dal.delete_user_preferences(new_dto_by_type_of_preference, dto)
 
 
-    async def create_access_token_response(self, user, return_tokens: bool = False):
-
-
-        access_token = create_access_token(identity=user.email)
-        refresh_token = create_refresh_token(identity=user.email)
-
-        await self.save_tokens_to_db(user, access_token, refresh_token)
-
-    
-        response_data = {
-            "user_id": user.id,
-            "user_email": user.email
-        }
-        if return_tokens:
-            response_data["access_token"] = access_token
-            response_data["refresh_token"] = refresh_token
-
-        response = make_response(jsonify(response_data))
-        set_access_cookies(response, access_token)
-        set_refresh_cookies(response, refresh_token)
-
-        return response
-
+    @staticmethod
+    def dto_for_type_of_preference(dto):
+        if dto.type == SPORT_TYPE:
+            return SportPreferenceFields()
+        elif dto.type == TEAM_TYPE:
+            return TeamPreferenceFields()
+        else:
+            raise IncorrectTypeOfPreferencesError()
 
 
     def get_user_sport_and_club_preferences(self, user_id: int) -> list[int] and list[int] | list[None] and list[None]:
@@ -204,3 +209,32 @@ class UserService:
         user_preferred_sports = list({row.sports_id for row in user_preferences if row.sports_id is not None})
 
         return user_preferred_teams, user_preferred_sports
+
+    def add_valid_user_preferences(self, type_dto, dto, valid_preferences):
+        tables_and_cols_dto = self._preferences_dal.getattr_tables_and_columns_by_type(type_dto)
+
+        existing_prefs = [
+            pref[0] for pref in self._preferences_dal.get_existing_preferences(dto.user_id, tables_and_cols_dto)
+        ]
+
+        new_prefs = [
+            tables_and_cols_dto.main_table(**{
+                type_dto.user_id_field: dto.user_id,
+                type_dto.type_id_field: pref
+            })
+            for pref in valid_preferences if pref not in existing_prefs
+        ]
+
+        if new_prefs:
+            self._preferences_dal.insert_new_preferences(new_prefs)
+
+        self.__delete_old_user_preferences(dto, existing_prefs, valid_preferences, tables_and_cols_dto)
+
+
+    def __delete_old_user_preferences(self, dto, existing_prefs, valid_preferences, tables_and_cols_dto):
+        to_delete = [
+            pref for pref in existing_prefs if pref not in valid_preferences
+        ]
+
+        if to_delete:
+            self._preferences_dal.delete_redundant_user_preferences(dto.user_id, to_delete, tables_and_cols_dto)

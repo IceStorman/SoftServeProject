@@ -1,3 +1,5 @@
+import subprocess
+
 from flask import Flask
 from flask_cors import CORS
 from api.container.container import Container
@@ -23,6 +25,7 @@ from flask_jwt_extended import JWTManager
 from datetime import timedelta
 import os
 from dotenv import load_dotenv
+from pathlib import Path
 
 
 load_dotenv()
@@ -56,22 +59,25 @@ def create_app():
     
     app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
     app.config['JWT_TOKEN_LOCATION'] = ['cookies']
-    app.config['JWT_COOKIE_SECURE'] = True
+    app.config['JWT_COOKIE_SECURE'] = False
     app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1)
     app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30)
     jwt.init_app(app)
 
     app.config['GOOGLE_CLIENT_ID'] = os.getenv('GOOGLE_CLIENT_ID')
     app.config['GOOGLE_CLIENT_SECRET'] = os.getenv('GOOGLE_CLIENT_SECRET')
-    app.config['REDIRECT_URI'] = 'http://localhost:3000/sign-in/google'
-    app.config['AUTHORIZATION_BASE_URL'] = 'https://accounts.google.com/o/oauth2/auth'
-    app.config['TOKEN_URL'] = 'https://oauth2.googleapis.com/token'
-    app.config['USER_INFO_URL'] = 'https://www.googleapis.com/oauth2/v2/userinfo'
-    app.config['SCOPES'] = 'https://www.googleapis.com/auth/userinfo.email'
 
+    app.config['REDIRECT_URI'] = os.getenv('GOOGLE_REDIRECT_URI')
+    app.config['AUTHORIZATION_BASE_URL'] = os.getenv('GOOGLE_AUTHORIZATION_BASE_URL')
+    app.config['TOKEN_URL'] = os.getenv('GOOGLE_TOKEN_URL')
+    app.config['USER_INFO_URL'] = os.getenv('GOOGLE_USER_INFO_URL')
+    app.config['SCOPES'] = os.getenv('GOOGLE_SCOPES')
+
+    BASE_DIR = Path(__file__).resolve().parent
+    TRANSLATIONS_DIR = BASE_DIR / 'translations'
     app.config['BABEL_DEFAULT_LOCALE'] = 'en'
     app.config['BABEL_SUPPORTED_LOCALES'] = ['en', 'uk']
-    app.config['BABEL_TRANSLATION_DIRECTORIES'] = '/Users/mac/Desktop/Unik/SoftProg/SportHuinia/api/translations'
+    app.config['BABEL_TRANSLATION_DIRECTORIES'] = str(TRANSLATIONS_DIR)
     babel.init_app(app, locale_selector=get_locale)
 
     SWAGGER_URL = '/swagger'
@@ -91,9 +97,9 @@ def create_app():
     app.register_blueprint(api_sports.sports_app, url_prefix='/sports')
     app.register_blueprint(api_teams.teams_app, url_prefix='/teams')
     app.register_blueprint(api_countries.countries_app, url_prefix='/countries')
-    app.register_blueprint(api_login.login_app, url_prefix='/login')
     app.register_blueprint(api_localization.localization_app, url_prefix='/')
-
+    app.register_blueprint(api_login.login_app, url_prefix='/user')
+    app.register_blueprint(api_user_preferences.preferences_app, url_prefix='/preferences')
 
 
     app.container = Container()
@@ -101,7 +107,15 @@ def create_app():
     return app
 
 
+def compile_translations():
+    BASE_DIR = Path(__file__).resolve().parent
+    TRANSLATIONS_DIR = BASE_DIR / 'translations'
+    subprocess.run(["pybabel", "compile", "-d", str(TRANSLATIONS_DIR)], check=True)
+
+
+
 app = create_app()
 if __name__ == '__main__':
+    compile_translations()
     app.run(host='0.0.0.0', port=5001, debug=True, use_reloader=False)
 

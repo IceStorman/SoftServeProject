@@ -5,6 +5,9 @@ import apiEndpoints from "../../apiEndpoints";
 import {toast} from "sonner";
 import {AuthContext} from "./AuthContext";
 import AuthBtn from "../../components/containers/authBtn";
+import globalVariables from "../../globalVariables";
+import useTranslations from "../../translationsContext";
+
 
 function SignUpPage() {
     const authContext = useContext(AuthContext);
@@ -13,93 +16,101 @@ function SignUpPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [repeatPassword, setRepPassword] = useState('');
+    const { t } = useTranslations();
 
-    if (!authContext) {
-        return <p>404</p>;
-    }
-    const { login } = authContext;
-
-    function isValidEmail(email) {
-        const emailRegex = /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
-        return emailRegex.test(email);
-    }
-
-    function isValidUserName(userName) {
-        const userNameRegex = /^[^ @!#$%^&*()<>?/\\|}{~:;,+=]+$/;
-        return userNameRegex.test(userName);
-    }
-
-    function isValidPassword(password) {
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?!.*\s).{8,}$/;
-        return passwordRegex.test(password);
-    }
+    const { login, isValidEmail, isValidUserName, isValidPassword } = authContext;
 
     async function handleSubmit(e) {
         e.preventDefault();
 
         if (!isValidUserName(userName)){
-            console.log("Incorrect username form!");
+            toast.error(globalVariables.authMessages.UsernameError);
             return;
         }
 
         if (!isValidEmail(email)){
-            console.log("Incorrect email form!");
+            toast.error("Incorrect email form");
             return;
         }
 
         if (password !== repeatPassword) {
-            console.log("Passwords do not match!");
+            toast.error("Passwords do not match");
             return;
         }
 
         if (!isValidPassword(password)){
-            console.log("Incorrect password form!");
+            toast.error(globalVariables.authMessages.passwordMessage);
             return;
         }
 
 
         try {
             const response = await axios.post(
-                `${apiEndpoints.url}${apiEndpoints.login.signUp}`,
+                `${apiEndpoints.url}${apiEndpoints.user.signUp}`,
                 {
                     email: email,
                     username: userName,
-                    password_hash: password
+                    password: password
                 },
                 {
                     headers: { 'Content-Type': 'application/json' },
                 }
             );
 
-            console.log("Successful Registration:", response.data);
-
             login({ email: response?.data?.user?.email, username: response?.data?.user?.username });
+            toast.success(globalVariables.authMessages.successLogIn);
             navigate('/')
         } catch (error) {
-            console.error("Registration Error:", error);
+            const errorStatus = error?.response?.status
+            const errorMessage = error?.response?.data?.error;
+            toast.error(
+                `Registration Error 
+                ${errorStatus ? errorStatus : ''} 
+                ${errorMessage ? errorMessage : ''}`);
         }
     }
 
     return (
         <section className="registration">
             <form method="post" onSubmit={handleSubmit}>
-                <h2>Sign Up</h2>
+                <h2>{t("sign_in")}</h2>
                 <p>
-                Nickname: <input value={userName} onChange={e => setUserName(e.target.value)} />
+                    {t("nickname")}
+                    <input
+                        value={userName}
+                        onChange={e => setUserName(e.target.value)}
+                    />
                 </p>
                 <p>
-                Email: <input value={email} onChange={e => setEmail(e.target.value)} />
+                    {t("email")}:
+                    <input
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
+                        onFocus={ () => toast.info(globalVariables.authMessages.EmailMessage) }
+                    />
                 </p>
                 <p>
-                Password: <input type="password" value={password} onChange={e => setPassword(e.target.value)} />
+                    {t("password")}
+                    <input
+                        type="password"
+                        value={password}
+                        onChange={e => setPassword(e.target.value)}
+                        onFocus={ () => toast.info(globalVariables.authMessages.passwordMessage) }
+                    />
                 </p>
                 <p>
-                Repeat password: <input type="password" value={repeatPassword} onChange={e => setRepPassword(e.target.value)} />
+                    {t("repeat_password")}
+                    <input
+                        type="password"
+                        value={repeatPassword}
+                        onChange={e => setRepPassword(e.target.value)}
+                    />
                 </p>
-                <button className="filled text" type="submit">Sign up</button>
+                <button className="filled text" type="submit">{t("sign_in")}</button>
             </form>
+
             <div className="redirect">
-                <p>Already have an account? <Link to={"/sign-in"}>Log in</Link></p>
+                <p className={"space"}> {t("have_account")} <Link to={"/sign-in"}>{t("log_in")}</Link></p>
                 <AuthBtn />
             </div>
         </section>

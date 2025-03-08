@@ -1,54 +1,70 @@
-import React, {useEffect, useState} from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, {useContext, useState} from "react";
+import { useNavigate } from "react-router-dom";
 import { RiArrowLeftWideLine } from "react-icons/ri";
-import axios from "axios";
+import useTranslations from "../../translationsContext";
 import apiEndpoints from "../../apiEndpoints";
+import {toast} from "sonner";
+import {AuthContext} from "./AuthContext";
+import globalVariables from "../../globalVariables";
+
 
 function ForgotPasswordPage() {
+    const authContext = useContext(AuthContext);
     const [email, setEmail] = useState('');
+    const [error, setError] = useState(null);
     const navigate = useNavigate();
+    const { t } = useTranslations();
+    const {isValidEmail} = authContext;
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError(null);
 
-    function isValidEmail(email) {
-        const emailRegex = /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
-        return emailRegex.test(email);
-    }
-
-    async function handleSubmit(e) {
-        e.preventDefault(); // Щоб форма не оновлювала сторінку
-
-        if (!isValidEmail(email)) {
-            console.log("Incorrect email format!");
+        if (!isValidEmail(email)){
+            toast.error("Incorrect email form");
             return;
         }
 
         try {
-            const response = await axios.post(
-                `${apiEndpoints.url}${apiEndpoints.login.resetPasswordRequest}`,
-                { email },
-                { headers: { 'Content-Type': 'application/json' } }
-            );
+            const response = await fetch(`${apiEndpoints.url}${apiEndpoints.user.resetPasswordRequest}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email })
+            });
 
-            console.log("Letter was sent:", response.data);
-        } catch (error) {
-            console.error("Reset Password Error:", error);
+            if (!response.ok) {
+                toast.error("Failed to send reset request")
+                return
+            }
+
+            toast.success("Success")
+            navigate("/check-email");
+        } catch (err) {
+            toast.error("Error when sending email")
         }
-    }
+    };
 
     return (
         <section className="registration">
             <form onSubmit={handleSubmit}>
                 <div className="title">
-                    <Link className="backButton filled arrow" to="/sign-in">
-                        <RiArrowLeftWideLine />
-                    </Link>
-                    <h2>Password reset</h2>
+                    <button className='filled arrow' type="button" onClick={() => navigate(-1)}>
+                        <RiArrowLeftWideLine/>
+                    </button>
+                    <h2>{t("password_reset")}</h2>
                 </div>
-
                 <p>
-                    Email: <input value={email} onChange={e => setEmail(e.target.value)} />
+                    {t("email")}:
+                    <input
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
+                        onBlur={() => !email.trim() && setError(t("required_field"))}
+                        className={error ? "input-error" : ""}
+                        placeholder={t("enter_email")}
+                    />
                 </p>
-                <button className="filled text" type="submit">Continue?</button>
+                {error && <p className="error">{error}</p>}
+                <button className='filled text' type="submit">{t("continue")}</button>
             </form>
         </section>
     );

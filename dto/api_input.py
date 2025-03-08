@@ -1,8 +1,7 @@
 import re
 from collections import namedtuple
 from datetime import datetime
-from marshmallow import Schema, fields, pre_load, post_load, ValidationError, EXCLUDE, validates
-
+from marshmallow import Schema, fields, pre_load, post_load, ValidationError, EXCLUDE
 
 class BaseDTO(Schema):
     class Meta:
@@ -40,64 +39,96 @@ class BaseDTO(Schema):
         return data
 
     @pre_load
-    def validate_email(self, data, **kwargs):
+    def validate_username(self, data, **kwargs):
         if 'username' in data:
             regex = re.compile(r'[ @!#$%^&*()<>?/\|}{~:;,+=]')
-            if regex.search(data['username']):
+            if regex.search(data['username']) or not data['username']:
                 raise ValidationError("Invalid username format", field_name="username")
         return data
 
     @pre_load
     def validate_password(self, data, **kwargs):
-        if 'password_hash' in data:
+        if 'password' in data:
             regex = re.compile(r'(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?!.*\s){8,}')
-            if not re.match(regex, data['password_hash']):
+            if not re.match(regex, data['password']):
                 raise ValidationError("Invalid password format", field_name="password_hash")
         return data
 
+    @pre_load
+    def process_models(self, data, **kwargs):
+        if "models" in data and isinstance(data["models"], list):
+            processed_models = []
+            for item in data["models"]:
+                dto_class = self.detect_dto(item)
+                if dto_class:
+                    processed_models.append(dto_class().load(item))
+            data["models"] = processed_models
+        return data
+
+    def detect_dto(self, item):
+        type_map = {
+            "news": NewsDTO,
+            "league": TeamsLeagueDTO,
+            "game": GamesDTO
+        }
+        return type_map.get(item.get("type"))
 
 class TeamsLeagueDTO(BaseDTO):
-    teams__sport_id = fields.Int(required=False, missing=None)
-    leagues__api_id = fields.Int(required=False, missing=None)
-    countries__api_id = fields.Int(required=False, missing=None)
-    letter = fields.Str(required=False, missing="")
-    page = fields.Int(required=False, missing=0)
-    per_page = fields.Int(required=False, missing=0)
+    sport_id = fields.Int(required=False, missing=None)
+    league_id = fields.Int(required=False, missing=None)
+    country_id = fields.Int(required=False, missing=None)
+    name = fields.Str(required=False, missing=None)
+
+
 
 class TeamsStatisticsOrPlayersDTO(BaseDTO):
     sport_id = fields.Int(required=False, missing=None)
     team_id = fields.Int(required=False, missing=None)
     league_id = fields.Int(required=False, missing=None)
+    name = fields.Str(required=False, missing=None)
 
 
-class SearchDTO(BaseDTO):
-    leagues__sport_id = fields.Int(required=False, missing=None)
-    countries__country_id = fields.Int(required=False, missing=None)
-    letter = fields.Str(required=False, missing="")
+class FilterDTO(BaseDTO):
+    date_to = fields.Date(required=False, allow_none=True)
+    date_from = fields.Date(required=False, allow_none=True)
+    time_to = fields.Time(required=False, allow_none=True)
+    time_from = fields.Time(required=False, allow_none=True)
+    order = fields.Str(required=False, missing=None)
+    field = fields.Str(required=False, missing=None)
+
+
+class PaginationDTO(BaseDTO):
     page = fields.Int(required=False, missing=0)
     per_page = fields.Int(required=False, missing=0)
 
 
+class SearchDTO(BaseDTO):
+    filters = fields.Nested(FilterDTO, many=False)
+    pagination = fields.Nested(PaginationDTO, many=False)
+    models = fields.List(fields.Raw(), required=False)
+
+
 class SportsLeagueDTO(BaseDTO):
-    leagues__sport_id = fields.Int(required=False, missing=None)
+    sport = fields.Str(required=False, missing=None)
     page = fields.Int(required=False, missing=0)
     per_page = fields.Int(required=False, missing=0)
 
 
 class GamesDTO(BaseDTO):
-    games__sport_id = fields.Int(required=False, missing=None)
-    games__league_id = fields.Int(required=False, missing=None)
-    games__country_id = fields.Int(required=False, missing=None)
+    sport_id = fields.Int(required=False, missing=None)
+    league_id = fields.Int(required=False, missing=None)
+    country_id = fields.Int(required=False, missing=None)
     status = fields.Str(required=False, missing=None)
-    games__date = fields.Date(required=False, missing=datetime.now().strftime('%Y-%m-%d'))
-    page = fields.Int(required=False, missing=0)
-    per_page = fields.Int(required=False, missing=0)
+    date = fields.Date(required=False, missing=datetime.now().strftime('%Y-%m-%d'))
+    time = fields.Time(required=False, allow_none=True)
 
 
 class NewsDTO(BaseDTO):
-    news__news_id = fields.Int(required=False, missing=None)
-    news__sport_id = fields.Int(required=False, missing=None)
-    news__interest_rate = fields.Int(required=False, missing=None)
+    news_id = fields.Int(required=False, missing=None)
+    sport_id = fields.Int(required=False, missing=None)
+    interest_rate = fields.Int(required=False, missing=None)
+    title_contains = fields.Str(required=False, allow_none=True)
+    team = fields.Str(required=False, allow_none=True)
 
 
 class StreamsDTO(BaseDTO):
@@ -110,7 +141,7 @@ class StreamsDTO(BaseDTO):
 class InputUserDTO(BaseDTO):
     username = fields.Str(required=True)
     email = fields.Str(required=True)
-    password_hash = fields.Str(required=True)
+    password = fields.Str(required=True)
 
 
 class InputUserByEmailDTO(BaseDTO):
@@ -118,31 +149,37 @@ class InputUserByEmailDTO(BaseDTO):
 
 
 class NewPasswordDTO(BaseDTO):
-    new_password = fields.Str(required=True)
-    email = fields.Str(required=True)
+    password = fields.Str(required=True)
 
 
 class UpdateUserPreferencesDTO(BaseDTO):
     preferences = fields.List(fields.Int, required=True)
-    user_id = fields.Int(required=False, missing=None)
+    user_id = fields.Int(required=True)
+    type = fields.Str(required=True)
 
 
 class GetUserPreferencesDTO(BaseDTO):
     user_id = fields.Int(required=False, missing=None)
+    type = fields.Str(required=False, missing=None)
 
 
 class InputUserByIdDTO(BaseDTO):
     user_id = fields.Int(required=False, missing=None)
 
 
-class InputUserByGoogleDTO(BaseDTO):
-    email = fields.Str(required=True)
-    id = fields.Str(required=False, missing=None)
-    auth_provider = fields.String(required=False, missing=None)
-
-
 class InputUserLogInDTO(BaseDTO):
     email = fields.Str(required=False, missing=None)
     email_or_username = fields.Str(required=False, missing=None)
-    password_hash = fields.Str(required=False, missing=None)
+    password = fields.Str(required=False, missing=None)
     auth_provider = fields.String(required=False, missing=None)
+
+
+class TablesAndColumnsForUserPreferencesDTO:
+    def __init__(self, main_table, related_table, user_id_field, type_id_field, related_name, related_logo, related_id):
+        self.main_table = main_table
+        self.related_table = related_table
+        self.user_id_field = user_id_field
+        self.type_id_field = type_id_field
+        self.related_name = related_name
+        self.related_logo = related_logo
+        self.related_id = related_id

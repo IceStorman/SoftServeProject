@@ -1,33 +1,77 @@
-import React from "react";
-import img1 from '../imgs/1.jpg'
+import React, {useEffect, useState} from "react";
+import {useLocation, useNavigate, useParams} from 'react-router-dom';
 import { FaRegHeart } from "react-icons/fa";
+import useTranslations from "../../translationsContext";
+import apiEndpoints from "../../apiEndpoints";
+import axios from "axios";
+import {toast} from "sonner";
 
 
 export default function InsideNewsPage() {
-    const title = 'Metallum Nostrum'
-    const sport = 'Football'
-    const date = '2025-01-23'
-    const likes = 10
-    const content = 'Howling winds keep screaming around And the rain comes pouring down Doors are locked and bolted now As the thing crawls into town Straight out of hell One of a kind Stalking his victim Don t look behind you Night crawler Beware the beast in black Night crawler You know he s coming back Night crawler'
+    const { t } = useTranslations();
+    const navigate = useNavigate();
+    const {articleId} = useParams();
+    const location = useLocation();
+    const newsData = location.state?.newsData;
+    const [article, setArticle] = useState()
+    const [likes, setLikes] = useState()
+    const [sections, setSections] = useState()
+
+    useEffect(() => {
+        if (!newsData) {
+            axios
+                .post(
+                    `${apiEndpoints.url}${apiEndpoints.news.getArticle}`,
+                    { blob_id: articleId },
+                    { headers: { 'Content-Type': 'application/json' } }
+                )
+                .then((response) => {
+                    setArticle(response?.data[0]?.data);
+                })
+                .catch((error) => {
+                    toast.error(`:( Trouble loading news: ${error}`);
+                    navigate("/not-existing");
+                });
+        } else {
+            setArticle(newsData?.article);
+            setLikes(newsData?.likes);
+        }
+    }, []);
+
+    useEffect(() => {
+        if(article) setSections(Object.values(article?.article))
+    }, [article]);
+
 
     return (
         <section className="news-block">
 
-            <h1>{title}</h1>
+            <h1>{article?.title}</h1>
 
             <div className="tags">
-                <p>Tags:</p>
-                <span className="tag">{sport}</span>
+                <p>{t("tags")}</p>
+                <span className="tag">{article?.S_P_O_R_T}</span>
             </div>
 
-            <img src={img1} alt={title} />
+            {article?.images[0] ? <img src={article?.images[0]}/> : null}
 
             <section className="content">
-                {content}
+
+                {
+                    sections ?
+                        sections.map((item, index) => (
+                            <React.Fragment key={index}>
+                                {item?.subheadings.length > 0 ? <h3>{item?.subheadings[index]}</h3> : null}
+                                {index > 0 && article?.images[index] ? <img src={article?.images[index]}/> : null}
+                                <p>{item?.content}</p>
+                                <br/>
+                            </React.Fragment>
+                        )) : null
+                }
             </section>
 
             <div className="details">
-                <div className="date">{date}</div>
+            <div className="date">{article?.timestamp}</div>
                 <button className="like-vrapper">
                     <div className="like-content">
                     <FaRegHeart /> {likes}
