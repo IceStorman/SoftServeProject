@@ -1,4 +1,7 @@
-from database.models import Stream, Streams_Status
+from rich.spinner import Spinner
+from sqlalchemy import func
+
+from database.models import Stream, Streams_Status, StreamUrl
 from database.postgres.dto import StreamDTO, StreamStatusDTO
 from typing import List
 
@@ -40,4 +43,17 @@ class StreamDAL:
             self.create_stream_status(status)
 
     def get_all_streams(self):
-        return self.db_session.query(Stream).all()
+        result = (self.db_session.query(
+            Stream.stream_id,
+            Stream.title,
+            Stream.start_time,
+            Stream.sport_id,
+            func.array_agg(StreamUrl.stream_url).label('stream_url')
+        ).join(
+            StreamUrl,
+            Stream.stream_id == StreamUrl.stream_id
+        ).group_by(
+            Stream.stream_id
+        ).all())
+
+        return result

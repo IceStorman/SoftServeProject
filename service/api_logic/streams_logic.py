@@ -2,7 +2,7 @@ import json
 from database.models.streams import Stream
 from database.models.streams_status import Streams_Status
 from sqlalchemy.sql.expression import ClauseElement
-from dto.api_output import StreamsOutput
+from dto.api_output import StreamsOutput, StreamUrl
 from exept.handle_exeptions import handle_exceptions
 from logger.logger import Logger
 from service.api_logic.scripts import get_sport_index_by_name
@@ -49,14 +49,7 @@ class StreamService:
     def all_streams(self): # Honestly, don't really see a sense of this method, as we have filters, but as long as we didn't merge Roman's PR we need it
         streams = self._stream_dal.get_all_streams()
 
-        for item in streams:
-            if not isinstance(item.stream_url, list):
-                item.stream_url = [item.stream_url]
-
-            item.stream_url = json.loads(item.stream_url)
-
         streams_output = StreamsOutput(many=True)
         stream = streams_output.dump(streams)
-
 
         return stream

@@ -26,12 +26,16 @@ class TeamsLeagueOutput(Schema):
     id = fields.Str(attribute="api_id")
 
 
+class StreamUrl(Schema):
+    stream_url = fields.Str()
+
+
 class StreamsOutput(Schema):
     id = fields.Str(attribute="stream_id")
     sport = fields.Int(attribute="sport_id")
-    stream_url = fields.Str()
     title = fields.Str()
     start_time = fields.DateTime()
+    stream_url = fields.List(fields.Str())
 
 
 class SportsOutput(Schema):

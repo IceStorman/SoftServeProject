@@ -15,7 +15,7 @@ class StreamDTO(BaseModel):
 class StreamStatusDTO(BaseModel):
     streams_status_id: Optional[int] = Field(None)
     status_id: Optional[int] = Field(None)
-    stream_id: Optional[str] = Field(None)
+    stream_url: Optional[str] = Field(None)
 
     class Config:
         from_attributes = True
