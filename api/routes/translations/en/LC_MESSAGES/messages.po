@@ -140,3 +140,15 @@ msgstr "teams"
 msgid "Search"
 msgstr "Search..."
 
+msgid "All"
+msgstr "All"
+
+msgid "Recommended news by your Preferences"
+msgstr "Recommended news by your Preferences"
+
+msgid "No latest news were found"
+msgstr "No latest news were found"
+
+msgid "Recommended by your Last Watch"
+msgstr "Recommended by your Last Watch"
+

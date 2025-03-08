@@ -79,14 +79,14 @@ function MainPage() {
                 `${apiEndpoints.url}${apiEndpoints.games.getGames}`,
                 {
                     page: page + 1,
-                    per_page: gamesPerSlide
+                    per_page: gamesPerSlide,
+                    models: [{'type': 'game'}]
                 },
                 {
                     headers: { 'Content-Type': 'application/json' },
                 }
             );
-            console.log(response);
-            setCurrentGames(response.data.games);
+            setCurrentGames(response.data);
             const totalGames = response.data.count;
             setSlidesCount(Math.ceil(totalGames / gamesPerSlide));
         } catch (error) {
@@ -97,7 +97,7 @@ function MainPage() {
 
     useEffect(() => {
         try {
-            if (!user?.email) return;
+            if (!user) return;
 
             axios.post(`${apiEndpoints.url}${apiEndpoints.news.getRecommendations}`,
                 {
@@ -128,89 +128,6 @@ function MainPage() {
         medium: { rows: 3, columns: 5, cardSize: { width: 250, height: 300 }, postsPerPage: 18 },
         small: { rows: 5, columns: 2, cardSize: { width: 650, height: 100 }, postsPerPage: 10 }
     };
-
-    const testGames1 =
-    [
-        {
-            nameHome: "team1",
-            nameAway: "team2",
-            logoHome: img1,
-            logoAway: img2,
-            scoreHome: 1,
-            scoreAway: 3,
-        },
-        {
-            nameHome: "team1",
-            nameAway: "team2",
-            logoHome: img1,
-            logoAway: img2,
-            scoreHome: 1,
-            scoreAway: 3,
-        },
-        {
-            nameHome: "team1",
-            nameAway: "team2",
-            logoHome: img1,
-            logoAway: img2,
-            time: "01/12/25"
-        },
-        {
-            nameHome: "team1",
-            nameAway: "team2",
-            logoHome: img1,
-            logoAway: img2,
-            scoreHome: 1,
-            scoreAway: 3,
-        },
-        {
-            nameHome: "team1",
-            nameAway: "team2",
-            logoHome: img1,
-            logoAway: img2,
-            scoreHome: 1,
-            scoreAway: 3,
-        },
-        {
-            nameHome: "team1",
-            nameAway: "team2",
-            logoHome: img1,
-            logoAway: img2,
-            scoreHome: 1,
-            scoreAway: 3,
-        },
-        {
-            nameHome: "team1",
-            nameAway: "team2",
-            logoHome: img1,
-            logoAway: img2,
-            scoreHome: 1,
-            scoreAway: 3,
-        },
-        {
-            nameHome: "team1",
-            nameAway: "team2",
-            logoHome: img1,
-            logoAway: img2,
-            time: "01/12/25"
-        },
-        {
-            nameHome: "team1",
-            nameAway: "team2",
-            logoHome: img1,
-            logoAway: img2,
-            scoreHome: 1,
-            scoreAway: 3,
-        },
-        {
-            nameHome: "team1",
-            nameAway: "team2",
-            logoHome: img1,
-            logoAway: img2,
-            scoreHome: 1,
-            scoreAway: 3,
-        }
-    ]
-
 
     const [gridSize, setGridSize] = useState(cardSizes.large);
 
@@ -309,8 +226,8 @@ function MainPage() {
                                         nameAway={item.away_team_name}
                                         logoHome={item.home_team_logo}
                                         logoAway={item.away_team_logo}
-                                        scoreHome={item.score_home_team}
-                                        scoreAway={item.score_away_team}
+                                        scoreHome={item.home_score}
+                                        scoreAway={item.away_score}
                                         time={item.time}
                                         height={game_element_height }
                                         width={game_element_width}
@@ -336,7 +253,7 @@ function MainPage() {
                     <>
                         {recommendationNews.recommendations_list_by_user_preferences && recommendationNews.recommendations_list_by_user_preferences.length > 0 && (
                             <GridRecommendationBlock
-                                title="Recommended news by your Preferences"
+                                title={t("recommend_pref")}
                                 gridSize={preferenceNewsGridSize}
                                 onGridSizeChange={(size) => handleGridSizeChange(setPreferenceNewsGridSize, size)}
                             >
@@ -364,15 +281,15 @@ function MainPage() {
                     <button type="button"
                         className={selectedSport === "all" ? "active" : ""}
                         onClick={() => setSelectedSport("all")}>
-                        All
+                        {t('all')}
                     </button>
                     {!(sports.length === 0) ?
                         sports.map((item, index) => (
                             <button
                                 key={index}
                                 type="button"
-                                className={selectedSport === item.sport ? "active" : ""}
-                                onClick={() => setSelectedSport(item.sport)}
+                                className={selectedSport === item.id ? "active" : ""}
+                                onClick={() => setSelectedSport(item.id)}
                             >
                                 {item.sport}
                             </button>
@@ -381,19 +298,23 @@ function MainPage() {
                             (
                                 <NoItems
                                     key={1}
-                                    text={"No latest news were found"}
+                                    text={t("news_not_found")}
                                 />
                             ) : null
                     }
                 </div>
                 <div className="games-slider-outer">
-                    <GameSlider games={testGames1}></GameSlider>
+                    <GameSlider
+                        games={selectedSport === "all"
+                            ? currentGames
+                            : currentGames.filter(game => game.sport_id === Number(selectedSport))}
+                    />
                 </div>
             </section>
 
             <div ref={newsRef}>
                 <GridContainer
-                    title="News"
+                    title={t("news")}
                     cardSizes={cardSizes}
                     gridSize={newsGridSize}
                     postsPerPage={postsPerPage}
@@ -422,7 +343,7 @@ function MainPage() {
                     <>
                         {recommendationNews.recommendations_list_by_user_last_watch && recommendationNews.recommendations_list_by_user_last_watch.length > 0 && (
                             <GridRecommendationBlock
-                                title="Recommended by your Last Watch"
+                                title={t("recommend_watch")}
                                 gridSize={lastWatchNewsGridSize}
                                 onGridSizeChange={(size) => handleGridSizeChange(setLastWatchNewsGridSize, size)}
                             >
