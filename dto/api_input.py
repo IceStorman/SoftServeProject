@@ -103,10 +103,10 @@ class NewsDTO(BaseDTO):
 
 
 class StreamsDTO(BaseDTO):
-    streams__stream_id = fields.Int(required=False, missing = None)
-    streams__stream_url = fields.Str(required=False, missing=None)
-    streams__start_time = fields.Int(required=False, missing=None)#don't know if it is correct
-    streams__sport_id = fields.Int(required=False, missing=None)
+    stream_id = fields.Int(required=False, missing = None)
+    start_time = fields.Date(required=False, missing=datetime.now().strftime('%Y-%m-%d'))
+    sport_id = fields.Int(required=False, missing=None)
+    title = fields.Str(required=False, missing=None)
 
 
 class InputUserDTO(BaseDTO):

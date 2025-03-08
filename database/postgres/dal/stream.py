@@ -1,8 +1,6 @@
-from rich.spinner import Spinner
 from sqlalchemy import func
-
 from database.models import Stream, Streams_Status, StreamUrl
-from database.postgres.dto import StreamDTO, StreamStatusDTO
+from database.postgres.dto import StreamDTO, StreamStatusDTO, StreamUrlDTO
 from typing import List
 
 
@@ -10,9 +8,10 @@ class StreamDAL:
     def __init__(self, session = None):
         self.db_session = session
 
+
     def create_stream(self, stream_dto: StreamDTO) -> Stream:
         new_stream = Stream(
-            stream_url = stream_dto.stream_url,
+            title = stream_dto.title,
             start_time = stream_dto.start_time,
             sport_id = stream_dto.sport_id
         )
@@ -21,6 +20,7 @@ class StreamDAL:
         self.db_session.commit()
 
         return new_stream
+
 
     def create_stream_status(self, status_dto: StreamStatusDTO) -> Streams_Status:
         new_stream_status = Streams_Status(
@@ -34,13 +34,32 @@ class StreamDAL:
         return new_stream_status
 
 
+    def create_stream_url(self, url_dto: StreamUrlDTO) -> StreamUrl:
+        new_url = StreamUrl(
+            stream_id=url_dto.stream_id,
+            stream_url=url_dto.stream_url,
+        )
+
+        self.db_session.add(new_url)
+        self.db_session.commit()
+
+        return new_url
+
+
     def save_streams(self, streams_dto_list: List[StreamDTO]):
         for stream in streams_dto_list:
             self.create_stream(stream)
 
+
     def save_stream_statuses(self, status_dto_list: List[StreamStatusDTO]):
         for status in status_dto_list:
             self.create_stream_status(status)
+
+
+    def save_stream_urls(self, url_dto_list: List[StreamUrlDTO]):
+        for url in url_dto_list:
+            self.create_stream_url(url)
+
 
     def get_all_streams(self):
         result = (self.db_session.query(

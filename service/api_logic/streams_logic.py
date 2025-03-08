@@ -1,13 +1,6 @@
 import json
-from database.models.streams import Stream
-from database.models.streams_status import Streams_Status
-from sqlalchemy.sql.expression import ClauseElement
-from dto.api_output import StreamsOutput, StreamUrl
-from exept.handle_exeptions import handle_exceptions
+from dto.api_output import StreamsOutput
 from logger.logger import Logger
-from service.api_logic.scripts import get_sport_index_by_name
-from sqlalchemy.orm import aliased
-import datetime
 
 
 class StreamService:
