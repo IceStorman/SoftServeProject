@@ -122,5 +122,6 @@ def get_script_phrases():
         "sort":               _("Sort by:"),
         "more":               _("more..."),
         "continue":           _("Continue?"),
+        "search":             _("Search"),
     }
 

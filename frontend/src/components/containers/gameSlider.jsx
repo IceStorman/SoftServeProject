@@ -42,27 +42,24 @@ const GamesSlider = ({ games }) => {
                 <button  onClick={() => scroll("right")} disabled={!canScrollRight}><SlArrowRight /></button>
             </div>
             <div className="games-slider-outer" ref={sliderRef}>
-                {Object.entries(games).map(([category, games]) => (
-                    <div key={category} className="game-category">
-                        <h2 className="category-title">{category}</h2>
-                        <div className="games-row">
-                            {games.map((item, index) => (
-                                <GameCard
-                                    key={index}
-                                    nameHome={item.nameHome}
-                                    nameAway={item.nameAway}
-                                    logoHome={item.logoHome}
-                                    logoAway={item.logoAway}
-                                    scoreHome={item.scoreHome}
-                                    scoreAway={item.scoreAway}
-                                    time={item.time}
-                                    height={160}
-                                    width={300}
-                                />
-                            ))}
-                        </div>
+                <div className="game-category">
+                    <div className="games-row">
+                        {games.map((item, index) => (
+                            <GameCard
+                                key={index}
+                                nameHome={item.nameHome}
+                                nameAway={item.nameAway}
+                                logoHome={item.logoHome}
+                                logoAway={item.logoAway}
+                                scoreHome={item.scoreHome}
+                                scoreAway={item.scoreAway}
+                                time={item.time}
+                                height={160}
+                                width={300}
+                            />
+                        ))}
                     </div>
-                ))}
+                </div>
             </div>
         </div>
     );

@@ -137,4 +137,6 @@ msgstr "Select sport"
 msgid "teams"
 msgstr "teams"
 
+msgid "Search"
+msgstr "Search..."
 

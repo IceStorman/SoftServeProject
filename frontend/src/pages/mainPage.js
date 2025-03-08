@@ -76,7 +76,7 @@ function MainPage() {
         try {
             setLoading(true);
             const response = await axios.post(
-                `${apiEndpoints.url}${apiEndpoints.games.getGame}`,
+                `${apiEndpoints.url}${apiEndpoints.games.getGames}`,
                 {
                     page: page + 1,
                     per_page: gamesPerSlide
@@ -85,6 +85,7 @@ function MainPage() {
                     headers: { 'Content-Type': 'application/json' },
                 }
             );
+            console.log(response);
             setCurrentGames(response.data.games);
             const totalGames = response.data.count;
             setSlidesCount(Math.ceil(totalGames / gamesPerSlide));
@@ -129,8 +130,8 @@ function MainPage() {
     };
 
     const testGames1 =
-    {
-        category1: [{
+    [
+        {
             nameHome: "team1",
             nameAway: "team2",
             logoHome: img1,
@@ -168,48 +169,48 @@ function MainPage() {
             logoAway: img2,
             scoreHome: 1,
             scoreAway: 3,
-        },],
+        },
+        {
+            nameHome: "team1",
+            nameAway: "team2",
+            logoHome: img1,
+            logoAway: img2,
+            scoreHome: 1,
+            scoreAway: 3,
+        },
+        {
+            nameHome: "team1",
+            nameAway: "team2",
+            logoHome: img1,
+            logoAway: img2,
+            scoreHome: 1,
+            scoreAway: 3,
+        },
+        {
+            nameHome: "team1",
+            nameAway: "team2",
+            logoHome: img1,
+            logoAway: img2,
+            time: "01/12/25"
+        },
+        {
+            nameHome: "team1",
+            nameAway: "team2",
+            logoHome: img1,
+            logoAway: img2,
+            scoreHome: 1,
+            scoreAway: 3,
+        },
+        {
+            nameHome: "team1",
+            nameAway: "team2",
+            logoHome: img1,
+            logoAway: img2,
+            scoreHome: 1,
+            scoreAway: 3,
+        }
+    ]
 
-        category2: [{
-            nameHome: "team1",
-            nameAway: "team2",
-            logoHome: img1,
-            logoAway: img2,
-            scoreHome: 1,
-            scoreAway: 3,
-        },
-        {
-            nameHome: "team1",
-            nameAway: "team2",
-            logoHome: img1,
-            logoAway: img2,
-            scoreHome: 1,
-            scoreAway: 3,
-        },
-        {
-            nameHome: "team1",
-            nameAway: "team2",
-            logoHome: img1,
-            logoAway: img2,
-            time: "01/12/25"
-        },
-        {
-            nameHome: "team1",
-            nameAway: "team2",
-            logoHome: img1,
-            logoAway: img2,
-            scoreHome: 1,
-            scoreAway: 3,
-        },
-        {
-            nameHome: "team1",
-            nameAway: "team2",
-            logoHome: img1,
-            logoAway: img2,
-            scoreHome: 1,
-            scoreAway: 3,
-        },]
-    }
 
     const [gridSize, setGridSize] = useState(cardSizes.large);
 

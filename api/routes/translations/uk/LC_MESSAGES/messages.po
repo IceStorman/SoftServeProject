@@ -138,3 +138,6 @@ msgstr "Виберіть вид спорту"
 
 msgid "teams"
 msgstr "команди"
+
+msgid "Search"
+msgstr "Шукати..."
