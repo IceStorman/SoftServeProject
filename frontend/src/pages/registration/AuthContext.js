@@ -1,6 +1,5 @@
 import { createContext, useState } from "react";
 import Cookies from "js-cookie";
-import {toast} from "sonner";
 
 export const AuthContext = createContext(null);
 
