@@ -21,5 +21,6 @@ from .user_club_preferences import UserClubPreferences
 from .token_blocklist import Token_Blocklist
 from .temp_subscribers_data import TempSubscribersData
 from .refresh_token_tracking import refresh_token_tracking
+from .stream_url import StreamUrl
 
 from .base import Base
