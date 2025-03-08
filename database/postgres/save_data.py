@@ -1,9 +1,12 @@
+from database.models import GamesStatuses
 from database.session import SessionLocal
 from typing import Dict
+from cachetools import TTLCache
 from database.postgres.dto import TeamDTO, CountryDTO, LeagueDTO, GameDTO, SportDTO, PlayerDTO
 from database.postgres.dal import TeamDAL, LeagueDAL, GameDAL, CountryDAL, SportDAL, PlayerDal
 from datetime import datetime
 
+status_cache = TTLCache(maxsize=10, ttl=60*60*24)
 
 TEAMS = 'teams'
 LEAGUES = 'leagues'
@@ -114,6 +117,20 @@ def save_api_data(json_data: Dict, sport_name: str) -> None:
                 if not game_type_result:
                     game_type_result = IN_PROGRESS
 
+                if game_type_result in status_cache:
+                     status_entry = status_cache[game_type_result]
+                else:
+                    status_entry = session.query(GamesStatuses).filter_by(status=game_type_result).one()
+
+                    if not status_entry:
+                        status_entry = GamesStatuses(status=game_type_result)
+                        session.add(status_entry)
+                        session.commit()
+
+                        status_cache[game_type_result] = status_entry
+
+                game_status_id = status_entry.game_status_id
+
                 country_entry = game.get('location').get('country') if 'location' in game else game.get('country')
                 if country_entry:
                     country_id = save_country_and_get_id(country_entry, country_dal)
@@ -151,7 +168,7 @@ def save_api_data(json_data: Dict, sport_name: str) -> None:
                                    score_away_team=score_away_data or None,
                                    score_home_team=score_home_data or None,
                                    status=status,
-                                   game_status=game_type_result or None,
+                                   game_status=game_status_id or None,
                                    time=time,
                                    date=date,
                                    api_id=api_id)

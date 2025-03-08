@@ -11,7 +11,7 @@ class Games(Base):
     score_away_team = Column(Integer)
     score_home_team = Column(Integer)
     status = Column(String)
-    type = Column(String)
+    type = Column(ForeignKey('GamesStatuses.game_status_id'))
     time = Column(String)
     date = Column(String)
     api_id = Column(Integer)

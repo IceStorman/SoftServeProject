@@ -11,7 +11,7 @@ class GameDTO(BaseModel):
     score_away_team: Optional[int] = Field(None)
     score_home_team: Optional[int] = Field(None)
     status: Optional[str] = Field(None)
-    game_status: Optional[str] = Field(None)
+    game_status: Optional[int] = Field(None)
     time: Optional[str] = Field(None)
     date: Optional[str] = Field(None)
     api_id: Optional[int] = Field(None)
