@@ -234,15 +234,17 @@ class UserService:
 
         return saved_nonce == token_nonce
     
-    async def create_new_access_token(self, user_email: str, username: str, refresh: bool = False):
+    async def create_new_access_and_refresh_tokens(self, user_email: str, username: str, refresh: bool = False):
         additional_claims = {
             "email":user_email,
             "username":username
         }
         new_access_token = create_access_token(identity=user_email.email, additional_claims=additional_claims)
-        new_refresh_token = create_refresh_token(identity=user_email.email, additional_claims={"nonce": generate_nonce()})
+        new_refresh_token = create_refresh_token(identity=user_email.email, 
+                                                 additional_claims=additional_claims.update({"nonce": generate_nonce()}))
         
         return new_access_token, new_refresh_token
+    
 
     async def update_refresh_token(self, user_email: str, new_refresh_token: str):
         user = await self._user_dal.get_user_by_email(user_email)
@@ -266,7 +268,7 @@ class UserService:
         if not self._refresh_dal.verify_nonce(identity, token_nonce):
             return jsonify({"msg": "Invalid refresh token"}), 401
 
-        new_access_token, new_refresh_token = await self.create_new_access_token(identity, refresh=True)
+        new_access_token, new_refresh_token = await self.create_new_access_and_refresh_tokens(identity, refresh=True)
 
         new_nonce = generate_nonce()
         self._refresh_dal.update_refresh_token(identity, new_refresh_token, new_nonce)
