@@ -139,3 +139,11 @@ class IncorrectSignatureError(CustomQSportException):
     def __init__(self):
         message = f"Incorrect type of signature"
         super().__init__(message)
+
+
+class TokenRevokingError(CustomQSportException):
+    status_code = 401
+
+    def __init__(self):
+        message = f"Cannot revoke token"
+        super().__init__(message)

@@ -32,7 +32,7 @@ class Container(containers.DeclarativeContainer):
     refresh_dal = providers.Factory(RefreshTokenDAL, db_session = db_session)
     user_info_service = providers.Factory(User_info_service, 
                                   accass_token_dal=access_tokens_dal, 
-                                  refresh_token_dal=RefreshTokenDAL
+                                  refresh_token_dal=refresh_dal
                                   )
 
     user_service = providers.Factory(

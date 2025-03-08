@@ -30,9 +30,9 @@ TEAM_TYPE = "team"
 
 class UserService:
 
-    def __init__(self, user_dal, preferences_dal, sport_dal, jwt_dal, refresh_dal, user_info_service):
+    def __init__(self, user_dal, preferences_dal, sport_dal, access_token_dal, refresh_dal, user_info_service):
         self._user_dal = user_dal
-        self._jwt_dal = jwt_dal
+        self._access_token_dal = access_token_dal
         self._refresh_dal = refresh_dal
         self._preferences_dal = preferences_dal
         self._sport_dal = sport_dal
@@ -180,7 +180,7 @@ class UserService:
             revoked=False,
             expires_at=access_expires_at
         )
-        self._jwt_dal.save_jwt(access_jwt_dto)
+        self._access_token_dal.save_access_token(access_jwt_dto)
 
 
         refresh_jwt_dto = jwtDTO(
@@ -190,7 +190,7 @@ class UserService:
             revoked=False,
             expires_at=refresh_expires_at  
         )
-        self._jwt_dal.save_jwt(refresh_jwt_dto)
+        self._access_token_dal.save_access_token(refresh_jwt_dto)
 
 
         refresh_dto = refreshDTO(

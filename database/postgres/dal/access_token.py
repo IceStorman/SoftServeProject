@@ -4,6 +4,7 @@ from database.postgres.dto.jwt import jwtDTO
 from sqlalchemy.exc import SQLAlchemyError
 from typing import Optional, List
 from datetime import datetime
+from exept.exeptions import TokenRevokingError
 
 
 class AccessTokensDAL:
@@ -48,7 +49,7 @@ class AccessTokensDAL:
                 self.db_session.commit()
 
         except SQLAlchemyError as e:
-            return f"Error in revoke_jwt: {e}"
+            raise TokenRevokingError(f"{"token": jti}")
 
 
     def revoke_refresh_token(self, jti: str) -> bool:
