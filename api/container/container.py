@@ -31,7 +31,7 @@ class Container(containers.DeclarativeContainer):
 
     stream_service = providers.Factory(
         StreamService,
-        streams_dal = stream_dal
+        stream_dal = stream_dal
     )
 
     user_service = providers.Factory(

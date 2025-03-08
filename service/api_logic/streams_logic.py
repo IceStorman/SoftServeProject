@@ -12,25 +12,26 @@ import datetime
 
 class StreamService:
 
-    def __init__(self, streams_dal):
-        self._stream_dal = streams_dal
+    def __init__(self, stream_dal):
+        self._stream_dal = stream_dal
         self._logger = Logger("logger", "all.log").logger
 
 
     def get_streams_filtered(self, filters_dto): #not working for now without Roman's PR, Roman will fix in future
-        query = self._stream_dal.get_base_query(Stream)
-
+        pass
+        # query = self._stream_dal.get_base_query(Stream)
+        #
         # query = FilterManagerStrategy.apply_filters(Stream, query, filters_dto)
-        count = query.count()
-
-        streams = self._stream_dal.execute_query(query)
-        streams_output = StreamsOutput(many=True)
-        stream = streams_output.dump(streams)
-
-        return {
-            "count": count,
-            "stream": stream,
-        }
+        # count = query.count()
+        #
+        # streams = self._stream_dal.execute_query(query)
+        # streams_output = StreamsOutput(many=True)
+        # stream = streams_output.dump(streams)
+        #
+        # return {
+        #     "count": count,
+        #     "stream": stream,
+        # }
 
 
     def save_json_stream_to_streams_table(self, streams_data):
@@ -47,7 +48,15 @@ class StreamService:
 
     def all_streams(self): # Honestly, don't really see a sense of this method, as we have filters, but as long as we didn't merge Roman's PR we need it
         streams = self._stream_dal.get_all_streams()
+
+        for item in streams:
+            if not isinstance(item.stream_url, list):
+                item.stream_url = [item.stream_url]
+
+            item.stream_url = json.loads(item.stream_url)
+
         streams_output = StreamsOutput(many=True)
         stream = streams_output.dump(streams)
+
 
         return stream
