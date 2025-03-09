@@ -78,8 +78,10 @@ function MainPage() {
             const response = await axios.post(
                 `${apiEndpoints.url}${apiEndpoints.games.getGames}`,
                 {
-                    page: page + 1,
-                    per_page: gamesPerSlide,
+                    pagination: {
+                        page: page + 1,
+                        per_page: gamesPerSlide,
+                    },
                     models: [{'type': 'game'}]
                 },
                 {

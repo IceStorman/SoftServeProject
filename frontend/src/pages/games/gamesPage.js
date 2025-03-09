@@ -13,15 +13,15 @@ function GamesPage() {
     const [selectedTeam, setSelectedTeam] = useState("");
     const [selectedDate, setSelectedDate] = useState("");
     const [slidesCount, setSlidesCount] = useState(0);
-    const gamesPerSlide = 10;
+    const [currentPage, setCurrentPage] = useState(0);
+    const [passedGames, setPassedGames] = useState(0);
+    const gamesPerSlide = 20;
 
-    const handleChange = (event) => {
-        setInputValue(event.target.value);
-    };
-
-    const handleApplyFilters = () => {
-        getGames(0);
-    };
+    useEffect(() => {
+        let page = Math.floor(passedGames / gamesPerSlide);
+        setCurrentPage(page);
+        getGames(page);
+    }, [gamesPerSlide]);
 
     useEffect(() => {
         getGames(0);
@@ -32,33 +32,9 @@ function GamesPage() {
     };
     const [currentGames, setCurrentGames] = useState([]);
 
-    // const getGames = async (page) => {
-    //     try {
-    //         setLoading(true);
-    //         const response = await axios.post(
-    //             `${apiEndpoints.url}${apiEndpoints.games.getGames}`,
-    //             {
-    //                 page: page + 1,
-    //                 per_page: gamesPerSlide
-    //             },
-    //             {
-    //                 headers: { 'Content-Type': 'application/json' },
-    //             }
-    //         );
-    //         console.log(response);
-    //         setCurrentGames(response.data.games);
-    //         const totalGames = response.data.count;
-    //         setSlidesCount(Math.ceil(totalGames / gamesPerSlide));
-    //     } catch (error) {
-    //         setPageCount(0);
-    //         toast.error(`Troubles With games Loading: ${error}`);
-    //     }
-    // };
     const getGames = async (page) => {
         try {
             const filters = {
-                page: page + 1,
-                per_page: gamesPerSlide,
                 team: selectedTeam,
                 date: selectedDate,
                 search: inputValue,
@@ -70,7 +46,16 @@ function GamesPage() {
 
             const response = await axios.post(
                 `${apiEndpoints.url}${apiEndpoints.games.getGames}`,
-                filters,
+                {
+                    filters: {
+                        filters
+                    },
+                    pagination: {
+                        page: page + 1,
+                        per_page: gamesPerSlide,
+                    },
+                    models: [{'type': 'game'}]
+                },
                 {
                     headers: { 'Content-Type': 'application/json' },
                 }
@@ -94,7 +79,12 @@ function GamesPage() {
             />
 
             <div className="content">
-                <GamesContainer >
+                <GamesContainer postsPerPage={slidesCount}
+                                currentPage={currentPage}
+                                onPageChange={setCurrentPage}
+                                pageCount={slidesCount}
+                                paginationKey={currentPage}
+                >
                     {currentGames.map((item, index) => (
                         <div className="game">
                             <GameCard
@@ -110,7 +100,6 @@ function GamesPage() {
                                 width={700}
                             /></div>
                     ))},
-                    postPerPage={slidesCount}
                 </GamesContainer>
             </div>
         </div>
