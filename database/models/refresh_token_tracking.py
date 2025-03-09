@@ -11,5 +11,3 @@ class RefreshTokenTracking(Base):
     last_ip = Column(String, nullable=False)  
     last_device = Column(String, nullable=False)
     nonce = Column(String, nullable=False)
-
-

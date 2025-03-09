@@ -6,10 +6,11 @@ import time
 import os
 from typing import Optional
 
-class User_info_service:
+class UserInfoService:
     def __init__(self, accass_token_dal, refresh_token_dal):
         self._access_token_dal = accass_token_dal
         self._refresh_token_dal = refresh_token_dal
+        
     def get_user_device(self) -> str:
         user_agent = request.headers.get("User-Agent", "")
         parsed_agent = parse(user_agent)
@@ -27,6 +28,7 @@ class User_info_service:
 
     def get_country_from_ip(self) -> str:
         ip = self.get_client_ip()
+
         try:
             response = requests.get(f"https://ipinfo.io/{ip}/json", timeout=3)
             response.raise_for_status()
@@ -56,28 +58,11 @@ class User_info_service:
         current_device = self.get_user_device()
 
 
-        if refresh_entry.last_ip and refresh_entry.last_ip != current_ip:
-            return True 
+        suspicious_conditions = [
+            refresh_entry.last_ip and refresh_entry.last_ip != current_ip,
+            refresh_entry.last_country and refresh_entry.last_country != current_country,
+            refresh_entry.last_device and refresh_entry.last_device != current_device,
+            self._access_token_dal.is_nonce_used(user_id, refresh_entry.nonce)
+        ]
 
-        if refresh_entry.last_country and refresh_entry.last_country != current_country:
-            return True 
-
-       
-        if refresh_entry.last_device and refresh_entry.last_device != current_device:
-            return True  
-
-       
-        if self._access_token_dal.is_nonce_used(user_id, refresh_entry.nonce):
-            return True  
-
-        return False  
-
-
-
-
-
-# def is_ip_suspicious(old_ip, new_ip):
-#     return get_country_from_ip(old_ip) != get_country_from_ip(new_ip)
-
-
-
+        return any(suspicious_conditions)

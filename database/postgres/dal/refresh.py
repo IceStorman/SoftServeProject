@@ -2,10 +2,10 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from typing import Optional
 from datetime import datetime
-
 from database.models.refresh_token_tracking import RefreshTokenTracking
 from database.models.token_blocklist import TokenBlocklist
 from database.postgres.dto.refresh import refreshDTO
+
 REFRESH = "refresh"
 
 class RefreshTokenDAL:
@@ -40,7 +40,6 @@ class RefreshTokenDAL:
             print(f"Error in save_refresh_token: {e}")
             return None
 
-
     def get_refresh_token_by_id(self, refresh_id: int) -> Optional[RefreshTokenTracking]:
         return self.db_session.query(RefreshTokenTracking).filter(RefreshTokenTracking.id == refresh_id).first()
 
@@ -55,7 +54,6 @@ class RefreshTokenDAL:
             .first()
         )
 
-    
     def verify_nonce(self, user_id: int, nonce: str) -> bool:
         token_entry = self.db_session.query(RefreshTokenTracking).filter_by(user_id=user_id, nonce=nonce).first()
         return token_entry is not None
@@ -66,8 +64,6 @@ class RefreshTokenDAL:
             return True
         return False
         
-
-
     def update_refresh_token(self, user_id: int, refresh_dto: refreshDTO):
         try:
             entry = (self.db_session.query(RefreshTokenTracking)
@@ -86,7 +82,6 @@ class RefreshTokenDAL:
         except SQLAlchemyError as e:
             self.db_session.rollback()
             print(f"Error in update_refresh_token: {e}")
-
 
     def revoke_refresh_token(self, refresh_id: int) -> bool:
         try:

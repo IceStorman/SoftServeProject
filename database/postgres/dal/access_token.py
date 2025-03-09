@@ -28,7 +28,6 @@ class AccessTokensDAL:
         self.db_session.refresh(jwt_entry)
         return jwt_entry.id
 
-
     def save_access_tokens(self, jwt_dto_list: List[jwtDTO]):
         for jwt in jwt_dto_list:
             self.save_jwt(jwt)
@@ -50,7 +49,6 @@ class AccessTokensDAL:
 
         except SQLAlchemyError as e:
             raise TokenRevokingError(f"{"token": jti}")
-
 
     def revoke_refresh_token(self, jti: str) -> bool:
         jwt_entry = self.get_jwt_by_jti(jti)
