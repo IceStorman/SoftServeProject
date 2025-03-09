@@ -25,7 +25,7 @@ class UserSubscriptionDAL:
 
         return query
 
-    def get_subscribed_users_data_and_delete_rows(self):
+    def pop_subscribed_users_data(self):
         rows_to_delete = self.db_session.query(TempSubscribersData).all()
 
         subscribed_users = list()

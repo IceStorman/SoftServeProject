@@ -31,7 +31,7 @@ class UserSubscriptionManager:
         self.__try_send_email_to_users()
 
     def __try_send_email_to_users(self):
-        subscribed_users = self.__user_subscription_dal.get_subscribed_users_data_and_delete_rows()
+        subscribed_users = self.__user_subscription_dal.pop_subscribed_users_data()
 
         for user in subscribed_users:
             self.__send_email_to_user(user.subscriber_emails)
