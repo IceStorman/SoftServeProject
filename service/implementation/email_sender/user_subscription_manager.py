@@ -37,15 +37,17 @@ class UserSubscriptionManager:
             self.__send_email_to_user(user.subscriber_emails)
 
     def __send_email_to_user(self, user_email: str):
-        msg = Message(
-            "News notification",
-            sender=current_app.config['MAIL_USERNAME'],
-            recipients=[user_email],
-            html=self.__get_email_template()
-        )
-        current_app.extensions['mail'].send(msg)
+        from api.routes.__init__ import app
+        with app.app_context():
+            msg = Message(
+                "News notification",
+                sender=current_app.config['MAIL_USERNAME'],
+                recipients=[user_email],
+                html=self.__get_email_template()
+            )
+            current_app.extensions['mail'].send(msg)
 
-        return CommonResponse().to_dict()
+            return CommonResponse().to_dict()
 
     def __get_email_template(self):
         template_dir = os.path.join(os.path.dirname(__file__), "templates")

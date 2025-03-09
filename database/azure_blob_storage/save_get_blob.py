@@ -8,7 +8,6 @@ from datetime import datetime, timezone
 from database.models import BlobIndex, News, Sport, SportIndex, TeamIndex, TeamInNews
 from database.session import SessionLocal
 from exept.colors_text import print_error_message, print_good_message
-from api.routes.__init__ import app
 import re
 
 load_dotenv()
@@ -290,60 +289,59 @@ def get_blob_data_for_all_sports(session, blob_indexes):
 
 
 def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
-    with app.app_context():
-        from api.container.container import Container
-        subscription_manager = Container.email_manager()
+    from api.container.container import Container
+    subscription_manager = Container.email_manager()
 
-        try:
-            existing_news = session.query(News).filter_by(blob_id=blob_name).first()
-            if existing_news:
-                print_error_message(f"News '{blob_name}' already exists in the database.")
-                return
-            print(json_data["team_names"])
-            sport = session.query(Sport).filter_by(sport_name=json_data["S_P_O_R_T"]).first()
-            if not sport:
-                return
-            news_index = News(
-                blob_id=blob_name,
-                save_at=datetime.now(timezone.utc),
-                sport_id=sport.sport_id,
-            )
-            session.add(news_index)
-            print_good_message(f"The news item '{blob_name}' is saved in the database.")
-            session.commit()
-            teams = session.query(TeamIndex).all()
-            team_dict = {team.name: team.team_index_id for team in teams}
-            teams = json_data["team_names"]
-            print(teams)
-            for team_name in teams:
-                if isinstance(team_name, list):
-                    for name in team_name:
-                        team_index_id = team_dict.get(name, None)
-                        if team_index_id is not None:
-                            team_index = TeamInNews(
-                                news_id=news_index.news_id,
-                                name=name,
-                                team_index_id=team_index_id
-                            )
-                            session.add(team_index)
-
-                            subscription_manager.try_add_subscribers_to_temp_table(team_index.team_index_id)
-                else:
-                    team_index_id = team_dict.get(team_name, None)
+    try:
+        existing_news = session.query(News).filter_by(blob_id=blob_name).first()
+        if existing_news:
+            print_error_message(f"News '{blob_name}' already exists in the database.")
+            return
+        print(json_data["team_names"])
+        sport = session.query(Sport).filter_by(sport_name=json_data["S_P_O_R_T"]).first()
+        if not sport:
+            return
+        news_index = News(
+            blob_id=blob_name,
+            save_at=datetime.now(timezone.utc),
+            sport_id=sport.sport_id,
+        )
+        session.add(news_index)
+        print_good_message(f"The news item '{blob_name}' is saved in the database.")
+        session.commit()
+        teams = session.query(TeamIndex).all()
+        team_dict = {team.name: team.team_index_id for team in teams}
+        teams = json_data["team_names"]
+        print(teams)
+        for team_name in teams:
+            if isinstance(team_name, list):
+                for name in team_name:
+                    team_index_id = team_dict.get(name, None)
                     if team_index_id is not None:
                         team_index = TeamInNews(
                             news_id=news_index.news_id,
-                            name=team_name,
+                            name=name,
                             team_index_id=team_index_id
                         )
                         session.add(team_index)
 
                         subscription_manager.try_add_subscribers_to_temp_table(team_index.team_index_id)
+            else:
+                team_index_id = team_dict.get(team_name, None)
+                if team_index_id is not None:
+                    team_index = TeamInNews(
+                        news_id=news_index.news_id,
+                        name=team_name,
+                        team_index_id=team_index_id
+                    )
+                    session.add(team_index)
 
-            session.commit()
-        except Exception as e:
-            session.rollback()
-            print_error_message(f"Error when saving the news index in the database: {e}")
+                    subscription_manager.try_add_subscribers_to_temp_table(team_index.team_index_id)
+
+        session.commit()
+    except Exception as e:
+        session.rollback()
+        print_error_message(f"Error when saving the news index in the database: {e}")
 
 
 def get_news_by_index(blob_name: str, session) -> Dict:
