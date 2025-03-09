@@ -17,7 +17,8 @@ class Container(containers.DeclarativeContainer):
             "api.routes.api_login",
             "api.routes.api_news",
             "api.routes.api_user_preferences",
-            "api.routes.api_streams"
+            "api.routes.api_streams",
+            "streams_scraper.streams_scraper"
         ]
     )
 

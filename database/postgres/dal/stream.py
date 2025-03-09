@@ -25,7 +25,6 @@ class StreamDAL:
     def create_stream_status(self, status_dto: StreamStatusDTO) -> Streams_Status:
         new_stream_status = Streams_Status(
             stream_id = status_dto.stream_id,
-            status_id = status_dto.status_id,
         )
 
         self.db_session.add(new_stream_status)

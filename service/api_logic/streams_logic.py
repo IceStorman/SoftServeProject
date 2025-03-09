@@ -1,6 +1,7 @@
 import json
 from dto.api_output import StreamsOutput
 from logger.logger import Logger
+from database.postgres.dto import StreamStatusDTO
 
 
 class StreamService:
@@ -27,11 +28,13 @@ class StreamService:
         # }
 
 
-    def save_json_stream_to_streams_table(self, streams_data):
-        streams_list = json.loads(streams_data) if isinstance(streams_data, str) else streams_data
+    def save_streams_to_streams_table(self, streams_data):
+        for stream in streams_data:
+            new_stream = self._stream_dal.create_stream(stream)
+            for url in stream['stream_url']:
+                self._stream_dal.create_stream_url(url, new_stream.stream_id)
 
-        self._stream_dal.save_streams(streams_list)
-
+        
 
     def save_json_stream_to_status_table(self, streams_status_data):
         streams_status_list = json.loads(streams_status_data) if isinstance(streams_status_data, str) else streams_status_data
