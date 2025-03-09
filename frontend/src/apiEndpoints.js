@@ -7,6 +7,7 @@ const apiEndpoints = {
         getArticle: 'news/article',
         getCurrentNews: '',
         likeArticle: 'like',
+        getRecommendations: 'news/recommendation',
     },
 
     sports:{
@@ -44,6 +45,11 @@ const apiEndpoints = {
         login: 'user/login',
         resetPasswordRequest: 'user/reset-password-request',
         resetPassword: 'user/reset-password'
+    },
+
+    preference:{
+        getUserPreferences: 'preferences/get',
+        changeUserPreferences: 'preferences/'
     }
 };
 

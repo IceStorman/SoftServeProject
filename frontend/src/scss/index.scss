@@ -31,6 +31,8 @@ $main-font: "CyrillicGoth";
 @import "searchContainer";
 @import "pagination";
 @import "languageToggleContainer";
+@import "preferencesPage";
+@import "account";
 
 
 @font-face {
@@ -133,11 +135,8 @@ button {
     background: black;
     border: none;
     border-radius: none;
-    position: absolute;
     padding: 0.5rem 0.5rem;
     transition: border-color 0.3s ease-in-out;
-
-
 
     .nav-link {
       color: $bg-white;
@@ -147,7 +146,7 @@ button {
   }
 
   &.login {
-    right: 12rem;
+    right: 3rem;
   }
 
   &.translate-first {

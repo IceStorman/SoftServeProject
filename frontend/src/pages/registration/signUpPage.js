@@ -57,9 +57,9 @@ function SignUpPage() {
                 }
             );
 
-            login({ email: response?.data?.user?.email, username: response?.data?.user?.username });
+            login({ email: response?.data?.user?.email, username: response?.data?.user?.username, id: response?.data?.user?.id });
             toast.success(globalVariables.authMessages.successLogIn);
-            navigate('/')
+            navigate('/user/preferences')
         } catch (error) {
             const errorStatus = error?.response?.status
             const errorMessage = error?.response?.data?.error;
@@ -110,7 +110,7 @@ function SignUpPage() {
             </form>
 
             <div className="redirect">
-                <p> {t("have_account")} <Link to={"/sign-in"}>{t("log_in")}</Link></p>
+                <p className={"space"}> {t("have_account")} <Link to={"/sign-in"}>{t("log_in")}</Link></p>
                 <AuthBtn />
             </div>
         </section>

@@ -17,12 +17,15 @@ import img5 from "./imgs/5.jpg"
 import GridContainer from "../components/containers/gridBlock.jsx";
 import useTranslations from "../translationsContext";
 import {AuthContext} from "./registration/AuthContext";
+import Cookies from "js-cookie";
+import GridRecommendationBlock from "../components/containers/gridRecommendationBlock";
 
 function MainPage() {
     const { user } = useContext(AuthContext);
     const [loading, setLoading] = useState(false)
     const [sports, setSport] = useState([]);
     const { t } = useTranslations();
+    const [news, setNews] = useState([])
 
     const newsRef = useRef(null);
 
@@ -41,10 +44,22 @@ function MainPage() {
             });
     }, []);
 
+    useEffect(() => {
+        axios.get(`${apiEndpoints.url}${apiEndpoints.news.getRecent}`)
+            .then(res => {
+                const returnedNews = res.data;
+                setNews(returnedNews);
+            })
+            .catch(error => {
+                toast.error(`There was an error getting news :( ${error}`);
+            });
+    }, []);
+
     const [currentGames, setCurrentGames] = useState([]);
     const [slidesCount, setSlidesCount] = useState(0);
     const [currentSlide, setCurrentSlide] = useState(0);
     const [gamesPerSlide, setGamesPerSlide] = useState(6);
+    const [recommendationNews, setRecommendationNews] = useState([]);
 
 
     useEffect(() => {
@@ -79,88 +94,30 @@ function MainPage() {
         }
     };
 
-    const testNews = [
-        {
-            title: 'Metallum Nostrum',
-            date: '2025-01-23',
-            img: img1,
-            sport: 'Football',
-            id: '1',
-            content: 'Howling winds keep screaming around And the rain comes pouring down Doors are locked and bolted now As the thing crawls into town Straight out of hell One of a kind Stalking his victim Don t look behind you Night crawler Beware the beast in black Night crawler You know he s coming back Night crawler'
-        },
-        {
-            title: 'Bible of the Beast',
-            date: '2025-01-23',
-            img: img3,
-            sport: 'NBA',
-            id: '3',
-            content: 'Resurrection by erection Raise your phallus to the sky and you never die It\'s resurrection by erection Raise your bone up to the sky and you\'re never gonna die Hallelujah, resurrection'
-        },
-        {
-            title: 'Preachers of the Night',
-            date: '2025-01-23',
-            img: img4,
-            sport: 'AAAAAAAAA',
-            id: '4',
-            content: 'Bring me pandemonium Speak the word of God All we need in life is flesh and blood Bring me sanctimonium Armageddon flood All we care is how to get more blood'
-        },
-        {
-            title: 'Wake up the Wiked',
-            date: '2025-01-23',
-            img: img2,
-            sport: 'Baseball',
-            id: '2',
-            content: 'Sails in the wind and the word of God in mind Hailed by the sin left our morals all behind Blessed by the crown and to shores ahead we ride Trails in the waves by the cross we are allied Christ in our hearts but for mercy we are blind Restless and damned we are knights of sacred might We fight the Bible by our side'
-        },
-        {
-            title: 'Call of the Wild',
-            date: '2025-01-23',
-            img: img5,
-            sport: 'hello?',
-            id: '5',
-            content: 'Forced to believе that the Heavens strike back Lined up to die in despair One-by-one torn to dust and all sworn to the black Signed up and ready to swear God given Sermon of swords bring sancted fire Sermon of swords, wake up Messiah Sermon of swords, we raise the pyre All we can set the night on fire'
-        },
-        {
-            title: 'Metallum Nostrum',
-            date: '2025-01-23',
-            img: img1,
-            sport: 'Football',
-            id: '1',
-            content: 'Howling winds keep screaming around And the rain comes pouring down Doors are locked and bolted now As the thing crawls into town Straight out of hell One of a kind Stalking his victim Don t look behind you Night crawler Beware the beast in black Night crawler You know he s coming back Night crawler'
-        },
-        {
-            title: 'Wake up the Wiked',
-            date: '2025-01-23',
-            img: img2,
-            sport: 'Baseball',
-            id: '2',
-            content: 'Sails in the wind and the word of God in mind Hailed by the sin left our morals all behind Blessed by the crown and to shores ahead we ride Trails in the waves by the cross we are allied Christ in our hearts but for mercy we are blind Restless and damned we are knights of sacred might We fight the Bible by our side'
-        },
-        {
-            title: 'Bible of the Beast',
-            date: '2025-01-23',
-            img: img3,
-            sport: 'NBA',
-            id: '3',
-            content: 'Resurrection by erection Raise your phallus to the sky and you never die It\'s resurrection by erection Raise your bone up to the sky and you\'re never gonna die Hallelujah, resurrection'
-        },
-        {
-            title: 'Preachers of the Night',
-            date: '2025-01-23',
-            img: img4,
-            sport: 'AAAAAAAAA',
-            id: '4',
-            content: 'Bring me pandemonium Speak the word of God All we need in life is flesh and blood Bring me sanctimonium Armageddon flood All we care is how to get more blood'
-        },
-        {
-            title: 'Call of the Wild',
-            date: '2025-01-23',
-            img: img5,
-            sport: 'hello?',
-            id: '5',
-            content: 'Forced to believе that the Heavens strike back Lined up to die in despair One-by-one torn to dust and all sworn to the black Signed up and ready to swear God given Sermon of swords bring sancted fire Sermon of swords, wake up Messiah Sermon of swords, we raise the pyre All we can set the night on fire'
+    useEffect(() => {
+        try {
+            if (!user?.email) return;
+
+            axios.post(`${apiEndpoints.url}${apiEndpoints.news.getRecommendations}`,
+                {
+                    email: user.email,
+                },
+                {
+                    headers: { 'Content-Type': 'application/json' },
+                })
+                .then(res => {
+                    setRecommendationNews(res.data);
+
+                })
+                .catch(error => {
+                    toast.error(`:( Troubles With Recommendation News Loading: ${error}`);
+                })
+
+        } catch (error) {
+            toast.error(`Error parsing user cookie:", ${error}`);
         }
-    ]
+
+    }, [user]);
 
     const game_element_height = 85
     const game_element_width = 400
@@ -255,6 +212,12 @@ function MainPage() {
     }
 
     const [gridSize, setGridSize] = useState(cardSizes.large);
+
+    const [preferenceNewsGridSize, setPreferenceNewsGridSize] = useState(cardSizes.large);
+    const [newsGridSize, setNewsGridSize] = useState(cardSizes.large);
+    const [lastWatchNewsGridSize, setLastWatchNewsGridSize] = useState(cardSizes.large);
+
+
     const [currentNews, setCurrentNews] = useState([]);
     const [pageCount, setPageCount] = useState(0);
     const [paginationKey, setPaginationKey] = useState(0);
@@ -268,8 +231,7 @@ function MainPage() {
         getNews(page);
     }, [postsPerPage]);
 
-    const handleGridSizeChange = (size) => {
-        console.log('size: ', size);
+    const handleGridSizeChange = (setGridSize, size) => {
         if (cardSizes[size]) {
             setPassedPosts(gridSize.rows * gridSize.columns * currentPage);
             setPostsPerPage(cardSizes[size].postsPerPage);
@@ -278,9 +240,10 @@ function MainPage() {
             setGridSize(cardSizes.large);
         }
     };
+
     useEffect(() => {
         getNews(0);
-    }, []);
+    }, [news]);
 
     const handlePageClick = (event) => {
         const selectedPage = event.selected;
@@ -290,9 +253,9 @@ function MainPage() {
 
     const getNews = (page) => {
         try {
-            const slicedNews = testNews.slice(page * postsPerPage, (page + 1) * postsPerPage);
+            const slicedNews = news.slice(page * postsPerPage, (page + 1) * postsPerPage);
             setCurrentNews(slicedNews);
-            const totalPosts = testNews.length;
+            const totalPosts = news.length;
             setPageCount(Math.ceil(totalPosts / postsPerPage));
 
         } catch (error) {
@@ -311,22 +274,27 @@ function MainPage() {
                     <p className="block-title">Latest news</p>
                     <div className="news-column">
                         <Column>
-                            {testNews.slice(0, 5).map((item, index) => (
+                            {news.map((item, index) => (
                                 <NewsCard
-                                    title={item.title}
-                                    date={item.date}
-                                    img={item.img}
-                                    sport={item.sport}
-                                    content={item.content}
+                                    key={index}
+                                    title={item?.data?.title}
+                                    date={item?.data?.timestamp}
+                                    img={item?.data?.images[0] || null}
+                                    sport={item?.data?.S_P_O_R_T}
+                                    content={item?.data?.article?.section_1?.content}
+                                    id={item?.blob_id}
+                                    article={item?.data}
                                     height={element_height}
                                     width={element_width}
                                     className="news-card"
-                                />))}
+                                />
+                                )
+                            )}
                         </Column></div>
                     <button onClick={scrollToTarget} className="boxed">{t("more")}</button>
                 </section>
 
-                <NewsShowcase newsData={testNews.slice(0, 5)} />
+                <NewsShowcase newsData={news} />
 
                 <section>
                     <p className="block-title">{t("latest_games")}</p>
@@ -335,6 +303,7 @@ function MainPage() {
                             {
                                 showcaseGames.map((item, index) => (
                                     <GameCard
+                                        key={index}
                                         nameHome={item.home_team_name}
                                         nameAway={item.away_team_name}
                                         logoHome={item.home_team_logo}
@@ -363,28 +332,29 @@ function MainPage() {
 
             {
                 user ? (
-                    <GridContainer
-                        title="Recommendations"
-                        cardSizes={cardSizes}
-                        gridSize={gridSize}
-                        postsPerPage={postsPerPage}
-                        onGridSizeChange={handleGridSizeChange}
-                        pageCount={pageCount}
-                        currentPage={currentPage}
-                        onPageChange={handlePageClick}
-                        loading={loading}
-                        paginationKey={paginationKey}
-                        children={currentNews.map((item) => (
-                            <NewsCard
-                                title={item.title}
-                                date={item.date}
-                                img={item.img}
-                                sport={item.sport}
-                                content={item.content}
-                            />
-                        ))}>
-                    </GridContainer >
-                ): null
+                    <>
+                        {recommendationNews.recommendations_list_by_user_preferences && recommendationNews.recommendations_list_by_user_preferences.length > 0 && (
+                            <GridRecommendationBlock
+                                title="Recommended news by your Preferences"
+                                gridSize={preferenceNewsGridSize}
+                                onGridSizeChange={(size) => handleGridSizeChange(setPreferenceNewsGridSize, size)}
+                            >
+                                {recommendationNews.recommendations_list_by_user_preferences.map((item) => (
+                                    <NewsCard
+                                        key={item?.news_id}
+                                        title={item?.article?.title}
+                                        id={item?.news_id}
+                                        date={item?.article?.timestamp}
+                                        img={item?.article?.images[0] || ''}
+                                        sport={item?.article?.S_P_O_R_T}
+                                        content={item?.article?.article?.section_1?.content}
+                                        article={item?.article}
+                                    />
+                                ))}
+                            </GridRecommendationBlock>
+                        )}
+                    </>
+                ) : null
             }
 
 
@@ -416,7 +386,7 @@ function MainPage() {
                     }
                 </div>
                 <div className="games-slider-outer">
-                    <GameSlider testGames1={testGames1}></GameSlider>
+                    <GameSlider games={testGames1}></GameSlider>
                 </div>
             </section>
 
@@ -424,24 +394,54 @@ function MainPage() {
                 <GridContainer
                     title="News"
                     cardSizes={cardSizes}
-                    gridSize={gridSize}
+                    gridSize={newsGridSize}
                     postsPerPage={postsPerPage}
-                    onGridSizeChange={handleGridSizeChange}
+                    onGridSizeChange={(size) => handleGridSizeChange(setNewsGridSize, size)}
                     pageCount={pageCount}
                     currentPage={currentPage}
                     onPageChange={handlePageClick}
                     loading={loading}
                     paginationKey={paginationKey}
-                    children={currentNews.map((item) => (
+                    children={currentNews.map((item, index) => (
                         <NewsCard
-                            title={item.title}
-                            date={item.date}
-                            img={item.img}
-                            sport={item.sport}
-                            content={item.content}
+                            key={index}
+                            title={item?.data?.title}
+                            date={item?.data?.timestamp}
+                            img={item?.data?.images[0] || null}
+                            sport={item?.data?.S_P_O_R_T}
+                            content={item?.data?.article?.section_1?.content}
+                            id={item?.blob_id}
+                            article={item?.data}
                         />
                     ))}>
                 </GridContainer ></div>
+
+            {
+                user ? (
+                    <>
+                        {recommendationNews.recommendations_list_by_user_last_watch && recommendationNews.recommendations_list_by_user_last_watch.length > 0 && (
+                            <GridRecommendationBlock
+                                title="Recommended by your Last Watch"
+                                gridSize={lastWatchNewsGridSize}
+                                onGridSizeChange={(size) => handleGridSizeChange(setLastWatchNewsGridSize, size)}
+                            >
+                                {recommendationNews.recommendations_list_by_user_last_watch.map((item) => (
+                                    <NewsCard
+                                        key={item?.news_id}
+                                        title={item?.article?.title}
+                                        id={item?.news_id}
+                                        date={item?.timestamp}
+                                        img={item?.article?.images[0] || ''}
+                                        sport={item?.article?.S_P_O_R_T}
+                                        content={item?.article?.article?.section_1?.content}
+                                        article={item?.article}
+                                    />
+                                ))}
+                            </GridRecommendationBlock>
+                        )}
+                    </>
+                ) : null
+            }
         </>
     );
 }

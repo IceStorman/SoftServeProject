@@ -4,6 +4,8 @@ from database.models import Likes, Views, News, TeamInNews, Sport
 from sqlalchemy import union_all, literal, func, ClauseElement
 from datetime import timedelta, datetime
 
+PERIOD_OF_TIME = 90
+
 class NewsDAL:
     def __init__(self, session = None):
         self.session = session
@@ -43,7 +45,7 @@ class NewsDAL:
         )
 
 
-    def get_user_interactions_with_news_by_period_of_time(self, user_id: int, period_of_time: int =21) -> list[tuple]:
+    def get_user_interactions_with_news_by_period_of_time(self, user_id: int, period_of_time: int = PERIOD_OF_TIME) -> list[tuple]:
         period_of_time = datetime.now() - timedelta(days=period_of_time)
 
         likes_query = (
@@ -121,6 +123,15 @@ class NewsDAL:
         return news_coefficients_without_duplicates
 
 
+    def clean_duplicates_news(self, news_df: pd.DataFrame) -> pd.DataFrame:
+        news_df_without_duplicates = news_df.groupby('news_id').agg({
+            'sport_id': 'first',
+        }).reset_index()
+        news_df_without_duplicates = news_df_without_duplicates.set_index('news_id')
+
+        return news_df_without_duplicates
+
+
     def assign_adjusted_scores_for_masks(
             self,
             news_coefficients_without_duplicates: pd.DataFrame,
@@ -128,7 +139,8 @@ class NewsDAL:
             user_not_interact_with_this_news_mask: pd.DataFrame.mask,
     ) -> pd.DataFrame.mask and pd.DataFrame.mask:
 
-        user_interact_with_this_news_mask[['adjusted_score','blob_id']] = news_coefficients_without_duplicates[['adjusted_score','blob_id']]
+        if not user_interact_with_this_news_mask.empty:
+            user_interact_with_this_news_mask[['adjusted_score', 'blob_id']] = news_coefficients_without_duplicates[['adjusted_score', 'blob_id']]
         user_not_interact_with_this_news_mask[['adjusted_score','blob_id']] = news_coefficients_without_duplicates[['adjusted_score','blob_id']]
         self.delete_dataframe(news_coefficients_without_duplicates)
 

@@ -33,7 +33,7 @@ class UserDAL:
         self.session.commit()
 
 
-    def get_user_id_be_email(self, email: str) -> User:
+    def get_user_id_by_email(self, email: str) -> User:
         return self.session.query(User.user_id).filter(User.email == email).first()
 
 
@@ -44,8 +44,8 @@ class UserDAL:
                 UserPreference.sports_id
             )
             .select_from(User)
-            .join(UserClubPreferences, UserClubPreferences.users_id == User.user_id)
-            .join(UserPreference, UserPreference.users_id == User.user_id)
+            .outerjoin(UserClubPreferences, UserClubPreferences.users_id == User.user_id)
+            .outerjoin(UserPreference, UserPreference.users_id == User.user_id)
             .filter(User.user_id == user_id)
         )
 

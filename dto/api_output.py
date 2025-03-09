@@ -92,6 +92,19 @@ def get_script_phrases():
         "our_newsletter":     _("Subscribe to our newsletter"),
 
         # Авторизація
+        "log_out":            _("Logout"),
+        "account":            _("Account"),
+        "change_preferences": _("Change preferences"),
+        "delete_account":     _("Delete account"),
+        "delete_check":       _("Are you sure?"),
+        "delete_check_text":  _("Once deleted, the account cannot be restored"),
+        "cancel":             _("Cancel"),
+
+        "confirm":            _("Confirm"),
+        "skip":               _("Skip >"),
+        "what_interesting_in": _("What are you interested in?"),
+        "choose_sports":      _("Choose your favourite sports:"),
+
         "sign_in":            _("Sign In"),
         "log_in":             _("Log In"),
         "password":           _("Password:"),

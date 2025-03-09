@@ -2,19 +2,29 @@ import React, {useContext} from "react";
 import Logo from "./logo";
 import LoginBtn from "./loginBtn";
 import LanguageBtn from "./languageSwitcherBtn";
+import { User } from "lucide-react";
 import {AuthContext} from "../../pages/registration/AuthContext";
+import {useNavigate} from "react-router-dom";
 
 
 function Header() {
-    const { user, logout } = useContext(AuthContext);
+    const { user } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     return (
         <header>
             <Logo />
-            <LanguageBtn />
-            {
-                !user ? <LoginBtn /> : <button className={"filled white"} onClick={logout}>logout</button>
-            }
+            <div className={"header-btn"}>
+                <LanguageBtn />
+                {
+                    !user ? <LoginBtn/> :
+                        <button className="account-button filled" onClick={() => navigate("/user/account")}>
+                            <User size={26} className="icon"/>
+                        </button>
+                }
+
+            </div>
+
         </header>
     );
 }

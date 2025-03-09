@@ -2,16 +2,41 @@ header {
     width: 100%;
     height: fit-content;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     position: relative;
     background-color: $bg-white;
 
-    .white{
-        color: $bg-white;
-        padding: 1rem;
-        font-size: 1.2rem;
-        font-family: "PirataOne";
+    .filled{
+        position: static !important;
+    }
+
+    .header-btn{
+        display: flex;
+        align-items: center;
+        margin-right: 3rem;
+
+
+        .account-button {
+            display: flex;
+            align-items: center;
+            background: black;
+            color: white;
+            padding: 0.6rem;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+
+            .icon {
+                color: white;
+            }
+        }
+    }
+
+    .logo-btn{
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
     }
 
 }
@@ -117,3 +142,5 @@ header {
     color: black;
     text-decoration: none;
 }
+
+
