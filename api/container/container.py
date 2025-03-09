@@ -9,7 +9,7 @@ from database.postgres.dal.news import NewsDAL
 from service.api_logic.managers.recommendation_menager import RecommendationManager
 from service.api_logic.user_logic import UserService
 from service.api_logic.news_logic import NewsService
-
+from service.implementation.email_sender.user_subscription_manager import UserSubscriptionManager
 
 
 class Container(containers.DeclarativeContainer):
@@ -49,4 +49,9 @@ class Container(containers.DeclarativeContainer):
         user_service,
         news_service,
         user_dal=user_dal,
+    )
+
+    email_manager = providers.Singleton(
+        UserSubscriptionManager,
+        user_subscription_dal
     )

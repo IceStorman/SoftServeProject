@@ -9,26 +9,14 @@ from dotenv import load_dotenv
 
 from sqlalchemy import event
 
-from api.container.container import Container
-
 from jinja2 import Environment, FileSystemLoader
 from flask_mail import Message
 
 from dto.common_response import CommonResponse
 
-
-class UserSubscriptionManagerMeta(type):
-    _instances = {}
-
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            _instance = super().__call__(*args, **kwargs)
-            cls._instances[cls] = _instance
-        return cls._instances[cls]
-
-class UserSubscriptionManager(metaclass=UserSubscriptionManagerMeta):
-    def __init__(self):
-        self.__user_subscription_dal = Container.user_subscription_dal()
+class UserSubscriptionManager:
+    def __init__(self, user_subscription_dal):
+        self.__user_subscription_dal = user_subscription_dal
 
         current_dir = Path(__file__).resolve().parent if "__file__" in locals() else Path.cwd()
         envars = current_dir / ".env"
@@ -45,14 +33,10 @@ class UserSubscriptionManager(metaclass=UserSubscriptionManagerMeta):
     def __try_send_email_to_users(self):
         subscribed_users = self.__user_subscription_dal.get_subscribed_users_data_and_delete_rows()
 
-        template_dir = os.path.join(os.path.dirname(__file__), "templates")
-        env = Environment(loader=FileSystemLoader(template_dir))
-        template = env.get_template("news_notification_email.html")
-
         for user in subscribed_users:
-            self.__send_email_to_user(user.subscriber_emails, template)
+            self.__send_email_to_user(user.subscriber_emails)
 
-    def __send_email_to_user(self, user_email: str, subject, body):
+    def __send_email_to_user(self, user_email: str):
         msg = Message(
             "News notification",
             sender=current_app.config['MAIL_USERNAME'],
@@ -66,9 +50,6 @@ class UserSubscriptionManager(metaclass=UserSubscriptionManagerMeta):
     def __get_email_template(self):
         template_dir = os.path.join(os.path.dirname(__file__), "templates")
         env = Environment(loader=FileSystemLoader(template_dir))
-        template = env.get_template("news_notification.html")
+        template = env.get_template("news_notification_email.html")
 
         return template.render()
-
-instance = UserSubscriptionManager()
-instance.try_add_subscribers_to_temp_table(1)
