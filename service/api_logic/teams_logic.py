@@ -13,11 +13,9 @@ class TeamsService:
         self._logger = Logger("logger", "all.log").logger
 
     def get_teams_filtered(self, filters_dto):
-
         query = self._teams_dal.get_base_query(TeamIndex)
 
         query, count = FilterManagerStrategy.apply_filters(TeamIndex, query, filters_dto)
-
 
         teams = self._teams_dal.execute_query(query)
         teams_output = TeamsLeagueOutput(many=True)
