@@ -17,12 +17,12 @@ import os
 from flask_jwt_extended import create_access_token,create_refresh_token, set_access_cookies, set_refresh_cookies, decode_token
 from service.api_logic.auth_strategy import AuthManager
 from database.postgres.dto.jwt import JwtDTO
-from database.postgres.dto.refresh import RefreshTokenDTOefreshDTO
+from database.postgres.dto.refresh import RefreshTokenDTO
 from datetime import datetime
 from api.refresh_token_logic import get_client_ip, get_country_from_ip, get_user_device, generate_nonce
 from flask_jwt_extended import get_jwt_identity, get_jwt
 from service.api_logic.models.api_models import SportPreferenceFields, TeamPreferenceFields
-from api.refresh_token_logic import UserInfoService
+
 
 
 SPORT_TYPE = "sport"
@@ -180,26 +180,26 @@ class UserService:
             revoked=False,
             expires_at=access_expires_at
         )
-        self._access_token_dal.save_access_token(access_jwt_dto)
+        await self._access_token_dal.save_access_token(access_jwt_dto)
 
 
-        refresh_jwt_dto = jwtDTO(
+        refresh_jwt_dto = JwtDTO(
             user_id=user.id,
             jti=decode_refresh_token['jti'],
             token_type="refresh",
             revoked=False,
             expires_at=refresh_expires_at  
         )
-        self._access_token_dal.save_access_token(refresh_jwt_dto)
+        await self._access_token_dal.save_access_token(refresh_jwt_dto)
 
 
-        refresh_dto = refreshDTO(
+        refresh_dto = RefreshTokenDTO(
             user_id=user.id,
             last_ip=self._user_info_service.get_country_from_ip(),
             last_device=self._user_info_service.get_user_device(),
             nonce=self._user_info_service.generate_nonce()
         )
-        self._refresh_dal.save_refresh_token(refresh_dto)
+        await self._refresh_dal.save_refresh_token(refresh_dto)
 
 
     async def create_access_token_response(self, user, return_tokens: bool = False):
@@ -249,7 +249,7 @@ class UserService:
     async def update_refresh_token(self, user_email: str, new_refresh_token: str):
         user = await self._user_dal.get_user_by_email(user_email)
         
-        refresh_dto = refreshDTO(
+        refresh_dto = RefreshTokenDTO(
             user_id=user.id,
             last_ip=get_country_from_ip(get_client_ip()),
             last_device=get_user_device(),
