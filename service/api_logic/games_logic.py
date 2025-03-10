@@ -13,15 +13,12 @@ class GamesService:
         self._logger = Logger("logger", "all.log").logger
 
     def get_games_today(self, filters_dto: GamesDTO()):
-
         query = self._games_dal.get_base_query(Games)
 
         filtered_query, count = FilterManagerStrategy.apply_filters(Games, query, filters_dto)
 
         games = self._games_dal.execute_query(filtered_query)
-
         game_output = GameOutput(many=True)
-
         games = game_output.dump(games)
 
         response_dto = ListResponseDTO()
