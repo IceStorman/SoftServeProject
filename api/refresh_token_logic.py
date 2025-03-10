@@ -5,6 +5,7 @@ import hashlib
 import time
 import os
 from typing import Optional
+from database.postgres.dto.device_info import DeviceInfoDTO
 
 class UserInfoService:
     def __init__(self, accass_token_dal, refresh_token_dal):
@@ -15,11 +16,11 @@ class UserInfoService:
         user_agent = request.headers.get("User-Agent", "")
         parsed_agent = parse(user_agent)
 
-        device_info = {
-            "browser": f"{parsed_agent.browser.family} {parsed_agent.browser.version_string}",
-            "os": f"{parsed_agent.os.family} {parsed_agent.os.version_string}",
-            "device": parsed_agent.device.family
-        }
+        device_info = DeviceInfoDTO(
+            browser=f"{parsed_agent.browser.family} {parsed_agent.browser.version_string}",
+            os=f"{parsed_agent.os.family} {parsed_agent.os.version_string}",
+            device=parsed_agent.device.family
+        )
         return f"{device_info['device']} | {device_info['os']} | {device_info['browser']}"
 
 
