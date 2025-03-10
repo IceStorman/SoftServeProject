@@ -51,8 +51,8 @@ const GamesSlider = ({ games }) => {
                                 nameAway={item.nameAway}
                                 logoHome={item.logoHome}
                                 logoAway={item.logoAway}
-                                scoreHome={item.scoreHome}
-                                scoreAway={item.scoreAway}
+                                scoreHome={item.home_score}
+                                scoreAway={item.away_score}
                                 time={item.time}
                                 height={160}
                                 width={300}

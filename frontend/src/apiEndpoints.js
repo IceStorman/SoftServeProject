@@ -21,7 +21,7 @@ const apiEndpoints = {
     },
     
     games:{
-        getGames: 'games/specific',
+        getGames: 'games/search',
         getThisGame: 'games/this',
         getGame: 'games/today',
     },
@@ -45,6 +45,11 @@ const apiEndpoints = {
         login: 'user/login',
         resetPasswordRequest: 'user/reset-password-request',
         resetPassword: 'user/reset-password'
+    },
+
+    preference:{
+        getUserPreferences: 'preferences/get',
+        changeUserPreferences: 'preferences/'
     }
 };
 

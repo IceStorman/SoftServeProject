@@ -31,6 +31,7 @@ class GameDAL(BaseDAL):
             score_away_team=games_dto.score_away_team,
             score_home_team=games_dto.score_home_team,
             status=games_dto.status,
+            type=games_dto.game_status,
             time=games_dto.time,
             date=games_dto.date,
             api_id=games_dto.api_id

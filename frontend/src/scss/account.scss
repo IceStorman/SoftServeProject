@@ -1,0 +1,141 @@
+.account-container {
+  display: flex;
+  flex-direction: column;
+  width: 60rem;
+  margin: 5rem auto;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  text-align: left;
+}
+
+.accountInfoContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.account-title {
+  font-size: 3.4rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+}
+
+.account-info {
+  .account-row {
+    word-break: break-word;
+    flex-direction: column;
+    font-size: 1.5rem;
+    display: flex;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .label {
+    color: black;
+  }
+
+  .value {
+    color: #333;
+  }
+}
+
+.account-actions {
+  min-width: 25%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+
+  .btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    text-align: center;
+    transition: 0.3s ease-in-out;
+
+    &.edit {
+      background: $main-text-clr;
+
+      &:hover {
+        background: $main-shadow;
+      }
+    }
+
+    &.logout {
+      background: $main-text-clr;
+
+      &:hover {
+        background: $main-shadow;
+      }
+    }
+
+    &.delete {
+      background: red;
+
+      &:hover {
+        background: #d32f2f ;
+      }
+    }
+  }
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 1rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.modal-title {
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.modal-description {
+  margin: 1rem;
+  font-size: 1rem;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.cancel-button {
+  background: #95a5a6;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.2rem;
+  cursor: pointer;
+  border: none;
+
+  &:hover {
+    background: #7f8c8d;
+  }
+}
+
+.confirm-button {
+  background: #e74c3c;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.2rem;
+  cursor: pointer;
+  border: none;
+
+  &:hover {
+    background: #c0392b;
+  }
+}

@@ -56,7 +56,7 @@ msgid "Subscribe to our newsletter"
 msgstr "Підписатись на нашу розсилку"
 
 msgid "Sign In"
-msgstr "Зареєструватись"
+msgstr "Ввійти"
 
 msgid "Certatum Nostrum"
 msgstr "Спорт Параша Йоу"
@@ -141,3 +141,48 @@ msgstr "команди"
 
 msgid "Search"
 msgstr "Шукати..."
+
+msgid "All"
+msgstr "Всі"
+
+msgid "Recommended news by your Preferences"
+msgstr "Рекомендовані новини по вашим вподобаннях"
+
+msgid "No latest news were found"
+msgstr "Нових новин не знайдено"
+
+msgid "Recommended by your Last Watch"
+msgstr "Рекомендовані новини по вашим останнім переглядах"
+
+msgid "Account"
+msgstr "Акаунт"
+
+msgid "Change preferences"
+msgstr "Змінити вподобання"
+
+msgid "Logout"
+msgstr "Вийти"
+
+msgid "Delete account"
+msgstr "Видалити акаунт"
+
+msgid "Are you sure?"
+msgstr "Ви впевнені?"
+
+msgid "Once deleted, the account cannot be restored"
+msgstr "Після видалення акаунт неможливо буде відновити"
+
+msgid "Cancel"
+msgstr "Скасувати"
+
+msgid "Confirm"
+msgstr "Підтвердити"
+
+msgid "Skip >"
+msgstr "Пропустити >"
+
+msgid "What are you interested in?"
+msgstr "В чому ви зацікавлені?"
+
+msgid "Choose your favourite sports:"
+msgstr "Оберіть свої улюблені види спорту:"

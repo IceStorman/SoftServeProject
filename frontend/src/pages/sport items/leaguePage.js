@@ -78,7 +78,7 @@ function LeaguePage() {
             const response = await axios.post(
                 `${apiEndpoints.url}${apiEndpoints.sports.getLeagueSearch}`,
                 {
-                    leagues__sport_id: sportId,
+                    sport_id: sportId,
                     page: page + 1,
                     per_page: leaguesPerPage
                 },
