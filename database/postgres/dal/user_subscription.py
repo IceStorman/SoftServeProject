@@ -1,14 +1,14 @@
-from database.models import User, TempSubscribersData, UserClubPreferences
+from database.models import User, TempSubscribersData, UserClubPreferences, TeamIndex
+
 
 class UserSubscriptionDAL:
     def __init__(self, session):
         self.db_session = session
 
-    def try_add_subscribers_data(self, preference_index):
+    def try_add_subscribers_data(self, preference_index, news_name):
         users = self.__get_users_by_preference_index(preference_index)
-
         new_rows = [
-            TempSubscribersData(team_ids=preference_index, subscriber_emails=user.email)
+            TempSubscribersData(team_ids=preference_index, subscriber_emails=user.email, news_name=news_name)
             for user in users
         ]
 
@@ -26,12 +26,21 @@ class UserSubscriptionDAL:
         return query
 
     def pop_subscribed_users_data(self):
-        rows_to_delete = self.db_session.query(TempSubscribersData).all()
+        rows_to_delete = (
+            self.db_session.query(TempSubscribersData, User)
+            .join(User, TempSubscribersData.subscriber_emails == User.email)
+            .join(TeamIndex, TempSubscribersData.team_ids == TeamIndex.team_index_id)
+            .all()
+        )
 
         subscribed_users = list()
 
         for row in rows_to_delete:
-            copied_user = TempSubscribersData(team_ids=row.team_ids, subscriber_emails=row.subscriber_emails)
+            copied_user = TempSubscribersData(
+                team_ids=row.team_ids,
+                subscriber_emails=row.subscriber_emails,
+                news_name=row.news_name
+            )
             subscribed_users.append(copied_user)
 
         self.db_session.query(TempSubscribersData).delete(synchronize_session=False)

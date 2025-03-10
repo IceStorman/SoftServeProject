@@ -325,7 +325,7 @@ def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
                         )
                         session.add(team_index)
 
-                        subscription_manager.try_add_subscribers_to_temp_table(team_index.team_index_id)
+                        subscription_manager.try_add_subscribers_to_temp_table(team_index.team_index_id, blob_name)
             else:
                 team_index_id = team_dict.get(team_name, None)
                 if team_index_id is not None:
@@ -336,7 +336,7 @@ def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
                     )
                     session.add(team_index)
 
-                    subscription_manager.try_add_subscribers_to_temp_table(team_index.team_index_id)
+                    subscription_manager.try_add_subscribers_to_temp_table(team_index.team_index_id, blob_name)
 
         session.commit()
     except Exception as e:
