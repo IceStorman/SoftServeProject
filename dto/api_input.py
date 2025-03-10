@@ -88,25 +88,16 @@ class TeamsStatisticsOrPlayersDTO(BaseDTO):
     name = fields.Str(required=False, missing=None)
 
 
-class FilterDTO(BaseDTO):
-    date_to = fields.Date(required=False, allow_none=True)
-    date_from = fields.Date(required=False, allow_none=True)
-    time_to = fields.Time(required=False, allow_none=True)
-    time_from = fields.Time(required=False, allow_none=True)
-    order = fields.Str(required=False, missing=None)
-    field = fields.Str(required=False, missing=None)
-
-
 class PaginationDTO(BaseDTO):
     page = fields.Int(required=False, missing=0)
     per_page = fields.Int(required=False, missing=0)
 
 
 class SearchDTO(BaseDTO):
-    filters = fields.Nested(FilterDTO, many=False)
+    filters = fields.Dict(keys=fields.Str(), values=fields.Raw(), required=False)
     pagination = fields.Nested(PaginationDTO, many=False)
-    models = fields.List(fields.Raw(), required=False)
-
+    order = fields.Str(required=False, missing=None)
+    field = fields.Str(required=False, missing=None)
 
 class SportsLeagueDTO(BaseDTO):
     sport = fields.Str(required=False, missing=None)

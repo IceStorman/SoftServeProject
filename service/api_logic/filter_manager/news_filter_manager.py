@@ -27,17 +27,10 @@ class NewsFilterManager(BaseFilterManager, CommonFilters):
         return query.join(TeamInNews, News.news_id == TeamInNews.news_id).filter(TeamInNews.name.ilike(f"%{value}%"))
 
 
-    def apply_order_by_filter(self, query: Query, filters) -> Query:
-        if filters.field and filters.order:
-            order = asc if filters.order.lower() == "asc" else desc
-            return self.apply_order_by(query, News, order, filters.field)
-        return query
-
     FILTERS = {
         "title_contains": apply_title_contains,
         "sport_id": apply_sport_filter,
         "date_from": apply_date_from,
         "date_to": apply_date_to,
         "team": apply_team_filter,
-        "order_by": apply_order_by_filter,
     }
