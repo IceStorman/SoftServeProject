@@ -21,7 +21,7 @@ class UserInfoService:
             os=f"{parsed_agent.os.family} {parsed_agent.os.version_string}",
             device=parsed_agent.device.family
         )
-        return f"{device_info['device']} | {device_info['os']} | {device_info['browser']}"
+        return f"{device_info.device} | {device_info.os} | {device_info.browser}"
 
 
     def get_client_ip(self) -> str:

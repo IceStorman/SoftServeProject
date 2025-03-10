@@ -30,7 +30,7 @@ class AccessTokensDAL:
 
     def save_access_tokens(self, jwt_dto_list: List[jwtDTO]):
         for jwt in jwt_dto_list:
-            self.save_jwt(jwt)
+            self.save_access_token(jwt)
 
     def get_access_token_by_id(self, jwt_id: int) -> Optional[TokenBlocklist]:
         return self.db_session.query(TokenBlocklist).filter(TokenBlocklist.id == jwt_id).first()
@@ -41,7 +41,7 @@ class AccessTokensDAL:
     def revoke_access_token(self, jti: str) -> bool:
  
         try:
-            jwt_entry = self.get_jwt_by_jti(jti)
+            jwt_entry = self.get_access_token_by_jti(jti)
             if jwt_entry:
                 jwt_entry.revoked = True
                 jwt_entry.updated_at = datetime.utcnow()
