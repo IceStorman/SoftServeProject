@@ -65,20 +65,11 @@ class BaseDTO(Schema):
             data["models"] = processed_models
         return data
 
-    def detect_dto(self, item):
-        type_map = {
-            "news": NewsDTO,
-            "league": TeamsLeagueDTO,
-            "game": GamesDTO
-        }
-        return type_map.get(item.get("type"))
-
 class TeamsLeagueDTO(BaseDTO):
     sport_id = fields.Int(required=False, missing=None)
     league_id = fields.Int(required=False, missing=None)
     country_id = fields.Int(required=False, missing=None)
     name = fields.Str(required=False, missing=None)
-
 
 
 class TeamsStatisticsOrPlayersDTO(BaseDTO):
