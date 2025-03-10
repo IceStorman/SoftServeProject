@@ -14,11 +14,14 @@ class BaseFilterManager:
         if dto is None:
             return query, query.count()
 
-        filters_dict = getattr(dto, "filters", {})
+        filters_list = getattr(dto, "filters", [])
 
-        for filter_name, value in filters_dict.items():
-            if filter_name in cls.FILTERS and value is not None:
-                query = cls.FILTERS[filter_name](query, value)
+        for filter_obj in filters_list:
+            filter_name = getattr(filter_obj, "name", None)
+            filter_value = getattr(filter_obj, "value", None)
+
+            if filter_name in cls.FILTERS and filter_value is not None:
+                query = cls.FILTERS[filter_name](query, filter_value)
 
         order_field = getattr(dto, "field", None)
         order_type = getattr(dto, "order", None)

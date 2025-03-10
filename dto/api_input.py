@@ -83,9 +83,12 @@ class PaginationDTO(BaseDTO):
     page = fields.Int(required=False, missing=0)
     per_page = fields.Int(required=False, missing=0)
 
+class FilterDTO(BaseDTO):
+    name = fields.Str(required=True)
+    value = fields.Raw(required=True)
 
 class SearchDTO(BaseDTO):
-    filters = fields.Dict(keys=fields.Str(), values=fields.Raw(), required=False)
+    filters = fields.List(fields.Nested(FilterDTO), required=False)
     pagination = fields.Nested(PaginationDTO, many=False)
     order = fields.Str(required=False, missing=None)
     field = fields.Str(required=False, missing=None)
