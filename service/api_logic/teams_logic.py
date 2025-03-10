@@ -2,7 +2,7 @@ from dto.api_input import TeamsLeagueDTO
 from dto.pagination import Pagination
 from exept.handle_exeptions import handle_exceptions
 from database.models import TeamIndex, Sport, League, Country
-from dto.api_output import TeamsLeagueOutput
+from dto.api_output import TeamsLeagueOutput, ListResponseDTO
 from logger.logger import Logger
 from sqlalchemy import func
 from service.api_logic.filter_manager.filter_manager_strategy import FilterManagerStrategy
@@ -23,10 +23,9 @@ class TeamsService:
         teams_output = TeamsLeagueOutput(many=True)
         team = teams_output.dump(teams)
 
-        return {
-            "count": count,
-            "teams": team,
-        }
+        response_dto = ListResponseDTO()
+
+        return response_dto.dump({"items": team, "count": count})
 
 
 

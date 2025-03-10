@@ -1,4 +1,4 @@
-from dto.api_output import GameOutput
+from dto.api_output import GameOutput, ListResponseDTO
 from dto.api_input import GamesDTO
 from database.models import Games, Country, TeamIndex, League, Sport
 from dto.pagination import Pagination
@@ -24,9 +24,8 @@ class GamesService:
 
         games = game_output.dump(games)
 
-        return {
-            "games": games,
-            "count": count
-        }
+        response_dto = ListResponseDTO()
+
+        return response_dto.dump({"items": games, "count": count})
 
 

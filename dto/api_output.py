@@ -48,6 +48,10 @@ class CountriesOutput(Schema):
     flag = fields.Str()
     name = fields.Str()
 
+class ListResponseDTO(Schema):
+    items = fields.List(fields.Raw(), required=True)
+    count = fields.Int(required=True)
+
 class OutputUser(Schema):
     username = fields.Str(required=True)
     email = fields.Str(required=True)

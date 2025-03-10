@@ -1,10 +1,8 @@
 from sqlalchemy.orm import Query
 from database.models import News, TeamInNews
 from service.api_logic.filter_manager.base_filter_manager import BaseFilterManager
-from service.api_logic.filter_manager.common_filters import CommonFilters
-from sqlalchemy import desc, asc
 
-class NewsFilterManager(BaseFilterManager, CommonFilters):
+class NewsFilterManager(BaseFilterManager):
 
     @staticmethod
     def apply_title_contains(query: Query, value: str) -> Query:
