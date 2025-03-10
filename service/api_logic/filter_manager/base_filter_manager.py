@@ -10,9 +10,9 @@ class BaseFilterManager:
     FILTERS = {}
 
     @classmethod
-    def apply_filters(cls, query: Query, dto) -> Query:
+    def apply_filters(cls, query: Query, dto) -> tuple[Query, int]:
         if dto is None:
-            return query
+            return query, query.count()
 
         filters_dict = getattr(dto, "filters", {})
 
@@ -29,9 +29,11 @@ class BaseFilterManager:
             if hasattr(first_model, order_field):
                 query = query.order_by(order_func(getattr(first_model, order_field)))
 
+        count = query.count()
+
         pagination_dto = getattr(dto, "pagination", None)
         if pagination_dto:
             offset = (pagination_dto.page - 1) * pagination_dto.per_page
             query = query.offset(offset).limit(pagination_dto.per_page)
 
-        return query
+        return query, count

@@ -16,12 +16,17 @@ class GamesService:
 
         query = self._games_dal.get_base_query(Games)
 
-        filtered_query = FilterManagerStrategy.apply_filters(Games, query, filters_dto)
+        filtered_query, count = FilterManagerStrategy.apply_filters(Games, query, filters_dto)
 
         games = self._games_dal.execute_query(filtered_query)
 
         game_output = GameOutput(many=True)
 
-        return game_output.dump(games)
+        games = game_output.dump(games)
+
+        return {
+            "games": games,
+            "count": count
+        }
 
 

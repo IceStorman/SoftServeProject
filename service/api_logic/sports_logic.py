@@ -22,8 +22,7 @@ class SportService:
 
         query = self._leagues_dal.get_base_query(League)
 
-        filtered_query = FilterManagerStrategy.apply_filters(League, query, filters_dto)
-        count = filtered_query.count()
+        filtered_query, count = FilterManagerStrategy.apply_filters(League, query, filters_dto)
 
         execute_query = self._leagues_dal.execute_query(filtered_query)
 
