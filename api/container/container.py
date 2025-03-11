@@ -1,4 +1,6 @@
 from dependency_injector import containers, providers
+
+from database.postgres.dal.user_subscription import UserSubscriptionDAL
 from database.postgres.dal import SportDAL
 from database.session import SessionLocal
 from database.postgres.dal.user import UserDAL
@@ -7,7 +9,7 @@ from database.postgres.dal.news import NewsDAL
 from service.api_logic.managers.recommendation_menager import RecommendationManager
 from service.api_logic.user_logic import UserService
 from service.api_logic.news_logic import NewsService
-
+from service.implementation.email_sender.user_subscription_manager import UserSubscriptionManager
 
 
 class Container(containers.DeclarativeContainer):
@@ -15,7 +17,8 @@ class Container(containers.DeclarativeContainer):
         modules=[
             "api.routes.api_login",
             "api.routes.api_news",
-            "api.routes.api_user_preferences"
+            "api.routes.api_user_preferences",
+            "service.implementation.email_sender.user_subscription_manager"
         ]
     )
 
@@ -25,6 +28,7 @@ class Container(containers.DeclarativeContainer):
     preferences_dal = providers.Factory(PreferencesDAL, session=db_session)
     news_dal = providers.Factory(NewsDAL, session = db_session)
     sport_dal = providers.Factory(SportDAL, db_session=db_session)
+    user_subscription_dal = providers.Factory(UserSubscriptionDAL, session=db_session)
 
     user_service = providers.Factory(
         UserService,
@@ -47,9 +51,7 @@ class Container(containers.DeclarativeContainer):
         user_dal=user_dal,
     )
 
-
-
-
-
-
-
+    email_manager = providers.Singleton(
+        UserSubscriptionManager,
+        user_subscription_dal
+    )

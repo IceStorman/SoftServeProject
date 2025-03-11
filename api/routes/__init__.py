@@ -1,5 +1,4 @@
 import subprocess
-
 from flask import Flask
 from flask_cors import CORS
 from api.container.container import Container
@@ -55,6 +54,7 @@ def create_app():
     app.config['MAIL_USE_SSL'] = False
     app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
     app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+    app.config['FRONTEND_NEWS_URL'] = os.getenv('FRONTEND_NEWS_URL')
     mail.init_app(app)
     
     app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')

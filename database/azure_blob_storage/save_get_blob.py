@@ -4,11 +4,11 @@ from typing import Dict
 import os
 from dotenv import load_dotenv
 from datetime import datetime, timezone
+
 from database.models import BlobIndex, News, Sport, SportIndex, TeamIndex, TeamInNews
 from database.session import SessionLocal
 from exept.colors_text import print_error_message, print_good_message
 import re
-
 
 load_dotenv()
 account_url = os.getenv("BLOBURL")
@@ -289,6 +289,9 @@ def get_blob_data_for_all_sports(session, blob_indexes):
 
 
 def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
+    from api.container.container import Container
+    subscription_manager = Container.email_manager()
+
     try:
         existing_news = session.query(News).filter_by(blob_id=blob_name).first()
         if existing_news:
@@ -321,6 +324,8 @@ def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
                             team_index_id=team_index_id
                         )
                         session.add(team_index)
+
+                        subscription_manager.try_add_subscribers_to_temp_table(team_index.team_index_id, blob_name)
             else:
                 team_index_id = team_dict.get(team_name, None)
                 if team_index_id is not None:
@@ -330,6 +335,8 @@ def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
                         team_index_id=team_index_id
                     )
                     session.add(team_index)
+
+                    subscription_manager.try_add_subscribers_to_temp_table(team_index.team_index_id, blob_name)
 
         session.commit()
     except Exception as e:
