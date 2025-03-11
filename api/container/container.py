@@ -31,7 +31,7 @@ class Container(containers.DeclarativeContainer):
     access_tokens_dal = providers.Factory(AccessTokensDAL, db_session = db_session)
     refresh_dal = providers.Factory(RefreshTokenDAL, db_session = db_session)
     user_info_service = providers.Factory(UserInfoService, 
-                                  accass_token_dal=access_tokens_dal, 
+                                  access_tokens_dal=access_tokens_dal, 
                                   refresh_token_dal=refresh_dal
                                   )
 
@@ -41,7 +41,7 @@ class Container(containers.DeclarativeContainer):
         user_dal=user_dal,
         preferences_dal=preferences_dal,
         sport_dal=sport_dal,
-        jwt_dal=access_tokens_dal,
+        access_tokens_dal=access_tokens_dal,
         refresh_dal=refresh_dal,
     )
 
