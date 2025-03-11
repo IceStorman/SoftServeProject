@@ -5,20 +5,12 @@ import {toast} from "sonner";
 import useLanguage from './useLanguage';
 import Cookies from 'js-cookie';
 
-
 const TranslationsContext = createContext();
-
-export const useTranslations = () => {
-    return useContext(TranslationsContext);
-};
+export const useTranslations = () => useContext(TranslationsContext);
 
 export const TranslationsProvider = ({ children }) => {
-
     const { language, changeLanguage } = useLanguage();
-    const [translations, setTranslations] = useState(() => {
-        const cachedTranslations = Cookies.get(`translations_${language}`);
-        return cachedTranslations ? JSON.parse(cachedTranslations) : null;
-    });
+    const [translations, setTranslations] = useState(null);
 
     const TRANSLATION_VERSION_KEY = "translation_version";
     const TRANSLATION_COOKIE_PREFIX = "translations_";
@@ -67,7 +59,6 @@ export const TranslationsProvider = ({ children }) => {
         }
     };
 
-
     useEffect(() => {
         if (language) {
             loadTranslations(language);
@@ -75,12 +66,12 @@ export const TranslationsProvider = ({ children }) => {
     }, [language]);
 
     const t = (key) => translations && translations[key] ? translations[key] : key;
-    return(
+
+    return (
         <TranslationsContext.Provider value={{ t, changeLanguage, language }}>
             {children}
         </TranslationsContext.Provider>
-    )
+    );
 };
-
 
 export default useTranslations;
