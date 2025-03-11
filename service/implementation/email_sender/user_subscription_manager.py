@@ -1,17 +1,11 @@
 import os
-
 from flask import current_app
-
 from database.models import TempSubscribersData
-
 from pathlib import Path
 from dotenv import load_dotenv
-
 from sqlalchemy import event
-
 from jinja2 import Environment, FileSystemLoader
 from flask_mail import Message
-
 from dto.common_response import CommonResponse
 
 class UserSubscriptionManager:
@@ -54,6 +48,5 @@ class UserSubscriptionManager:
         template = env.get_template("news_notification_email.html")
         main_part_of_url = current_app.config['FRONTEND_NEWS_URL']
         news_url = main_part_of_url + news_name
-        print(news_url, username, news_name, main_part_of_url)
 
         return template.render(username=username, news_url=news_url, team_name=team_name)
