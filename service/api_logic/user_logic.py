@@ -141,13 +141,11 @@ class UserService:
 
 
     async def log_in(self, credentials: InputUserLogInDTO):
-        sus_login = self._user_info_service.is_suspicious_login()
-        if sus_login:
-            return {"error": "Suspicious login detected, access denied."}
-
         login_context = AuthManager(self)
         user = await login_context.execute_log_in(credentials)
         response = await self.create_access_token_response(user)
+        sus_login = self._user_info_service.is_suspicious_login()
+
         
         return response
 
@@ -238,13 +236,15 @@ class UserService:
 
         return saved_nonce == token_nonce
     
-    async def create_new_access_and_refresh_tokens(self, user_email: str, username: str, refresh: bool = False):
+    async def create_new_access_and_refresh_tokens(self, email: str, username: str,user_id: int,new_user:bool, refresh: bool = False):
         additional_claims = {
-            "email":user_email,
-            "username":username
+            "user_id": user_id,
+            "email":email,
+            "username":username,
+            "new_user":new_user
         }
-        new_access_token = create_access_token(identity=user_email.email, additional_claims=additional_claims)
-        new_refresh_token = create_refresh_token(identity=user_email.email, 
+        new_access_token = create_access_token(identity=email.email, additional_claims=additional_claims)
+        new_refresh_token = create_refresh_token(identity=email.email, 
                                                  additional_claims=additional_claims.update({"nonce": self._user_info_service.generate_nonce()}))
         
         return new_access_token, new_refresh_token
