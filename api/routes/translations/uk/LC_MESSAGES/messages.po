@@ -186,3 +186,6 @@ msgstr "В чому ви зацікавлені?"
 
 msgid "Choose your favourite sports:"
 msgstr "Оберіть свої улюблені види спорту:"
+
+msgid "Games not found"
+msgstr "Ігор, не знайдений"

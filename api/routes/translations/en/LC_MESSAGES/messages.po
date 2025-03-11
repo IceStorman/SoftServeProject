@@ -184,3 +184,6 @@ msgstr "What are you interested in?"
 
 msgid "Choose your favourite sports:"
 msgstr "Choose your favourite sports:"
+
+msgid "Games not found"
+msgstr "Games not found"

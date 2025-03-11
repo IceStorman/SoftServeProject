@@ -138,8 +138,9 @@ def get_script_phrases():
         "continue":           _("Continue?"),
         "search":             _("Search"),
         "all":                _("All"),
-        "recommend_pref":    _("Recommended news by your Preferences"),
+        "recommend_pref":     _("Recommended news by your Preferences"),
         "news_not_found":     _("No latest news were found"),
-        "recommend_watch": _("Recommended by your Last Watch"),
+        "recommend_watch":    _("Recommended by your Last Watch"),
+        "games_not_found":    _("Games not found"),
     }
 
