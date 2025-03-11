@@ -48,7 +48,7 @@ class GamesFilterManager(BaseFilterManager):
         return query.filter(Games.team_home_id == value)
 
     FILTERS = {
-        "sport": apply_sport_filter,
+        "sport_id": apply_sport_filter,
         "date_from": apply_date_from,
         "date_to": apply_date_to,
         "team_away": apply_team_away_filter,
