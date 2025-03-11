@@ -9,7 +9,7 @@ from database.postgres.dal.refresh import RefreshTokenDAL
 from service.api_logic.managers.recommendation_menager import RecommendationManager
 from service.api_logic.user_logic import UserService
 from service.api_logic.news_logic import NewsService
-from refresh_token_logic import UserInfoService
+from api.refresh_token_logic import UserInfoService
 
 
 

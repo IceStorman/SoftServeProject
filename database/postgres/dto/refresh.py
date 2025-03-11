@@ -3,12 +3,11 @@ from typing import Optional
 import datetime
 
 class RefreshTokenDTO(Schema):
-    id: Optional[int] = fields.Int(default=None)
-    user_id: int = fields.Int(...)
-    last_ip: str = fields.Strtr(...)
-    last_device: str = fields.Str(...)
-    nonce: str = fields.Str(...)
+    id = fields.Int(required=False, allow_none=True)
+    user_id = fields.Int(required=True)
+    last_ip = fields.Str(required=True)
+    last_device = fields.Str(required=True)
+    nonce = fields.Str(required=True)
 
-    class Config: 
-        
-        from_attributes = True
+    class Meta:
+        ordered = True

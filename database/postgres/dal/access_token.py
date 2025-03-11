@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from database.models.token_blocklist import TokenBlocklist
-from database.postgres.dto.jwt import jwtDTO
+from database.postgres.dto.jwt import JwtDTO
 from sqlalchemy.exc import SQLAlchemyError
 from typing import Optional, List
 from datetime import datetime
@@ -11,7 +11,7 @@ class AccessTokensDAL:
     def __init__(self, db_session: Session):
         self.db_session = db_session
 
-    def save_access_token(self, jwt_dto: jwtDTO) -> Optional[int]:
+    def save_access_token(self, jwt_dto: JwtDTO) -> Optional[int]:
         jwt_entry = self.get_jwt_by_id(jwt_dto.id) if jwt_dto.id else None
         if jwt_entry:
             jwt_entry.user_id = jwt_dto.user_id
@@ -28,7 +28,7 @@ class AccessTokensDAL:
         self.db_session.refresh(jwt_entry)
         return jwt_entry.id
 
-    def save_access_tokens(self, jwt_dto_list: List[jwtDTO]):
+    def save_access_tokens(self, jwt_dto_list: List[JwtDTO]):
         for jwt in jwt_dto_list:
             self.save_access_token(jwt)
 

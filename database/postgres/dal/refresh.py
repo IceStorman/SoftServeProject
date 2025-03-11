@@ -4,7 +4,7 @@ from typing import Optional
 from datetime import datetime
 from database.models.refresh_token_tracking import RefreshTokenTracking
 from database.models.token_blocklist import TokenBlocklist
-from database.postgres.dto.refresh import refreshDTO
+from database.postgres.dto.refresh import RefreshTokenDTO
 
 REFRESH = "refresh"
 
@@ -12,9 +12,9 @@ class RefreshTokenDAL:
     def __init__(self, db_session: Session):
         self.db_session = db_session
 
-    def save_refresh_token(self, refresh_dto: refreshDTO) -> Optional[int]:
+    def save_refresh_token(self, refresh_dto: RefreshTokenDTO) -> Optional[int]:
         try:
-            refresh_entry = None#move to another location :)
+            refresh_entry = None #move to another location :)
             
             if refresh_dto.id:
                 refresh_entry = self.get_refresh_token_by_id(refresh_dto.id)
@@ -64,7 +64,7 @@ class RefreshTokenDAL:
             return True
         return False
         
-    def update_refresh_token(self, user_id: int, refresh_dto: refreshDTO):
+    def update_refresh_token(self, user_id: int, refresh_dto: RefreshTokenDTO):
         try:
             entry = (self.db_session.query(RefreshTokenTracking)
                 .filter(RefreshTokenTracking.user_id == user_id)
