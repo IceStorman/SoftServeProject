@@ -57,10 +57,3 @@ class Container(containers.DeclarativeContainer):
         user_service,
         news_service
     )
-
-
-
-
-
-
-

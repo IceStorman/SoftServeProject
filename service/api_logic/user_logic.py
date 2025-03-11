@@ -59,9 +59,10 @@ class UserService:
 
         new_user = User(email = email, username = username, password_hash = hashed_password.decode('utf-8'))
         self.create_user(new_user)
-        token = await self.get_generate_auth_token(new_user)
+        user = OutputLogin(email = new_user.email, token = new_user, id = new_user.user_id, username = new_user.username, new_user = True)
+        response = await self.create_access_token_response(user)
 
-        return OutputLogin(email = new_user.email, token = token, id = new_user.user_id)
+        return response 
 
 
     def create_user(self, new_user):
@@ -179,7 +180,7 @@ class UserService:
             revoked=False,
             expires_at=access_expires_at
         )
-        await self._access_token_dal.save_access_token(access_jwt_dto)
+        self._access_tokens_dal.save_access_token(access_jwt_dto)
 
 
         refresh_jwt_dto = JwtDTO(
@@ -189,7 +190,7 @@ class UserService:
             revoked=False,
             expires_at=refresh_expires_at  
         )
-        await self._access_token_dal.save_access_token(refresh_jwt_dto)
+        self._access_tokens_dal.save_access_token(refresh_jwt_dto)
 
 
         refresh_dto = RefreshTokenDTO(
@@ -198,24 +199,28 @@ class UserService:
             last_device=self._user_info_service.get_user_device(),
             nonce=self._user_info_service.generate_nonce()
         )
-        await self._refresh_dal.save_refresh_token(refresh_dto)
+        self._refresh_dal.save_refresh_token(refresh_dto)
 
 
     async def create_access_token_response(self, user, return_tokens: bool = False):
         additional_claims = {
+            "user_id": user.id,
             "email":user.email,
-            "username":user.username
+            "username":user.username,
+            "new_user":user.new_user
         }
 
         access_token = create_access_token(identity=user.email, additional_claims=additional_claims)
         refresh_token = create_refresh_token(identity=user.email, additional_claims=additional_claims)
 
-        await self.save_tokens_to_db(user, access_token, refresh_token)
+        self.save_tokens_to_db(user, access_token, refresh_token)
 
     
         response_data = {
             "user_id": user.id,
-            "user_email": user.email
+            "user_email": user.email,
+            "username": user.username,
+            "new_user":user.new_user
         }
         if return_tokens:
             response_data["access_token"] = access_token

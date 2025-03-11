@@ -8,8 +8,8 @@ from typing import Optional
 from database.postgres.dto.device_info import DeviceInfoDTO
 
 class UserInfoService:
-    def __init__(self, accass_token_dal, refresh_token_dal):
-        self._access_token_dal = accass_token_dal
+    def __init__(self, access_tokens_dal, refresh_token_dal):
+        self._access_token_dal = access_tokens_dal
         self._refresh_token_dal = refresh_token_dal
         
     def get_user_device(self) -> str:
