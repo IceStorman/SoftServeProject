@@ -29,3 +29,8 @@ def localization():
     except CustomQSportException as e:
         logger.error(f"Error in GET /localization: {str(e)}")
         return get_custom_error_response(e)
+
+
+@localization_app.route("/localization/version")
+def get_translation_version():
+    return jsonify({"version": "1.2"})

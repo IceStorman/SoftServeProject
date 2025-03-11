@@ -20,27 +20,53 @@ export const TranslationsProvider = ({ children }) => {
         return cachedTranslations ? JSON.parse(cachedTranslations) : null;
     });
 
+    const TRANSLATION_VERSION_KEY = "translation_version";
+    const TRANSLATION_COOKIE_PREFIX = "translations_";
+
+    const getTranslationVersion = async () => {
+        try {
+            const response = await axios.get(`${apiEndpoints.url}${apiEndpoints.localization.ver}`);
+            return response.data.version;
+        } catch (error) {
+            toast.error("Error fetching translation version:", error);
+            return null;
+        }
+    };
+
     const loadTranslations = async (lang) => {
         try {
-            const cached = Cookies.get(`translations_${lang}`);
-            if (cached) {
-                setTranslations(JSON.parse(cached));
+            const latestVersion = await getTranslationVersion();
+            if (!latestVersion) return;
+
+            const cacheKey = `${TRANSLATION_COOKIE_PREFIX}${latestVersion}_${lang}`;
+            const cachedVersion = Cookies.get(TRANSLATION_VERSION_KEY);
+            const cachedTranslations = Cookies.get(cacheKey);
+
+            if (cachedVersion === latestVersion && cachedTranslations) {
+                setTranslations(JSON.parse(cachedTranslations));
                 return;
             }
 
-            const response = await axios.get(`${apiEndpoints.url}${apiEndpoints.localization.userBaseLanguage}`,{
-                headers: {
-                    "Accept-Language": lang,
-                },
+            const response = await axios.get(`${apiEndpoints.url}${apiEndpoints.localization.userBaseLanguage}`, {
+                headers: { "Accept-Language": lang },
             });
 
-            Cookies.set(`translations_${lang}`, JSON.stringify(response.data));
+            Object.keys(Cookies.get()).forEach((cookieKey) => {
+                if (cookieKey.startsWith(TRANSLATION_COOKIE_PREFIX)) {
+                    Cookies.remove(cookieKey);
+                }
+            });
+
+            Cookies.set(cacheKey, JSON.stringify(response.data), { expires: 7 });
+            Cookies.set(TRANSLATION_VERSION_KEY, latestVersion, { expires: 7 });
+
             setTranslations(response.data);
         } catch (error) {
             toast.error(`Error fetching translations: ${error}`);
             setTranslations({});
         }
     };
+
 
     useEffect(() => {
         if (language) {
