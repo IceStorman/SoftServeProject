@@ -3,7 +3,7 @@ from database.models import Games, Country, League
 from service.api_logic.scripts import get_sport_by_name
 from service.api_logic.filter_manager.base_filter_manager import BaseFilterManager
 from sqlalchemy import cast
-from sqlalchemy.sql.sqltypes import Time
+from sqlalchemy.sql.sqltypes import Time, Date
 
 class GamesFilterManager(BaseFilterManager):
 

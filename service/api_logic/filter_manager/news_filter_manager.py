@@ -1,6 +1,8 @@
 from sqlalchemy.orm import Query
 from database.models import News, TeamInNews
 from service.api_logic.filter_manager.base_filter_manager import BaseFilterManager
+from sqlalchemy import cast
+from sqlalchemy.sql.sqltypes import Date
 
 class NewsFilterManager(BaseFilterManager):
 
