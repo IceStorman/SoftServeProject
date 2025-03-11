@@ -34,12 +34,11 @@ class GamesService:
         .join(HomeTeam, Games.team_home_id == HomeTeam.team_index_id)
     )
 
-
         filtered_query, count = FilterManagerStrategy.apply_filters(Games, query, filters_dto)
 
         games = self._games_dal.execute_query(filtered_query)
         game_output = GameOutput(many=True)
-        games = game_output.dump([row._asdict() for row in games])
+        games = game_output.dump(games)
 
         response_dto = ListResponseDTO()
 
