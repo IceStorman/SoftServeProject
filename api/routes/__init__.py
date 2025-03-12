@@ -1,5 +1,3 @@
-import subprocess
-
 from flask import Flask
 from flask_cors import CORS
 from api.container.container import Container
@@ -10,13 +8,12 @@ from api.routes import (
     api_teams,
     api_countries,
     api_login,
-    api_user_preferences,
-    api_localization
+    api_user_preferences, api_localization
 )
-from api.routes.api_localization import get_locale
 from api.routes.api_login import login_app
 from api.routes.cache import cache
-from api.routes.api_localization import babel
+from api.routes.api_localization import babel, get_locale
+from api.routes.localization_compilling import LocalizationCompiler
 from flask_swagger_ui import get_swaggerui_blueprint
 from flask_sqlalchemy import SQLAlchemy
 from database.session import DATABASE_URL
@@ -107,15 +104,9 @@ def create_app():
     return app
 
 
-def compile_translations():
-    BASE_DIR = Path(__file__).resolve().parent
-    TRANSLATIONS_DIR = BASE_DIR / 'translations'
-    subprocess.run(["pybabel", "compile", "-d", str(TRANSLATIONS_DIR)], check=True)
-
-
 
 app = create_app()
 if __name__ == '__main__':
-    compile_translations()
+    LocalizationCompiler().compile_translations()
     app.run(host='0.0.0.0', port=5001, debug=True, use_reloader=False)
 
