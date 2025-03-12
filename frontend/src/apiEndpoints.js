@@ -50,6 +50,11 @@ const apiEndpoints = {
     preference:{
         getUserPreferences: 'preferences/get',
         changeUserPreferences: 'preferences/'
+    },
+
+    interactions:{
+        saveInteraction: 'interactions/save',
+        getInteractionStatus: 'interactions/getStatus',
     }
 };
 

@@ -7,3 +7,5 @@ class News(Base):
     sport_id = Column(ForeignKey('Sports.sport_id'))
     interest_rate = Column(Integer)
     save_at = Column(DateTime)
+    likes = Column(Integer, default=0)
+    views = Column(Integer, default=0)

@@ -1,6 +1,6 @@
 import pandas as pd
 
-from database.models import Likes, Views, News, TeamInNews, Sport
+from database.models import News, TeamInNews, Sport
 from sqlalchemy import union_all, literal, func, ClauseElement
 from datetime import timedelta, datetime
 

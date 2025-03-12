@@ -7,7 +7,8 @@ from database.postgres.dal.news import NewsDAL
 from service.api_logic.managers.recommendation_menager import RecommendationManager
 from service.api_logic.user_logic import UserService
 from service.api_logic.news_logic import NewsService
-
+from service.api_logic.interactions_logic import InteractionWithNewsService
+from database.postgres.dal import InteractionWithNewsDAL
 
 
 class Container(containers.DeclarativeContainer):
@@ -15,7 +16,8 @@ class Container(containers.DeclarativeContainer):
         modules=[
             "api.routes.api_login",
             "api.routes.api_news",
-            "api.routes.api_user_preferences"
+            "api.routes.api_user_preferences",
+            "api.routes.api_interactions"
         ]
     )
 
@@ -25,6 +27,7 @@ class Container(containers.DeclarativeContainer):
     preferences_dal = providers.Factory(PreferencesDAL, session=db_session)
     news_dal = providers.Factory(NewsDAL, session = db_session)
     sport_dal = providers.Factory(SportDAL, db_session=db_session)
+    interaction_with_news_dal = providers.Factory(InteractionWithNewsDAL, db_session=db_session)
 
     user_service = providers.Factory(
         UserService,
@@ -47,9 +50,7 @@ class Container(containers.DeclarativeContainer):
         user_dal=user_dal,
     )
 
-
-
-
-
-
-
+    interaction_with_news_service = providers.Factory(
+        InteractionWithNewsService,
+        interaction_with_news_dal=interaction_with_news_dal,
+    )

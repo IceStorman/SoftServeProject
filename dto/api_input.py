@@ -154,3 +154,9 @@ class TablesAndColumnsForUserPreferencesDTO:
         self.related_name = related_name
         self.related_logo = related_logo
         self.related_id = related_id
+
+class InteractionsDTO(BaseDTO):
+    user_id = fields.Int(required=True)
+    news_id = fields.Int(required=True)
+    interaction_type = fields.Raw(required=True)
+    timestamp = fields.DateTime(required=False, missing=datetime.now())

@@ -10,14 +10,14 @@ from .country import Country
 from .League import League
 from .game import Games
 from .teams_in_news import TeamInNews
-from .likes import Likes
-from .views import Views
 from .players import Players
 from .categories import Category
 from .streams_status import Streams_Status
 from .streams import Stream
 from .user_recommendations import UserNewsRecommendations
 from .user_club_preferences import UserClubPreferences
+from .interactions_with_news import InteractionWithNews
+from .interaction_types import InteractionTypes
 from .token_blocklist import Token_Blocklist
 from .temp_subscribers_data import TempSubscribersData
 from .refresh_token_tracking import refresh_token_tracking
