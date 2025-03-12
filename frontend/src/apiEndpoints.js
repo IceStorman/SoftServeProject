@@ -38,6 +38,7 @@ const apiEndpoints = {
     localization:{
         userBaseLanguage: 'localization',
         setLanguage: 'set_language',
+        ver: 'localization/version'
     },
 
     user:{
