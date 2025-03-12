@@ -1,7 +1,7 @@
 import re
 from collections import namedtuple
 from datetime import datetime
-from marshmallow import Schema, fields, pre_load, post_load, ValidationError, EXCLUDE, validates
+from marshmallow import Schema, fields, pre_load, post_load, ValidationError, EXCLUDE, validates # type: ignore
 
 
 class BaseDTO(Schema):
@@ -145,3 +145,14 @@ class InputUserLogInDTO(BaseDTO):
     email = fields.Str(required=False, missing=None)
     email_or_username = fields.Str(required=False, missing=None)
     password_hash = fields.Str(required=False, missing=None)
+
+class InteractionsDTO(BaseDTO):
+    user_id = fields.Int(required=True)
+    news_id = fields.Int(required=True)
+    type_of_interaction = fields.Raw(required=True)
+    timestamp = fields.Date(missing=datetime.now())
+
+class CheckInteractionStatusDTO(BaseDTO):
+    user_id = fields.Int(required=True)
+    news_id = fields.Int(required=True)
+    type_of_interaction = fields.Int(missing=1)

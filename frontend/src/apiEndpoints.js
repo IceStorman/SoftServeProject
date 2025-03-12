@@ -32,6 +32,11 @@ const apiEndpoints = {
     stream:{
         getAll: 'streams/all',
         getInfo: 'streams/info'
+    },
+
+    interactions:{
+        saveInteraction: 'interactions/save',
+        getLikeStatus: 'interactions/getStatus',
     }
 };
 
