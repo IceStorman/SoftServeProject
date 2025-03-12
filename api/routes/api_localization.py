@@ -14,19 +14,17 @@ localization_app = Blueprint('localization', __name__)
 
 LANGUAGES = ['en', 'uk']
 VERSION_FILE = "translation_version.json"
+BASE_VERSION = '1.0'
 
 def get_locale():
     return request.cookies.get('lang') or request.accept_languages.best_match(LANGUAGES)
 
 
 def get_translation_version_from_file():
-    if Path(VERSION_FILE).exists():
-        with open(VERSION_FILE, "r") as f:
-            data = json.load(f)
-
-            return data.get("version", "1.0")
-
-    return "1.0"
+    try:
+        return json.loads(Path(VERSION_FILE).read_text()).get("version", BASE_VERSION)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return BASE_VERSION
 
 
 @localization_app.route('/localization', methods=['GET'])

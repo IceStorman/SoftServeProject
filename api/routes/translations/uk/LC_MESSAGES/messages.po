@@ -59,7 +59,7 @@ msgid "Sign In"
 msgstr "Ввійти"
 
 msgid "Certatum Nostrum"
-msgstr "Де Тарас?"
+msgstr "Дуже крута назв"
 
 msgid "since 1990"
 msgstr "з 1990"

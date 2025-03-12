@@ -57,7 +57,7 @@ msgid "Sign In"
 msgstr "Sign In"
 
 msgid "Certatum Nostrum"
-msgstr "Where is Taras?"
+msgstr "Very cool name"
 
 msgid "since 1990"
 msgstr "since 1990"

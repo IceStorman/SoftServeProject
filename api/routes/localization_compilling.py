@@ -9,26 +9,13 @@ class LocalizationCompiler:
         self.__version_file = "translation_version.json"
 
 
-    def __get_translation_files_hash(self):
+    def compile_translations(self):
+        self.__update_version(self.__pass_to_translation_folder())
+
+
+    def __pass_to_translation_folder(self):
         BASE_DIR = Path(__file__).resolve().parent
-        TRANSLATIONS_DIR = BASE_DIR / "translations"
-        hash_md5 = hashlib.md5()
-
-        for po_file in TRANSLATIONS_DIR.rglob("*.po"):
-            with open(po_file, "rb") as f:
-                hash_md5.update(f.read())
-
-        return hash_md5.hexdigest()
-
-
-    def __get_current_version(self):
-        if Path(self.__version_file).exists():
-            with open(self.__version_file, "r") as f:
-                data = json.load(f)
-
-                return data.get("version"), data.get("hash")
-
-        return "1.0", None
+        return BASE_DIR / "translations"
 
 
     def __update_version(self, TRANSLATIONS_DIR):
@@ -49,7 +36,21 @@ class LocalizationCompiler:
             subprocess.run(["pybabel", "compile", "-d", str(TRANSLATIONS_DIR)], check=True)
 
 
-    def compile_translations(self):
-        BASE_DIR = Path(__file__).resolve().parent
-        TRANSLATIONS_DIR = BASE_DIR / "translations"
-        self.__update_version(TRANSLATIONS_DIR)
+    def __get_translation_files_hash(self):
+        hash_md5 = hashlib.md5()
+
+        for po_file in self.__pass_to_translation_folder().rglob("*.po"):
+            with open(po_file, "rb") as f:
+                hash_md5.update(f.read())
+
+        return hash_md5.hexdigest()
+
+
+    def __get_current_version(self):
+        if Path(self.__version_file).exists():
+            with open(self.__version_file, "r") as f:
+                data = json.load(f)
+
+                return data.get("version"), data.get("hash")
+
+        return "1.0", None
