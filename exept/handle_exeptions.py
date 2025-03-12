@@ -1,14 +1,10 @@
-import functools
 from functools import wraps
-
 import asyncio
 from flask import jsonify
 from pydantic import ValidationError
 from sqlalchemy.exc import OperationalError
-from sqlalchemy.util import await_only
-from tensorflow.python.eager.context import async_wait
 
-from exept.exeptions import CustomQSportException, DatabaseConnectionError
+from exept.exeptions import DatabaseConnectionError
 
 
 def handle_exceptions(func):

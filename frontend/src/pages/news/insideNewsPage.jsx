@@ -67,11 +67,11 @@ export default function InsideNewsPage() {
     const initialLikeStatusRef = useRef(initialLikeStatus);
 
     useEffect(() => {
-        initialLikeStatusRef.current = initialLikeStatus; 
+        initialLikeStatusRef.current = initialLikeStatus;
     }, [initialLikeStatus]);
 
     useEffect(() => {
-        likeStatusRef.current = likeStatus; 
+        likeStatusRef.current = likeStatus;
     }, [likeStatus]);
 
     const handleLikeStatus = async () => {
@@ -161,9 +161,9 @@ export default function InsideNewsPage() {
             </div>
 
             <section className="comments">
-
+            
                 <hr />
-
+               
             </section>
         </section>
     );

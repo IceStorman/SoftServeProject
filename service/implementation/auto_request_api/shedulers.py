@@ -13,10 +13,10 @@ class AutoSchedulerService:
 
 
     def scheduler_auto_api_parser(self, apis):
-        self.logger.info("Started api_scheduler")
+        self.logger.debug("Started api_scheduler")
         try:
             for api in apis:
-                self.logger.info(f"Work with {api['name']} | {api['index']} with frequency {api['frequency']} minutes.")
+                self.logger.debug(f"Work with {api['name']} | {api['index']} with frequency {api['frequency']} minutes.")
                 self.api_scheduler.add_job(
                     auto_request_system,
                     'interval',
@@ -30,7 +30,7 @@ class AutoSchedulerService:
 
 
     def scheduler_keep_db_alive(self):
-        self.logger.info("Started db_scheduler")
+        self.logger.debug("Started db_scheduler")
         try:
             self.db_scheduler.add_job(
                 keep_db_alive,
@@ -45,13 +45,13 @@ class AutoSchedulerService:
     def start(self):
         self.api_scheduler.start()
         self.db_scheduler.start()
-        self.logger.info("Schedulers started.")
+        self.logger.debug("Schedulers started.")
 
 
     def stop(self):
         self.api_scheduler.shutdown()
         self.db_scheduler.shutdown()
-        self.logger.info("Schedulers stopped.")
+        self.logger.debug("Schedulers stopped.")
 
 
 

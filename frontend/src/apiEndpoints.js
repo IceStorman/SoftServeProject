@@ -7,6 +7,7 @@ const apiEndpoints = {
         getArticle: 'news/article',
         getCurrentNews: '',
         likeArticle: 'like',
+        getRecommendations: 'news/recommendation',
     },
 
     sports:{
@@ -32,6 +33,23 @@ const apiEndpoints = {
     stream:{
         getAll: 'streams/all',
         getInfo: 'streams/info'
+    },
+
+    localization:{
+        userBaseLanguage: 'localization',
+        setLanguage: 'set_language',
+    },
+
+    user:{
+        signUp: 'user/sign-up',
+        login: 'user/login',
+        resetPasswordRequest: 'user/reset-password-request',
+        resetPassword: 'user/reset-password'
+    },
+
+    preference:{
+        getUserPreferences: 'preferences/get',
+        changeUserPreferences: 'preferences/'
     },
 
     interactions:{

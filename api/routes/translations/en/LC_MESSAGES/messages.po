@@ -1,0 +1,173 @@
+# English translations for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-02-13 09:18+0200\n"
+"PO-Revision-Date: 2025-02-13 09:20+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+
+
+msgid "Page not found"
+msgstr "Page not found"
+
+msgid "Navigation"
+msgstr "Navigation"
+
+msgid "Main page"
+msgstr "Main page"
+
+msgid "About us"
+msgstr "About us"
+
+msgid "FAQ"
+msgstr "FAQ"
+
+msgid "Contact info"
+msgstr "Contact info"
+
+msgid "Address"
+msgstr "Address"
+
+msgid "Phone"
+msgstr "Phone"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Follow Us on Social Media"
+msgstr "Follow Us on Social Media"
+
+msgid "Subscribe to our newsletter"
+msgstr "Subscribe to our newsletter"
+
+msgid "Sign In"
+msgstr "Sign In"
+
+msgid "Certatum Nostrum"
+msgstr "Certatum Nostrum"
+
+msgid "since 1990"
+msgstr "since 1990"
+
+msgid "News"
+msgstr "News"
+
+msgid "Leagues"
+msgstr "Leagues"
+
+msgid "Games"
+msgstr "Games"
+
+msgid "Filters"
+msgstr "Filters"
+
+msgid "Option 1"
+msgstr "Option 1"
+
+msgid "Option 2"
+msgstr "Option 2"
+
+msgid "Option 3"
+msgstr "Option 3"
+
+msgid "Sort by:"
+msgstr "Sort by:"
+
+msgid "more..."
+msgstr "more..."
+
+msgid "Latest games"
+msgstr "Latest games"
+
+msgid "Recommendations"
+msgstr "Recommendations"
+
+msgid "to track performance of your favorite teams"
+msgstr "to track performance of your favorite teams"
+
+msgid "Tags:"
+msgstr "Tags:"
+
+msgid "Password reset"
+msgstr "Password reset"
+
+msgid "Continue?"
+msgstr "Continue?"
+
+msgid "Log In"
+msgstr "Log In"
+
+msgid "Password:"
+msgstr "Password:"
+
+msgid "Forget password?"
+msgstr "Forget password?"
+
+msgid "Do not have an account?"
+msgstr "Do not have an account?"
+
+msgid "Create"
+msgstr "Create"
+
+msgid "Nickname:"
+msgstr "Nickname:"
+
+msgid "Repeat password:"
+msgstr "Repeat password:"
+
+msgid "Already have an account?"
+msgstr "Already have an account?"
+
+msgid "Select sport"
+msgstr "Select sport"
+
+msgid "teams"
+msgstr "teams"
+
+msgid "Account"
+msgstr "Account"
+
+msgid "Change preferences"
+msgstr "Change preferences"
+
+msgid "Logout"
+msgstr "Logout"
+
+msgid "Delete account"
+msgstr "Delete account"
+
+msgid "Are you sure?"
+msgstr "Are you sure?"
+
+msgid "Once deleted, the account cannot be restored"
+msgstr "Once deleted, the account cannot be restored"
+
+msgid "Cancel"
+msgstr "Cancel"
+
+msgid "Confirm"
+msgstr "Confirm"
+
+msgid "Skip >"
+msgstr "Skip >"
+
+msgid "What are you interested in?"
+msgstr "What are you interested in?"
+
+msgid "Choose your favourite sports:"
+msgstr "Choose your favourite sports:"
+
+
