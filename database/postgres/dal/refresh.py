@@ -5,6 +5,8 @@ from datetime import datetime
 from database.models.refresh_token_tracking import RefreshTokenTracking
 from database.models.token_blocklist import TokenBlocklist
 from database.postgres.dto.refresh import RefreshTokenDTO
+from marshmallow import ValidationError
+
 
 REFRESH = "refresh"
 
@@ -14,31 +16,28 @@ class RefreshTokenDAL:
 
     def save_refresh_token(self, refresh_dto: RefreshTokenDTO) -> Optional[int]:
         try:
-            refresh_entry = None #move to another location :)
+            refresh_entry = None
             
             if refresh_dto.id:
                 refresh_entry = self.get_refresh_token_by_id(refresh_dto.id)
 
             if refresh_entry:
-                refresh_entry.user_id = refresh_dto.user_id
-                refresh_entry.last_ip = refresh_dto.last_ip
-                refresh_entry.last_device = refresh_dto.last_device
-                refresh_entry.nonce = refresh_dto.nonce
+                data = self.schema.dump(refresh_dto)
+                for key, value in data.items():
+                    setattr(refresh_entry, key, value)
             else:
-                refresh_entry = RefreshTokenTracking(
-                    user_id=refresh_dto.user_id,
-                    last_ip=refresh_dto.last_ip,
-                    last_device=refresh_dto.last_device,
-                    nonce=refresh_dto.nonce
-                )
+                refresh_entry = RefreshTokenTracking(**self.schema.load(refresh_dto.dict()))
                 self.db_session.add(refresh_entry)
 
             self.db_session.commit()
             self.db_session.refresh(refresh_entry)
             return refresh_entry.id
+
+        except ValidationError as ve:
+            raise f"Validation error: {ve.messages}"
         except SQLAlchemyError as e:
-            print(f"Error in save_refresh_token: {e}")
-            return None
+            raise f"Error in save_refresh_token: {e}"
+
 
     def get_refresh_token_by_id(self, refresh_id: int) -> Optional[RefreshTokenTracking]:
         return self.db_session.query(RefreshTokenTracking).filter(RefreshTokenTracking.id == refresh_id).first()
