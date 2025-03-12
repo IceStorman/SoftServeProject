@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import img1 from '../imgs/1.jpg'
 import { FaRegHeart } from "react-icons/fa";
 import { FaHeart } from "react-icons/fa";
 import axios from "axios";
 import apiEndpoints from "../../apiEndpoints";
+import { AuthContext } from "../registration/AuthContext"
 
 export default function InsideNewsPage() {
     const newsId = 1
@@ -13,15 +14,14 @@ export default function InsideNewsPage() {
     const likes = 10
     const content = 'Howling winds keep screaming around And the rain comes pouring down Doors are locked and bolted now As the thing crawls into town Straight out of hell One of a kind Stalking his victim Don t look behind you Night crawler Beware the beast in black Night crawler You know he s coming back Night crawler Howling winds keep screaming around And the rain comes pouring down Doors are locked and bolted now As the thing crawls into town Straight out of hell One of a kind Stalking his victim Don t look behind you Night crawler Beware the beast in black Night crawler You know he s coming back Night crawler Howling winds keep screaming around And the rain comes pouring down Doors are locked and bolted now As the thing crawls into town Straight out of hell One of a kind Stalking his victim Don t look behind you Night crawler Beware the beast in black Night crawler You know he s coming back Night crawler Howling winds keep screaming around And the rain comes pouring down Doors are locked and bolted now As the thing crawls into town Straight out of hell One of a kind Stalking his victim Don t look behind you Night crawler Beware the beast in black Night crawler You know he s coming back Night crawler Howling winds keep screaming around And the rain comes pouring down Doors are locked and bolted now As the thing crawls into town Straight out of hell One of a kind Stalking his victim Don t look behind you Night crawler Beware the beast in black Night crawler You know he s coming back Night crawler Howling winds keep screaming around And the rain comes pouring down Doors are locked and bolted now As the thing crawls into town Straight out of hell One of a kind Stalking his victim Don t look behind you Night crawler Beware the beast in black Night crawler You know he s coming back Night crawler'
 
-    const userId = 1;
-    const [loginStatus, setLoginStatus] = useState(true);
     const [likeStatus, setLikeStatus] = useState(false);
     const [initialLikeStatus, setInitialLikeStatus] = useState(false);
-
-    const [isVisible, setIsVisible] = useState(false);
     const elementRef = useRef(null);
-
     const [hasRead, setHasRead] = useState(false);
+    const likeStatusRef = useRef(likeStatus);
+    const initialLikeStatusRef = useRef(initialLikeStatus);
+
+    const { user } = useContext(AuthContext)
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -45,26 +45,19 @@ export default function InsideNewsPage() {
         };
     }, [hasRead]);
 
-
     useEffect(() => {
-        const handleBeforeUnload = (event) => {
+        const handleEvent = () => {
             handleLikeStatus();
         };
-        const handlePopState = () => {
-            handleLikeStatus();
-        };
-
-        window.addEventListener("beforeunload", handleBeforeUnload);
-        window.addEventListener("popstate", handlePopState);
-
+    
+        window.addEventListener("beforeunload", handleEvent);
+        window.addEventListener("popstate", handleEvent);
+    
         return () => {
-            window.removeEventListener("beforeunload", handleBeforeUnload);
-            window.removeEventListener("popstate", handlePopState);
+            window.removeEventListener("beforeunload", handleEvent);
+            window.removeEventListener("popstate", handleEvent);
         };
     }, []);
-
-    const likeStatusRef = useRef(likeStatus);
-    const initialLikeStatusRef = useRef(initialLikeStatus);
 
     useEffect(() => {
         initialLikeStatusRef.current = initialLikeStatus;
@@ -89,28 +82,31 @@ export default function InsideNewsPage() {
     }, []);
 
     const saveInteraction = async (interactionType) => {
-        try {
-            await axios.post(
-                `${apiEndpoints.url}${apiEndpoints.interactions.saveInteraction}`,
-                {
-                    user_id: userId,
-                    news_id: newsId,
-                    type_of_interaction: interactionType,
-                    //time++
-                }
-            );
-        } catch (error) {
-            console.error("Error with interaction:", error);
+        if (user) {
+            try {
+                await axios.post(
+                    `${apiEndpoints.url}${apiEndpoints.interactions.saveInteraction}`,
+                    {
+                        user_id: user.id,
+                        news_id: newsId,
+                        interaction_type: interactionType,
+                        timestamp: new Date().toLocaleString(),
+                    }
+                );
+            } catch (error) {
+                console.error("Error with interaction:", error);
+            }
         }
     };
 
     useEffect(() => {
         async function getLikeStatus() {
             try {
-                const { data } = await axios.get(`${apiEndpoints.url}${apiEndpoints.interactions.getLikeStatus}`, {
+                const { data } = await axios.get(`${apiEndpoints.url}${apiEndpoints.interactions.getInteractionStatus}`, {
                     params: {
-                        user_id: userId,
+                        user_id: user.id,
                         news_id: newsId,
+                        interaction_type: 'like'
                     },
                 });
                 setLikeStatus(data.status);
@@ -120,17 +116,12 @@ export default function InsideNewsPage() {
             }
         }
 
-        if (loginStatus && newsId) {
+        if (user && newsId) {
             getLikeStatus();
         }
-    }, [loginStatus, newsId]);
-
+    }, [user, newsId]);
 
     const toggleLike = () => {
-        if (!loginStatus) {
-            return;
-        }
-        console.log('hello????')
         setLikeStatus(prev => {
             return !prev;
         });
@@ -161,9 +152,9 @@ export default function InsideNewsPage() {
             </div>
 
             <section className="comments">
-            
+
                 <hr />
-               
+
             </section>
         </section>
     );

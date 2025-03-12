@@ -1,5 +1,6 @@
 from database.postgres.dal import InteractionWithNewsDAL
 from database.session import SessionLocal
+from exept.exeptions import UndefinedInteractionType
 from enum import Enum
 
 session = SessionLocal()
@@ -28,12 +29,23 @@ def get_interaction_type_id(interaction_type_name: str) -> int:
         case _:
             return InteractionTypes.UNDEFINED.value
 
+
 def save_interaction(interaction_dto):
-    interaction_type_id = get_interaction_type_id(interaction_dto.type_of_interaction)
+    interaction_type_id = get_interaction_type_id(interaction_dto.interaction_type)
+    if interaction_type_id == InteractionTypes.UNDEFINED.value:
+        raise UndefinedInteractionType(interaction_dto.interaction_type)
+
     dal.save_interaction(interaction_dto, interaction_type_id)
 
+
 def get_interaction_status(interaction_dto) -> bool:
-    interaction_entry = dal.get_interaction_by_user_id_and_type(interaction_dto.user_id, interaction_dto.type_of_interaction)
+    interaction_type_id = get_interaction_type_id(interaction_dto.interaction_type)
+    if interaction_type_id == InteractionTypes.UNDEFINED.value:
+        raise UndefinedInteractionType(interaction_dto.interaction_type)
+
+    interaction_entry = dal.get_interaction_by_user_id_and_news_id_and_type(interaction_dto.user_id,
+                                                                            interaction_dto.news_id,
+                                                                            interaction_type_id)
     if interaction_entry:
         return True
     return False

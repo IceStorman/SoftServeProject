@@ -54,7 +54,7 @@ const apiEndpoints = {
 
     interactions:{
         saveInteraction: 'interactions/save',
-        getLikeStatus: 'interactions/getStatus',
+        getInteractionStatus: 'interactions/getStatus',
     }
 };
 

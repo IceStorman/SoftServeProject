@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from dto.api_input import InteractionsDTO, CheckInteractionStatusDTO
+from dto.api_input import InteractionsDTO
 from exept.exeptions import DatabaseConnectionError, CustomQSportException
 from exept.handle_exeptions import get_custom_error_response
 from logger.logger import Logger
@@ -30,12 +30,12 @@ def save_interaction():
 
 @interactions_app.route('/getStatus', methods=['GET'])
 @logger.log_function_call()
-def get_like_status_by_user_id():
+def get_interaction_status_by_user_id():
     try:
         user_id = request.args.get("user_id")
         news_id = request.args.get("news_id")
-        dto = CheckInteractionStatusDTO().load({"news_id": news_id, "user_id": user_id})
-
+        interaction_type = request.args.get("interaction_type")
+        dto = InteractionsDTO.load({"news_id": news_id, "user_id": user_id, "interaction_type": interaction_type})
         status = get_interaction_status(dto)
 
         return {"status": status}, 200

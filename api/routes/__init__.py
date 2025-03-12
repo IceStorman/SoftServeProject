@@ -11,7 +11,7 @@ from api.routes import (
     api_countries,
     api_login,
     api_user_preferences,
-    api_interactions
+    api_interactions,
     api_user_preferences,
     api_localization
 )

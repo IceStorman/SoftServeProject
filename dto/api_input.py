@@ -158,10 +158,5 @@ class TablesAndColumnsForUserPreferencesDTO:
 class InteractionsDTO(BaseDTO):
     user_id = fields.Int(required=True)
     news_id = fields.Int(required=True)
-    type_of_interaction = fields.Raw(required=True)
-    timestamp = fields.Date(missing=datetime.now())
-
-class CheckInteractionStatusDTO(BaseDTO):
-    user_id = fields.Int(required=True)
-    news_id = fields.Int(required=True)
-    type_of_interaction = fields.Int(missing=1)
+    interaction_type = fields.Raw(required=True)
+    timestamp = fields.Date(required=False, missing=datetime.now())
