@@ -1,15 +1,14 @@
 from sqlalchemy.orm import Session
 from database.models import InteractionWithNews
 from typing import Optional
-from service.api_logic.interactions_logic import InteractionTypes
 
-LIKE_RELATED_INTERACTIONS_SPAN = [InteractionTypes.LIKE.value, InteractionTypes.DISLIKE.value]
+LIKE_RELATED_INTERACTIONS_SPAN = [1, 2]
 
 class InteractionWithNewsDAL:
     def __init__(self, db_session: Session = None):
         self.db_session = db_session
         
-    def save_interaction(self, interaction_dto, interaction_type_id: int) -> int:
+    def save_interaction(self, interaction_dto, interaction_type_id: int):
         interaction_type_id_search_option = interaction_type_id
         if interaction_type_id in LIKE_RELATED_INTERACTIONS_SPAN:
             interaction_type_id_search_option = sum(LIKE_RELATED_INTERACTIONS_SPAN) - interaction_type_id
@@ -17,10 +16,11 @@ class InteractionWithNewsDAL:
                                                                                  interaction_dto.news_id,
                                                                                  interaction_type_id_search_option)
         if interaction_entry:
-            interaction_entry = self.update_interaction(interaction_entry.interaction_id, interaction_dto, interaction_type_id)
+            self.update_interaction(interaction_entry.interaction_id, interaction_dto, interaction_type_id)
+            return {"message": "Interaction was updated"}, 200
         else:
-            interaction_entry = self.create_interaction(interaction_dto, interaction_type_id)
-        return interaction_entry.interaction_id
+            self.create_interaction(interaction_dto, interaction_type_id)
+            return {"message": "Interaction was created"}, 201
     
     def create_interaction(self, interaction_dto, interaction_type_id: int) -> InteractionWithNews:
         new_interaction = InteractionWithNews(

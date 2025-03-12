@@ -98,7 +98,6 @@ def create_app():
     app.register_blueprint(api_sports.sports_app, url_prefix='/sports')
     app.register_blueprint(api_teams.teams_app, url_prefix='/teams')
     app.register_blueprint(api_countries.countries_app, url_prefix='/countries')
-    app.register_blueprint(api_login.login_app, url_prefix='/login')
     app.register_blueprint(api_interactions.interactions_app, url_prefix='/interactions')
     app.register_blueprint(api_localization.localization_app, url_prefix='/')
     app.register_blueprint(api_login.login_app, url_prefix='/user')

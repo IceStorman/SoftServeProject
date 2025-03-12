@@ -23,13 +23,13 @@ def upgrade() -> None:
     CREATE OR REPLACE FUNCTION update_news_interactions_func()
     RETURNS TRIGGER AS $$
     BEGIN
-        IF NEW.type_of_interaction = 1 THEN
+        IF NEW.interaction_type = 1 THEN
             UPDATE public."News"
             SET likes = likes + 1 WHERE news_id = NEW.news_id;
-        ELSIF NEW.type_of_interaction = 2 THEN
+        ELSIF NEW.interaction_type = 2 THEN
             UPDATE public."News"
             SET likes = likes - 1 WHERE news_id = NEW.news_id;
-        ELSIF NEW.type_of_interaction = 3 THEN
+        ELSIF NEW.interaction_type = 3 THEN
             UPDATE public."News"
             SET views = views + 1 WHERE news_id = NEW.news_id;
         END IF;

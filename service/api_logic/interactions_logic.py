@@ -1,10 +1,5 @@
-from database.postgres.dal import InteractionWithNewsDAL
-from database.session import SessionLocal
 from exept.exeptions import UndefinedInteractionType
 from enum import Enum
-
-session = SessionLocal()
-dal = InteractionWithNewsDAL(session)
 
 class InteractionTypes(Enum):
     UNDEFINED = 0
@@ -29,23 +24,27 @@ def get_interaction_type_id(interaction_type_name: str) -> int:
         case _:
             return InteractionTypes.UNDEFINED.value
 
+class InteractionWithNewsService:
 
-def save_interaction(interaction_dto):
-    interaction_type_id = get_interaction_type_id(interaction_dto.interaction_type)
-    if interaction_type_id == InteractionTypes.UNDEFINED.value:
-        raise UndefinedInteractionType(interaction_dto.interaction_type)
+    def __init__(self, interaction_with_news_dal):
+        self._interaction_with_news_dal = interaction_with_news_dal
 
-    dal.save_interaction(interaction_dto, interaction_type_id)
+    def save_interaction(self, interaction_dto):
+        interaction_type_id = get_interaction_type_id(interaction_dto.interaction_type)
+        if interaction_type_id == InteractionTypes.UNDEFINED.value:
+            raise UndefinedInteractionType(interaction_dto.interaction_type)
+
+        return self._interaction_with_news_dal.save_interaction(interaction_dto, interaction_type_id)
 
 
-def get_interaction_status(interaction_dto) -> bool:
-    interaction_type_id = get_interaction_type_id(interaction_dto.interaction_type)
-    if interaction_type_id == InteractionTypes.UNDEFINED.value:
-        raise UndefinedInteractionType(interaction_dto.interaction_type)
+    def get_interaction_status(self, interaction_dto):
+        interaction_type_id = get_interaction_type_id(interaction_dto.interaction_type)
+        if interaction_type_id == InteractionTypes.UNDEFINED.value:
+            raise UndefinedInteractionType(interaction_dto.interaction_type)
 
-    interaction_entry = dal.get_interaction_by_user_id_and_news_id_and_type(interaction_dto.user_id,
-                                                                            interaction_dto.news_id,
-                                                                            interaction_type_id)
-    if interaction_entry:
-        return True
-    return False
+        interaction_entry = self._interaction_with_news_dal.get_interaction_by_user_id_and_news_id_and_type(interaction_dto.user_id,
+                                                                                interaction_dto.news_id,
+                                                                                interaction_type_id)
+        if interaction_entry:
+            return {"status": True}, 200
+        return {"status": False}, 404
