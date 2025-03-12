@@ -29,6 +29,7 @@ class InteractionWithNewsService:
     def __init__(self, interaction_with_news_dal):
         self._interaction_with_news_dal = interaction_with_news_dal
 
+
     def save_interaction(self, interaction_dto):
         interaction_type_id = get_interaction_type_id(interaction_dto.interaction_type)
         if interaction_type_id == InteractionTypes.UNDEFINED.value:
@@ -45,6 +46,4 @@ class InteractionWithNewsService:
         interaction_entry = self._interaction_with_news_dal.get_interaction_by_user_id_and_news_id_and_type(interaction_dto.user_id,
                                                                                 interaction_dto.news_id,
                                                                                 interaction_type_id)
-        if interaction_entry:
-            return {"status": True}, 200
-        return {"status": False}, 404
+        return interaction_entry

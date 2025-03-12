@@ -5,6 +5,7 @@ import { FaHeart } from "react-icons/fa";
 import axios from "axios";
 import apiEndpoints from "../../apiEndpoints";
 import { AuthContext } from "../registration/AuthContext"
+import { toast } from "sonner";
 
 export default function InsideNewsPage() {
     const newsId = 1
@@ -22,6 +23,7 @@ export default function InsideNewsPage() {
     const initialLikeStatusRef = useRef(initialLikeStatus);
 
     const { user } = useContext(AuthContext)
+
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -49,10 +51,10 @@ export default function InsideNewsPage() {
         const handleEvent = () => {
             handleLikeStatus();
         };
-    
+
         window.addEventListener("beforeunload", handleEvent);
         window.addEventListener("popstate", handleEvent);
-    
+
         return () => {
             window.removeEventListener("beforeunload", handleEvent);
             window.removeEventListener("popstate", handleEvent);
@@ -90,11 +92,11 @@ export default function InsideNewsPage() {
                         user_id: user.id,
                         news_id: newsId,
                         interaction_type: interactionType,
-                        timestamp: new Date().toLocaleString(),
+                        timestamp: new Date().toISOString(),
                     }
                 );
             } catch (error) {
-                console.error("Error with interaction:", error);
+                toast.error(`Troubles with saving interaction: ${error}`)
             }
         }
     };
@@ -112,7 +114,7 @@ export default function InsideNewsPage() {
                 setLikeStatus(data.status);
                 setInitialLikeStatus(data.status);
             } catch (error) {
-                console.error("Error fetching like status:", error);
+                toast.error(`Troubles with getting like status: ${error}`)
             }
         }
 
@@ -122,9 +124,20 @@ export default function InsideNewsPage() {
     }, [user, newsId]);
 
     const toggleLike = () => {
-        setLikeStatus(prev => {
-            return !prev;
-        });
+        if (user) {
+            setLikeStatus(prev => {
+                return !prev;
+            });
+        }
+        else {
+            const notify = () => toast('Sign in to leave your reaction', {
+                action: {
+                    label: 'sign in',
+                    onClick: () => window.location.href = '/sign-in',
+                },
+            });
+            notify()
+        }
     };
 
     return (
