@@ -142,9 +142,11 @@ class UserService:
 
     async def log_in(self, credentials: InputUserLogInDTO):
         login_context = AuthManager(self)
+        user_id = self._user_dal.get_existing_user(credentials.email)
+        sus_login = self._user_info_service.is_suspicious_login()
         user = await login_context.execute_log_in(credentials)
         response = await self.create_access_token_response(user)
-        sus_login = self._user_info_service.is_suspicious_login()
+
 
         
         return response
@@ -162,7 +164,7 @@ class UserService:
         user_id = jwt.get('sub')
         return user_id
 
-    async def save_tokens_to_db(self, user, access_token: str, refresh_token: str):
+    def save_tokens_to_db(self, user, access_token: str, refresh_token: str):
         
         decode_access_token = decode_token(access_token)
         decode_refresh_token = decode_token(refresh_token)
