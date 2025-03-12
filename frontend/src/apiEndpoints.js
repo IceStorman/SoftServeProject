@@ -38,6 +38,7 @@ const apiEndpoints = {
     localization:{
         userBaseLanguage: 'localization',
         setLanguage: 'set_language',
+        ver: 'localization/version'
     },
 
     user:{
@@ -45,6 +46,11 @@ const apiEndpoints = {
         login: 'user/login',
         resetPasswordRequest: 'user/reset-password-request',
         resetPassword: 'user/reset-password'
+    },
+
+    preference:{
+        getUserPreferences: 'preferences/get',
+        changeUserPreferences: 'preferences/'
     }
 };
 

@@ -320,8 +320,10 @@ class UserService:
 
     def delete_preferences(self, dto: UpdateUserPreferencesDTO):
         new_dto_by_type_of_preference = self.dto_for_type_of_preference(dto)
-
-        self._preferences_dal.delete_user_preferences(new_dto_by_type_of_preference, dto)
+        if not dto.preferences:
+            self._preferences_dal.delete_all_user_preferences(new_dto_by_type_of_preference, dto)
+        else:
+            self._preferences_dal.delete_user_preferences(new_dto_by_type_of_preference, dto)
 
 
     @staticmethod
