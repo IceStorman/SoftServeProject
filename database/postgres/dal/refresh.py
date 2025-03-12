@@ -79,7 +79,6 @@ class RefreshTokenDAL:
             else:
                 self.save_refresh_token(refresh_dto)
         except SQLAlchemyError as e:
-            self.db_session.rollback()
             print(f"Error in update_refresh_token: {e}")
 
     def revoke_refresh_token(self, refresh_id: int) -> bool:

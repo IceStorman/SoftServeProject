@@ -111,5 +111,4 @@ async def refresh(service: UserService = Provide[Container.user_service]):
         return await service.refresh_tokens()
     except CustomQSportException as e:
         logger.error(f"Error in POST /refresh: {str(e)}")
-        
-
+        return get_custom_error_response(e)

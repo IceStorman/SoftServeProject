@@ -21,27 +21,27 @@ class UserInfoService:
             os=f"{parsed_agent.os.family} {parsed_agent.os.version_string}",
             device=parsed_agent.device.family
         )
-        return f"{device_info.device} | {device_info.os} | {device_info.browser}"
+        return device_info.browser, device_info.os, device_info.device
 
-
-    def get_client_ip(self) -> str:
+    def __get_client_ip(self) -> str:
         return request.headers.get("X-Forwarded-For", request.remote_addr)
 
-    def get_country_from_ip(self) -> str:
-        ip = self.get_client_ip()
+    def __get_country_from_ip(self) -> str:
+        ip = self.__get_client_ip()
 
         try:
             response = requests.get(f"https://ipinfo.io/{ip}/json", timeout=3)
             response.raise_for_status()
-            return response.json().get("country", "Unknown")
+            unknown = "Unknown"
+            return response.json().get("country", unknown)
         except (requests.RequestException, ValueError):
-            return "Unknown"
+            return unknown
 
-    def is_ip_country_changed(self, stored_country: str) -> bool:
+    def has_ip_country_changed(self, stored_country: str) -> bool:
         current_country = self.get_country_from_ip()
         return stored_country != current_country
 
-    def is_device_changed(self, stored_device: str) -> bool:
+    def has_device_changed(self, stored_device: str) -> bool:
         current_device = self.get_user_device()
         return stored_device != current_device
 
@@ -54,10 +54,9 @@ class UserInfoService:
         if not refresh_entry:
             return False  
 
-        current_ip = self.get_client_ip()
-        current_country = self.get_country_from_ip()
+        current_ip = self.__get_client_ip()
+        current_country = self.__get_country_from_ip()
         current_device = self.get_user_device()
-
 
         suspicious_conditions = [
             refresh_entry.last_ip and refresh_entry.last_ip != current_ip,
