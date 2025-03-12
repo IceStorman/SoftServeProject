@@ -32,6 +32,7 @@ class TeamsDataManager(AbstractSportDataManager):
         if ix is not None:
             self._sport_name = ix.sport_name
 
+        self._sport_id = new_data.sport_id
         self._leagues_id = new_data.league_id
         self._host = get_host(self._sport_name)
 
@@ -41,12 +42,11 @@ class TeamsDataManager(AbstractSportDataManager):
     def get_teams_data(self, pagination):
         index = get_team_index(self._sport_name, self._leagues_id)
         result = self._service.get_teams(self._data_dict, pagination)
-        if result:
+        if result["count"]:
             return result
-        url_first = get_host(self._sport_name)
-        url = "https://"+url_first+"/"+index.replace("teams/","")
+        url = "https://"+self._host+"/"+index.replace("teams/","")
         try:
-            team = self._try_return_json_data(url, index)
+            team = self._return_specific_json_data(url, index, self._sport_id)
             return team
         except Exception as e:
             return {"error": str(e)}

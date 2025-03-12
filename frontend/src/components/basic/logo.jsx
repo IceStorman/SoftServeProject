@@ -6,7 +6,7 @@ function Logo() {
     const { t } = useTranslations();
 
     return (
-        <NavLink to={"/"}className="nav-link" activeClassName="active">
+        <NavLink to={"/"}className="nav-link logo-btn" activeClassName="active">
         <div className="logo">
             <hr />
             <p>{t("certatum_nostrum")}</p>

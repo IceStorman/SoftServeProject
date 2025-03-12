@@ -2,13 +2,30 @@ header {
     width: 100%;
     height: fit-content;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     position: relative;
     background-color: $bg-white;
 
+    .filled{
+        position: static !important;
+    }
+
+    .header-btn{
+        display: flex;
+        align-items: center;
+        margin-right: 3rem;
+    }
+
+    .logo-btn{
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
     .white{
         color: $bg-white;
+        margin-right: 3rem;
         padding: 1rem;
         font-size: 1.2rem;
         font-family: "PirataOne";

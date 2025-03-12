@@ -1,3 +1,5 @@
+import subprocess
+
 from flask import Flask
 from flask_cors import CORS
 from api.container.container import Container
@@ -101,7 +103,15 @@ def create_app():
     return app
 
 
+def compile_translations():
+    BASE_DIR = Path(__file__).resolve().parent
+    TRANSLATIONS_DIR = BASE_DIR / 'translations'
+    subprocess.run(["pybabel", "compile", "-d", str(TRANSLATIONS_DIR)], check=True)
+
+
+
 app = create_app()
 if __name__ == '__main__':
+    compile_translations()
     app.run(host='0.0.0.0', port=5001, debug=True, use_reloader=False)
 
