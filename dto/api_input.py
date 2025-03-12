@@ -159,4 +159,4 @@ class InteractionsDTO(BaseDTO):
     user_id = fields.Int(required=True)
     news_id = fields.Int(required=True)
     interaction_type = fields.Raw(required=True)
-    timestamp = fields.Date(required=False, missing=datetime.now())
+    timestamp = fields.DateTime(required=False, missing=datetime.now())

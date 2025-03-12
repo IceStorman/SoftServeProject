@@ -5,7 +5,7 @@ from typing import Optional
 LIKE_RELATED_INTERACTIONS_SPAN = [1, 2]
 
 class InteractionWithNewsDAL:
-    def __init__(self, db_session: Session = None):
+    def __init__(self, db_session = None):
         self.db_session = db_session
         
     def save_interaction(self, interaction_dto, interaction_type_id: int):
