@@ -9,12 +9,430 @@
     "http"
   ],
   "paths": {
+    "/countries/search/{query}": {
+    "get": {
+      "summary": "Search for countries",
+      "operationId": "searchCountries",
+      "tags": ["Countries"],
+      "parameters": [
+        {
+          "name": "query",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Search term for country names",
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response with matched countries",
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "name": {
+                  "type": "string",
+                  "example": "United States"
+                },
+                "flag": {
+                  "type": "string",
+                  "example": "https://example.com/logo/12345"
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Bad request"
+        },
+        "500": {
+          "description": "Internal server error"
+        }
+      }
+    }
+  },
+"/localization": {
+    "get": {
+      "summary": "Get localization phrases",
+      "operationId": "getLocalizationPhrases",
+      "tags": ["Localization"],
+      "responses": {
+        "200": {
+          "description": "Successful response with localization phrases",
+          "schema": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "example": {
+              "page_not_found": "Page not found",
+              "navigation": "Navigation",
+              "main_page": "Main page",
+              "about_us": "About us",
+              "faq": "FAQ",
+              "certatum_nostrum": "Certatum Nostrum",
+              "since": "since 1990",
+              "contact_info": "Contact info",
+              "address": "Address",
+              "phone": "Phone",
+              "email": "Email",
+              "our_social_media": "Follow Us on Social Media",
+              "our_newsletter": "Subscribe to our newsletter",
+              "log_out": "Logout",
+              "account": "Account",
+              "change_preferences": "Change preferences",
+              "delete_account": "Delete account",
+              "delete_check": "Are you sure?",
+              "delete_check_text": "Once deleted, the account cannot be restored",
+              "cancel": "Cancel",
+              "confirm": "Confirm",
+              "skip": "Skip >",
+              "what_interesting_in": "What are you interested in?",
+              "choose_sports": "Choose your favourite sports:",
+              "sign_in": "Sign In",
+              "log_in": "Log In",
+              "password": "Password:",
+              "forget_password": "Forget password?",
+              "password_reset": "Password reset",
+              "no_account": "Do not have an account?",
+              "have_account": "Already have an account?",
+              "create": "Create",
+              "nickname": "Nickname:",
+              "repeat_password": "Repeat password:",
+              "news": "News",
+              "leagues": "Leagues",
+              "filters": "Filters",
+              "games": "Games",
+              "latest_games": "Latest games",
+              "recommendations": "Recommendations",
+              "follow_teams": "to track performance of your favorite teams",
+              "tags": "Tags:",
+              "select_sport": "Select sport",
+              "teams": "teams",
+              "first_option": "Option 1",
+              "second_option": "Option 2",
+              "third_option": "Option 3",
+              "sort": "Sort by:",
+              "more": "more...",
+              "continue": "Continue?"
+            }
+          }
+        },
+        "400": {
+          "description": "Bad request"
+        },
+        "500": {
+          "description": "Internal server error"
+        }
+      }
+    }
+  },
+  "/localization/version": {
+    "get": {
+      "summary": "Get localization version",
+      "operationId": "getLocalizationVersion",
+      "tags": ["Localization"],
+      "responses": {
+        "200": {
+          "description": "Successful response with localization version",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "version": {
+                "type": "string",
+                "example": "1.10"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Bad request"
+        },
+        "500": {
+          "description": "Internal server error"
+        }
+      }
+    }
+  },
+"/user/sign-up": {
+    "post": {
+      "summary": "User Registration",
+      "operationId": "createAccount",
+      "tags": ["Authentication"],
+      "parameters": [
+        {
+          "in": "body",
+          "name": "body",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "username": {
+                "type": "string",
+                "example": "john_doe"
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "example": "john.doe@example.com"
+              },
+              "password": {
+                "type": "string",
+                "format": "password",
+                "example": "securePassword123"
+              }
+            },
+            "required": ["username", "email", "password"]
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "User successfully created",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "user_id": {
+                "type": "integer",
+                "example": 123
+              },
+              "user_email": {
+                "type": "string",
+                "format": "email",
+                "example": "john.doe@example.com"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Invalid input data"
+        },
+        "500": {
+          "description": "Internal server error"
+        }
+      }
+    }
+  },
+    "/user/reset-password-request": {
+    "post": {
+      "summary": "Request Password Reset",
+      "operationId": "requestPasswordReset",
+      "tags": ["Authentication"],
+      "parameters": [
+        {
+          "in": "body",
+          "name": "body",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "format": "email",
+                "example": "user@example.com"
+              }
+            },
+            "required": ["email"]
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Password reset request successful",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Password reset link sent to your email"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Invalid email format or email not found"
+        },
+        "500": {
+          "description": "Internal server error"
+        }
+      }
+    }
+  },
+ "/user/reset-password/{token}": {
+    "get": {
+      "summary": "Verify Password Reset Token",
+      "operationId": "verifyResetToken",
+      "tags": ["Authentication"],
+      "parameters": [
+        {
+          "in": "path",
+          "name": "token",
+          "required": true,
+          "type": "string",
+          "example": "abc123token"
+        }
+      ],
+      "responses": {
+        "302": {
+          "description": "Redirects to frontend password reset page",
+          "headers": {
+            "Location": {
+              "type": "string",
+              "example": "https://frontend.com/reset-password/abc123token"
+            }
+          }
+        },
+        "400": {
+          "description": "Invalid or expired token"
+        },
+        "500": {
+          "description": "Internal server error"
+        }
+      }
+    },
+    "post": {
+      "summary": "Reset User Password",
+      "operationId": "resetPassword",
+      "tags": ["Authentication"],
+      "parameters": [
+        {
+          "in": "path",
+          "name": "token",
+          "required": true,
+          "type": "string",
+          "example": "abc123token"
+        },
+        {
+          "in": "body",
+          "name": "body",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "type": "string",
+                "format": "password",
+                "example": "new_secure_password"
+              }
+            },
+            "required": ["password"]
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Password successfully reset",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Password has been reset successfully"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Invalid token or weak password"
+        },
+        "500": {
+          "description": "Internal server error"
+        }
+      }
+    }
+  },
+
+
+
+
+
+"/user/login": {
+    "post": {
+      "summary": "User Login",
+      "operationId": "logInUser",
+      "tags": ["Authentication"],
+      "parameters": [
+        {
+          "in": "header",
+          "name": "Authorization",
+          "required": true,
+          "description": "Google OAuth Token",
+          "schema": {
+            "type": "string",
+            "example": "Bearer 4%2F0AQSTgQGr3RFbLP-NX_ZScJj6d3ga6_qQuBnQH4DUG8MhXo1UoJiE858RLAjlEJkCLSHa2w"
+          }
+        },
+        {
+          "in": "body",
+          "name": "body",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "format": "email",
+                "example": "user@example.com"
+              },
+              "email_or_username": {
+                "type": "string",
+                "example": "user123"
+              },
+              "password": {
+                "type": "string",
+                "format": "password",
+                "example": "securepassword"
+              },
+              "auth_provider": {
+                "type": "string",
+                "example": "google"
+              }
+            }
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful login",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "user_id": {
+                "type": "integer",
+                "example": 123
+              },
+              "user_email": {
+                "type": "string",
+                "format": "email",
+                "example": "user@example.com"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Invalid credentials"
+        },
+        "500": {
+          "description": "Internal server error"
+        }
+      }
+    }
+  },
+
+
+
+
     "/sports/league/search": {
       "post": {
         "summary": "Search for sports leagues",
         "operationId": "searchLeagues",
         "tags": [
-          "Leagues"
+          "Sports"
         ],
         "parameters": [
           {
@@ -85,6 +503,7 @@
         }
       }
     },
+
     "/countries/": {
       "get": {
         "summary": "Retrieve a list of countries",
@@ -297,7 +716,480 @@
           }
         }
       }
+    },
+
+    "/news/{sport_type}": {
+      "get": {
+        "summary": "Get recent news by sport",
+        "operationId": "getRecentSportNews",
+        "tags": ["News"],
+        "parameters": [
+        {
+          "in": "path",
+          "name": "sport_type",
+          "required": true,
+          "type": "string",
+          "example": "football"
+        }
+      ],
+        "responses": {
+          "200": {
+            "description": "List of recent news",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "Breaking News: Major Sports Event"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Details about the major sports event that just happened."
+                  },
+                  "publication_date": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2024-12-28T12:30:00Z"
+                  },
+                  "link": {
+                    "type": "string",
+                    "example": "https://example.com/news/1"
+                  },
+                  "image": {
+                    "type": "string",
+                    "example": "https://example.com/images/news1.jpg"
+                  }
+                }
+              }
+            },
+            "examples": {
+              "application/json": [
+                {
+                  "id": 1,
+                  "title": "Breaking News: Major Sports Event",
+                  "description": "Details about the major sports event that just happened.",
+                  "publication_date": "2024-12-28T12:30:00Z",
+                  "link": "https://example.com/news/1",
+                  "image": "https://example.com/images/news1.jpg"
+                },
+                {
+                  "id": 2,
+                  "title": "Update: Championship Finals",
+                  "description": "Highlights from the recent championship finals.",
+                  "publication_date": "2024-12-28T14:00:00Z",
+                  "link": "https://example.com/news/2",
+                  "image": "https://example.com/images/news2.jpg"
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/news/popular": {
+      "get": {
+        "summary": "Get popular news",
+        "operationId": "getPopularNews",
+        "tags": ["News"],
+        "responses": {
+          "200": {
+            "description": "List of popular news",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "Breaking News: Major Sports Event"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Details about the major sports event that just happened."
+                  },
+                  "publication_date": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2024-12-28T12:30:00Z"
+                  },
+                  "link": {
+                    "type": "string",
+                    "example": "https://example.com/news/1"
+                  },
+                  "image": {
+                    "type": "string",
+                    "example": "https://example.com/images/news1.jpg"
+                  }
+                }
+              }
+            },
+            "examples": {
+              "application/json": [
+                {
+                  "id": 1,
+                  "title": "Breaking News: Major Sports Event",
+                  "description": "Details about the major sports event that just happened.",
+                  "publication_date": "2024-12-28T12:30:00Z",
+                  "link": "https://example.com/news/1",
+                  "image": "https://example.com/images/news1.jpg"
+                },
+                {
+                  "id": 2,
+                  "title": "Update: Championship Finals",
+                  "description": "Highlights from the recent championship finals.",
+                  "publication_date": "2024-12-28T14:00:00Z",
+                  "link": "https://example.com/news/2",
+                  "image": "https://example.com/images/news2.jpg"
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+  "/news/recommendation": {
+      "post": {
+        "summary": "Get recommendations for user based on preferences and last watch",
+        "operationId": "getRecommendationsForUser",
+        "tags": ["News"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "format": "email",
+                  "example": "user@example.com"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved user recommendations",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "recommendations_list_by_user_preferences": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "news_id": {
+                        "type": "integer",
+                        "example": 123
+                      },
+                      "score": {
+                        "type": "number",
+                        "example": 4.5
+                      },
+                      "user_id": {
+                        "type": "integer",
+                        "example": 1
+                      },
+                      "article": {
+                        "type": "object",
+                        "properties": {
+                          "blob_id": {
+                            "type": "string",
+                            "example": "abc123"
+                          },
+                          "title": {
+                            "type": "string",
+                            "example": "Breaking News: New Update on Sports"
+                          },
+                          "content": {
+                            "type": "string",
+                            "example": "This is the full content of the news item..."
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "recommendations_list_by_user_last_watch": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "news_id": {
+                        "type": "integer",
+                        "example": 123
+                      },
+                      "score": {
+                        "type": "number",
+                        "example": 4.5
+                      },
+                      "user_id": {
+                        "type": "integer",
+                        "example": 1
+                      },
+                      "article": {
+                        "type": "object",
+                        "properties": {
+                          "blob_id": {
+                            "type": "string",
+                            "example": "xyz987"
+                          },
+                          "title": {
+                            "type": "string",
+                            "example": "Sports Highlights: Amazing Goal!"
+                          },
+                          "content": {
+                            "type": "string",
+                            "example": "This is the content for the sports highlight news article..."
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+  "/sports/all": {
+      "get": {
+        "summary": "Get all sports",
+        "operationId": "getAllSports",
+        "tags": ["Sports"],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved all sports",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "sport": {
+                    "type": "string",
+                    "example": "Football"
+                  },
+                  "logo": {
+                    "type": "string",
+                    "example": "https://example.com/football-logo.png"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+  "/preferences/": {
+      "post": {
+        "summary": "Add or update sport preferences for a user",
+        "operationId": "addSportPreferences",
+        "tags": ["Preferences"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "preferences": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "example": [1, 2, 3]
+                },
+                "user_id": {
+                  "type": "integer",
+                  "example": 123
+                },
+                "type": {
+                  "type": "string",
+                  "example": "sport"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Preferences successfully added or updated",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Preferences updated successfully"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete sport preferences for a user",
+        "operationId": "deleteSportPreferences",
+        "tags": ["Preferences"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "preferences": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "example": [1, 2, 3]
+                },
+                "user_id": {
+                  "type": "integer",
+                  "example": 123
+                },
+                "type": {
+                  "type": "string",
+                  "example": "sport"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Preferences successfully deleted",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Preferences deleted successfully"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+      "/preferences/get": {
+      "post": {
+        "summary": "Get user sport preferences",
+        "operationId": "getUserSportPreferences",
+        "tags": ["Preferences"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_id": {
+                  "type": "integer",
+                  "example": 123
+                },
+                "type": {
+                  "type": "string",
+                  "example": "sport"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User sport preferences successfully retrieved",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "user_id": {
+                    "type": "integer",
+                    "example": 123
+                  },
+                  "sports_id": {
+                    "type": "string",
+                    "example": "1,2,3"
+                  },
+                  "sport_name": {
+                    "type": "string",
+                    "example": "Football"
+                  },
+                  "sport_img": {
+                    "type": "string",
+                    "example": "https://example.com/football.png"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
     }
+
+
   }
 }
 
