@@ -80,7 +80,7 @@ def get_script_phrases():
         "main_page":          _("Main page"),
         "about_us":           _("About us"),
         "faq":                _("FAQ"),
-        "certatum_nostrum":   _("Certatum Nostrum"),
+        "certatum_nostrum":   _("QSPORT"),
         "since":              _("since 1990"),
 
         # Контактна інформація

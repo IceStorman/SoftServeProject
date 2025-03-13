@@ -56,8 +56,8 @@ msgstr "Socials"
 msgid "Sign In"
 msgstr "Sign In"
 
-msgid "Certatum Nostrum"
-msgstr "Very cool name"
+msgid "QSPORT"
+msgstr "QSPORT"
 
 msgid "since 1990"
 msgstr "since 1990"

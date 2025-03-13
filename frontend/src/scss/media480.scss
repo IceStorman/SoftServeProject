@@ -1,0 +1,40 @@
+@media (max-width: 480px) {
+  header{
+
+    .logo-btn{
+      left: 0;
+      margin-left: 1rem;
+    }
+
+    .header-btn{
+      margin-right: 1rem;
+    }
+  }
+
+  .navbar-outer{
+
+    .navbar{
+      margin: 0;
+    }
+  }
+
+  .news-block{
+
+    h1{
+      font-size: 1.5rem;
+    }
+
+    .content{
+      font-size: 1rem;
+    }
+  }
+
+  footer{
+    flex-direction: column;
+    align-items: center;
+
+    .info-column{
+      width: 50%;
+    }
+  }
+}

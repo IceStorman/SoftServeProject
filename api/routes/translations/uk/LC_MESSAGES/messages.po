@@ -58,8 +58,8 @@ msgstr "Соц. Мережі"
 msgid "Sign In"
 msgstr "Ввійти"
 
-msgid "Certatum Nostrum"
-msgstr "Дуже крута назв"
+msgid "QSPORT"
+msgstr "QSPORT"
 
 msgid "since 1990"
 msgstr "з 1990"

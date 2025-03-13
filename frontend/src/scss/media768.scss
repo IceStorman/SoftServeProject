@@ -1,6 +1,26 @@
 @media (max-width: 768px) {
 
   .account-container{
-      max-width: 80%;
+      max-width: 60%;
+
+    .accountInfoContainer{
+      flex-direction: column;
+    }
+  }
+
+  header{
+
+    .logo-btn{
+      left: 0;
+      margin: 0 auto;
+      transform: none;
+    }
+  }
+
+  .news-block{
+
+    h1{
+      font-size: 2rem;
+    }
   }
 }

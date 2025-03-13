@@ -1,22 +1,20 @@
 header {
-    width: 100%;
     height: fit-content;
     display: flex;
     justify-content: space-between;
     align-items: center;
     position: relative;
     background-color: $bg-white;
-    transition: all 0.5s ease;
 
     .filled{
-        position: static !important;
+        position: static;
     }
 
     .header-btn{
         display: flex;
         align-items: center;
         margin-right: 3rem;
-
+        transition: all 0.5s ease;
 
         .account-button {
             display: flex;
@@ -47,7 +45,6 @@ header {
     max-width: 25rem;
     background-color: transparent;
     padding: 0.5rem 0;
-    flex: 1;
     text-align: center;
     text-decoration: none;
 
