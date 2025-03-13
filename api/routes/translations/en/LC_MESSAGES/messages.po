@@ -35,23 +35,23 @@ msgstr "About us"
 msgid "FAQ"
 msgstr "FAQ"
 
-msgid "Contact info"
-msgstr "Contact info"
+msgid "Contacts"
+msgstr "Contacts"
 
 msgid "Address"
-msgstr "Address"
+msgstr "Lviv, Kolomyiska 19"
 
 msgid "Phone"
-msgstr "Phone"
+msgstr "+380 97 584 22 34"
 
 msgid "Email"
+msgstr "q.sport.news@gmail.com"
+
+msgid "Email:"
 msgstr "Email"
 
-msgid "Follow Us on Social Media"
-msgstr "Follow Us on Social Media"
-
-msgid "Subscribe to our newsletter"
-msgstr "Subscribe to our newsletter"
+msgid "Socials"
+msgstr "Socials"
 
 msgid "Sign In"
 msgstr "Sign In"

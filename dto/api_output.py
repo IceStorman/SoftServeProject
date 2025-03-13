@@ -84,12 +84,11 @@ def get_script_phrases():
         "since":              _("since 1990"),
 
         # Контактна інформація
-        "contact_info":       _("Contact info"),
+        "contact_info":       _("Contacts"),
         "address":            _("Address"),
         "phone":              _("Phone"),
         "email":              _("Email"),
-        "our_social_media":   _("Follow Us on Social Media"),
-        "our_newsletter":     _("Subscribe to our newsletter"),
+        "our_social_media":   _("Socials"),
 
         # Авторизація
         "log_out":            _("Logout"),
@@ -115,6 +114,7 @@ def get_script_phrases():
         "create":             _("Create"),
         "nickname":           _("Nickname:"),
         "repeat_password":    _("Repeat password:"),
+        "email_account":      _("Email:"),
 
         # Новини та спорт
         "news":               _("News"),

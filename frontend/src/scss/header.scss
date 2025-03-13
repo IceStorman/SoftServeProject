@@ -6,6 +6,7 @@ header {
     align-items: center;
     position: relative;
     background-color: $bg-white;
+    transition: all 0.5s ease;
 
     .filled{
         position: static !important;
@@ -78,30 +79,21 @@ header {
 }
 
 .navbar-outer {
-    background-color: $bg-white;
+    background-color: $main-clr;
     box-shadow: 0 4px 30px $main-shadow;
+
     hr {
         height: 2px;
         background-color: black;
         border: none;
     }
 
-    nav {
-        overflow: visible;
-        display: unset;
-        background-color: red;
-    }
-
     .navbar {
-        position: sticky;
-        top: 0;
-        z-index: 100;
-        height: fit-content;
-        background-color: $main-clr;
         display: flex;
-        font-size: 1.2rem;
         align-items: center;
-        overflow: visible;
+        margin-left: 10rem;
+        font-size: 1.2rem;
+        transition: all 0.5s ease;
 
         .nav-link {
             text-decoration: none;
@@ -130,9 +122,6 @@ header {
 
             &:last-child::after {
                 display: none;
-            }
-            &:first-child{
-                margin-left: 13.5rem;
             }
         }
     }

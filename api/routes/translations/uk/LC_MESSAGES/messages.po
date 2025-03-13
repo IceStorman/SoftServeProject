@@ -37,23 +37,23 @@ msgstr "Про нас"
 msgid "FAQ"
 msgstr "FAQ"
 
-msgid "Contact info"
-msgstr "Контактна інформація"
+msgid "Contacts"
+msgstr "Контакти"
 
 msgid "Address"
-msgstr "Адреса"
+msgstr "Львів, Коломийська 19"
 
 msgid "Phone"
-msgstr "Телефон"
+msgstr "+380 97 584 22 34"
 
 msgid "Email"
-msgstr "Електрона пошта"
+msgstr "q.sport.news@gmail.com"
 
-msgid "Follow Us on Social Media"
-msgstr "Слідкуйте за нами в соціальних мережах"
+msgid "Email:"
+msgstr "Електронна пошта"
 
-msgid "Subscribe to our newsletter"
-msgstr "Підписатись на нашу розсилку"
+msgid "Socials"
+msgstr "Соц. Мережі"
 
 msgid "Sign In"
 msgstr "Ввійти"
