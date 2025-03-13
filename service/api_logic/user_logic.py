@@ -239,7 +239,6 @@ class UserService:
             "username":username,
             "new_user":new_user
         }
-        
         new_access_token = create_access_token(identity=email.email, additional_claims=additional_claims)
         new_refresh_token = create_refresh_token(identity=email.email, 
                                                  additional_claims=additional_claims.update({"nonce": self._user_info_service.generate_nonce()}))
