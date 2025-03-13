@@ -6,6 +6,8 @@ from database.models.refresh_token_tracking import RefreshTokenTracking
 from database.models.token_blocklist import TokenBlocklist
 from database.postgres.dto.refresh import RefreshTokenDTO
 from marshmallow import ValidationError
+from exept.exeptions import CustomQSportException, TokenUpdatingError, TokenRevokingError, TokenSavingError
+from exept.handle_exeptions import get_custom_error_response
 
 
 REFRESH = "refresh"
@@ -35,8 +37,8 @@ class RefreshTokenDAL:
 
         except ValidationError as ve:
             raise f"Validation error: {ve.messages}"
-        except SQLAlchemyError as e:
-            raise f"Error in save_refresh_token: {e}"
+        except TokenSavingError as e:
+            raise get_custom_error_response(e)
 
 
     def get_refresh_token_by_id(self, refresh_id: int) -> Optional[RefreshTokenTracking]:
@@ -78,8 +80,8 @@ class RefreshTokenDAL:
                 self.db_session.commit()
             else:
                 self.save_refresh_token(refresh_dto)
-        except SQLAlchemyError as e:
-            print(f"Error in update_refresh_token: {e}")
+        except TokenUpdatingError as e:
+            return get_custom_error_response(e)
 
     def revoke_refresh_token(self, refresh_id: int) -> bool:
         try:
@@ -90,12 +92,8 @@ class RefreshTokenDAL:
                     token_entry.revoked = True
                     token_entry.updated_at = datetime.utcnow()
                     self.db_session.commit()
-                    return True
-            return False
-        except SQLAlchemyError as e:
-            self.db_session.rollback()
-            print(f"Error in revoke_refresh_token: {e}")
-            return False
+        except CustomQSportException as e:
+            TokenRevokingError(e)
 
     def revoke_all_refresh_tokens_for_user(self, user_id: int) -> int:
         try:
@@ -113,5 +111,5 @@ class RefreshTokenDAL:
             self.db_session.commit()
             
             return revoked_count
-        except SQLAlchemyError as e:
-            self.db_session.rollback()
+        except TokenRevokingError as e:
+            get_custom_error_response(e)
