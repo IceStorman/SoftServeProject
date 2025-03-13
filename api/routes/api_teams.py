@@ -1,9 +1,6 @@
 from flask import Blueprint, request
 from dto.pagination import Pagination
 from exept.handle_exeptions import get_custom_error_response
-from service.api_logic.teams_logic import get_teams
-from service.implementation.auto_request_api.logic_request_by_react import basketball_players
-from api.routes.cache import cache
 from dto.api_input import TeamsLeagueDTO, TeamsStatisticsOrPlayersDTO
 from exept.exeptions import DatabaseConnectionError, CustomQSportException
 from service.implementation.auto_request_api.sport_data_managers.players_data_manager import PlayersDataManager
