@@ -8,7 +8,7 @@ from sqlalchemy.sql.sqltypes import Time, Date
 class GamesFilterManager(BaseFilterManager):
 
     @staticmethod
-    def apply_sport_filter(query: Query, value: int) -> Query:
+    def apply_sport_id_filter(query: Query, value: int) -> Query:
         return query.filter(Games.sport_id == value)
 
     @staticmethod
@@ -48,7 +48,7 @@ class GamesFilterManager(BaseFilterManager):
         return query.filter(Games.team_home_id == value)
 
     FILTERS = {
-        "sport_id": apply_sport_filter,
+        "sport_id": apply_sport_id_filter,
         "date_from": apply_date_from,
         "date_to": apply_date_to,
         "team_away": apply_team_away_filter,

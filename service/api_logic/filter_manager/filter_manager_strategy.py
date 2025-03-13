@@ -16,7 +16,6 @@ class FilterManagerStrategy:
 
     @classmethod
     def apply_filters(cls, model, query: Query, filters) -> tuple[Query, int]:
-
         table_name = model.__tablename__
 
         if table_name not in cls.MANAGERS:

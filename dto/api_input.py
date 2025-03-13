@@ -84,14 +84,15 @@ class PaginationDTO(BaseDTO):
     per_page = fields.Int(required=False, missing=0)
 
 class FilterDTO(BaseDTO):
-    name = fields.Str(required=True)
-    value = fields.Raw(required=True)
+    filter_name = fields.Str(required=True)
+    filter_value = fields.Raw(required=True)
+    order = fields.Str(required=False, missing=None)
+    field = fields.Str(required=False, missing=None)
 
 class SearchDTO(BaseDTO):
     filters = fields.List(fields.Nested(FilterDTO), required=False)
     pagination = fields.Nested(PaginationDTO, many=False)
-    order = fields.Str(required=False, missing=None)
-    field = fields.Str(required=False, missing=None)
+
 
 class SportsLeagueDTO(BaseDTO):
     sport = fields.Str(required=False, missing=None)

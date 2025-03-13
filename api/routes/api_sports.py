@@ -38,7 +38,7 @@ def get_all_sports_endpoint(league_service: SportService = Provide[Container.spo
 @sports_app.route('/league/search', methods=['POST'])
 @inject
 @logger.log_function_call()
-def search_countries(league_service: SportService = Provide[Container.sports_service]):
+def search_leagues(league_service: SportService = Provide[Container.sports_service]):
     try:
         data = request.get_json()
         dto = SearchDTO().load(data)

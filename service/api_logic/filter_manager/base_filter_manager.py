@@ -1,10 +1,6 @@
 from sqlalchemy.orm import Query
 from typing import Optional
-from dto.pagination import Pagination
 from sqlalchemy import desc, asc
-
-from sqlalchemy.orm import Query
-from sqlalchemy import asc, desc
 
 class BaseFilterManager:
     FILTERS = {}
@@ -15,16 +11,17 @@ class BaseFilterManager:
             return query, query.count()
 
         filters_list = getattr(dto, "filters", [])
+        order_field = None
+        order_type = None
 
         for filter_obj in filters_list:
-            filter_name = getattr(filter_obj, "name", None)
-            filter_value = getattr(filter_obj, "value", None)
+            filter_name = getattr(filter_obj, "filter_name", None)
+            filter_value = getattr(filter_obj, "filter_value", None)
+            order_field = getattr(filter_obj, "field", order_field)
+            order_type = getattr(filter_obj, "order", order_type)
 
             if filter_name in cls.FILTERS and filter_value is not None:
                 query = cls.FILTERS[filter_name](query, filter_value)
-
-        order_field = getattr(dto, "field", None)
-        order_type = getattr(dto, "order", None)
 
         if order_field and order_type:
             order_func = asc if order_type.lower() == "asc" else desc
@@ -40,3 +37,5 @@ class BaseFilterManager:
             query = query.offset(offset).limit(pagination_dto.per_page)
 
         return query, count
+
+
