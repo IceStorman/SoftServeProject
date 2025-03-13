@@ -365,17 +365,17 @@
 .news-block {
     display: flex;
     flex-direction: column;
-    min-height: fit-content;
-    margin: 1rem 26rem;
-    background-color: $bg-white;
+    max-width: 50%;
     padding: 0 2rem;
+    margin: 1rem auto;
+    background-color: $bg-white;
     box-shadow: 0 4px 10px $main-shadow;
     text-align: justify;
     word-break: break-word;
 
     img {
-        object-fit: contain;
         max-height: 30rem;
+        object-fit: contain;
     }
 
     h1 {
@@ -385,8 +385,27 @@
     }
 
     .content {
-        margin: 1rem;
+        display: flex;
+        flex-direction: column;
+        min-height: fit-content;
+        gap: 1rem;
         font-size: 1.4rem;
+
+        img{
+            max-height: 18rem;
+            max-width: 100%;
+        }
+
+        .article-section{
+            img{
+                float: left;
+                margin-right: 1.5rem;
+            }
+        }
+
+        h3{
+            margin-bottom: 0.2rem;
+        }
     }
 
     .tags {
