@@ -30,6 +30,7 @@ class Container(containers.DeclarativeContainer):
     sport_dal = providers.Factory(SportDAL, db_session=db_session)
     access_tokens_dal = providers.Factory(AccessTokensDAL, db_session = db_session)
     refresh_dal = providers.Factory(RefreshTokenDAL, db_session = db_session)
+    
     user_info_service = providers.Factory(UserInfoService, 
                                   access_tokens_dal=access_tokens_dal, 
                                   refresh_token_dal=refresh_dal

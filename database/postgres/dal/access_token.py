@@ -39,7 +39,6 @@ class AccessTokensDAL:
         return self.db_session.query(TokenBlocklist).filter(TokenBlocklist.jti == jti).first()
 
     def revoke_access_token(self, jti: str) -> bool:
- 
         try:
             jwt_entry = self.get_access_token_by_jti(jti)
             if jwt_entry:

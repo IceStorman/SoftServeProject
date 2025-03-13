@@ -147,8 +147,6 @@ class UserService:
         user = await login_context.execute_log_in(credentials)
         response = await self.create_access_token_response(user)
 
-
-        
         return response
 
 
@@ -165,13 +163,11 @@ class UserService:
         return user_id
 
     def save_tokens_to_db(self, user, access_token: str, refresh_token: str):
-        
         decode_access_token = decode_token(access_token)
         decode_refresh_token = decode_token(refresh_token)
         
         access_expires_at = datetime.utcfromtimestamp(decode_access_token['exp'])
         refresh_expires_at = datetime.utcfromtimestamp(decode_refresh_token['exp'])
-
 
         access_jwt_dto = JwtDTO(
             user_id=user.id,
@@ -182,7 +178,6 @@ class UserService:
         )
         self._access_tokens_dal.save_access_token(access_jwt_dto)
 
-
         refresh_jwt_dto = JwtDTO(
             user_id=user.id,
             jti=decode_refresh_token['jti'],
@@ -191,7 +186,6 @@ class UserService:
             expires_at=refresh_expires_at  
         )
         self._access_tokens_dal.save_access_token(refresh_jwt_dto)
-
 
         refresh_dto = RefreshTokenDTO(
             user_id=user.id,
@@ -214,14 +208,14 @@ class UserService:
         refresh_token = create_refresh_token(identity=user.email, additional_claims=additional_claims)
 
         self.save_tokens_to_db(user, access_token, refresh_token)
-
-    
+ 
         response_data = {
             "user_id": user.id,
             "user_email": user.email,
             "username": user.username,
             "new_user":user.new_user
         }
+
         if return_tokens:
             response_data["access_token"] = access_token
             response_data["refresh_token"] = refresh_token
@@ -245,6 +239,7 @@ class UserService:
             "username":username,
             "new_user":new_user
         }
+        
         new_access_token = create_access_token(identity=email.email, additional_claims=additional_claims)
         new_refresh_token = create_refresh_token(identity=email.email, 
                                                  additional_claims=additional_claims.update({"nonce": self._user_info_service.generate_nonce()}))
