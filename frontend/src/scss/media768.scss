@@ -12,12 +12,13 @@
 
     .logo-btn{
       left: 0;
-      margin: 0 auto;
+      margin: 0 1rem;
       transform: none;
     }
   }
 
   .news-block{
+    max-width: 80%;
 
     h1{
       font-size: 2rem;
