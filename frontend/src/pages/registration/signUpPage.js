@@ -82,7 +82,7 @@ function SignUpPage() {
                     />
                 </p>
                 <p>
-                    {t("email")}:
+                    {t("email_account")}:
                     <input
                         value={email}
                         onChange={e => setEmail(e.target.value)}

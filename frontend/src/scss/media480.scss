@@ -4,6 +4,7 @@
     .logo-btn{
       left: 0;
       margin-left: 1rem;
+      width: 10rem;
     }
 
     .header-btn{
@@ -34,6 +35,9 @@
   }
 
   .news-block{
+    margin: 0;
+    max-width: 100%;
+    padding: 0 1rem;
 
     h1{
       font-size: 1.5rem;
@@ -42,6 +46,41 @@
     .content{
       font-size: 1rem;
     }
+  }
+
+  .account-container, .registration{
+    max-width: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+
+    .accountInfoContainer{
+      padding: 0 1rem;
+
+      .account-actions{
+        max-width: 100%;
+      }
+
+    }
+  }
+
+  .registration{
+    padding: 2rem 0;
+
+    form{
+      p{
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+      }
+    }
+
+  }
+
+  .preferences{
+    position: static;
   }
 
   footer{
