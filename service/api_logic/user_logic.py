@@ -145,11 +145,14 @@ class UserService:
     async def log_in(self, credentials: InputUserLogInDTO):
         login_context = AuthManager(self)
         user_id = self._user_dal.get_existing_user(credentials.email)
-        sus_login = self._user_info_service.is_suspicious_login()
-        user = await login_context.execute_log_in(credentials)
-        response = await self.create_access_token_response(user)
+        sus_login = self._user_info_service.is_suspicious_login(user_id)
+        if not sus_login:
+            user = await login_context.execute_log_in(credentials)
+            response = await self.create_access_token_response(user)
 
-        return response
+            return response
+        else:
+            pass
 
 
     async def __generate_auth_token(self, user, salt):
@@ -254,7 +257,7 @@ class UserService:
         #     "username":username,
         #     "new_user":new_user
         # }
-        
+
         additional_claims = AdditionalClaimsDTO(
             user_id=user_id,
             email=email,
