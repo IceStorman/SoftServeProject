@@ -16,7 +16,6 @@ function InsideStreamPage() {
 
     const [loading, setLoading] = useState(false);
 
-    // NOW NOT WORKING, BECAUSE NOT EXIST API ENDPOINTS
 
     // useEffect(() => {
     //
@@ -33,20 +32,19 @@ function InsideStreamPage() {
     //                     headers: {'Content-Type': 'application/json'},
     //                 }
     //             );
-    //             // const fetchedStream = response.data;
-    //             //
-    //             // const youtubeLinks = fetchedStream.links
-    //             //     .map(getYouTubeEmbedUrl)
-    //             //     .filter(link => link !== null);
-    //             //
-    //             // const otherLinks = fetchedStream.links.filter(link => !getYouTubeEmbedUrl(link));
-    //             //
-    //             // setStream({
-    //             //     ...fetchedStream,
-    //             //     youtubeLinks,
-    //             //     otherLinks,
-    //             // });
-    //             setStream(response.data);
+    //             const fetchedStream = response.data;
+    //
+    //             const youtubeVideoIds = fetchedStream.links
+    //                 .map(link => extractYouTubeId(link))
+    //                 .filter(id => id !== null);
+    //
+    //             const otherLinks = fetchedStream.links.filter(link => extractYouTubeId(link) === null);
+    //
+    //             setStream({
+    //                 ...fetchedStream,
+    //                 youtubeVideoIds,
+    //                 otherLinks,
+    //             });
     //         } catch (error) {
     //             if (stream.length === 0) {
     //                 navigate("/not-existing")
@@ -58,16 +56,22 @@ function InsideStreamPage() {
     //     fetchStreams();
     // }, []);
     //
-    // useEffect(() => {
-    //     axios.get(`${apiEndpoints.url}${apiEndpoints.games.getThisGame}`)
-    //         .then(res => {
-    //             const returnedGames = res.data;
-    //             setGame(returnedGames);
-    //         })
-    //         .catch(error => {
-    //             toast.error(`:( Troubles With Games Loading: ${error}`);
-    //         });
-    // }, []);
+    // // useEffect(() => {
+    // //     axios.get(`${apiEndpoints.url}${apiEndpoints.games.getThisGame}`)
+    // //         .then(res => {
+    // //             const returnedGames = res.data;
+    // //             setGame(returnedGames);
+    // //         })
+    // //         .catch(error => {
+    // //             toast.error(`:( Troubles With Games Loading: ${error}`);
+    // //         });
+    // // }, []);
+
+    const extractYouTubeId = (url) => {
+        const match = url.match(/[?&]v=([^&]+)/) || url.match(/youtu\.be\/([^?]+)/);
+        return match ? match[1] : null;
+    };
+
 
     useEffect(() => {
         (stream?.url) ? setLoading(false)
@@ -90,8 +94,7 @@ function InsideStreamPage() {
                     logo1: "https://upload.wikimedia.org/wikipedia/ru/2/21/Denver_Nuggets.png",
                     logo2: "https://cdn.nba.com/teams/legacy/www.nba.com/lakers/sites/lakers/files/ts_180804logo.jpg"
                 }}
-                youtubeLinks={["dQw4w9WgXcQ", "3JZ_D3ELwOQ", "UGSanw1wTlY", "UGSanw1wTlY", "UGSanw1wTlY"
-                    , "UGSanw1wTlY", "UGSanw1wTlY", "UGSanw1wTlY"]}
+                youtubeLinks={["dQw4w9WgXcQ", "dQw4w9WgXcQ", "dQw4w9WgXcQ", "dQw4w9WgXcQ", "dQw4w9WgXcQ", "dQw4w9WgXcQ", "dQw4w9WgXcQ", "GWuF23poTf4"]}
                 otherLinks={[
                     { name: "Megogo", url: "https://partner1.com" },
                     { name: "HuiSport", url: "https://partner2.com" },
@@ -108,22 +111,14 @@ function InsideStreamPage() {
                     { name: "Megogo", url: "https://partner1.com" },
                     { name: "HuiSport", url: "https://partner2.com" },
                 ]}
-                matchInfo={{
-                    title: "Андрій робить математичний аналіз",
-                    description: "Дивіться у прямому етері на те, як студент політеха страдає замість сну" +
-                        ", а не спить як нормальні люди. Тільки сьгодні і тільки у нас!"
-                }}
             />
 
-            {/* FINAL VARIANT */}
 
             {/*<VideoPlayer*/}
-            {/*    game={data.game}*/}
-            {/*    youtubeLinks={data.youtubeLinks}*/}
-            {/*    otherLinks={data.otherLinks}*/}
-            {/*    matchInfo={data.matchInfo}*/}
+            {/*    game={game}*/}
+            {/*    youtubeLinks={stream.youtubeVideoIds}*/}
+            {/*    otherLinks={stream.otherLinks}*/}
             {/*/>*/}
-
 
     </>
     )
