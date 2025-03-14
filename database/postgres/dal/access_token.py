@@ -5,7 +5,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from typing import Optional, List
 from datetime import datetime
 from exept.exeptions import TokenRevokingError
-
+from service.api_logic.models.api_models import REFRESH
 
 class AccessTokensDAL:
     def __init__(self, db_session: Session):
@@ -51,7 +51,7 @@ class AccessTokensDAL:
 
     def revoke_refresh_token(self, jti: str) -> bool:
         jwt_entry = self.get_jwt_by_jti(jti)
-        if jwt_entry and jwt_entry.token_type == "refresh":
+        if jwt_entry and jwt_entry.token_type == REFRESH:
             jwt_entry.revoked = True
             jwt_entry.updated_at = datetime.utcnow()
             self.db_session.commit()

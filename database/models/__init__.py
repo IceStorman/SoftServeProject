@@ -26,5 +26,4 @@ from .games_statuses import GamesStatuses
 from .interactions_with_news import InteractionWithNews
 from .interaction_types import InteractionTypes
 
-
 from .base import Base

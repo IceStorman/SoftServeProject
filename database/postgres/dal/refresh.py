@@ -8,9 +8,9 @@ from database.postgres.dto.refresh import RefreshTokenDTO
 from marshmallow import ValidationError
 from exept.exeptions import CustomQSportException, TokenUpdatingError, TokenRevokingError, TokenSavingError
 from exept.handle_exeptions import get_custom_error_response
+from service.api_logic.models.api_models import REFRESH
 
 
-REFRESH = "refresh"
 
 class RefreshTokenDAL:
     def __init__(self, db_session: Session):

@@ -46,15 +46,8 @@ class Container(containers.DeclarativeContainer):
     teams_service = providers.Factory(TeamsService, teams_dal=teams_dal)
     sports_service = providers.Factory(SportService, sports_dal=sport_dal, leagues_dal=leagues_dal)
     
-    user_info_service = providers.Factory(
-        UserInfoService, 
-        access_tokens_dal=access_tokens_dal, 
-        refresh_token_dal=refresh_dal
-)
-    
     user_service = providers.Factory(
         UserService,
-        user_info_service=user_info_service,
         user_dal=user_dal,
         preferences_dal=preferences_dal,
         sport_dal=sport_dal,
