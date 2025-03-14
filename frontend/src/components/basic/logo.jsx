@@ -9,7 +9,7 @@ function Logo() {
         <NavLink to={"/"}className="nav-link logo-btn" activeClassName="active">
         <div className="logo">
             <hr />
-            <p>{t("certatum_nostrum")}</p>
+            <h1>{t("certatum_nostrum")}</h1>
             <section className="subtitle">
                 <hr/>
                     <p>{t("since")}</p>

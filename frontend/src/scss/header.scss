@@ -14,6 +14,7 @@ header {
         display: flex;
         align-items: center;
         margin-right: 3rem;
+        gap: 1rem;
         transition: all 0.5s ease;
 
         .account-button {
@@ -41,33 +42,21 @@ header {
 }
 
 .logo {
-    color: black;
-    max-width: 25rem;
-    background-color: transparent;
-    padding: 0.5rem 0;
+    display: flex;
+    flex-direction: column;
     text-align: center;
-    text-decoration: none;
-
-    p {
-        font-size: 2rem;
-        text-decoration: none;
-    }
+    max-width: 25rem;
+    margin: 0.5rem 0;
+    color: black;
+    background-color: transparent;
 
     .subtitle {
         display: flex;
         align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-        margin-left: 1.5rem;
-        margin-right: 1.5rem;
-
-        p {
-            font-size: 0.9rem;
-            margin: 0;
-        }
+        justify-content: space-around;
 
         hr {
-            flex-grow: 1;
+            width: 20%;
             height: 1px;
             background-color: #000;
             border: none;
