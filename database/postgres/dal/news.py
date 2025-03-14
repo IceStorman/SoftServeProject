@@ -1,12 +1,13 @@
 import pandas as pd
-
 from database.models import Likes, Views, News, TeamInNews, Sport
 from sqlalchemy import union_all, literal, func, ClauseElement
 from datetime import timedelta, datetime
+from database.postgres.dal.base import BaseDAL
+
 
 PERIOD_OF_TIME = 90
 
-class NewsDAL:
+class NewsDAL(BaseDAL):
     def __init__(self, session = None):
         self.session = session
 
@@ -31,7 +32,6 @@ class NewsDAL:
 
     def get_news_by_id(self, blob_id: str):
         return self.session.query(News).filter(News.blob_id == blob_id).first()
-
 
     def get_news_by_native_id(self, news_ids):
         return self.session.query(News).filter(News.news_id.in_(news_ids)).all()

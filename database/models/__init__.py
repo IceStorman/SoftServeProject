@@ -23,6 +23,8 @@ from .temp_subscribers_data import TempSubscribersData
 from .refresh_token_tracking import refresh_token_tracking
 from .stream_url import StreamUrl
 from .games_statuses import GamesStatuses
+from .interactions_with_news import InteractionWithNews
+from .interaction_types import InteractionTypes
 
 
 from .base import Base
