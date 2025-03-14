@@ -76,6 +76,14 @@
     position: static;
   }
 
+  .notExistingPage {
+    margin: 7rem 0;
+
+    h1, p{
+      margin: 0 2rem;
+    }
+  }
+
   footer{
     flex-direction: column;
     align-items: center;
