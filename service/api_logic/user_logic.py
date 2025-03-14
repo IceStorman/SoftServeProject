@@ -254,6 +254,7 @@ class UserService:
         #     "username":username,
         #     "new_user":new_user
         # }
+        
         additional_claims = AdditionalClaimsDTO(
             user_id=user_id,
             email=email,
