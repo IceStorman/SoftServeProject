@@ -17,7 +17,7 @@ class TeamsService:
 
         query, count = FilterManagerStrategy.apply_filters(TeamIndex, query, filters_dto)
 
-        teams = self._teams_dal.execute_query(query)
+        teams = self._teams_dal.query_output(query)
         teams_output = TeamsLeagueOutput(many=True)
         team = teams_output.dump(teams)
 

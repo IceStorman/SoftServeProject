@@ -14,7 +14,7 @@ class SportService:
 
     def get_all_sports(self):
         sports_query = self._sports_dal.get_base_query(Sport)
-        execute_query = self._sports_dal.execute_query(sports_query)
+        execute_query = self._sports_dal.query_output(sports_query)
         sport_output = SportsOutput(many=True)
         return sport_output.dump(execute_query)
 
@@ -24,7 +24,7 @@ class SportService:
 
         filtered_query, count = FilterManagerStrategy.apply_filters(League, query, filters_dto)
 
-        execute_query = self._leagues_dal.execute_query(filtered_query)
+        execute_query = self._leagues_dal.query_output(filtered_query)
 
         sport_output = SportsLeagueOutput(many=True)
         leagues = sport_output.dump(execute_query)

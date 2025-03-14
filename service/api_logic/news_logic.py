@@ -69,7 +69,7 @@ class NewsService:
 
         filtered_query, count = FilterManagerStrategy.apply_filters(News, query, filters)
 
-        news = self._news_dal.execute_query(filtered_query)
+        news = self._news_dal.query_output(filtered_query)
         return self.json_news(news)
 
     def user_recommendations_based_on_preferences_and_last_watch(

@@ -86,8 +86,8 @@ class PaginationDTO(BaseDTO):
 class FilterDTO(BaseDTO):
     filter_name = fields.Str(required=True)
     filter_value = fields.Raw(required=True)
-    order = fields.Str(required=False, missing=None)
-    field = fields.Str(required=False, missing=None)
+    order_type = fields.Str(required=False, missing=None)
+    order_field = fields.Str(required=False, missing=None)
 
 class SearchDTO(BaseDTO):
     filters = fields.List(fields.Nested(FilterDTO), required=False)

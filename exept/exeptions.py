@@ -125,7 +125,7 @@ class InvalidAuthenticationDataError(CustomQSportException):
         super().__init__(message)
 
 class IncorrectModelFromFilterManager(CustomQSportException):
-    status_code = 401
+    status_code = 404
 
     def __init__(self, table_name):
         message = f"No filter manager found for model: {table_name}"
