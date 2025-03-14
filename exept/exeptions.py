@@ -141,9 +141,9 @@ class IncorrectSignatureError(CustomQSportException):
         super().__init__(message)
 
 
-class UndefinedInteractionType(CustomQSportException):
+class IncorrectInteractionType(CustomQSportException):
     status_code = 400
 
-    def __init__(self, interaction_type):
-        message = f"Invalid interaction type: {interaction_type}"
+    def __init__(self):
+        message = f"Invalid interaction type"
         super().__init__(message)

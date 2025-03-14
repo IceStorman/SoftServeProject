@@ -1,49 +1,48 @@
-from exept.exeptions import UndefinedInteractionType
-from enum import Enum
+from exept.exeptions import IncorrectInteractionType
+from service.api_logic.models.api_models import InteractionTypes
+from logger.logger import Logger
 
-class InteractionTypes(Enum):
-    UNDEFINED = 0
-    LIKE = 1
-    DISLIKE = 2
-    READ = 3
-    OPEN = 4
-    COMMENT = 5
-
-def get_interaction_type_id(interaction_type_name: str) -> int:
-    match interaction_type_name:
-        case 'like':
-            return InteractionTypes.LIKE.value
-        case 'dislike':
-            return InteractionTypes.DISLIKE.value
-        case 'read':
-            return InteractionTypes.READ.value
-        case 'open':
-            return InteractionTypes.OPEN.value
-        case 'comment':
-            return InteractionTypes.COMMENT.value
-        case _:
-            return InteractionTypes.UNDEFINED.value
+LIKE_ID = InteractionTypes['LIKE'].value
+DISLIKE_ID = InteractionTypes['DISLIKE'].value
 
 class InteractionWithNewsService:
 
     def __init__(self, interaction_with_news_dal):
         self._interaction_with_news_dal = interaction_with_news_dal
+        self._logger = Logger("logger", "all.log").logger
 
 
     def save_interaction(self, interaction_dto):
-        interaction_type_id = get_interaction_type_id(interaction_dto.interaction_type)
-        if interaction_type_id == InteractionTypes.UNDEFINED.value:
-            raise UndefinedInteractionType(interaction_dto.interaction_type)
+        try:
+            interaction_type_id = InteractionTypes[interaction_dto.interaction_type.upper()].value
 
-        return self._interaction_with_news_dal.save_interaction(interaction_dto, interaction_type_id)
+            if interaction_type_id == LIKE_ID:
+                interaction_entry = self._interaction_with_news_dal.get_interaction(interaction_dto.user_id, interaction_dto.news_id, DISLIKE_ID)
+
+                if interaction_entry:
+                    self._interaction_with_news_dal.update_interaction(interaction_entry.user_id, interaction_dto, interaction_type_id)
+                else:
+                    self._interaction_with_news_dal.save_interaction(interaction_dto, interaction_type_id)
+
+            elif interaction_type_id == DISLIKE_ID:
+                interaction_entry = self._interaction_with_news_dal.get_interaction(interaction_dto.user_id, interaction_dto.news_id, LIKE_ID)
+
+                if interaction_entry:
+                    self._interaction_with_news_dal.update_interaction(interaction_entry.user_id, interaction_dto, interaction_type_id)
+
+            else:
+                self._interaction_with_news_dal.save_interaction(interaction_dto, interaction_type_id)
+
+        except KeyError:
+            raise IncorrectInteractionType()
 
 
-    def get_interaction_status(self, interaction_dto):
-        interaction_type_id = get_interaction_type_id(interaction_dto.interaction_type)
-        if interaction_type_id == InteractionTypes.UNDEFINED.value:
-            raise UndefinedInteractionType(interaction_dto.interaction_type)
+    def get_interaction_status(self, interaction_dto) -> bool:
+        try:
+            interaction_id = InteractionTypes[interaction_dto.interaction_type.upper()].value
+            interaction_entry = self._interaction_with_news_dal.get_interaction(interaction_dto.user_id, interaction_dto.news_id, interaction_id)
 
-        interaction_entry = self._interaction_with_news_dal.get_interaction_by_user_id_and_news_id_and_type(interaction_dto.user_id,
-                                                                                interaction_dto.news_id,
-                                                                                interaction_type_id)
-        return interaction_entry
+            return True if interaction_entry else False
+
+        except KeyError:
+            raise IncorrectInteractionType()

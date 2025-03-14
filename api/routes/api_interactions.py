@@ -1,11 +1,12 @@
 from dependency_injector.wiring import Provide, inject
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from dto.api_input import InteractionsDTO
 from exept.exeptions import DatabaseConnectionError, CustomQSportException
 from exept.handle_exeptions import get_custom_error_response
 from logger.logger import Logger
 from service.api_logic.interactions_logic import InteractionWithNewsService
 from api.container.container import Container
+from dto.common_response import CommonResponse
 
 logger = Logger("logger", "all.log")
 
@@ -24,9 +25,10 @@ def save_interaction(service: InteractionWithNewsService = Provide[Container.int
     try:
         data = request.get_json()
         dto = InteractionsDTO().load(data)
-        response = service.save_interaction(dto)
+        service.save_interaction(dto)
 
-        return response
+        return  CommonResponse().to_dict()
+
     except CustomQSportException as e:
         logger.error(f"Error in POST /: {str(e)}")
         return get_custom_error_response(e)
@@ -39,7 +41,8 @@ def get_interaction_status_by_user_id(service: InteractionWithNewsService = Prov
         dto = InteractionsDTO().load(request.args.to_dict())
         response = service.get_interaction_status(dto)
 
-        return response
+        return jsonify({"status": response})
+
     except CustomQSportException as e:
         logger.error(f"Error in GET /: {str(e)}")
         return get_custom_error_response(e)

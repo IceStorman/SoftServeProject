@@ -26,3 +26,11 @@ class TeamPreferenceFields:
         self.related_name = "name"
         self.related_logo = "logo"
         self.related_id = "team_index_id"
+
+
+class InteractionTypes(Enum):
+    LIKE = 1
+    DISLIKE = 2
+    READ = 3
+    OPEN = 4
+    COMMENT = 5
