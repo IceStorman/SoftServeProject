@@ -61,55 +61,45 @@ class RefreshTokenDAL:
 
     def is_nonce_used(self,user_id: int, nonce: str) -> bool:
         nonce = self.db_session.query(RefreshTokenTracking).filter_by(user_id=user_id, nonce=nonce).first()
-        if nonce: 
-            return True
-        return False
+        return nonce is not None
         
     def update_refresh_token(self, user_id: int, refresh_dto: RefreshTokenDTO):
-        try:
-            entry = (self.db_session.query(RefreshTokenTracking)
-                .filter(RefreshTokenTracking.user_id == user_id)
-                .with_for_update()
-                .first()
-            )
-            if entry:
-                entry.refresh_token = refresh_dto.refresh_token
-                entry.nonce = refresh_dto.nonce
-                entry.last_ip = refresh_dto.last_ip
-                entry.last_device = refresh_dto.last_device
-                self.db_session.commit()
-            else:
-                self.save_refresh_token(refresh_dto)
-        except TokenUpdatingError as e:
-            return get_custom_error_response(e)
+        entry = (self.db_session.query(RefreshTokenTracking)
+            .filter(RefreshTokenTracking.user_id == user_id)
+            .with_for_update()
+            .first()
+        )
+        if entry:
+            entry.refresh_token = refresh_dto.refresh_token
+            entry.nonce = refresh_dto.nonce
+            entry.last_ip = refresh_dto.last_ip
+            entry.last_device = refresh_dto.last_device
+            self.db_session.commit()
+        else:
+            self.save_refresh_token(refresh_dto)
+
 
     def revoke_refresh_token(self, refresh_id: int) -> bool:
-        try:
-            refresh_entry = self.get_refresh_token_by_id(refresh_id)
-            if refresh_entry:
-                token_entry = self.db_session.query(TokenBlocklist).filter(TokenBlocklist.id == refresh_id).first()
-                if token_entry and token_entry.token_type == REFRESH:
-                    token_entry.revoked = True
-                    token_entry.updated_at = datetime.utcnow()
-                    self.db_session.commit()
-        except CustomQSportException as e:
-            TokenRevokingError(e)
+        refresh_entry = self.get_refresh_token_by_id(refresh_id)
+        if refresh_entry:
+            token_entry = self.db_session.query(TokenBlocklist).filter(TokenBlocklist.id == refresh_id).first()
+            if token_entry and token_entry.token_type == REFRESH:
+                token_entry.revoked = True
+                token_entry.updated_at = datetime.utcnow()
+                self.db_session.commit()
 
     def revoke_all_refresh_and_access_tokens_for_user(self, user_id: int) -> int:
-        try:
-            revoked_count = (
-                self.db_session.query(TokenBlocklist)
-                .filter(
-                    self.db_session.query(TokenBlocklist).join(RefreshTokenTracking, RefreshTokenTracking.id == TokenBlocklist.id).filter(
-                        RefreshTokenTracking.user_id == user_id,
-                        TokenBlocklist.token_type == "refresh" 
-                    )
+        revoked_count = (
+            self.db_session.query(TokenBlocklist)
+            .filter(
+                self.db_session.query(TokenBlocklist).join(RefreshTokenTracking, RefreshTokenTracking.id == TokenBlocklist.id).filter(
+                    RefreshTokenTracking.user_id == user_id,
+                    TokenBlocklist.token_type == "refresh" 
                 )
-                .update({"revoked": True, "updated_at": datetime.utcnow()}, synchronize_session=False)
             )
+            .update({"revoked": True, "updated_at": datetime.utcnow()}, synchronize_session=False)
+        )
 
-            self.db_session.commit()
+        self.db_session.commit()
             
-            return revoked_count
-        except TokenRevokingError as e:
-            get_custom_error_response(e)
+        return revoked_count
