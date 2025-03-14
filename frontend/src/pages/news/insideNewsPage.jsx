@@ -27,7 +27,6 @@ export default function InsideNewsPage() {
                     { headers: { 'Content-Type': 'application/json' } }
                 )
                 .then((response) => {
-                    console.log("response",{response})
                     setArticle(response?.data[0]?.data);
                 })
                 .catch((error) => {
@@ -199,7 +198,7 @@ export default function InsideNewsPage() {
                 <div className="date">{article?.timestamp}</div>
                 <button className="like-vrapper" onClick={toggleLike}>
                     <div className="like-content">
-                        {likeStatus ? <FaHeart /> : <FaRegHeart />} {likes}
+                        {likeStatus ? <FaHeart /> : <FaRegHeart />}{likes}
                     </div>
                 </button>
             </div>
