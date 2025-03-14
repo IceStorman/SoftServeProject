@@ -122,8 +122,8 @@ msgstr "Do not have an account?"
 msgid "Create"
 msgstr "Create"
 
-msgid "Nickname:"
-msgstr "Nickname:"
+msgid "Username:"
+msgstr "Username:"
 
 msgid "Repeat password:"
 msgstr "Repeat password:"

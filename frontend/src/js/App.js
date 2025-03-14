@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from "react";
+import React from "react";
 import {
     BrowserRouter as Router,
     Routes,
@@ -19,13 +19,8 @@ import LeaguePage from "../pages/sport items/leaguePage";
 import TeamPage from "../pages/sport items/teamPage";
 import GamesPage from "../pages/games/gamesPage";
 import FAQpage from "../pages/misc/FAQ";
-
 import NotExistingPage from "../pages/notExistingPage";
 import InsideStreamPage from "../pages/games/insideStreamPage";
-import { toast } from "sonner";
-import axios from 'axios';
-
-import apiEndpoints from "../apiEndpoints";
 import NavBar from "../components/basic/nav";
 import InsideNewsPage from "../pages/news/insideNewsPage";
 import AboutUsPage from "../pages/misc/aboutAs";
@@ -35,8 +30,10 @@ import CheckEmailPage from "../components/passwordReset/checkEmailPage";
 import GoogleAuthCallback from "../pages/registration/googleCallBack";
 import PreferencesPage from "../pages/registration/PreferencesPage";
 import AccountPage from "../pages/registration/accountPage";
+import globalVariables from "../globalVariables";
 
 function App() {
+
 
     return (
         <>
@@ -52,7 +49,7 @@ function App() {
                     richColors
                     expand={true}
                     duration={5000}
-                    visibleToasts={3}
+                    visibleToasts={globalVariables.windowsSizes.find(bp => window.innerWidth <= bp.maxWidth).limit || 0}
                     closeButton
                 />
 

@@ -123,7 +123,7 @@ def get_script_phrases():
         "no_account":         _("Do not have an account?"),
         "have_account":       _("Already have an account?"),
         "create":             _("Create"),
-        "nickname":           _("Nickname:"),
+        "nickname":           _("Username:"),
         "repeat_password":    _("Repeat password:"),
         "email_account":      _("Email:"),
 

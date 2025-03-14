@@ -124,7 +124,7 @@ msgstr "Немає облікового запису?"
 msgid "Create"
 msgstr "Створити"
 
-msgid "Nickname:"
+msgid "Username:"
 msgstr "Імʼя:"
 
 msgid "Repeat password:"
@@ -134,7 +134,7 @@ msgid "Already have an account?"
 msgstr "Вже є акаунт?"
 
 msgid "Select sport"
-msgstr "Виберіть вид спорту"
+msgstr "Виберіть спорт"
 
 msgid "teams"
 msgstr "команди"

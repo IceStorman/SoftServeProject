@@ -4,7 +4,7 @@
 }
 
 .language-button {
-  padding: 0.5rem 1rem;
+  padding: 0.2rem 0.5rem;
   border: 1px solid $main-clr-shadow;
   cursor: pointer;
   font-size: 1rem;
@@ -15,9 +15,4 @@
 .language-button.active {
   background-color: $main-clr-shadow;
   color: white;
-}
-
-.language-separator {
-  margin: 0 0.5rem;
-  font-size: 1rem;
 }
