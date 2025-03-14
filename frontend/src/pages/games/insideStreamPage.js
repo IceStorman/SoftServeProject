@@ -94,7 +94,7 @@ function InsideStreamPage() {
                     logo1: "https://upload.wikimedia.org/wikipedia/ru/2/21/Denver_Nuggets.png",
                     logo2: "https://cdn.nba.com/teams/legacy/www.nba.com/lakers/sites/lakers/files/ts_180804logo.jpg"
                 }}
-                youtubeLinks={["dQw4w9WgXcQ", "dQw4w9WgXcQ", "dQw4w9WgXcQ", "dQw4w9WgXcQ", "dQw4w9WgXcQ", "dQw4w9WgXcQ", "dQw4w9WgXcQ", "GWuF23poTf4"]}
+                youtubeLinks={["3ExpJPpC6r4", "LvjKYG8J50k", "dQw4w9WgXcQ", "dQw4w9WgXcQ", "dQw4w9WgXcQ", "dQw4w9WgXcQ", "dQw4w9WgXcQ", "GWuF23poTf4"]}
                 otherLinks={[
                     { name: "Megogo", url: "https://partner1.com" },
                     { name: "HuiSport", url: "https://partner2.com" },
