@@ -28,6 +28,14 @@ class TeamsLeagueOutputWithCount(Schema):
     teams = fields.List(fields.Nested(TeamsLeagueOutput))
     count = fields.Int()
 
+class StreamsOutput(Schema):
+    id = fields.Str(attribute="stream_id")
+    sport = fields.Int(attribute="sport_id")
+    title = fields.Str()
+    start_time = fields.DateTime()
+    stream_url = fields.List(fields.Str())
+
+
 class SportsOutput(Schema):
     id = fields.Int(attribute="sport_id")
     sport = fields.Str(attribute="sport_name")

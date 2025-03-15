@@ -1,126 +1,51 @@
 import json
-from database.models.streams import Stream
-from database.models.streams_status import Streams_Status
-from sqlalchemy.sql.expression import ClauseElement
-from exept.handle_exeptions import handle_exceptions
+from dto.api_output import StreamsOutput
 from logger.logger import Logger
-from service.api_logic.scripts import get_sport_index_by_name
-from dto.pagination import Pagination
-from sqlalchemy.orm import aliased
-import datetime
-
-logger = Logger("logger", "all.log")
-
-@logger.log_function_call()
-def fetch_streams(session, order_by: ClauseElement = None, limit: int = None, filters=None):
-    query = session.query(Stream)
-    if filters:
-        query = query.filter(*filters)
-    if order_by is not None:
-        query = query.order_by(order_by)
-    if limit is not None:
-        query = query.limit(limit)
-    return query.all()
+from database.postgres.dto import StreamStatusDTO
 
 
-@handle_exceptions
-@logger.log_function_call()
-def get_streams_today(pagination, session):
+class StreamService:
 
-    StreamsStatus = aliased(Streams_Status)
-
-
-    query = (
-        session.query(
-            Stream.stream_id,
-            Stream.stream_url,
-            Stream.start_time,
-            Stream.sport_id,
-            StreamsStatus.status_id
-        )
-        .join(StreamsStatus, Stream.stream_id == StreamsStatus.stream_id)
-    )
-
-    today_start = datetime.combine(datetime.date.today(), datetime.min.time())
-    today_end = datetime.combine(datetime.date.today(), datetime.max.time())
-    query = query.filter(
-        Stream.start_time.between(today_start.timestamp(), today_end.timestamp())
-    )
+    def __init__(self, stream_dal):
+        self._stream_dal = stream_dal
+        self._logger = Logger("logger", "all.log").logger
 
 
-    if pagination:
-        query = query.offset(pagination.offset).limit(pagination.limit)
-
-    return query.all()
-
-
-@handle_exceptions
-@logger.log_function_call()
-def save_json_stream_to_streams_table(session, streams_data):
-    streams_list = json.loads(streams_data) if isinstance(streams_data, str) else streams_data
-
-    for stream_data in streams_list:
-        stream = Stream(
-                stream_url=stream_data["stream_url"],
-                sport_id=stream_data["sport_id"],
-        )
-
-        session.merge(stream)  
-    session.commit()
-
-@handle_exceptions
-@logger.log_function_call()
-def save_json_stream_to_status_table(session,streams_data):
-    streams_list = json.loads(streams_data) if isinstance(streams_data, str) else streams_data
-
-    for stream_data in streams_list:
-        stream = Streams_Status(
-            start_time=stream_data["time"],
-            status=stream_data["status"]
-
-        )
-
-        session.merge(stream)
-    
-    session.commit()
+    def get_streams_filtered(self, filters_dto): #not working for now without Roman's PR, Roman will fix in future
+        pass
+        # query = self._stream_dal.get_base_query(Stream)
+        #
+        # query = FilterManagerStrategy.apply_filters(Stream, query, filters_dto)
+        # count = query.count()
+        #
+        # streams = self._stream_dal.execute_query(query)
+        # streams_output = StreamsOutput(many=True)
+        # stream = streams_output.dump(streams)
+        #
+        # return {
+        #     "count": count,
+        #     "stream": stream,
+        # }
 
 
+    def save_streams_to_streams_table(self, streams_data):
+        for stream in streams_data:
+            new_stream = self._stream_dal.create_stream(stream)
+            for url in stream['stream_url']:
+                self._stream_dal.create_stream_url(url, new_stream.stream_id)
+
+        
+
+    def save_json_stream_to_status_table(self, streams_status_data):
+        streams_status_list = json.loads(streams_status_data) if isinstance(streams_status_data, str) else streams_status_data
+
+        self._stream_dal.save_stream_statuses(streams_status_list)
 
 
-@handle_exceptions
-@logger.log_function_call()
-def get_streams_by_count(session, count:int):
-    streams = fetch_streams(session, order_by=Stream.start_time.desc(), limit=count)
-    return json_streams(streams)
+    def all_streams(self): # Honestly, don't really see a sense of this method, as we have filters, but as long as we didn't merge Roman's PR we need it
+        streams = self._stream_dal.get_all_streams()
 
-@handle_exceptions
-@logger.log_function_call()
-def get_latest_sport_streams(session, count:int, sport_name:str):
-    sport = get_sport_index_by_name(session, sport_name)
-    filters = [Stream.sport_id == sport.sport_id]
-    streams = fetch_streams(session, order_by=Stream.start_time.desc(), limit=count, filters=filters)
-    return json_streams(streams)
+        streams_output = StreamsOutput(many=True)
+        stream = streams_output.dump(streams)
 
-@handle_exceptions
-@logger.log_function_call()
-def get_streams_of_sport(session, sport_name:str):
-    sport = get_sport_index_by_name(session, sport_name)
-    filters = [Stream.sport_id == sport.sport_id]
-    streams = fetch_streams(session, order_by=Stream.start_time.desc(), filters=filters)
-    return json_streams(streams)
-
-
-
-@logger.log_function_call()
-def json_streams(session):
-    streams = session.query(Stream).all()
-    streams_data = []
-    for stream in streams:
-        streams_data.append({
-            "stream_id":stream.stream_id,
-            "stream_url":stream.stream_url,
-            "start_time":stream.start_time,
-            "sport_id":stream.sport_id
-        })
-    return json.dumps(streams_data, ensure_ascii=False)
-
+        return stream
