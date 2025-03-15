@@ -11,7 +11,7 @@ export default function InsideNewsPage() {
 
     const { t } = useTranslations();
     const navigate = useNavigate();
-    const { articleId } = useParams();
+    const {articleId} = useParams();
     const location = useLocation();
     const newsData = location.state?.newsData;
     const [article, setArticle] = useState()
@@ -40,7 +40,7 @@ export default function InsideNewsPage() {
     }, []);
 
     useEffect(() => {
-        if (article) setSections(Object.values(article?.article))
+        if(article) setSections(Object.values(article?.article))
     }, [article]);
 
     const [likeStatus, setLikeStatus] = useState(false);
@@ -118,7 +118,7 @@ export default function InsideNewsPage() {
                     `${apiEndpoints.url}${apiEndpoints.interactions.saveInteraction}`,
                     {
                         user_id: user.id,
-                        news_id: articleId,
+                        blob_id: articleId,
                         interaction_type: interactionType,
                         timestamp: new Date().toISOString(),
                     }
@@ -135,12 +135,12 @@ export default function InsideNewsPage() {
                 const { data } = await axios.get(`${apiEndpoints.url}${apiEndpoints.interactions.getInteractionStatus}`, {
                     params: {
                         user_id: user.id,
-                        news_id: articleId,
+                        blob_id: articleId,
                         interaction_type: 'like'
                     },
                 });
-                setLikeStatus(data.status);
-                setInitialLikeStatus(data.status);
+                setLikeStatus(data);
+                setInitialLikeStatus(data);
             } catch (error) {
                 toast.error(`Troubles with getting like status: ${error}`)
             }
@@ -154,7 +154,9 @@ export default function InsideNewsPage() {
     const toggleLike = () => {
         if (user) {
             setLikeStatus(prev => {
-                return !prev;
+                const newStatus = !prev;
+                setLikes(count => newStatus ? count + 1 : count - 1);
+                return newStatus;
             });
         }
         else {
@@ -167,6 +169,7 @@ export default function InsideNewsPage() {
             notify()
         }
     };
+
     return (
         <section className="news-block">
 
@@ -177,7 +180,7 @@ export default function InsideNewsPage() {
                 <span className="tag">{article?.S_P_O_R_T}</span>
             </div>
 
-            {article?.images[0] ? <img src={article?.images[0]} /> : null}
+            {article?.images[0] ? <img src={article?.images[0]}/> : null}
 
             <section className="content" ref={elementRef}>
 
@@ -186,9 +189,9 @@ export default function InsideNewsPage() {
                         sections.map((item, index) => (
                             <React.Fragment key={index}>
                                 {item?.subheadings.length > 0 ? <h3>{item?.subheadings[index]}</h3> : null}
-                                {index > 0 && article?.images[index] ? <img src={article?.images[index]} /> : null}
+                                {index > 0 && article?.images[index] ? <img src={article?.images[index]}/> : null}
                                 <p>{item?.content}</p>
-                                <br />
+                                <br/>
                             </React.Fragment>
                         )) : null
                 }
@@ -204,9 +207,7 @@ export default function InsideNewsPage() {
             </div>
 
             <section className="comments">
-
                 <hr />
-
             </section>
         </section>
     );
