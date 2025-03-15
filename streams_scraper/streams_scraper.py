@@ -1,5 +1,4 @@
 from database.session import SessionLocal
-from exept.exeptions import SportNotFoundError
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium_stealth import stealth
@@ -11,6 +10,7 @@ from dependency_injector.wiring import Provide, inject
 from database.postgres.dto import StreamDTO, StreamStatusDTO, StreamUrlDTO
 import re
 from dto.api_input import GamesDTO
+from datetime import datetime
 
 sport_dal = Provide[Container.sport_dal]
 
@@ -71,37 +71,16 @@ def search_game_links(driver, future_games, games_today):
             (g for g in games_today['items'] if f"{g['home_team_name']} vs {g['away_team_name']} {g['date']}" == game),
             None
         )
-        start_time = matching_game['time'] if matching_game else "Unknown"
-
-        sport_id = "unknown"
-        if matching_game:
-            team_logo_url = matching_game.get("home_team_logo", "")
-            detected_sport_name = sport_name(team_logo_url)  # Використовуємо функцію sport_name
-            
-            try:
-                sport_id = sport_dal.get_sport_by_id(matching_game.sport_id)
-            except SportNotFoundError:
-                
-
-
-
-
 #Probillllllllllllllll Probillllllllllllllllllllllll Probillllllllllllllllll
-                print(f"Sport '{sport_name}' not found in the database.")
+        print(f"Sport '{sport_name}' not found in the database.")
 #Probillllllllllllllll Probillllllllllllllllllllllll Probillllllllllllllllll
-
-
-
-
-
-
-
+        date = datetime.strptime(matching_game.get("date"), "%Y-%m-%d")
 
         stream_dto = StreamDTO(
             title=game_name(matching_game),
             stream_urls=urls if urls else None,
-            start_time=start_time,
-            sport_id=sport_id
+            start_time=date,
+            sport_id=matching_game.get("sport_id")
         )
         stream_data.append(stream_dto)
 
