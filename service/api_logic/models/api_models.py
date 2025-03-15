@@ -1,6 +1,7 @@
 from enum import Enum
 
 REFRESH = "refresh"
+JTI = 'jti'
 
 class AuthStrategies(Enum):
     SIMPLE = "simple"

@@ -5,7 +5,7 @@ from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 from dto.api_input import UpdateUserPreferencesDTO
 from dto.api_output import OutputSportPreferences, OutputTeamPreferences
 from exept.exeptions import IncorrectPreferencesError, IncorrectTypeOfPreferencesError, SignatureExpiredError, \
-    IncorrectSignatureError
+    IncorrectSignatureError, InvalidRefreshTokenError
 from dto.api_input import InputUserLogInDTO
 from dto.api_output import OutputUser, OutputLogin
 from database.models import User
@@ -26,6 +26,7 @@ from datetime import datetime
 import time
 import requests
 import hashlib
+from  service.api_logic.models.api_models import JTI
 from flask_jwt_extended import get_jwt_identity, get_jwt
 from service.api_logic.models.api_models import SportPreferenceFields, TeamPreferenceFields
 
@@ -236,7 +237,7 @@ class UserService:
 
         access_jwt_dto = JwtDTO(
             user_id=user.id,
-            jti=decode_access_token['jti'],   
+            jti=decode_access_token[JTI],   
             token_type="access",
             revoked=False,
             expires_at=access_expires_at
@@ -245,7 +246,7 @@ class UserService:
 
         refresh_jwt_dto = JwtDTO(
             user_id=user.id,
-            jti=decode_refresh_token['jti'],
+            jti=decode_refresh_token[JTI],
             token_type="refresh",
             revoked=False,
             expires_at=refresh_expires_at  
@@ -331,7 +332,7 @@ class UserService:
         token_nonce = current_refresh_token.get("nonce")
 
         if not self._refresh_dal.verify_nonce(identity, token_nonce):
-            return jsonify({"msg": "Invalid refresh token"}), 401
+            raise InvalidRefreshTokenError()
 
         new_access_token, new_refresh_token = await self.create_new_access_and_refresh_tokens(identity, refresh=True)
 

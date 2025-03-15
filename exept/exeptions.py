@@ -168,3 +168,10 @@ class TokenSavingError(CustomQSportException):
     def __init__(self):
         message = "Cannot save token"
         super().__init__(message)
+    
+class InvalidRefreshTokenError(CustomQSportException):
+    status_code = 400
+
+    def __init__(self):
+        message = "Invalid refresh token"
+        super().__init__(message)
