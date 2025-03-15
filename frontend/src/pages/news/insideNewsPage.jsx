@@ -120,7 +120,6 @@ export default function InsideNewsPage() {
                         user_id: user.id,
                         blob_id: articleId,
                         interaction_type: interactionType,
-                        timestamp: new Date().toISOString(),
                     }
                 );
             } catch (error) {

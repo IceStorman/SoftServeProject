@@ -13,7 +13,7 @@ class InteractionWithNewsDAL:
         else:
             self.create_interaction(interaction_dto)
     
-    def create_interaction(self, interaction_dto) -> InteractionWithNews:
+    def create_interaction(self, interaction_dto):
         new_interaction = InteractionWithNews(
             news_id=interaction_dto.news_id,
             user_id=interaction_dto.user_id,
@@ -22,17 +22,13 @@ class InteractionWithNewsDAL:
         )
         self.db_session.add(new_interaction)
         self.db_session.commit()
-        return new_interaction
 
-    def update_interaction(self, interaction_id: int, interaction_dto) -> Optional[InteractionWithNews]:
-        interaction = self.get_interaction_by_id(interaction_id)
-        if not interaction:
-            return None
-        setattr(interaction, 'timestamp', interaction_dto.timestamp)
-        setattr(interaction, 'interaction_type', interaction_dto.interaction_type)
+    def update_interaction(self, interaction_id: int, interaction_dto):
+        self.db_session.query(InteractionWithNews).filter(InteractionWithNews.id == interaction_id).update({
+            "timestamp": interaction_dto.timestamp,
+            "interaction_type": interaction_dto.interaction_type
+        })
         self.db_session.commit()
-        self.db_session.refresh(interaction)
-        return interaction
 
     def get_interaction(self, user_id: int, news_id: int, interaction_type_id: int) -> Optional[InteractionWithNews]:
         """
@@ -43,15 +39,7 @@ class InteractionWithNewsDAL:
         :param interaction_type_id: The type of interaction.
         :return: An InteractionWithNews object if found, otherwise None.
         """
-        return self.db_session.query(InteractionWithNews).filter_by(user_id=user_id).filter_by(news_id=news_id).filter_by(interaction_type=interaction_type_id).first()
+        return self.db_session.query(InteractionWithNews).filter_by(user_id=user_id, news_id=news_id, interaction_type=interaction_type_id).first()
 
     def get_interaction_by_id(self, interaction_id: int) -> Optional[InteractionWithNews]:
         return self.db_session.query(InteractionWithNews).filter_by(interaction_id=interaction_id).first()
-
-    def delete_interaction(self, interaction_id: int) -> bool:
-        interaction = self.get_interaction_by_id(interaction_id)
-        if not interaction:
-            return False
-        self.db_session.delete(interaction)
-        self.db_session.commit()
-        return True

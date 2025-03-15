@@ -159,4 +159,3 @@ class InteractionsDTO(BaseDTO):
     user_id = fields.Int(required=True)
     blob_id = fields.String(required=True)
     interaction_type = fields.String(required=True)
-    timestamp = fields.DateTime(required=False, missing=datetime.now())

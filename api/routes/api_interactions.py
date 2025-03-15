@@ -2,7 +2,7 @@ from dependency_injector.wiring import Provide, inject
 from flask import Blueprint, request, jsonify
 from dto.api_input import InteractionsDTO
 from exept.exeptions import DatabaseConnectionError, CustomQSportException
-from exept.handle_exeptions import get_custom_error_response
+from exept.handle_exeptions import get_custom_error_response, handle_exceptions
 from logger.logger import Logger
 from service.api_logic.interactions_logic import InteractionWithNewsService
 from api.container.container import Container
@@ -21,6 +21,7 @@ def handle_db_timeout_error(e):
 @interactions_app.route('/save', methods=['POST'])
 @logger.log_function_call()
 @inject
+@handle_exceptions
 def save_interaction(service: InteractionWithNewsService = Provide[Container.interaction_with_news_service]):
     try:
         data = request.get_json()
@@ -36,6 +37,7 @@ def save_interaction(service: InteractionWithNewsService = Provide[Container.int
 @interactions_app.route('/getStatus', methods=['GET'])
 @logger.log_function_call()
 @inject
+@handle_exceptions
 def get_interaction_status_by_user_id(service: InteractionWithNewsService = Provide[Container.interaction_with_news_service]):
     try:
         dto = InteractionsDTO().load(request.args.to_dict())
