@@ -40,7 +40,7 @@ function AccountPage() {
                             <p className="value">{user?.username}</p>
                         </div>
                         <div className="account-row">
-                            <p className="label">{t('email')}:</p>
+                            <p className="label">{t('email_account')}:</p>
                             <p className="value">{user?.email}</p>
                         </div>
                     </div>

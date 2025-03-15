@@ -58,15 +58,15 @@ export default function InsideNewsPage() {
             <section className="content">
 
                 {
-                    sections ?
+                    sections &&
                         sections.map((item, index) => (
-                            <React.Fragment key={index}>
+                            <section className={"article-section"} key={index}>
                                 {item?.subheadings.length > 0 ? <h3>{item?.subheadings[index]}</h3> : null}
                                 {index > 0 && article?.images[index] ? <img src={article?.images[index]}/> : null}
                                 <p>{item?.content}</p>
                                 <br/>
-                            </React.Fragment>
-                        )) : null
+                            </section>
+                        ))
                 }
             </section>
 

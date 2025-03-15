@@ -1,0 +1,39 @@
+@media (max-width: 768px) {
+
+  .account-container{
+      max-width: 60%;
+
+    .accountInfoContainer{
+      flex-direction: column;
+    }
+  }
+
+  header{
+
+    .logo-btn{
+      left: 0;
+      margin: 0 1rem;
+      transform: none;
+    }
+  }
+
+  .news-block{
+    max-width: 80%;
+
+    h1{
+      font-size: 2rem;
+    }
+  }
+
+  .sportPage{
+
+    .sport-selection-grid {
+      grid-template-columns: repeat(3, minmax(5.55rem, 1fr));
+      justify-content: space-around;
+    }
+  }
+
+  .notExistingPage {
+    font-size: 2rem;
+  }
+}

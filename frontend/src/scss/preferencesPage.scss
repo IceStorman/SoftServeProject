@@ -1,12 +1,13 @@
 .preferences{
-  max-width: 50vh;
+  max-width: 50rem;
   position: relative;
+  transition: all 0.5s ease;
 
   .preferencesHeading{
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    text-align: center;
+    margin: 0 1rem;
   }
 
   .preferencesChoices{
@@ -31,12 +32,15 @@
     align-items: center;
     margin: 2rem 0 0;
 
-    h3{
+    a{
+      text-decoration: none;
+      font-size: 1.5rem;
+      font-weight: bolder;
       color: #4b5563;
       cursor: pointer;
     }
 
-    h3:hover{
+    a:hover{
       transform: rotate(-5deg);
     }
   }

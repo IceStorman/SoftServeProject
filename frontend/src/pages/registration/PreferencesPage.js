@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import apiEndpoints from "../../apiEndpoints";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import { Check, Plus } from "lucide-react";
 import { AuthContext } from "./AuthContext";
 import useTranslations from "../../translationsContext";
@@ -136,7 +136,7 @@ function PreferencesPage() {
             </section>
 
             <div className={"controlBtnBox"}>
-                <h3 onClick={() => navigate('/')}>{t('skip')}</h3>
+                <Link to={'/'}>{t('skip')}</Link>
                 <button className={"filled"} onClick={handleSubmit}>{t('confirm')}</button>
             </div>
         </section>

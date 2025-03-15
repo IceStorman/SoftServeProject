@@ -18,7 +18,13 @@ const globalVariables= {
         EmailError: "Email is empty or contains invalid characters",
         EmailMessage: "email: example@email.com",
         UsernameOrEmailError: "Email or Username are empty or contains invalid characters"
-    }
+    },
+
+    windowsSizes: [
+        { maxWidth: 480, limit: 0 },
+        { maxWidth: 1024, limit: 1 },
+        { maxWidth: Infinity, limit: 3 }
+    ]
 }
 
 export default globalVariables;

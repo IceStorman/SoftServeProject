@@ -1,6 +1,8 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import useTranslations from "../../translationsContext"
+import { FaInstagram, FaGithub, FaFacebook } from "react-icons/fa";
+
 
 function Footer() {
 
@@ -30,11 +32,29 @@ function Footer() {
 
             <div className="info-column">
                 <h2>{t("our_social_media")}</h2>
+                <a href="https://github.com/IceStorman/SoftServeProject"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   className={"social"}>
+                    GitHub
+                    <FaGithub/>
+                </a>
+
+                <a href="https://www.instagram.com/vladyslav_martynyshyn/"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   className={"social"}>
+                    Instagram<FaInstagram/>
+                </a>
+
+                <a href="https://www.facebook.com/profile.php?id=100018119430903"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   className={"social"}>
+                    Facebook<FaFacebook/>
+                </a>
             </div>
 
-            <div className="info-column">
-                <h2>{t("our_newsletter")}</h2>
-            </div>
         </footer>
     );
 }

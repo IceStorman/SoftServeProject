@@ -1,21 +1,22 @@
 header {
-    width: 100%;
     height: fit-content;
     display: flex;
     justify-content: space-between;
     align-items: center;
     position: relative;
+    object-fit: contain;
     background-color: $bg-white;
 
     .filled{
-        position: static !important;
+        position: static;
     }
 
     .header-btn{
         display: flex;
         align-items: center;
         margin-right: 3rem;
-
+        gap: 1rem;
+        transition: all 0.5s ease;
 
         .account-button {
             display: flex;
@@ -37,39 +38,28 @@ header {
         position: relative;
         left: 50%;
         transform: translateX(-50%);
+        transition: all 0.5s ease;
     }
 
 }
 
 .logo {
-    color: black;
-    max-width: 25rem;
-    background-color: transparent;
-    padding: 0.5rem 0;
-    flex: 1;
+    display: flex;
+    flex-direction: column;
     text-align: center;
-    text-decoration: none;
-
-    p {
-        font-size: 2rem;
-        text-decoration: none;
-    }
+    max-width: 25rem;
+    color: black;
+    gap: 0.2rem;
+    padding: 0.3rem 0;
+    background-color: transparent;
 
     .subtitle {
         display: flex;
         align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-        margin-left: 1.5rem;
-        margin-right: 1.5rem;
-
-        p {
-            font-size: 0.9rem;
-            margin: 0;
-        }
+        justify-content: space-around;
 
         hr {
-            flex-grow: 1;
+            width: 15%;
             height: 1px;
             background-color: #000;
             border: none;
@@ -78,30 +68,79 @@ header {
 }
 
 .navbar-outer {
-    background-color: $bg-white;
+    background-color: $main-clr;
     box-shadow: 0 4px 30px $main-shadow;
+
+    .menu-btn{
+        text-decoration: none;
+        display: flex;
+        justify-content: center;
+        color: white;
+        background-color: transparent;
+        border: none;
+        padding: 0.2rem;
+
+        &:hover{
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+    }
+
+    .burger-nav{
+        width: 50vw;
+        height: 100vh;
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        background-color: $main-clr-shadow;
+        transition: all 0.5s ease;
+        z-index: 1;
+
+        .nav-link{
+            position: relative;
+            display: block;
+            padding: 0.5rem;
+            text-decoration: none;
+            overflow: hidden;
+
+            &::before {
+                content: "";
+                position: absolute;
+                left: 0;
+                bottom: 0;
+                width: 0;
+                height: 100%;
+                background-color: rgba(255, 255, 255, 0.2);
+                transition: width 0.3s ease-in-out;
+                z-index: -1;
+            }
+
+            &:hover::before {
+                width: 100%;
+            }
+
+            &.active{
+                background-color: $main-shadow;
+
+                &::before {
+                    background-color: transparent;
+                }
+            }
+        }
+    }
+
     hr {
         height: 2px;
         background-color: black;
         border: none;
     }
 
-    nav {
-        overflow: visible;
-        display: unset;
-        background-color: red;
-    }
-
     .navbar {
-        position: sticky;
-        top: 0;
-        z-index: 100;
-        height: fit-content;
-        background-color: $main-clr;
         display: flex;
-        font-size: 1.2rem;
         align-items: center;
-        overflow: visible;
+        margin-left: 10rem;
+        font-size: 1.2rem;
+        transition: all 0.5s ease;
 
         .nav-link {
             text-decoration: none;
@@ -115,7 +154,7 @@ header {
             }
 
             &.active {
-                background-color: $main-clr-shadow;
+                background-color: $main-shadow;
             }
 
             &::after {
@@ -130,9 +169,6 @@ header {
 
             &:last-child::after {
                 display: none;
-            }
-            &:first-child{
-                margin-left: 13.5rem;
             }
         }
     }

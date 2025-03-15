@@ -1,21 +1,17 @@
 footer {
     display: flex;
     flex-direction: row;
-    align-items: top;
+    justify-content: space-around;
     margin-top: auto;
-    justify-self: end;
     background-color: $main-clr;
     color: $main-text-clr;
-    height: fit-content;
     box-shadow: 0 -4px 30px #43637073;
     border-top: 2px solid black;
-    position: relative; 
+    transition: all 0.5s ease;
 
     .info-column {
         display: flex;
         flex-direction: column;
-        margin-left: auto;
-        margin-right: auto;
         padding-top: 2rem;
         padding-bottom: 2rem;
 
@@ -23,12 +19,11 @@ footer {
             border-bottom: 2px solid black;
         }
     }
-}
 
-.faq-page {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
+    .social{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
 }
