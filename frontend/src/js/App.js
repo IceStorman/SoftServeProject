@@ -49,7 +49,7 @@ function App() {
                     richColors
                     expand={true}
                     duration={5000}
-                    visibleToasts={globalVariables.windowsSizes.find(bp => window.innerWidth <= bp.maxWidth).limit || 0}
+                    visibleToasts={globalVariables.windowsSizes.find(ws => window.innerWidth <= ws.maxWidth).limit || 0}
                     closeButton
                 />
 

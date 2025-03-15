@@ -127,6 +127,9 @@ msgstr "Створити"
 msgid "Username:"
 msgstr "Імʼя:"
 
+msgid "This field is required"
+msgstr "Це поле обов'язкове"
+
 msgid "Repeat password:"
 msgstr "Повторити пароль:"
 
@@ -134,7 +137,7 @@ msgid "Already have an account?"
 msgstr "Вже є акаунт?"
 
 msgid "Select sport"
-msgstr "Виберіть спорт"
+msgstr "Оберіть спорт"
 
 msgid "teams"
 msgstr "команди"

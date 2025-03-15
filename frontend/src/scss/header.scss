@@ -71,6 +71,64 @@ header {
     background-color: $main-clr;
     box-shadow: 0 4px 30px $main-shadow;
 
+    .menu-btn{
+        text-decoration: none;
+        display: flex;
+        justify-content: center;
+        color: white;
+        background-color: transparent;
+        border: none;
+        padding: 0.2rem;
+
+        &:hover{
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+    }
+
+    .burger-nav{
+        width: 50vw;
+        height: 100vh;
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        background-color: $main-clr-shadow;
+        transition: all 0.5s ease;
+        z-index: 1;
+
+        .nav-link{
+            position: relative;
+            display: block;
+            padding: 0.5rem;
+            text-decoration: none;
+            overflow: hidden;
+
+            &::before {
+                content: "";
+                position: absolute;
+                left: 0;
+                bottom: 0;
+                width: 0;
+                height: 100%;
+                background-color: rgba(255, 255, 255, 0.2);
+                transition: width 0.3s ease-in-out;
+                z-index: -1;
+            }
+
+            &:hover::before {
+                width: 100%;
+            }
+
+            &.active{
+                background-color: $main-shadow;
+
+                &::before {
+                    background-color: transparent;
+                }
+            }
+        }
+    }
+
     hr {
         height: 2px;
         background-color: black;
@@ -96,7 +154,7 @@ header {
             }
 
             &.active {
-                background-color: $main-clr-shadow;
+                background-color: $main-shadow;
             }
 
             &::after {

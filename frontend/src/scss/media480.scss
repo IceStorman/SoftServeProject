@@ -84,6 +84,20 @@
     }
   }
 
+  .sportPage{
+    max-width: 100%;
+    width: 100%;
+    margin: 0;
+    border: none;
+
+
+    .sport-selection-grid {
+      justify-content: space-around;
+      padding: 0 2rem;
+      grid-template-columns: repeat(2, minmax(5.55rem, 1fr));
+    }
+  }
+
   footer{
     flex-direction: column;
     align-items: center;

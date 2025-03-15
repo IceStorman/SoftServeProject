@@ -9,6 +9,19 @@
 
   .news-block{
     max-width: 70%;
+
+    .content{
+
+      .article-section{
+        display: flex;
+        flex-direction: column;
+
+        img{
+          margin: auto 0;
+          float: none;
+        }
+      }
+    }
   }
 
   .preferences{

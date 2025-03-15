@@ -109,6 +109,7 @@ def get_script_phrases():
         "delete_check":       _("Are you sure?"),
         "delete_check_text":  _("Once deleted, the account cannot be restored"),
         "cancel":             _("Cancel"),
+        "required_field":     _("This field is required"),
 
         "confirm":            _("Confirm"),
         "skip":               _("Skip >"),
