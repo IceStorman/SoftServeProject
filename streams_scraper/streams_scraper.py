@@ -45,7 +45,7 @@ def filter_future_games(games):
     
     return [
         f"{game['home_team_name']} vs {game['away_team_name']} {game['date']}"
-        for game in games if game['status'] == 'Not Started'
+        for game in games['items'] if game['status'] == 'Not Started'
     ]
 
 def game_name(game):
@@ -68,7 +68,7 @@ def search_game_links(driver, future_games, games_today):
         urls = [link.get_attribute('href') for link in links_elements[:3]]
 
         matching_game = next(
-            (g for g in games_today if f"{g['home_team_name']} vs {g['away_team_name']} {g['date']}" == game),
+            (g for g in games_today['items'] if f"{g['home_team_name']} vs {g['away_team_name']} {g['date']}" == game),
             None
         )
         start_time = matching_game['time'] if matching_game else "Unknown"
@@ -79,7 +79,7 @@ def search_game_links(driver, future_games, games_today):
             detected_sport_name = sport_name(team_logo_url)  # Використовуємо функцію sport_name
             
             try:
-                sport_id = sport_dal.get_sport_by_name(detected_sport_name)
+                sport_id = sport_dal.get_sport_by_id(matching_game.sport_id)
             except SportNotFoundError:
                 
 
@@ -98,7 +98,7 @@ def search_game_links(driver, future_games, games_today):
 
 
         stream_dto = StreamDTO(
-            title=game_name(game),
+            title=game_name(matching_game),
             stream_urls=urls if urls else None,
             start_time=start_time,
             sport_id=sport_id
