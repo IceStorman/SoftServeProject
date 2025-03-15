@@ -1,5 +1,6 @@
 from enum import Enum
 
+REFRESH = "refresh"
 
 class AuthStrategies(Enum):
     SIMPLE = "simple"

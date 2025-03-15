@@ -54,7 +54,7 @@ class SimpleAuthHandler(AuthHandler[T]):
 
         token = await self._user_service.get_generate_auth_token(user)
 
-        return OutputLogin(email = user.email, token = token, id = user.user_id)
+        return OutputLogin(email = user.email, token = token, id = user.user_id, username = user.username, new_user = False)
 
 
 class GoogleAuthHandler(AuthHandler[T]):
@@ -68,6 +68,7 @@ class GoogleAuthHandler(AuthHandler[T]):
                 redirect_url=current_app.config['REDIRECT_URI']
             )
         token_response = requests.post(token_url, headers = headers, data = body)
+
         if not token_response.ok:
             raise InvalidAuthenticationDataError(credentials.auth_provider)
 
@@ -77,6 +78,7 @@ class GoogleAuthHandler(AuthHandler[T]):
             current_app.config['USER_INFO_URL'],
             headers={'Authorization': f'Bearer {client.token["access_token"]}'}
         )
+
         if not user_info_response.ok:
             raise InvalidAuthenticationDataError(credentials.auth_provider)
 
@@ -84,10 +86,12 @@ class GoogleAuthHandler(AuthHandler[T]):
         user_info = InputUserLogInDTO().load(data)
 
         user = self._user_service.get_user_by_email_or_username(email = user_info.email)
+        status = True
         if not user:
             user = User(email = user_info.email, username = user_info.email.split('@')[0])
             self._user_service.create_user(user)
+            status = False
 
         token = await self._user_service.get_generate_auth_token(user)
 
-        return OutputLogin(email = user.email, token = token, id = user.user_id)
+        return OutputLogin(email = user.email, token = token, id = user.user_id, username = user.username, new_user = status)
