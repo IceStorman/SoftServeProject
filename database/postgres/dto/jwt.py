@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional
 import datetime
 
@@ -12,4 +12,4 @@ class JwtDTO(BaseModel):
     updated_at: Optional[datetime.datetime] = Field(default_factory=datetime.datetime.utcnow)
 
     class Config:  
-        from_attributes = True
+        model_config = ConfigDict(from_attributes=True) 

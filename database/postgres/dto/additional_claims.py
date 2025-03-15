@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional
 import datetime
 
@@ -8,5 +8,5 @@ class AdditionalClaimsDTO(BaseModel):
     username: str = Field(...)
     new_user: bool = Field(...)
 
-    class Config: 
-        from_attributes = True
+    class Config:  
+        model_config = ConfigDict(from_attributes=True) 
