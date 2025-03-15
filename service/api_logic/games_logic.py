@@ -1,4 +1,4 @@
-from dto.api_output import GameOutput
+from dto.api_output import GameOutput, ListResponseDTO
 from dto.api_input import GamesDTO
 from database.models import Games, Country, TeamIndex, League, Sport
 from dto.pagination import Pagination
@@ -13,15 +13,35 @@ class GamesService:
         self._logger = Logger("logger", "all.log").logger
 
     def get_games_today(self, filters_dto: GamesDTO()):
+        AwayTeam = aliased(TeamIndex)
+        HomeTeam = aliased(TeamIndex)
 
-        query = self._games_dal.get_base_query(Games)
+        query = (self._games_dal.get_base_query(Games).with_entities(
+            Games.status,
+            Games.date,
+            Games.time,
+            League.name.label("league_name"),
+            League.logo.label("league_logo"),
+            HomeTeam.name.label("home_team_name"),
+            HomeTeam.logo.label("home_team_logo"),
+            AwayTeam.name.label("away_team_name"),
+            AwayTeam.logo.label("away_team_logo"),
+            Games.score_home_team.label("home_score"),
+            Games.score_away_team.label("away_score"),
+        )
+        .join(League, Games.league_id == League.league_id)
+        .join(AwayTeam, Games.team_away_id == AwayTeam.team_index_id)
+        .join(HomeTeam, Games.team_home_id == HomeTeam.team_index_id)
+    )
 
-        filtered_query = FilterManagerStrategy.apply_filters(Games, query, filters_dto)
+        filtered_query, count = FilterManagerStrategy.apply_filters(Games, query, filters_dto)
 
-        games = self._games_dal.execute_query(filtered_query)
-
+        games = self._games_dal.query_output(filtered_query)
         game_output = GameOutput(many=True)
+        games = game_output.dump(games)
 
-        return game_output.dump(games)
+        response_dto = ListResponseDTO()
+
+        return response_dto.dump({"items": games, "count": count})
 
 

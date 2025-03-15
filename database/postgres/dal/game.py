@@ -51,6 +51,7 @@ class GameDAL(BaseDAL):
 
     def update_game(self, game_id: int, games_dto: GameDTO) -> Optional[Games]:
         game = self.get_game_by_id(game_id)
+
         if not game:
             return None
         for field, value in games_dto.dict(exclude_unset=True).items():
@@ -62,6 +63,7 @@ class GameDAL(BaseDAL):
 
     def delete_game(self, game_id: int) -> bool:
         game = self.get_game_by_id(game_id)
+
         if not game:
             return False
 

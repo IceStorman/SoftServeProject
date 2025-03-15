@@ -59,7 +59,7 @@ msgid "Sign In"
 msgstr "Ввійти"
 
 msgid "Certatum Nostrum"
-msgstr "Спорт Параша Йоу"
+msgstr "Дуже крута назв"
 
 msgid "since 1990"
 msgstr "з 1990"
@@ -138,21 +138,6 @@ msgstr "Виберіть вид спорту"
 
 msgid "teams"
 msgstr "команди"
-
-msgid "Search"
-msgstr "Шукати..."
-
-msgid "All"
-msgstr "Всі"
-
-msgid "Recommended news by your Preferences"
-msgstr "Рекомендовані новини по вашим вподобаннях"
-
-msgid "No latest news were found"
-msgstr "Нових новин не знайдено"
-
-msgid "Recommended by your Last Watch"
-msgstr "Рекомендовані новини по вашим останнім переглядах"
 
 msgid "Account"
 msgstr "Акаунт"

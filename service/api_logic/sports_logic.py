@@ -1,6 +1,6 @@
 from sqlalchemy import func
 from database.models import Sport, League, Country
-from dto.api_output import SportsLeagueOutput, SportsOutput
+from dto.api_output import SportsLeagueOutput, SportsOutput, ListResponseDTO
 from dto.pagination import Pagination
 from exept.handle_exeptions import handle_exceptions
 from logger.logger import Logger
@@ -14,7 +14,7 @@ class SportService:
 
     def get_all_sports(self):
         sports_query = self._sports_dal.get_base_query(Sport)
-        execute_query = self._sports_dal.execute_query(sports_query)
+        execute_query = self._sports_dal.query_output(sports_query)
         sport_output = SportsOutput(many=True)
         return sport_output.dump(execute_query)
 
@@ -22,18 +22,16 @@ class SportService:
 
         query = self._leagues_dal.get_base_query(League)
 
-        filtered_query = FilterManagerStrategy.apply_filters(League, query, filters_dto)
-        count = filtered_query.count()
+        filtered_query, count = FilterManagerStrategy.apply_filters(League, query, filters_dto)
 
-        execute_query = self._leagues_dal.execute_query(filtered_query)
+        execute_query = self._leagues_dal.query_output(filtered_query)
 
         sport_output = SportsLeagueOutput(many=True)
         leagues = sport_output.dump(execute_query)
 
-        return {
-            "count": count,
-            "leagues": leagues,
-        }
+        response_dto = ListResponseDTO()
+
+        return response_dto.dump({"items": leagues, "count": count})
 
 
 

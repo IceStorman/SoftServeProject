@@ -89,6 +89,7 @@ def get_filtered_news_endpoint(news_service: NewsService = Provide[Container.new
         dto = SearchDTO().load(filters)
         filtered_news = news_service.get_filtered_news(dto)
         return filtered_news
+
     except CustomQSportException as e:
         logger.error(f"Error in POST /filtered: {str(e)}")
 

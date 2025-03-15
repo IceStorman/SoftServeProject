@@ -19,22 +19,22 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    # Додаємо нову колонку
+    # Add new Column
     op.add_column('Streams', sa.Column('title', sa.String(), nullable=True))
 
-    # Видаляємо колонку start_time
+    # Delete Column start_time
     op.drop_column('Streams', 'start_time')
 
-    # Додаємо її знову, але вже з правильним типом
+    # Add again with right type
     op.add_column('Streams', sa.Column('start_time', sa.DateTime(), nullable=True))
 
 
 def downgrade() -> None:
-    # Видаляємо оновлену колонку start_time
+    # Delete new Column start_time
     op.drop_column('Streams', 'start_time')
 
-    # Додаємо її знову з типом INTEGER
+    # Add with old type INTEGER
     op.add_column('Streams', sa.Column('start_time', sa.INTEGER(), nullable=True))
 
-    # Видаляємо колонку title
+    # Delete Column title
     op.drop_column('Streams', 'title')

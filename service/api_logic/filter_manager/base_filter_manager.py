@@ -1,44 +1,41 @@
 from sqlalchemy.orm import Query
 from typing import Optional
-from dto.pagination import Pagination
 from sqlalchemy import desc, asc
 
 class BaseFilterManager:
-    FILTERS ={}
+    FILTERS = {}
 
     @classmethod
-    def apply_filters(cls, query: Query, dto) -> Query:
+    def apply_filters(cls, query: Query, dto) -> tuple[Query, int]:
         if dto is None:
-            return query
+            return query, query.count()
 
-        dto_fields = getattr(dto, "_fields", {})
+        filters_list = getattr(dto, "filters", [])
+        order_field = None
+        order_type = None
 
-        for field_name in dto_fields:
-            field_value = getattr(dto, field_name, None)
+        for filter_obj in filters_list:
+            filter_name = getattr(filter_obj, "filter_name", None)
+            filter_value = getattr(filter_obj, "filter_value", None)
+            order_field = getattr(filter_obj, "field", order_field)
+            order_type = getattr(filter_obj, "order", order_type)
 
-            if field_value is None:
-                continue
-            if hasattr(field_value, "_fields"):
-                query = cls.apply_filters(query, field_value)
+            if filter_name in cls.FILTERS and filter_value is not None:
+                query = cls.FILTERS[filter_name](query, filter_value)
 
-            elif isinstance(field_value, list):
-                for model_dto in field_value:
-                    if hasattr(model_dto, "_fields"):
-                        query = cls.apply_filters(query, model_dto)
+        if order_field and order_type:
+            order_func = asc if order_type.lower() == "asc" else desc
+            first_model = query.column_descriptions[0]["entity"]
+            if hasattr(first_model, order_field):
+                query = query.order_by(order_func(getattr(first_model, order_field)))
 
-            elif field_name in cls.FILTERS:
-                filter_method = cls.FILTERS[field_name]
-                query = filter_method(query, field_value)
-
-        if hasattr(dto, "filters") and hasattr(dto.filters, "field") and hasattr(dto.filters, "order"):
-            if dto.filters.field and dto.filters.order:
-                filter_manager = cls()
-                query = filter_manager.apply_order_by_filter(query, dto.filters)
+        count = query.count()
 
         pagination_dto = getattr(dto, "pagination", None)
         if pagination_dto:
-            pagination = Pagination(page=pagination_dto.page, per_page=pagination_dto.per_page)
-            offset, limit = pagination.get_pagination()
-            query = query.offset(offset).limit(limit)
+            offset = (pagination_dto.page - 1) * pagination_dto.per_page
+            query = query.offset(offset).limit(pagination_dto.per_page)
 
-        return query
+        return query, count
+
+

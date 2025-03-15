@@ -65,20 +65,11 @@ class BaseDTO(Schema):
             data["models"] = processed_models
         return data
 
-    def detect_dto(self, item):
-        type_map = {
-            "news": NewsDTO,
-            "league": TeamsLeagueDTO,
-            "game": GamesDTO
-        }
-        return type_map.get(item.get("type"))
-
 class TeamsLeagueDTO(BaseDTO):
     sport_id = fields.Int(required=False, missing=None)
     league_id = fields.Int(required=False, missing=None)
     country_id = fields.Int(required=False, missing=None)
     name = fields.Str(required=False, missing=None)
-
 
 
 class TeamsStatisticsOrPlayersDTO(BaseDTO):
@@ -88,24 +79,19 @@ class TeamsStatisticsOrPlayersDTO(BaseDTO):
     name = fields.Str(required=False, missing=None)
 
 
-class FilterDTO(BaseDTO):
-    date_to = fields.Date(required=False, allow_none=True)
-    date_from = fields.Date(required=False, allow_none=True)
-    time_to = fields.Time(required=False, allow_none=True)
-    time_from = fields.Time(required=False, allow_none=True)
-    order = fields.Str(required=False, missing=None)
-    field = fields.Str(required=False, missing=None)
-
-
 class PaginationDTO(BaseDTO):
     page = fields.Int(required=False, missing=0)
     per_page = fields.Int(required=False, missing=0)
 
+class FilterDTO(BaseDTO):
+    filter_name = fields.Str(required=True)
+    filter_value = fields.Raw(required=True)
+    order_type = fields.Str(required=False, missing=None)
+    order_field = fields.Str(required=False, missing=None)
 
 class SearchDTO(BaseDTO):
-    filters = fields.Nested(FilterDTO, many=False)
+    filters = fields.List(fields.Nested(FilterDTO), required=False)
     pagination = fields.Nested(PaginationDTO, many=False)
-    models = fields.List(fields.Raw(), required=False)
 
 
 class SportsLeagueDTO(BaseDTO):
