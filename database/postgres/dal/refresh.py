@@ -88,18 +88,19 @@ class RefreshTokenDAL:
                 token_entry.updated_at = datetime.utcnow()
                 self.db_session.commit()
 
-    def revoke_all_refresh_and_access_tokens_for_user(self, user_id: int) -> int:
-        revoked_count = (
-            self.db_session.query(TokenBlocklist)
-            .filter(
-                self.db_session.query(TokenBlocklist).join(RefreshTokenTracking, RefreshTokenTracking.id == TokenBlocklist.id).filter(
-                    RefreshTokenTracking.user_id == user_id,
-                    TokenBlocklist.token_type == "refresh" 
-                )
-            )
-            .update({"revoked": True, "updated_at": datetime.utcnow()}, synchronize_session=False)
+def revoke_all_refresh_and_access_tokens_for_user(self, user_id: int) -> int:
+    revoked_count = (
+        self.db_session.query(TokenBlocklist)
+        .join(RefreshTokenTracking, RefreshTokenTracking.id == TokenBlocklist.id)
+        .filter(
+            RefreshTokenTracking.user_id == user_id,
+            TokenBlocklist.token_type.in_(["refresh", "access"])
         )
-
-        self.db_session.commit()
-            
-        return revoked_count
+        .update({"revoked": True, "updated_at": datetime.utcnow()}, synchronize_session=False)
+    )
+        
+    self.db_session.commit()
+        
+    return revoked_count
+    
+    
