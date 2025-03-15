@@ -52,10 +52,10 @@ const GamesSlider = ({ games }) => {
                             games.map((item, index) => (
                                 <GameCard
                                     key={index}
-                                    nameHome={item.nameHome}
-                                    nameAway={item.nameAway}
-                                    logoHome={item.logoHome}
-                                    logoAway={item.logoAway}
+                                    nameHome={item.home_team_name}
+                                    nameAway={item.away_team_name}
+                                    logoHome={item.home_team_logo}
+                                    logoAway={item.away_team_logo}
                                     scoreHome={item.home_score}
                                     scoreAway={item.away_score}
                                     time={item.time}
