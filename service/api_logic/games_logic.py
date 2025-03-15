@@ -1,65 +1,47 @@
-from dto.api_output import GameOutput
+from dto.api_output import GameOutput, ListResponseDTO
 from dto.api_input import GamesDTO
 from database.models import Games, Country, TeamIndex, League, Sport
 from dto.pagination import Pagination
 from exept.handle_exeptions import handle_exceptions
-from service.api_logic.scripts import apply_filters
 from sqlalchemy.orm import aliased
-from database.session import SessionLocal
 from logger.logger import Logger
+from service.api_logic.filter_manager.filter_manager_strategy import FilterManagerStrategy
 
-logger = Logger("logger", "all.log")
+class GamesService:
+    def __init__(self, games_dal):
+        self._games_dal = games_dal
+        self._logger = Logger("logger", "all.log").logger
 
-session = SessionLocal()
+    def get_games_today(self, filters_dto: GamesDTO()):
+        AwayTeam = aliased(TeamIndex)
+        HomeTeam = aliased(TeamIndex)
 
-@handle_exceptions
-@logger.log_function_call()
-def get_games_today(
-        filters_dto: dict,
-        pagination: Pagination
-):
-    home_team = aliased(TeamIndex)
-    away_team = aliased(TeamIndex)
-
-    query = (
-        session.query(
-            Games,
+        query = (self._games_dal.get_base_query(Games).with_entities(
+            Games.status,
+            Games.date,
+            Games.time,
             League.name.label("league_name"),
             League.logo.label("league_logo"),
-            Country.name.label("country_name"),
-            home_team.name.label("home_team_name"),
-            home_team.logo.label("home_team_logo"),
-            away_team.name.label("away_team_name"),
-            away_team.logo.label("away_team_logo"),
-            Games.score_home_team,
-            Games.score_away_team,
-            Games.status,
-            Games.time,
-            Games.date,
-            Games.api_id
+            HomeTeam.name.label("home_team_name"),
+            HomeTeam.logo.label("home_team_logo"),
+            AwayTeam.name.label("away_team_name"),
+            AwayTeam.logo.label("away_team_logo"),
+            Games.score_home_team.label("home_score"),
+            Games.score_away_team.label("away_score"),
         )
         .join(League, Games.league_id == League.league_id)
-        .join(Country, Games.country_id == Country.country_id)
-        .join(Sport, Games.sport_id == Sport.sport_id)
-        .join(home_team, Games.team_home_id == home_team.team_index_id)
-        .join(away_team, Games.team_away_id == away_team.team_index_id)
+        .join(AwayTeam, Games.team_away_id == AwayTeam.team_index_id)
+        .join(HomeTeam, Games.team_home_id == HomeTeam.team_index_id)
     )
 
-    model_aliases = {
-        "games": Games,
-        "countries": Country,
-        "leagues": League,
-    }
+        filtered_query, count = FilterManagerStrategy.apply_filters(Games, query, filters_dto)
 
-    query = apply_filters(query, filters_dto, model_aliases)
+        games = self._games_dal.query_output(filtered_query)
+        game_output = GameOutput(many=True)
+        games = game_output.dump(games)
 
-    offset, limit = pagination.get_pagination()
-    if offset is not None and limit is not None:
-        query = query.offset(offset).limit(limit)
+        response_dto = ListResponseDTO()
 
-    games = query.all()
-
-    schema = GameOutput(many=True)
-    return schema.dump(games)
+        return response_dto.dump({"items": games, "count": count})
 
 

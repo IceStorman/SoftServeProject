@@ -23,6 +23,9 @@ class TeamsLeagueOutput(Schema):
     logo = fields.Str()
     id = fields.Str(attribute="api_id")
 
+class TeamsLeagueOutputWithCount(Schema):
+    teams = fields.List(fields.Nested(TeamsLeagueOutput))
+    count = fields.Int()
 
 class StreamsOutput(Schema):
     id = fields.Str(attribute="stream_id")
@@ -44,10 +47,18 @@ class SportsLeagueOutput(Schema):
     logo = fields.Str()
     name = fields.Str()
 
+class SportsLeagueOutputWithCount(Schema):
+    teams = fields.List(fields.Nested(SportsLeagueOutput))
+    count = fields.Int()
+
 class CountriesOutput(Schema):
     id = fields.Int(attribute="country_id")
     flag = fields.Str()
     name = fields.Str()
+
+class ListResponseDTO(Schema):
+    items = fields.List(fields.Raw(), required=True)
+    count = fields.Int(required=True)
 
 class OutputUser(Schema):
     username = fields.Str(required=True)

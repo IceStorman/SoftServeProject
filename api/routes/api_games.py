@@ -1,12 +1,13 @@
 from flask import Blueprint, request
-from dto.api_input import GamesDTO
-from dto.pagination import Pagination
-from service.api_logic.games_logic import get_games_today
+from dto.api_input import SearchDTO
 from api.routes.cache import cache
 from api.routes.scripts import  post_cache_key
 from exept.exeptions import DatabaseConnectionError, CustomQSportException
 from exept.handle_exeptions import get_custom_error_response
 from logger.logger import Logger
+from api.container.container import Container
+from dependency_injector.wiring import inject, Provide
+from service.api_logic.games_logic import GamesService
 
 logger = Logger("logger", "all.log")
 
@@ -20,31 +21,15 @@ def handle_db_timeout_error(e):
     response = {"error in data base": str(e)}
     return response
 
-
-@games_app.route('/today', methods=['POST'])
-@cache.cached(CACHE_TIMEOUT_SECONDS)
-@logger.log_function_call()
-def get_stream_info_endpoint():
-    try:
-        data = request.get_json()
-        dto = GamesDTO().load(data)
-        pagination = Pagination(**data)
-        games = get_games_today(dto, pagination)
-        return games
-    except CustomQSportException as e:
-        logger.error(f"Error in POST /: {str(e)}")
-        get_custom_error_response(e)
-
-
-@games_app.route('/specific', methods=['POST'])
+@games_app.route('/search', methods=['POST'])
 @cache.cached(CACHE_TIMEOUT_SECONDS, key_prefix=post_cache_key)
+@inject
 @logger.log_function_call()
-def get_stream_info_with_filters_endpoint():
+def get_games_info_with_filters_endpoint(games_service: GamesService = Provide[Container.games_service]):
     try:
         data = request.get_json()
-        dto = GamesDTO().load(data)
-        pagination = Pagination(**data)
-        games = get_games_today(dto, pagination)
+        dto = SearchDTO().load(data)
+        games = games_service.get_games_today(dto)
         return games
     except CustomQSportException as e:
         logger.error(f"Error in POST /: {str(e)}")
