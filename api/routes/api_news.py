@@ -6,6 +6,7 @@ from exept.handle_exeptions import get_custom_error_response, get_exception_erro
 from api.container.container import Container
 from exept.exeptions import DatabaseConnectionError, CustomQSportException
 from logger.logger import Logger
+from dto.api_input import SearchDTO
 from exept.handle_exeptions import handle_exceptions
 from service.api_logic.managers.recommendation_menager import RecommendationManager
 from service.api_logic.news_logic import NewsService
@@ -79,6 +80,20 @@ def specific_article(service: NewsService = Provide[Container.news_service]):
         logger.error(f"Error in POST /: {str(e)}")
         get_custom_error_response(e)
 
+@news_app.route('/search', methods=['POST'])
+@inject
+@logger.log_function_call()
+def get_filtered_news_endpoint(news_service: NewsService = Provide[Container.news_service]):
+    try:
+        filters = request.get_json() or {}
+        dto = SearchDTO().load(filters)
+        filtered_news = news_service.get_filtered_news(dto)
+        return filtered_news
+
+    except CustomQSportException as e:
+        logger.error(f"Error in POST /filtered: {str(e)}")
+
+        return get_custom_error_response(e)
 
 @news_app.route("/recommendation", methods=["POST"])
 @cache.cached(key_prefix=post_cache_key, timeout=60*60*2)
