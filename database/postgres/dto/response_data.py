@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 from typing import Optional
 import datetime
 
-class ResponceDataDTO(BaseModel):
+class ResponseDataDTO(BaseModel):
     user_id: int = Field(...)
     email: str = Field(...)
     username: str = Field(...)

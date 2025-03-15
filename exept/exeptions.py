@@ -149,21 +149,21 @@ class IncorrectSignatureError(CustomQSportException):
 
 
 class TokenRevokingError(CustomQSportException):
-    status_code = 401
+    status_code = 400
 
     def __init__(self):
         message = f"Cannot revoke token"
         super().__init__(message)
 
 class TokenUpdatingError(CustomQSportException):
-    status_code = 401
+    status_code = 400
 
     def __init__(self):
         message = "Cannot update token"
         super().__init__(message)
 
 class TokenSavingError(CustomQSportException):
-    status_code = 401
+    status_code = 400
 
     def __init__(self):
         message = "Cannot save token"

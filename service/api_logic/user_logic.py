@@ -20,7 +20,7 @@ from service.api_logic.auth_strategy import AuthManager
 from database.postgres.dto.jwt import JwtDTO
 from database.postgres.dto.refresh import RefreshTokenDTO
 from database.postgres.dto.additional_claims import AdditionalClaimsDTO
-from database.postgres.dto.responce_data import ResponceDataDTO
+from database.postgres.dto.response_data import ResponseDataDTO
 from database.postgres.dto.device_info import DeviceInfoDTO
 from datetime import datetime
 import time
@@ -262,12 +262,6 @@ class UserService:
 
 
     async def create_access_token_response(self, user, return_tokens: bool = False):
-        # additional_claims = {
-        #     "user_id": user.id,
-        #     "email":user.email,
-        #     "username":user.username,
-        #     "new_user":user.new_user
-        # }
         additional_claims = AdditionalClaimsDTO(
             user_id=user.id,
             email=user.email,
@@ -279,15 +273,8 @@ class UserService:
         refresh_token = create_refresh_token(identity=user.email, additional_claims=additional_claims)
 
         self.save_tokens_to_db(user, access_token, refresh_token)
- 
-        # response_data = {
-        #     "user_id": user.id,
-        #     "user_email": user.email,
-        #     "username": user.username,
-        #     "new_user":user.new_user
-        # }
-
-        response_data = ResponceDataDTO(
+        
+        response_data = ResponseDataDTO(
             user_id=user.id,
             email=user.email,
             username=user.username,
@@ -311,13 +298,6 @@ class UserService:
         return saved_nonce == token_nonce
     
     async def create_new_access_and_refresh_tokens(self, email: str, username: str,user_id: int,new_user:bool, refresh: bool = False):
-        # additional_claims = {
-        #     "user_id": user_id,
-        #     "email":email,
-        #     "username":username,
-        #     "new_user":new_user
-        # }
-
         additional_claims = AdditionalClaimsDTO(
             user_id=user_id,
             email=email,
