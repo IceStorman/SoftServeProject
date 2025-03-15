@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import GameCard from "../cards/gameCard";
 import { useRef, useEffect } from "react";
-
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
+import NoItems from "../NoItems";
+import useTranslations from "../../translationsContext";
+
+
 const GamesSlider = ({ games }) => {
     const sliderRef = useRef(null);
     const [canScrollLeft, setCanScrollLeft] = useState(false);
     const [canScrollRight, setCanScrollRight] = useState(true);
+    const { t } = useTranslations();
 
     const checkScroll = () => {
         if (sliderRef.current) {
@@ -42,27 +46,31 @@ const GamesSlider = ({ games }) => {
                 <button  onClick={() => scroll("right")} disabled={!canScrollRight}><SlArrowRight /></button>
             </div>
             <div className="games-slider-outer" ref={sliderRef}>
-                {Object.entries(games).map(([category, games]) => (
-                    <div key={category} className="game-category">
-                        <h2 className="category-title">{category}</h2>
-                        <div className="games-row">
-                            {games.map((item, index) => (
+                <div className="game-category">
+                    <div className="games-row">
+                        {!(games.length === 0) ?
+                            games.map((item, index) => (
                                 <GameCard
                                     key={index}
-                                    nameHome={item.nameHome}
-                                    nameAway={item.nameAway}
-                                    logoHome={item.logoHome}
-                                    logoAway={item.logoAway}
-                                    scoreHome={item.scoreHome}
-                                    scoreAway={item.scoreAway}
+                                    nameHome={item.home_team_name}
+                                    nameAway={item.away_team_name}
+                                    logoHome={item.home_team_logo}
+                                    logoAway={item.away_team_logo}
+                                    scoreHome={item.home_score}
+                                    scoreAway={item.away_score}
                                     time={item.time}
                                     height={160}
                                     width={300}
                                 />
-                            ))}
-                        </div>
+                            ))
+                            : (
+                                <NoItems
+                                    key={1}
+                                    text={t("games_not_found")}
+                                />
+                            )}
                     </div>
-                ))}
+                </div>
             </div>
         </div>
     );

@@ -21,7 +21,7 @@ const apiEndpoints = {
     },
     
     games:{
-        getGames: 'games/specific',
+        getGames: 'games/search',
         getThisGame: 'games/this',
         getGame: 'games/today',
     },

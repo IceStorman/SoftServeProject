@@ -71,6 +71,7 @@ def save_api_data(json_data: Dict, sport_name: str) -> None:
             game_dto_list = []
             for game in json_data_response:
 
+
                 if FIXTURE in game or GAME in game:
                     separated_data = game.get(FIXTURE) or game.get(GAME)
                     api_id = separated_data.get("id")
@@ -120,7 +121,7 @@ def save_api_data(json_data: Dict, sport_name: str) -> None:
                 if game_type_result in status_cache:
                      status_entry = status_cache[game_type_result]
                 else:
-                    status_entry = session.query(GamesStatuses).filter_by(status=game_type_result).one()
+                    status_entry = session.query(GamesStatuses).filter_by(status=game_type_result).first()
 
                     if not status_entry:
                         status_entry = GamesStatuses(status=game_type_result)
