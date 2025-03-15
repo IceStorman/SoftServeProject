@@ -58,7 +58,7 @@ function MainPage() {
     const [currentGames, setCurrentGames] = useState([]);
     const [slidesCount, setSlidesCount] = useState(0);
     const [currentSlide, setCurrentSlide] = useState(0);
-    const [gamesPerSlide, setGamesPerSlide] = useState(6);
+    const [gamesPerSlide, setGamesPerSlide] = useState(50);
     const [recommendationNews, setRecommendationNews] = useState([]);
 
 
@@ -82,13 +82,20 @@ function MainPage() {
                         page: page + 1,
                         per_page: gamesPerSlide,
                     },
-                    models: [{'type': 'game'}]
+                    filters: [
+                        {
+                            'order_type': 'game',
+                            'filter_name': 'sport_id',
+                            'order_field': ''
+                        }
+                    ]
                 },
                 {
                     headers: { 'Content-Type': 'application/json' },
                 }
             );
-            setCurrentGames(response.data);
+            console.log(response);
+            setCurrentGames(response.data.items);
             const totalGames = response.data.count;
             setSlidesCount(Math.ceil(totalGames / gamesPerSlide));
         } catch (error) {
