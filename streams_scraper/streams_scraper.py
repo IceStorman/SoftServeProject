@@ -89,7 +89,6 @@ def search_game_links(driver, future_games, games_today):
 
 @inject
 def save_stream_data(streams_data):
-
     stream_service.save_streams_to_streams_table(streams_data)
 
 

@@ -30,9 +30,10 @@ class StreamService:
 
     def save_streams_to_streams_table(self, streams_data):
         for stream in streams_data:
-            new_stream = self._stream_dal.create_stream(stream)
-            for url in stream['stream_url']:
-                self._stream_dal.create_stream_url(url, new_stream.stream_id)
+            if stream.stream_urls:
+                new_stream = self._stream_dal.create_stream(stream)
+                for url in stream.stream_urls:
+                    self._stream_dal.create_stream_url(url, new_stream.stream_id)
 
         
 
