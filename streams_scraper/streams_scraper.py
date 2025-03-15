@@ -6,15 +6,16 @@ from selenium_stealth import stealth
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
-from service.api_logic.games_logic import get_games_today
 from api.container.container import Container
 from dependency_injector.wiring import Provide, inject
 from database.postgres.dto import StreamDTO, StreamStatusDTO, StreamUrlDTO
 import re
+from dto.api_input import GamesDTO
 
 sport_dal = Provide[Container.sport_dal]
 
 stream_service = Provide[Container.stream_service]
+games_service = Provide[Container.games_service]
 
 
 def configure_driver():
@@ -113,22 +114,23 @@ def save_stream_data(streams_data):
     stream_service.save_streams_to_streams_table(streams_data)
 
 
+@inject
 def main():
     
     session = SessionLocal()
     driver = configure_driver()
 
     try:
-        
-        
-        games_today = get_games_today()
+
+        games_today = games_service.get_games_today(GamesDTO)
+
+        if games_today["count"] <= 0:
+            print("No available games for now.")
+            return
+
         future_games = filter_future_games(games_today)
-
-        
-        game_data = search_game_links(driver, future_games, games_today, session)
-
-        
-        save_stream_data(session, game_data)
+        game_data = search_game_links(driver, future_games, games_today)
+        save_stream_data(game_data)
 
 
     finally:
@@ -137,4 +139,7 @@ def main():
 
 
 if __name__ == "__main__":
+    container = Container()
+    container.init_resources()
+    container.wire(modules=[__name__])
     main()

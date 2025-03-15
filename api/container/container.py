@@ -23,7 +23,6 @@ class Container(containers.DeclarativeContainer):
             "api.routes.api_news",
             "api.routes.api_user_preferences",
             "api.routes.api_streams",
-            "streams_scraper.streams_scraper",
             "api.routes.api_games",
             "api.routes.api_teams",
             "api.routes.api_sports",
