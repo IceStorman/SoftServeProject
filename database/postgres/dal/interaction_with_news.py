@@ -6,30 +6,30 @@ class InteractionWithNewsDAL:
     def __init__(self, db_session = None):
         self.db_session = db_session
         
-    def save_interaction(self, interaction_dto, interaction_type_id: int):
-        interaction_entry = self.get_interaction(interaction_dto.user_id, interaction_dto.news_id, interaction_type_id)
+    def save_interaction(self, interaction_dto):
+        interaction_entry = self.get_interaction(interaction_dto.user_id, interaction_dto.news_id, interaction_dto.interaction_type)
         if interaction_entry:
-            self.update_interaction(interaction_entry.interaction_id, interaction_dto, interaction_type_id)
+            self.update_interaction(interaction_entry.interaction_id, interaction_dto)
         else:
-            self.create_interaction(interaction_dto, interaction_type_id)
+            self.create_interaction(interaction_dto)
     
-    def create_interaction(self, interaction_dto, interaction_type_id: int) -> InteractionWithNews:
+    def create_interaction(self, interaction_dto) -> InteractionWithNews:
         new_interaction = InteractionWithNews(
             news_id=interaction_dto.news_id,
             user_id=interaction_dto.user_id,
-            interaction_type=interaction_type_id,
+            interaction_type=interaction_dto.interaction_type,
             timestamp=interaction_dto.timestamp
         )
         self.db_session.add(new_interaction)
         self.db_session.commit()
         return new_interaction
 
-    def update_interaction(self, interaction_id: int, interaction_dto, interaction_type_id: int) -> Optional[InteractionWithNews]:
+    def update_interaction(self, interaction_id: int, interaction_dto) -> Optional[InteractionWithNews]:
         interaction = self.get_interaction_by_id(interaction_id)
         if not interaction:
             return None
         setattr(interaction, 'timestamp', interaction_dto.timestamp)
-        setattr(interaction, 'interaction_type', interaction_type_id)
+        setattr(interaction, 'interaction_type', interaction_dto.interaction_type)
         self.db_session.commit()
         self.db_session.refresh(interaction)
         return interaction

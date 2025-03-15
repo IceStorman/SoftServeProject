@@ -41,7 +41,7 @@ def get_interaction_status_by_user_id(service: InteractionWithNewsService = Prov
         dto = InteractionsDTO().load(request.args.to_dict())
         response = service.get_interaction_status(dto)
 
-        return jsonify({"status": response})
+        return jsonify(response)
 
     except CustomQSportException as e:
         logger.error(f"Error in GET /: {str(e)}")

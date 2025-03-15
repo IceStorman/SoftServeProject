@@ -53,4 +53,5 @@ class Container(containers.DeclarativeContainer):
     interaction_with_news_service = providers.Factory(
         InteractionWithNewsService,
         interaction_with_news_dal=interaction_with_news_dal,
+        news_dal=news_dal,
     )
