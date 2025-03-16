@@ -84,9 +84,7 @@ function MainPage() {
                     },
                     filters: [
                         {
-                            'order_type': 'game',
-                            'filter_name': 'sport_id',
-                            'order_field': ''
+                            'filter_name': 'sport_id'
                         }
                     ]
                 },

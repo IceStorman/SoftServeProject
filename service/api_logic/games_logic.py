@@ -29,8 +29,6 @@ class GamesService:
             HomeTeam.logo.label("home_team_logo"),
             AwayTeam.name.label("away_team_name"),
             AwayTeam.logo.label("away_team_logo"),
-            Games.score_home_team.label("home_score"),
-            Games.score_away_team.label("away_score"),
         )
         .join(League, Games.league_id == League.league_id)
         .join(AwayTeam, Games.team_away_id == AwayTeam.team_index_id)
