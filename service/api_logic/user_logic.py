@@ -292,7 +292,6 @@ class UserService:
         set_refresh_cookies(response, refresh_token)
 
 
-    
     async def verify_nonce(self, user_email: str, token_nonce: str) -> bool:
         user = await self._user_dal.get_user_by_email(user_email)
         saved_nonce = self._refresh_dal.get_nonce_by_user_id(user.id)
