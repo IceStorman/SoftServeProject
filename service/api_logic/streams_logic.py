@@ -1,7 +1,7 @@
 import json
 from dto.api_output import StreamsOutput
 from logger.logger import Logger
-from database.postgres.dto import StreamStatusDTO
+from database.postgres.dto import StreamStatusDTO, StreamUrlDTO
 
 
 class StreamService:
@@ -33,7 +33,11 @@ class StreamService:
             if stream.stream_urls:
                 new_stream = self._stream_dal.create_stream(stream)
                 for url in stream.stream_urls:
-                    self._stream_dal.create_stream_url(url, new_stream.stream_id)
+                    new_url = StreamUrlDTO(
+                        stream_url=url,
+                        stream_id=new_stream.stream_id
+                    )
+                    self._stream_dal.create_stream_url(new_url)
 
         
 
