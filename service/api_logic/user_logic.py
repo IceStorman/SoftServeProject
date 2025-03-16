@@ -126,6 +126,7 @@ class UserService:
         user = OutputLogin(email = new_user.email, token = new_user, id = new_user.user_id, username = new_user.username, new_user = True)
         response = await self.create_access_token_response(user)
 
+        return response 
 
 
     def create_user(self, new_user):
