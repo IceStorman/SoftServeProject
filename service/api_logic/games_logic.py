@@ -38,6 +38,8 @@ class GamesService:
     )
 
         filtered_query, count = FilterManagerStrategy.apply_filters(Games, query, filters_dto)
+        print(filtered_query)
+        print(filtered_query.statement.compile(compile_kwargs={"literal_binds": True}))
 
         games = self._games_dal.query_output(filtered_query)
         game_output = GameOutput(many=True)

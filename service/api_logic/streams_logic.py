@@ -1,31 +1,39 @@
 import json
-from dto.api_output import StreamsOutput
+from sqlalchemy import func
+from dto.api_output import StreamsOutput, ListResponseDTO
 from logger.logger import Logger
-from database.postgres.dto import StreamStatusDTO, StreamUrlDTO
+from database.postgres.dto import StreamUrlDTO
+from database.models import Stream, StreamUrl
+from service.api_logic.filter_manager.filter_manager_strategy import FilterManagerStrategy
 
 
 class StreamService:
-
     def __init__(self, stream_dal):
         self._stream_dal = stream_dal
         self._logger = Logger("logger", "all.log").logger
 
 
-    def get_streams_filtered(self, filters_dto): #not working for now without Roman's PR, Roman will fix in future
-        pass
-        # query = self._stream_dal.get_base_query(Stream)
-        #
-        # query = FilterManagerStrategy.apply_filters(Stream, query, filters_dto)
-        # count = query.count()
-        #
-        # streams = self._stream_dal.execute_query(query)
-        # streams_output = StreamsOutput(many=True)
-        # stream = streams_output.dump(streams)
-        #
-        # return {
-        #     "count": count,
-        #     "stream": stream,
-        # }
+    def get_streams_filtered(self, filters_dto):
+        query = (self._stream_dal.get_base_query(Stream).with_entities(
+            Stream.stream_id,
+            Stream.title,
+            Stream.start_time,
+            Stream.sport_id,
+            func.array_agg(StreamUrl.stream_url).label('stream_url')
+        )
+         .join(StreamUrl, Stream.stream_id == StreamUrl.stream_id)
+         .group_by(Stream.stream_id)
+        )
+
+        filtered_query, count = FilterManagerStrategy.apply_filters(Stream, query, filters_dto)
+
+        streams = self._stream_dal.query_output(filtered_query)
+        stream_output = StreamsOutput(many=True)
+        streams = stream_output.dump(streams)
+
+        response_dto = ListResponseDTO()
+
+        return response_dto.dump({"items": streams, "count": count})
 
 
     def save_streams_to_streams_table(self, streams_data):
@@ -39,18 +47,8 @@ class StreamService:
                     )
                     self._stream_dal.create_stream_url(new_url)
 
-        
 
     def save_json_stream_to_status_table(self, streams_status_data):
         streams_status_list = json.loads(streams_status_data) if isinstance(streams_status_data, str) else streams_status_data
 
         self._stream_dal.save_stream_statuses(streams_status_list)
-
-
-    def all_streams(self): # Honestly, don't really see a sense of this method, as we have filters, but as long as we didn't merge Roman's PR we need it
-        streams = self._stream_dal.get_all_streams()
-
-        streams_output = StreamsOutput(many=True)
-        stream = streams_output.dump(streams)
-
-        return stream
