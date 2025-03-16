@@ -274,7 +274,7 @@ class UserService:
 
         self.save_tokens_to_db(user, access_token, refresh_token)
         
-        response_data = ResponseDataDTO(
+        result_data = ResponseDataDTO(
             user_id=user.id,
             email=user.email,
             username=user.username,
@@ -282,12 +282,14 @@ class UserService:
         )
 
         if return_tokens:
-            response_data["access_token"] = access_token
-            response_data["refresh_token"] = refresh_token
+            result_data["access_token"] = access_token
+            result_data["refresh_token"] = refresh_token
 
-        response = jsonify(response_data)
+        response = jsonify(result_data.model_dump())
         set_access_cookies(response, access_token)
         set_refresh_cookies(response, refresh_token)
+        
+        return response
 
 
     async def verify_nonce(self, user_email: str, token_nonce: str) -> bool:
@@ -336,13 +338,15 @@ class UserService:
         new_nonce = self.generate_nonce()
         self._refresh_dal.update_refresh_token(identity, new_refresh_token, new_nonce)
 
-        response = jsonify({
+        result = jsonify({
             "access_token": new_access_token,
             "refresh_token": new_refresh_token
         })
     
-        set_access_cookies(response, new_access_token)
-        set_refresh_cookies(response, new_refresh_token)
+        set_access_cookies(result, new_access_token)
+        set_refresh_cookies(result, new_refresh_token)
+        
+        return result
 
     
     def add_preferences(self, dto: UpdateUserPreferencesDTO):
