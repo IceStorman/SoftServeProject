@@ -5,7 +5,7 @@ from api.container.container import Container
 from dependency_injector.wiring import Provide, inject
 from database.postgres.dto import StreamDTO
 import re
-from dto.api_input import GamesDTO
+from dto.api_input import GamesDTO, SearchDTO, PaginationDTO
 from datetime import datetime
 import undetected_chromedriver as uc
 
@@ -103,7 +103,16 @@ def main():
     driver = configure_driver()
 
     try:
-        games_today = games_service.get_games_today(GamesDTO)
+        dto = SearchDTO().load({
+            "filters": [
+                {
+                 "filter_name": "date_from",
+                 "filter_value": datetime.now().date()
+                }
+            ]
+        })
+        games_today = games_service.get_games_today(dto)
+
         if games_today["count"] <= 0:
             print("No available games for now.")
             return
@@ -112,9 +121,9 @@ def main():
         game_data = search_game_links(driver, future_games, games_today)
         save_stream_data(game_data)
 
-
     finally:
         print("Links Parsing Is Finished")
+
         if driver:
             driver.quit()
 

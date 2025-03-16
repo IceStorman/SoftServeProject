@@ -1,12 +1,14 @@
+from sqlalchemy.orm import Session
 from sqlalchemy import func
 from database.models import Stream, Streams_Status, StreamUrl
+from database.postgres.dal.base import BaseDAL
 from database.postgres.dto import StreamDTO, StreamStatusDTO, StreamUrlDTO
 from typing import List
 
 
-class StreamDAL:
-    def __init__(self, session = None):
-        self.db_session = session
+class StreamDAL(BaseDAL):
+    def __init__(self, session: Session):
+        self.session = session
 
 
     def create_stream(self, stream_dto: StreamDTO) -> Stream:
@@ -16,8 +18,8 @@ class StreamDAL:
             sport_id = stream_dto.sport_id
         )
 
-        self.db_session.add(new_stream)
-        self.db_session.commit()
+        self.session.add(new_stream)
+        self.session.commit()
 
         return new_stream
 
@@ -27,8 +29,8 @@ class StreamDAL:
             stream_id = status_dto.stream_id,
         )
 
-        self.db_session.add(new_stream_status)
-        self.db_session.commit()
+        self.session.add(new_stream_status)
+        self.session.commit()
 
         return new_stream_status
 
@@ -39,8 +41,8 @@ class StreamDAL:
             stream_url=url_dto.stream_url,
         )
 
-        self.db_session.add(new_url)
-        self.db_session.commit()
+        self.session.add(new_url)
+        self.session.commit()
 
         return new_url
 
@@ -61,7 +63,7 @@ class StreamDAL:
 
 
     def get_all_streams(self):
-        result = (self.db_session.query(
+        result = (self.session.query(
             Stream.stream_id,
             Stream.title,
             Stream.start_time,
