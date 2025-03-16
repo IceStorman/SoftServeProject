@@ -181,7 +181,7 @@ export default function InsideNewsPage() {
             const notify = () => toast('Sign in to leave your reaction', {
                 action: {
                     label: 'sign in',
-                    onClick: () => window.location.href = '/sign-in',
+                    onClick: () =>  navigate('/sign-in') ,
                 },
             });
             notify()
