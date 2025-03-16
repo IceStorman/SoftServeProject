@@ -45,6 +45,7 @@ class UserService:
         self._sport_dal = sport_dal
         self._serializer = URLSafeTimedSerializer(current_app.secret_key)
         self._logger = Logger("logger", "all.log").logger
+        
     @staticmethod    
     def get_user_device(self) -> str:
         user_agent = request.headers.get("User-Agent", "")
