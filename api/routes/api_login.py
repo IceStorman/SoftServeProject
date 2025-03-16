@@ -7,6 +7,7 @@ from logger.logger import Logger
 from dependency_injector.wiring import inject, Provide
 from service.api_logic.user_logic import UserService
 from api.container.container import Container
+from flask_jwt_extended import jwt_required
 import os
 from dotenv import load_dotenv
 
@@ -34,8 +35,7 @@ async def create_account_endpoint(service: UserService = Provide[Container.user_
     try:
         data = request.get_json()
         dto = InputUserDTO().load(data)
-        user = await service.sign_up_user(dto.email, dto.username, dto.password)
-        response = await service.create_access_token_response(user)
+        response = await service.sign_up_user(dto.email, dto.username, dto.password)
 
         return response
 
@@ -99,4 +99,16 @@ async def log_in(service: UserService = Provide[Container.user_service]):
 
     except CustomQSportException as e:
         logger.error(f"Error in POST /login: {str(e)}")
+        return get_custom_error_response(e)
+
+@login_app.route("/refresh", methods=['POST'])
+@inject
+@handle_exceptions
+@logger.log_function_call()
+@jwt_required(refresh=True)
+async def refresh(service: UserService = Provide[Container.user_service]):
+    try:
+        return await service.refresh_tokens()
+    except CustomQSportException as e:
+        logger.error(f"Error in POST /refresh: {str(e)}")
         return get_custom_error_response(e)

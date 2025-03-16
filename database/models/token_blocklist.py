@@ -1,8 +1,10 @@
 from .base import Base, Column, Integer, String, ForeignKey, Boolean, DateTime
+from sqlalchemy.orm import relationship
 import datetime 
 
-class Token_Blocklist(Base):
+class TokenBlocklist(Base):
     __tablename__ = 'Token_blocklist'
+
     id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey("Users.user_id"))
     jti = Column(String, nullable=False, index=True)

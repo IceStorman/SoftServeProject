@@ -77,10 +77,12 @@ class OutputTeamPreferences(Schema):
     logo = fields.Str(required=True)
 
 class OutputLogin():
-    def __init__(self, email: str, id: int, token: str):
+    def __init__(self, email: str, id: int, token: str, username: str, new_user:bool):
         self.email = email
         self.id = id
         self.token = token
+        self.username = username
+        self.new_user = new_user
         self.message = "You successfully logged in!"
 
 

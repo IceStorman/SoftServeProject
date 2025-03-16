@@ -25,13 +25,13 @@ from datetime import timedelta
 import os
 from dotenv import load_dotenv
 from pathlib import Path
+from api.routes.api_localization import babel, get_locale
 
 
 load_dotenv()
 db = SQLAlchemy()
 mail = Mail()
 jwt = JWTManager()
-
 
 
 def create_app():
@@ -65,7 +65,6 @@ def create_app():
 
     app.config['GOOGLE_CLIENT_ID'] = os.getenv('GOOGLE_CLIENT_ID')
     app.config['GOOGLE_CLIENT_SECRET'] = os.getenv('GOOGLE_CLIENT_SECRET')
-
     app.config['REDIRECT_URI'] = os.getenv('GOOGLE_REDIRECT_URI')
     app.config['AUTHORIZATION_BASE_URL'] = os.getenv('GOOGLE_AUTHORIZATION_BASE_URL')
     app.config['TOKEN_URL'] = os.getenv('GOOGLE_TOKEN_URL')
