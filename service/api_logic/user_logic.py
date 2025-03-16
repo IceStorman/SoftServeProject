@@ -249,9 +249,10 @@ class UserService:
             revoked=False,
             expires_at=refresh_expires_at  
         )
-        self._access_tokens_dal.save_access_token(refresh_jwt_dto)
+        id = self._access_tokens_dal.save_access_token(refresh_jwt_dto)
 
         refresh_dto = RefreshTokenDTO(
+            id=id,
             user_id=user.id,
             last_ip=self.__get_country_from_ip(),
             last_device=self.get_user_device(),

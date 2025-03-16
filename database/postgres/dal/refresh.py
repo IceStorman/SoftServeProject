@@ -30,6 +30,7 @@ class RefreshTokenDAL:
                     refresh_entry.nonce = refresh_dto.nonce
                 else:
                     refresh_entry = RefreshTokenTracking(
+                        id = refresh_dto.id,
                         user_id=refresh_dto.user_id,
                         last_ip=refresh_dto.last_ip,
                         last_device=refresh_dto.last_device,
