@@ -205,7 +205,7 @@ class UserService:
 
     async def log_in(self, credentials: InputUserLogInDTO):
         login_context = AuthManager(self)
-        user_id = self._user_dal.get_existing_user(credentials.email)
+        user_id = self._user_dal.get_user_by_email(credentials.email)
         sus_login = self.is_suspicious_login(user_id)
         if not sus_login:
             user = await login_context.execute_log_in(credentials)
@@ -213,7 +213,7 @@ class UserService:
 
             return response
         else:
-            pass
+            revoke = self._refresh_dal.revoke_all_refresh_and_access_tokens_for_user(user_id)
 
 
     async def __generate_auth_token(self, user, salt):
@@ -286,11 +286,11 @@ class UserService:
             response_data["access_token"] = access_token
             response_data["refresh_token"] = refresh_token
 
-        response = make_response(jsonify(response_data))
+        response = jsonify(response_data)
         set_access_cookies(response, access_token)
         set_refresh_cookies(response, refresh_token)
 
-        return response
+
     
     async def verify_nonce(self, user_email: str, token_nonce: str) -> bool:
         user = await self._user_dal.get_user_by_email(user_email)
@@ -339,15 +339,14 @@ class UserService:
         new_nonce = self.generate_nonce()
         self._refresh_dal.update_refresh_token(identity, new_refresh_token, new_nonce)
 
-        response = make_response(jsonify({
+        response = jsonify({
             "access_token": new_access_token,
             "refresh_token": new_refresh_token
-        }))
+        })
     
         set_access_cookies(response, new_access_token)
         set_refresh_cookies(response, new_refresh_token)
- 
-        return response
+
     
     def add_preferences(self, dto: UpdateUserPreferencesDTO):
         new_dto_by_type_of_preference = self.dto_for_type_of_preference(dto)
