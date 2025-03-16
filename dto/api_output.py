@@ -93,7 +93,7 @@ def get_script_phrases():
         "main_page":          _("Main page"),
         "about_us":           _("About us"),
         "faq":                _("FAQ"),
-        "QSPORT":   _("QSPORT"),
+        "QSPORT":             _("QSPORT"),
         "since":              _("since 1990"),
 
         # Контактна інформація

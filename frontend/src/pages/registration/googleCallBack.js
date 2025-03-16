@@ -25,7 +25,7 @@ function GoogleAuthCallback() {
                     login({ email: response?.data?.user?.email, username: response?.data?.user?.username, id: response?.data?.user?.id });
                     toast.success(globalVariables.authMessages.successLogIn);
 
-                    user?.showPref === true ? navigate('/user/preferences') : navigate('/'); //waiting for Taras PR for this to work properly
+                    user?.new_user === true ? navigate('/user/preferences') : navigate('/');
                 })
                 .catch(error => {
                     const errorStatus = error?.response?.status
