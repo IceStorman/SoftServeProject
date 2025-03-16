@@ -23,6 +23,7 @@ def get_filtered_streams_endpoint(streams_service: StreamService = Provide[Conta
         data = request.get_json()
         dto = SearchDTO().load(data)
         response = streams_service.get_streams_filtered(dto)
+
         return response
 
     except CustomQSportException as e:
