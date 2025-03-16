@@ -20,7 +20,7 @@ function GoogleAuthCallback() {
             axios.post(`${apiEndpoints.url}${apiEndpoints.user.login}?code=${code}`,
                 {
                     auth_provider: globalVariables.authStrategies.googleStrategy
-                },)
+                }, {withCredentials: true},)
                 .then(response => {
                     login({ email: response?.data?.user?.email, username: response?.data?.user?.username, id: response?.data?.user?.id });
                     toast.success(globalVariables.authMessages.successLogIn);

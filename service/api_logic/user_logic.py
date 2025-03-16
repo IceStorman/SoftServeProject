@@ -278,16 +278,31 @@ class UserService:
             user_id=user.id,
             email=user.email,
             username=user.username,
-            new_user=user.new_user
+            new_user=user.new_user,
+            access_token = access_token,
+            refresh_token = refresh_token
         )
 
-        if return_tokens:
-            result_data["access_token"] = access_token
-            result_data["refresh_token"] = refresh_token
-
         response = jsonify(result_data.model_dump())
-        set_access_cookies(response, access_token)
-        set_refresh_cookies(response, refresh_token)
+        response.set_cookie(
+            "access_token",
+            access_token,
+            httponly=False,
+            secure=True,
+            samesite="None",
+            path="/",
+            max_age=3600
+        )
+
+        response.set_cookie(
+            "refresh_token",
+            refresh_token,
+            httponly=False,
+            secure=True,
+            samesite="None",
+            path="/",
+            max_age=7 * 24 * 3600
+        )
         
         return response
 

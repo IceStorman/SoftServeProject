@@ -34,7 +34,7 @@ jwt = JWTManager()
 
 def create_app():
     app = Flask(__name__, static_folder='static')
-    CORS(app)
+    CORS(app, supports_credentials=True)
 
     app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -107,5 +107,5 @@ def create_app():
 app = create_app()
 if __name__ == '__main__':
     LocalizationCompiler().compile_translations()
-    app.run(host='0.0.0.0', port=5001, debug=True, use_reloader=False)
+    app.run(host='0.0.0.0', port=5001, debug=True, use_reloader=False, ssl_context=('localhost.pem', 'localhost-key.pem'))
 
