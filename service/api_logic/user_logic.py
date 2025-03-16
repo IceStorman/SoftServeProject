@@ -47,17 +47,14 @@ class UserService:
         self._logger = Logger("logger", "all.log").logger
         
     @staticmethod    
-    def get_user_device(self) -> str:
+    def get_user_device() -> str:
         user_agent = request.headers.get("User-Agent", "")
         parsed_agent = parse(user_agent)
-
-        device_info = DeviceInfoDTO(
-            browser=f"{parsed_agent.browser.family} {parsed_agent.browser.version_string}",
-            os=f"{parsed_agent.os.family} {parsed_agent.os.version_string}",
-            device=parsed_agent.device.family
-        )
+        device_info_str = f"Browser: {parsed_agent.browser.family} {parsed_agent.browser.version_string}, " \
+                        f"OS: {parsed_agent.os.family} {parsed_agent.os.version_string}, " \
+                        f"Device: {parsed_agent.device.family}"
         
-        return device_info
+        return device_info_str
 
     def __get_client_ip(self) -> str:
         return request.headers.get("X-Forwarded-For", request.remote_addr)
@@ -86,7 +83,7 @@ class UserService:
         return nonce
     
     def is_suspicious_login(self, user_id: int) -> bool:
-        refresh_entry = self._access_token_dal.get_valid_refresh_token_by_user(user_id)
+        refresh_entry = self._refresh_dal.get_valid_refresh_token_by_user(user_id)
         if not refresh_entry:
             return False  
 
@@ -98,7 +95,7 @@ class UserService:
             refresh_entry.last_ip and refresh_entry.last_ip != current_ip,
             refresh_entry.last_country and refresh_entry.last_country != current_country,
             refresh_entry.last_device and refresh_entry.last_device != current_device,
-            self._access_token_dal.is_nonce_used(user_id, refresh_entry.nonce)
+            self._refresh_dal.is_nonce_used(user_id, refresh_entry.nonce)
         ]
 
         return any(suspicious_conditions)
@@ -256,7 +253,7 @@ class UserService:
 
         refresh_dto = RefreshTokenDTO(
             user_id=user.id,
-            last_ip=self.get_country_from_ip(),
+            last_ip=self.__get_country_from_ip(),
             last_device=self.get_user_device(),
             nonce=self.generate_nonce()
         )
@@ -312,14 +309,13 @@ class UserService:
         return new_access_token, new_refresh_token
     
 
-    async def update_refresh_token(self, user_email: str, new_refresh_token: str):
+    async def update_refresh_token(self, user_email: str):
         user = await self._user_dal.get_user_by_email(user_email)
         
         refresh_dto = RefreshTokenDTO(
             user_id=user.id,
             last_ip=self.__get_country_from_ip(),
             last_device=self.get_user_device(),
-            refresh_token=new_refresh_token,
             nonce=self.generate_nonce()
         )
 

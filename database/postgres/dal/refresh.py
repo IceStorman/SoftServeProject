@@ -16,29 +16,33 @@ class RefreshTokenDAL:
     def __init__(self, db_session: Session):
         self.db_session = db_session
 
-    def save_refresh_token(self, refresh_dto: RefreshTokenDTO) -> Optional[int]:
-        try:
-            refresh_entry = None
-            
-            if refresh_dto.id:
-                refresh_entry = self.get_refresh_token_by_id(refresh_dto.id)
+    def save_refresh_token(self, refresh_dto: RefreshTokenDTO) -> Optional[int]: 
+            try:
+                refresh_entry = None
+                
+                if refresh_dto.id:
+                    refresh_entry = self.get_refresh_token_by_id(refresh_dto.id)
 
-            if refresh_entry:
-                data = self.schema.dump(refresh_dto)
-                for key, value in data.items():
-                    setattr(refresh_entry, key, value)
-            else:
-                refresh_entry = RefreshTokenTracking(**self.schema.load(refresh_dto.dict()))
-                self.db_session.add(refresh_entry)
+                if refresh_entry:
+                    refresh_entry.user_id = refresh_dto.user_id
+                    refresh_entry.last_ip = refresh_dto.last_ip
+                    refresh_entry.last_device = refresh_dto.last_device
+                    refresh_entry.nonce = refresh_dto.nonce
+                else:
+                    refresh_entry = RefreshTokenTracking(
+                        user_id=refresh_dto.user_id,
+                        last_ip=refresh_dto.last_ip,
+                        last_device=refresh_dto.last_device,
+                        nonce=refresh_dto.nonce
+                    )
+                    self.db_session.add(refresh_entry)
 
-            self.db_session.commit()
-            self.db_session.refresh(refresh_entry)
-            return refresh_entry.id
-
-        except ValidationError as ve:
-            raise f"Validation error: {ve.messages}"
-        except TokenSavingError as e:
-            raise get_custom_error_response(e)
+                self.db_session.commit()
+                self.db_session.refresh(refresh_entry)
+                return refresh_entry.id
+            except SQLAlchemyError as e:
+                raise (f"Error in save_refresh_token: {e}")
+  
 
 
     def get_refresh_token_by_id(self, refresh_id: int) -> Optional[RefreshTokenTracking]:
@@ -49,7 +53,7 @@ class RefreshTokenDAL:
             self.db_session.query(RefreshTokenTracking)
             .filter(
                 RefreshTokenTracking.user_id == user_id,
-                RefreshTokenTracking.refresh_token.has(revoked=False),  
+                TokenBlocklist.revoked == False,  
                 TokenBlocklist.expires_at > datetime.utcnow()
             )
             .first()
@@ -70,7 +74,7 @@ class RefreshTokenDAL:
             .first()
         )
         if entry:
-            entry.refresh_token = refresh_dto.refresh_token
+            entry.user_id = refresh_dto.user_id
             entry.nonce = refresh_dto.nonce
             entry.last_ip = refresh_dto.last_ip
             entry.last_device = refresh_dto.last_device
