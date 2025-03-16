@@ -1,3 +1,4 @@
+from dto.api_output import OutputInteractions
 from exept.exeptions import IncorrectInteractionType, BlobFetchError, DatabaseConnectionError
 from service.api_logic.models.api_models import InteractionTypes
 from database.postgres.dto import InteractionWithNewsDTO
@@ -60,3 +61,15 @@ class InteractionWithNewsService:
         interaction_entry = self._interaction_with_news_dal.get_interaction(interaction_dto.user_id, interaction_dto.news_id, interaction_dto.interaction_type)
 
         return True if interaction_entry else False
+
+
+    def get_interactions_counts(self, interaction_input_dto):
+        interactions_counts = self._news_dal.get_interaction_counts(interaction_input_dto.blob_id)
+
+        if not interactions_counts:
+            raise BlobFetchError(interaction_input_dto.blob_id)
+
+        return OutputInteractions().dump({
+            "likes": interactions_counts[0],
+            "views": interactions_counts[1]
+        })

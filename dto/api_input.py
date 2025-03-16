@@ -156,6 +156,6 @@ class TablesAndColumnsForUserPreferencesDTO:
         self.related_id = related_id
 
 class InteractionsDTO(BaseDTO):
-    user_id = fields.Int(required=True)
+    user_id = fields.Int(required=False)
     blob_id = fields.String(required=True)
-    interaction_type = fields.String(required=True)
+    interaction_type = fields.String(required=False)

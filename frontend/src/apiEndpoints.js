@@ -56,6 +56,7 @@ const apiEndpoints = {
     interactions:{
         saveInteraction: 'interactions/save',
         getInteractionStatus: 'interactions/getStatus',
+        getInteractionsCounts: 'interactions/getCounts'
     }
 };
 

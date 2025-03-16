@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { FaRegHeart, FaHeart } from "react-icons/fa";
+import { VscEye } from "react-icons/vsc";
 import axios from "axios";
 import apiEndpoints from "../../apiEndpoints";
 import { AuthContext } from "../registration/AuthContext"
@@ -11,12 +12,13 @@ export default function InsideNewsPage() {
 
     const { t } = useTranslations();
     const navigate = useNavigate();
-    const {articleId} = useParams();
+    const { articleId } = useParams();
     const location = useLocation();
     const newsData = location.state?.newsData;
     const [article, setArticle] = useState()
     const [likes, setLikes] = useState()
     const [sections, setSections] = useState()
+    const [views, setViews] = useState()
 
     useEffect(() => {
         if (!newsData) {
@@ -35,7 +37,6 @@ export default function InsideNewsPage() {
                 });
         } else {
             setArticle(newsData?.article);
-            setLikes(newsData?.likes);
         }
     }, []);
 
@@ -129,6 +130,24 @@ export default function InsideNewsPage() {
     };
 
     useEffect(() => {
+        async function getInteractionsCounts() {
+            try {
+                const { data } = await axios.get(`${apiEndpoints.url}${apiEndpoints.interactions.getInteractionsCounts}`, {
+                    params: {
+                        blob_id: articleId,
+                    },
+                });
+                setLikes(data.likes);
+                setViews(data.views);
+            }
+            catch (error) {
+                toast.error(`Troubles with getting interactions count: ${error}`)
+            }
+        }
+        getInteractionsCounts()
+    }, [] );
+
+    useEffect(() => {
         async function getLikeStatus() {
             try {
                 const { data } = await axios.get(`${apiEndpoints.url}${apiEndpoints.interactions.getInteractionStatus}`, {
@@ -198,6 +217,9 @@ export default function InsideNewsPage() {
 
             <div className="details">
                 <div className="date">{article?.timestamp}</div>
+                <div className="views">
+                    <VscEye />{views}
+                </div>
                 <button className="like-vrapper" onClick={toggleLike}>
                     <div className="like-content">
                         {likeStatus ? <FaHeart /> : <FaRegHeart />}{likes}

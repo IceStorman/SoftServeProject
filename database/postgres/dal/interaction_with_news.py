@@ -24,7 +24,7 @@ class InteractionWithNewsDAL:
         self.db_session.commit()
 
     def update_interaction(self, interaction_id: int, interaction_dto):
-        self.db_session.query(InteractionWithNews).filter(InteractionWithNews.id == interaction_id).update({
+        self.db_session.query(InteractionWithNews).filter(InteractionWithNews.interaction_id == interaction_id).update({
             "timestamp": interaction_dto.timestamp,
             "interaction_type": interaction_dto.interaction_type
         })

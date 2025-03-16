@@ -72,6 +72,11 @@ class OutputRecommendationList(Schema):
     rating = fields.Int(required=True)
 
 
+class OutputInteractions(Schema):
+    likes = fields.Int(required=True)
+    views = fields.Int(required=True)
+
+
 def get_script_phrases():
     return {
         # Загальні

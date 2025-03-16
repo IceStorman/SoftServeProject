@@ -48,3 +48,19 @@ def get_interaction_status_by_user_id(service: InteractionWithNewsService = Prov
     except CustomQSportException as e:
         logger.error(f"Error in GET /: {str(e)}")
         return get_custom_error_response(e)
+
+
+@interactions_app.route('/getCounts', methods=['GET'])
+@logger.log_function_call()
+@inject
+@handle_exceptions
+def get_interactions_count_by_blob_id(service: InteractionWithNewsService = Provide[Container.interaction_with_news_service]):
+    try:
+        dto = InteractionsDTO().load(request.args.to_dict())
+        response = service.get_interactions_counts(dto)
+
+        return response
+
+    except CustomQSportException as e:
+        logger.error(f"Error in GET /: {str(e)}")
+        return get_custom_error_response(e)
