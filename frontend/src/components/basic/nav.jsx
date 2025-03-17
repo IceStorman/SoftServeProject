@@ -1,10 +1,13 @@
-import React, {useEffect, useState} from "react";
-import {NavLink, useLocation} from "react-router-dom";
+import React, {useContext, useEffect, useState} from "react";
+import {NavLink, useLocation, useNavigate} from "react-router-dom";
 import useTranslations from "../../translationsContext";
 import globalVariables from "../../globalVariables";
 import {FaBars, FaTimes} from "react-icons/fa";
 import clsx from "clsx";
 import LanguageBtn from "./languageSwitcherBtn";
+import LoginBtn from "./loginBtn";
+import {User} from "lucide-react";
+import {AuthContext} from "../../pages/registration/AuthContext";
 
 function NavBar() {
     const { t } = useTranslations();
@@ -65,6 +68,8 @@ function NavBar() {
         }
 
     }, [menuIsOpen]);
+    const { user } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     return (
         <div className="navbar-outer">
@@ -79,7 +84,17 @@ function NavBar() {
                         </nav>
                 }
 
-                <LanguageBtn/>
+                <div className={"btn-controller-box"}>
+
+                    <LanguageBtn/>{
+                    !user ? <LoginBtn/> :
+                        <button className="account-button filled" onClick={() => navigate("/user/account")}>
+                            <User size={26} className="icon"/>
+                        </button>
+                    }
+
+                </div>
+
             </div>
 
             <hr/>

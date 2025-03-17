@@ -11,29 +11,6 @@ header {
         position: static;
     }
 
-    .header-btn{
-        display: flex;
-        align-items: center;
-        margin-right: 3rem;
-        gap: 1rem;
-        transition: all 0.5s ease;
-
-        .account-button {
-            display: flex;
-            align-items: center;
-            background: black;
-            color: white;
-            padding: 0.6rem;
-            border-radius: 50%;
-            border: none;
-            cursor: pointer;
-
-            .icon {
-                color: white;
-            }
-        }
-    }
-
     .logo-btn{
         position: relative;
         left: 50%;
@@ -75,6 +52,7 @@ header {
         text-decoration: none;
         display: flex;
         justify-content: center;
+        align-items: center;
         color: white;
         background-color: transparent;
         border: none;
@@ -90,6 +68,29 @@ header {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+
+
+        .btn-controller-box{
+            display: flex;
+            align-items: center;
+            margin-right: 3rem;
+            transition: all 0.5s ease;
+
+            .account-button {
+                display: flex;
+                align-items: center;
+                background: black;
+                color: white;
+                padding: 0.6rem;
+                border-radius: 50%;
+                border: none;
+                cursor: pointer;
+
+                .icon {
+                    color: white;
+                }
+            }
+        }
     }
 
     .burger-nav{
@@ -113,7 +114,6 @@ header {
         }
 
         .language-switcher-container{
-            margin: 0 0 3rem 0.5rem;
 
             .language-button {
                 border: 1px solid $main-shadow;
@@ -175,8 +175,11 @@ header {
 
         .nav-link {
             text-decoration: none;
+            display: flex;
+            align-items: center;
             color: black;
-            padding: 0.5rem 2rem;
+            padding: 0.7rem 2rem;
+            height: fit-content;
             transition: color 0.3s ease, background-color 0.3s ease;
             position: relative;
 

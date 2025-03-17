@@ -57,7 +57,7 @@ msgstr "Зареєструйтесь"
 
 msgid "Socials"
 msgstr "Соц. Мережі"
-
+ 
 msgid "Sign Up"
 msgstr "Зареєструватись"
 
