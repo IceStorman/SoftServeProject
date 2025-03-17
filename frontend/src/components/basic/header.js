@@ -15,7 +15,6 @@ function Header() {
         <header>
             <Logo />
             <div className={"header-btn"}>
-                <LanguageBtn />
                 {
                     !user ? <LoginBtn/> :
                         <button className="account-button filled" onClick={() => navigate("/user/account")}>

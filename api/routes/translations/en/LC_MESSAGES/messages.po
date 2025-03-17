@@ -53,8 +53,8 @@ msgstr "Email"
 msgid "Socials"
 msgstr "Socials"
 
-msgid "Sign In"
-msgstr "Sign In"
+msgid "Sign Up"
+msgstr "Sign Up"
 
 msgid "QSPORT"
 msgstr "QSPORT"

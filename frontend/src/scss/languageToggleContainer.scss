@@ -1,11 +1,12 @@
 .language-switcher-container {
   display: flex;
   align-items: center;
+  margin-right: 3rem;
 }
 
 .language-button {
   padding: 0.2rem 0.5rem;
-  border: 1px solid $main-clr-shadow;
+  border: 1px solid $main-shadow;
   cursor: pointer;
   font-size: 1rem;
   text-transform: uppercase;
@@ -13,6 +14,6 @@
 }
 
 .language-button.active {
-  background-color: $main-clr-shadow;
+  background-color: $main-shadow;
   color: white;
 }

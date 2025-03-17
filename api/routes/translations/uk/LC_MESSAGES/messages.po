@@ -55,8 +55,8 @@ msgstr "Електронна пошта"
 msgid "Socials"
 msgstr "Соц. Мережі"
 
-msgid "Sign In"
-msgstr "Ввійти"
+msgid "Sign Up"
+msgstr "Зареєструватись"
 
 msgid "QSPORT"
 msgstr "QSPORT"

@@ -4,6 +4,7 @@ import useTranslations from "../../translationsContext";
 import globalVariables from "../../globalVariables";
 import {FaBars, FaTimes} from "react-icons/fa";
 import clsx from "clsx";
+import LanguageBtn from "./languageSwitcherBtn";
 
 function NavBar() {
     const { t } = useTranslations();
@@ -68,19 +69,23 @@ function NavBar() {
     return (
         <div className="navbar-outer">
 
-            {
-                burgerMenu ?
-                    <button className={"menu-btn"} onClick={handleOpenMenu}> {menuIcon} </button>
-                    :
-                    <nav className="navbar">
-                        {navBar}
-                    </nav>
-            }
+            <div className={"navbar-box"}>
+                {
+                    burgerMenu ?
+                        <button className={"menu-btn"} onClick={handleOpenMenu}> {menuIcon} </button>
+                        :
+                        <nav className="navbar">
+                            {navBar}
+                        </nav>
+                }
+
+                <LanguageBtn/>
+            </div>
 
             <hr/>
+
             {
-                menuIsOpen &&
-                <div className={"burger-nav"}>
+                <div className={`burger-nav ${menuIsOpen ? "show" : ""}`}>
                     {navBar}
                 </div>
             }

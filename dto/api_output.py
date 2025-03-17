@@ -118,7 +118,7 @@ def get_script_phrases():
         "what_interesting_in": _("What are you interested in?"),
         "choose_sports":      _("Choose your favourite sports:"),
 
-        "sign_in":            _("Sign In"),
+        "sign_up":            _("Sign Up"),
         "log_in":             _("Log In"),
         "password":           _("Password:"),
         "forget_password":    _("Forget password?"),

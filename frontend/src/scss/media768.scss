@@ -17,6 +17,13 @@
     }
   }
 
+  .navbar-outer{
+
+    .navbar{
+      margin-left: 0;
+    }
+  }
+
   .news-block{
     max-width: 80%;
 
@@ -35,5 +42,16 @@
 
   .notExistingPage {
     font-size: 2rem;
+  }
+
+  .registration{
+
+    form{
+      p{
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+      }
+    }
   }
 }
