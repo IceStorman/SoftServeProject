@@ -8,10 +8,6 @@
     }
   }
 
-  header{
-
-  }
-
   .navbar-outer{
 
     .navbar-box{
@@ -64,5 +60,9 @@
         flex-direction: column;
       }
     }
+  }
+
+  .preferences{
+    max-width: 70%;
   }
 }

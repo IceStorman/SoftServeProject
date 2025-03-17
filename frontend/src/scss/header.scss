@@ -53,10 +53,11 @@ header {
         display: flex;
         justify-content: center;
         align-items: center;
+        margin: auto 0;
+        padding: 0.35rem;
         color: white;
         background-color: transparent;
         border: none;
-        padding: 0.2rem;
 
         &:hover{
             border-radius: 50%;
@@ -81,7 +82,7 @@ header {
                 align-items: center;
                 background: black;
                 color: white;
-                padding: 0.6rem;
+                padding: 0.4rem;
                 border-radius: 50%;
                 border: none;
                 cursor: pointer;

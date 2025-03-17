@@ -1,9 +1,4 @@
 @media (max-width: 480px) {
-  header{
-
-    .logo-btn{
-    }
-  }
 
   .navbar-outer{
 
@@ -30,9 +25,13 @@
     max-width: 100%;
     width: 100%;
     margin: 0;
-    padding: 0;
+    padding: 2rem;
     border: none;
     border-radius: 0;
+
+    .account-title{
+      padding: 0 1rem;
+    }
 
     .accountInfoContainer{
       padding: 0 1rem;
@@ -42,10 +41,6 @@
       }
 
     }
-  }
-
-  .registration{
-    padding: 2rem 0;
   }
 
   .preferences{
