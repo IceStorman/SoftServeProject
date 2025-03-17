@@ -539,3 +539,8 @@ credentials.json
 token.json
 
 package-lock.json
+
+localhost.pem
+localhost-key.pem
+myapp.local.pem
+myapp.local-key.pem
