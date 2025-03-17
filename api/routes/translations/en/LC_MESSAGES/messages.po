@@ -50,6 +50,9 @@ msgstr "q.sport.news@gmail.com"
 msgid "Email:"
 msgstr "Email"
 
+msgid "Sign up to"
+msgstr "Sign up"
+
 msgid "Socials"
 msgstr "Socials"
 

@@ -95,6 +95,7 @@ def get_script_phrases():
         "faq":                _("FAQ"),
         "QSPORT":             _("QSPORT"),
         "since":              _("since 1990"),
+        "sign_up_to":         _("Sign up to"),
 
         # Контактна інформація
         "contact_info":       _("Contacts"),

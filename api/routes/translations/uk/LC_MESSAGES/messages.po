@@ -52,6 +52,9 @@ msgstr "q.sport.news@gmail.com"
 msgid "Email:"
 msgstr "Електронна пошта"
 
+msgid "Sign up to"
+msgstr "Зареєструйтесь"
+
 msgid "Socials"
 msgstr "Соц. Мережі"
 
