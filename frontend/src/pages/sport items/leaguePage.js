@@ -73,21 +73,26 @@ function LeaguePage() {
         setPrevInputValue(inputValue);
 
         try {
-            setLoading(true);
-
             const response = await axios.post(
                 `${apiEndpoints.url}${apiEndpoints.sports.getLeagueSearch}`,
                 {
-                    leagues__sport_id: sportId,
-                    page: page + 1,
-                    per_page: leaguesPerPage
+                    pagination: {
+                        page: page + 1,
+                        per_page: leaguesPerPage,
+                    },
+                    filters: [
+                        {
+                            'filter_name': 'sport_id',
+                            'filter_value': sportId
+                        }
+                    ]
                 },
                 {
                     headers: { 'Content-Type': 'application/json' },
                 }
             );
-
-            setCurrentLeagues(response.data.leagues);
+            console.log(response)
+            setCurrentLeagues(response.data.items);
             const totalPosts = response.data.count;
             setPageCount(Math.ceil(totalPosts / leaguesPerPage));
         } catch (error) {
