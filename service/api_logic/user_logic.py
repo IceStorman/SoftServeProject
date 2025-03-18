@@ -181,8 +181,9 @@ class UserService:
         
         return new_access_token, new_refresh_token    
 
+    
 
-    def reset_user_password(self, token, new_password: str):
+    async def reset_user_password(self, token, new_password: str):
         username = self.confirm_token(token)
         user = self.get_user_by_email_or_username(username = username)
         if not user:
@@ -191,37 +192,8 @@ class UserService:
         salt = bcrypt.gensalt()
         hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), salt)
 
-        self._user_dal.update_user_password(user, hashed_password.decode('utf-8'))
-        access_token, refresh_token = await create_new_access_and_refresh_tokens(email=user.email, username=user.username, user_id=user.id, new_user=False )
-
-        result_data = ResponseDataDTO(
-            user_id=user.id,
-            email=user.email,
-            username=user.username,
-            new_user=user.new_user,
-            access_token = access_token,
-            refresh_token = refresh_token
-        )
-        response = jsonify(result_data.model_dump())
-        response.set_cookie(
-            "access_token",
-            access_token,
-            httponly=False,
-            secure=True,
-            samesite="None",
-            path="/",
-            max_age=3600
-        )
-
-        response.set_cookie(
-            "refresh_token",
-            refresh_token,
-            httponly=False,
-            secure=True,
-            samesite="None",
-            path="/",
-            max_age=7 * 24 * 3600
-        )
+        self._user_dal.update_user_password(user, hashed_password.decode('utf-8')) 
+        response = await create_access_token_response(user) 
         
         return response
 
@@ -244,9 +216,18 @@ class UserService:
         sus_login = self.is_suspicious_login(user_id)
         if not sus_login:
             user = await login_context.execute_log_in(credentials)
-            response = await self.create_access_token_response(user)
+            ex_refesh_token = self._refresh_dal.get_valid_refresh_token_by_user(user_id)
+            ex_access_token = self._access_tokens_dal.get_valid_access_token_by_user(user_id)
+            
+            if ex_refesh_token and ex_access_token:
+                response = 1
+                
+                return response
+            
+            else:
+                response = await self.create_access_token_response(user)
 
-            return response
+                return response
         else:
             self._refresh_dal.revoke_all_refresh_and_access_tokens_for_user(user_id)
 
