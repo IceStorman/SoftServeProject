@@ -26,6 +26,12 @@ from pathlib import Path
 from api.routes.api_localization import babel, get_locale
 
 
+
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))  
+cert_file = os.path.join(BASE_DIR, "localhost.pem")
+key_file = os.path.join(BASE_DIR, "localhost-key.pem")
+
 load_dotenv()
 db = SQLAlchemy()
 mail = Mail()
@@ -107,5 +113,6 @@ def create_app():
 app = create_app()
 if __name__ == '__main__':
     LocalizationCompiler().compile_translations()
-    app.run(host='0.0.0.0', port=5001, debug=True, use_reloader=False, ssl_context=('localhost.pem', 'localhost-key.pem'))
+    app.run(host='0.0.0.0', port=5001, debug=True, use_reloader=False, ssl_context=(cert_file, key_file))
+
 
