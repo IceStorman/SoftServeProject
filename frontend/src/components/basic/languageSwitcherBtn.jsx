@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import useTranslations from '../../translationsContext';
 
 function LanguageSwitcher(){
@@ -6,30 +6,32 @@ function LanguageSwitcher(){
 
     const isEnglish = language === 'en';
 
+    const [checked, setChecked] = useState(!isEnglish);
+
+    useEffect(() => {
+        setChecked(!isEnglish);
+    }, [language]);
+
     const toggleLanguage = () => {
-        changeLanguage(isEnglish ? 'uk' : 'en');
+        const newLang = isEnglish ? "uk" : "en";
+        changeLanguage(newLang);
+        setChecked(!checked);
     };
 
     return (
         <div className={"languageSwitcher"}>
-            <div className="flipswitch">
+            <label htmlFor="filter" className={"switch"} aria-label="Toggle Language">
                 <input
-                    id="lang-switch"
-                    className="flipswitch-cb"
                     type="checkbox"
-                    checked={isEnglish}
+                    id="filter"
+                    checked={checked}
                     onChange={toggleLanguage}
                 />
-                <label htmlFor="lang-switch" className="flipswitch-label">
-                    <div className="flipswitch-inner">
-                        <span className="flipswitch-en">EN</span>
-                        <span className="flipswitch-ua">UA</span>
-                    </div>
-                    <div className="flipswitch-switch"/>
-                </label>
-            </div>
+                <span>EN</span>
+                <span>UA</span>
+            </label>
         </div>
     );
-};
+}
 
 export default LanguageSwitcher;
