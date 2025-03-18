@@ -162,11 +162,19 @@
   }
 
   @media (max-width: 480px) {
-    width: 85%;
-    max-width: 85%;
-    margin: 0.8rem;
-    max-height: 32.5rem;
-    padding: 0;
+    max-width: 100%;
+    width: 100%;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+
+    .videoPlayer .partnerLinks {
+      background-color: white;
+    }
+
+    .videoPlayer .partnerLinks h2 {
+      color: black;
+    }
 
 
     .videoPlayer {
@@ -177,6 +185,7 @@
       height: 14.5rem;
       min-height: 10.5rem;
       min-width: 15rem;
+      background-color: white;
     }
 
     p {
