@@ -10,6 +10,7 @@ from api.container.container import Container
 from flask_jwt_extended import jwt_required
 import os
 from dotenv import load_dotenv
+from dto.common_response import CommonResponseWithUser
 
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 load_dotenv()
@@ -37,7 +38,7 @@ async def create_account_endpoint(service: UserService = Provide[Container.user_
         dto = InputUserDTO().load(data)
         response = await service.sign_up_user(dto.email, dto.username, dto.password)
 
-        return response
+        return CommonResponseWithUser().to_dict()
 
     except CustomQSportException as e:
         logger.error(f"Error in POST /: {str(e)}")
@@ -93,9 +94,9 @@ async def log_in(service: UserService = Provide[Container.user_service]):
     try:
         data = request.get_json()
         dto = InputUserLogInDTO().load(data)
-        response = await service.log_in(dto)
+        await service.log_in(dto)
 
-        return response
+        return CommonResponseWithUser().to_dict()
 
     except CustomQSportException as e:
         logger.error(f"Error in POST /login: {str(e)}")

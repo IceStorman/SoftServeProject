@@ -19,9 +19,9 @@ from flask_jwt_extended import create_access_token,create_refresh_token, set_acc
 from service.api_logic.auth_strategy import AuthManager
 from database.postgres.dto.jwt import JwtDTO
 from database.postgres.dto.refresh import RefreshTokenDTO
+from database.postgres.dto.extended_credentials import ExtendedCredantialsDTO
 from database.postgres.dto.additional_claims import AdditionalClaimsDTO
 from database.postgres.dto.response_data import ResponseDataDTO
-from database.postgres.dto.device_info import DeviceInfoDTO
 from datetime import datetime
 import time
 import requests
@@ -29,6 +29,7 @@ import hashlib
 from  service.api_logic.models.api_models import JTI
 from flask_jwt_extended import get_jwt_identity, get_jwt
 from service.api_logic.models.api_models import SportPreferenceFields, TeamPreferenceFields
+
 
 
 
@@ -87,13 +88,10 @@ class UserService:
         if not refresh_entry:
             return False  
 
-        current_ip = self.__get_client_ip()
         current_country = self.__get_country_from_ip()
         current_device = self.get_user_device()
 
         suspicious_conditions = [
-            refresh_entry.last_ip and refresh_entry.last_ip != current_ip,
-            refresh_entry.last_country and refresh_entry.last_country != current_country,
             refresh_entry.last_device and refresh_entry.last_device != current_device,
             self._refresh_dal.is_nonce_used(user_id, refresh_entry.nonce)
         ]
@@ -121,9 +119,7 @@ class UserService:
         new_user = User(email = email, username = username, password_hash = hashed_password.decode('utf-8'))
         self.create_user(new_user)
         user = OutputLogin(email = new_user.email, token = new_user, id = new_user.user_id, username = new_user.username, new_user = True)
-        response = await self.create_access_token_response(user)
-
-        return response 
+        await self.create_access_token_response(user)
 
 
     def create_user(self, new_user):
@@ -211,22 +207,22 @@ class UserService:
 
     async def log_in(self, credentials: InputUserLogInDTO):
         login_context = AuthManager(self)
-        user_id = self._user_dal.get_user_by_email(credentials.email)
-        sus_login = self.is_suspicious_login(user_id)
-        if not sus_login:
+        user = self._user_dal.get_user_by_email_or_username(email=credentials.email_or_username, username=credentials.email_or_username)
+        sus_login = self.is_suspicious_login(user_id=user.user_id)
+        if sus_login is True:
             
-            ex_access_token, ex_refesh_token = self._refresh_dal.get_valid_tokens_by_user(user_id)
+            ex_access_token, ex_refesh_token = self._refresh_dal.get_valid_tokens_by_user(user_id=user.user_id)
             
             if ex_refesh_token and ex_access_token:
                 await login_context.execute_log_in(credentials)
 
             else:
-                updated_credentials =  credentials.copy(update = {"id":user_id,"new_user": False})
-                await self.create_access_token_response(user=updated_credentials)
+                extended_credentials = ExtendedCredantialsDTO(user_id = user.user_id, email = user.email, username = user.username, new_user = False) 
+                await self.create_access_token_response(user=extended_credentials)
                 await login_context.execute_log_in(credentials)
 
         else:
-            self._refresh_dal.revoke_all_refresh_and_access_tokens_for_user(user_id)
+            self._refresh_dal.revoke_all_refresh_and_access_tokens_for_user(user.user_id)
 
 
     async def __generate_auth_token(self, user, salt):
@@ -249,7 +245,7 @@ class UserService:
         refresh_expires_at = datetime.utcfromtimestamp(decode_refresh_token['exp'])
 
         access_jwt_dto = JwtDTO(
-            user_id=user.id,
+            user_id=user.user_id,
             jti=decode_access_token[JTI],   
             token_type="access",
             revoked=False,
@@ -258,7 +254,7 @@ class UserService:
         self._access_tokens_dal.save_access_token(access_jwt_dto)
 
         refresh_jwt_dto = JwtDTO(
-            user_id=user.id,
+            user_id=user.user_id,
             jti=decode_refresh_token[JTI],
             token_type="refresh",
             revoked=False,
@@ -268,29 +264,30 @@ class UserService:
 
         refresh_dto = RefreshTokenDTO(
             id=id,
-            user_id=user.id,
+            user_id=user.user_id,
             last_ip=self.__get_country_from_ip(),
             last_device=self.get_user_device(),
             nonce=self.generate_nonce()
         )
         self._refresh_dal.save_refresh_token(refresh_dto)
+        # replace with the correct method user_id!!!
 
 
     async def create_access_token_response(self, user):
         additional_claims = AdditionalClaimsDTO(
-            user_id=user.id,
+            user_id=user.user_id,
             email=user.email,
             username=user.username,
             new_user=user.new_user
         )
 
-        access_token = create_access_token(additional_claims=additional_claims)
-        refresh_token = create_refresh_token(additional_claims=additional_claims)
+        access_token = create_access_token(identity=user.email, additional_claims=additional_claims)
+        refresh_token = create_refresh_token(identity=user.email, additional_claims=additional_claims)
 
         self.save_tokens_to_db(user, access_token, refresh_token)
         
         result_data = ResponseDataDTO(
-            user_id=user.id,
+            user_id=user.user_id,
             email=user.email,
             username=user.username,
             new_user=user.new_user,
@@ -316,7 +313,7 @@ class UserService:
             secure=True,
             samesite="None",
             path="/",
-            max_age=7 * 24 * 3600
+            max_age=30 * 24 * 3600
         )
         
         
@@ -382,7 +379,7 @@ class UserService:
             max_age=7 * 24 * 3600
         )
         
-        return response
+
         
 
     

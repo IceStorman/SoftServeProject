@@ -56,6 +56,7 @@ class RefreshTokenDAL:
             .filter(
                 TokenBlocklist.user_id == user_id,
                 TokenBlocklist.revoked == False,
+                TokenBlocklist.token_type == "access",
                 TokenBlocklist.expires_at > datetime.utcnow()
             )
             .first()
@@ -64,8 +65,10 @@ class RefreshTokenDAL:
         refresh_token = (
             self.db_session.query(RefreshTokenTracking)
             .filter(
-                RefreshTokenTracking.user_id == user_id,
-                RefreshTokenTracking.expires_at > datetime.utcnow()
+                TokenBlocklist.user_id == user_id,
+                TokenBlocklist.revoked == False,
+                TokenBlocklist.token_type == "refresh",
+                TokenBlocklist.expires_at > datetime.utcnow()
             )
             .first()
         )
@@ -110,6 +113,17 @@ class RefreshTokenDAL:
                 token_entry.updated_at = datetime.utcnow()
                 self.db_session.commit()
 
+    def get_valid_refresh_token_by_user(self, user_id: int) -> Optional[RefreshTokenTracking]:
+        return (
+            self.db_session.query(RefreshTokenTracking)
+            .filter(
+                RefreshTokenTracking.user_id == user_id,
+                TokenBlocklist.revoked == False,  
+                TokenBlocklist.expires_at > datetime.utcnow()
+            )
+            .first()
+        )
+        
     def revoke_all_refresh_and_access_tokens_for_user(self, user_id: int) -> int:
         revoked_count = (
             self.db_session.query(TokenBlocklist)

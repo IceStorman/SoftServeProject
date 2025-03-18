@@ -158,8 +158,8 @@ class InputUserLogInDTO(BaseDTO):
     email_or_username = fields.Str(required=False, missing=None)
     password = fields.Str(required=False, missing=None)
     auth_provider = fields.String(required=False, missing=None)
-
-
+    
+    
 class TablesAndColumnsForUserPreferencesDTO:
     def __init__(self, main_table, related_table, user_id_field, type_id_field, related_name, related_logo, related_id):
         self.main_table = main_table
