@@ -193,9 +193,8 @@ class UserService:
         hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), salt)
 
         self._user_dal.update_user_password(user, hashed_password.decode('utf-8')) 
-        response = await create_access_token_response(user) 
+        await create_access_token_response(user) 
         
-        return response
 
 
     def confirm_token(self, token: str, expiration=3600):
@@ -215,19 +214,16 @@ class UserService:
         user_id = self._user_dal.get_user_by_email(credentials.email)
         sus_login = self.is_suspicious_login(user_id)
         if not sus_login:
-            user = await login_context.execute_log_in(credentials)
-            ex_refesh_token = self._refresh_dal.get_valid_refresh_token_by_user(user_id)
-            ex_access_token = self._access_tokens_dal.get_valid_access_token_by_user(user_id)
+            
+            ex_access_token, ex_refesh_token = self._refresh_dal.get_valid_tokens_by_user(user_id)
             
             if ex_refesh_token and ex_access_token:
-                response = 1
-                
-                return response
-            
-            else:
-                response = await self.create_access_token_response(user)
+                await login_context.execute_log_in(credentials)
 
-                return response
+            else:
+                await self.create_access_token_response(user_id)
+                await login_context.execute_log_in(credentials)
+
         else:
             self._refresh_dal.revoke_all_refresh_and_access_tokens_for_user(user_id)
 
@@ -279,7 +275,7 @@ class UserService:
         self._refresh_dal.save_refresh_token(refresh_dto)
 
 
-    async def create_access_token_response(self, user, return_tokens: bool = False):
+    async def create_access_token_response(self, user):
         additional_claims = AdditionalClaimsDTO(
             user_id=user.id,
             email=user.email,
@@ -322,7 +318,7 @@ class UserService:
             max_age=7 * 24 * 3600
         )
         
-        return response
+        
 
 
     async def verify_nonce(self, user_email: str, token_nonce: str) -> bool:

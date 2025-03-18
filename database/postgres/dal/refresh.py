@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
-from typing import Optional
+from typing import Optional,Tuple
 from datetime import datetime
 from database.models.refresh_token_tracking import RefreshTokenTracking
 from database.models.users import User
@@ -50,16 +50,27 @@ class RefreshTokenDAL:
     def get_refresh_token_by_id(self, refresh_id: int) -> Optional[RefreshTokenTracking]:
         return self.db_session.query(RefreshTokenTracking).filter(RefreshTokenTracking.id == refresh_id).first()
 
-    def get_valid_refresh_token_by_user(self, user_id: int) -> Optional[RefreshTokenTracking]:
-        return (
-            self.db_session.query(RefreshTokenTracking)
+    def get_valid_tokens_by_user(self, user_id: int) -> Tuple[Optional[TokenBlocklist], Optional[RefreshTokenTracking]]:
+        access_token = (
+            self.db_session.query(TokenBlocklist)
             .filter(
-                RefreshTokenTracking.user_id == user_id,
-                TokenBlocklist.revoked == False,  
+                TokenBlocklist.user_id == user_id,
+                TokenBlocklist.revoked == False,
                 TokenBlocklist.expires_at > datetime.utcnow()
             )
             .first()
         )
+
+        refresh_token = (
+            self.db_session.query(RefreshTokenTracking)
+            .filter(
+                RefreshTokenTracking.user_id == user_id,
+                RefreshTokenTracking.expires_at > datetime.utcnow()
+            )
+            .first()
+        )
+
+        return access_token, refresh_token
     
     def get_user_info_by_nonce(self, nonce) -> int:
         token_entry = self.db_session.query(RefreshTokenTracking).filter(RefreshTokenTracking.nonce == nonce).first()
