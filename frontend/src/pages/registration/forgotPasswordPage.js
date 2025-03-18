@@ -54,13 +54,13 @@ function ForgotPasswordPage() {
                     <h2>{t("password_reset")}</h2>
                 </div>
                 <p>
-                    {t("email")}:
+                    {t("email_account")}:
                     <input
                         value={email}
                         onChange={e => setEmail(e.target.value)}
                         onBlur={() => !email.trim() && setError(t("required_field"))}
                         className={error ? "input-error" : ""}
-                        placeholder={t("enter_email")}
+                        placeholder={'example@gmail.com'}
                     />
                 </p>
                 {error && <p className="error">{error}</p>}

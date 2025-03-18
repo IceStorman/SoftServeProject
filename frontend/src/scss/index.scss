@@ -1,7 +1,7 @@
 $main-clr: #65c7ee;
 $main-clr-shadow: #46a5ca;
 
-$main-shadow: #436370cc;
+$main-shadow: #3785A6;
 
 $secondary-clr: #5bbe64;
 $compl-clr: #911111;
@@ -13,7 +13,7 @@ $bg-dark: #dbd3b2;
 
 $main-text-clr: #000;
 
-$main-font: "CyrillicGoth";
+$main-font: 'Times New Roman';
 
 
 @import "header";
@@ -33,6 +33,9 @@ $main-font: "CyrillicGoth";
 @import "languageToggleContainer";
 @import "preferencesPage";
 @import "account";
+@import "media1024";
+@import "media768";
+@import "media480";
 
 
 @font-face {
@@ -59,6 +62,7 @@ $main-font: "CyrillicGoth";
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  overflow: hidden;
 }
 
 * {

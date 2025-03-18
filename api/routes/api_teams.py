@@ -1,12 +1,15 @@
 from flask import Blueprint, request
 from dto.pagination import Pagination
 from exept.handle_exeptions import get_custom_error_response
-from dto.api_input import TeamsLeagueDTO, TeamsStatisticsOrPlayersDTO
+from dto.api_input import TeamsLeagueDTO, TeamsStatisticsOrPlayersDTO, SearchDTO
 from exept.exeptions import DatabaseConnectionError, CustomQSportException
 from service.implementation.auto_request_api.sport_data_managers.players_data_manager import PlayersDataManager
 from service.implementation.auto_request_api.sport_data_managers.team_statistics_data_manager import \
     TeamStatisticsDataManager
 from logger.logger import Logger
+from dependency_injector.wiring import Provide, inject
+from api.container.container import Container
+from service.api_logic.teams_logic import TeamsService
 from service.implementation.auto_request_api.sport_data_managers.teams_data_manager import TeamsDataManager
 
 logger = Logger("logger", "all.log")
@@ -69,6 +72,19 @@ def get_players_endpoint():
         team_players = data_manager.get_data()
 
         return team_players
+    except CustomQSportException as e:
+        logger.error(f"Error in POST /: {str(e)}")
+        get_custom_error_response(e)
+
+@teams_app.route('/search', methods=['POST'])
+@inject
+@logger.log_function_call()
+def get_team_filtered_endpoint(teams_service: TeamsService = Provide[Container.teams_service]):
+    try:
+        data = request.get_json()
+        dto = SearchDTO().load(data)
+        teams = teams_service.get_teams_filtered(dto)
+        return teams
     except CustomQSportException as e:
         logger.error(f"Error in POST /: {str(e)}")
         get_custom_error_response(e)
