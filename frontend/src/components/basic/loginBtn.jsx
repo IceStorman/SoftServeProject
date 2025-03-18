@@ -7,7 +7,7 @@ function LoginBtn(){
 
     return (
         <button className="filled login">
-            <NavLink to={"/sign-in"} className="nav-link" activeClassName="active">{t("sign_in")}</NavLink>
+            <NavLink to={"/sign-in"} className="nav-link" activeClassName="active">{t("log_in")}</NavLink>
         </button>
     );
 }

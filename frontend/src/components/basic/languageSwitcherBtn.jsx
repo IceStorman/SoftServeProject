@@ -1,31 +1,37 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import useTranslations from '../../translationsContext';
 
-const LanguageSwitcher = () => {
-    const { t, changeLanguage, language } = useTranslations();
+function LanguageSwitcher(){
+    const { changeLanguage, language } = useTranslations();
 
-    const languages = [
-        { code: 'en', label: 'EN' },
-        { code: 'uk', label: 'UA' },
-    ];
+    const isEnglish = language === 'en';
 
-    const handleLanguageChange = (newLang) => {
+    const [checked, setChecked] = useState(!isEnglish);
+
+    useEffect(() => {
+        setChecked(!isEnglish);
+    }, [language]);
+
+    const toggleLanguage = () => {
+        const newLang = isEnglish ? "uk" : "en";
         changeLanguage(newLang);
+        setChecked(!checked);
     };
 
     return (
-        <div className="language-switcher-container">
-            {languages.map((lang) => (
-                <button
-                    key={lang.code}
-                    className={`language-button ${language === lang.code ? 'active' : ''}`}
-                    onClick={() => handleLanguageChange(lang.code)}
-                >
-                    {lang.label}
-                </button>
-            ))}
+        <div className={"languageSwitcher"}>
+            <label htmlFor="filter" className={"switch"} aria-label="Toggle Language">
+                <input
+                    type="checkbox"
+                    id="filter"
+                    checked={checked}
+                    onChange={toggleLanguage}
+                />
+                <span>EN</span>
+                <span>UA</span>
+            </label>
         </div>
     );
-};
+}
 
 export default LanguageSwitcher;
