@@ -46,9 +46,3 @@ class StreamService:
                         stream_id=new_stream.stream_id
                     )
                     self._stream_dal.create_stream_url(new_url)
-
-
-    def save_json_stream_to_status_table(self, streams_status_data):
-        streams_status_list = json.loads(streams_status_data) if isinstance(streams_status_data, str) else streams_status_data
-
-        self._stream_dal.save_stream_statuses(streams_status_list)
