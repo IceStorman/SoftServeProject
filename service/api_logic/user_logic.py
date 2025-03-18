@@ -221,7 +221,8 @@ class UserService:
                 await login_context.execute_log_in(credentials)
 
             else:
-                await self.create_access_token_response(user_id)
+                updated_credentials =  credentials.copy(update = {"id":user_id,"new_user": False})
+                await self.create_access_token_response(user=updated_credentials)
                 await login_context.execute_log_in(credentials)
 
         else:
@@ -283,8 +284,8 @@ class UserService:
             new_user=user.new_user
         )
 
-        access_token = create_access_token(identity=user.email, additional_claims=additional_claims)
-        refresh_token = create_refresh_token(identity=user.email, additional_claims=additional_claims)
+        access_token = create_access_token(additional_claims=additional_claims)
+        refresh_token = create_refresh_token(additional_claims=additional_claims)
 
         self.save_tokens_to_db(user, access_token, refresh_token)
         
