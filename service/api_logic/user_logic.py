@@ -167,6 +167,19 @@ class UserService:
             raise UserDoesNotExistError(email)
 
         return self._serializer.dumps(user.username, salt = "email-confirm")
+        
+    async def create_new_access_and_refresh_tokens(self, email: str, username: str,user_id: int,new_user:bool):
+        additional_claims = AdditionalClaimsDTO(
+            user_id=user_id,
+            email=email,
+            username=username,
+            new_user=new_user
+        )
+        new_access_token = create_access_token(identity=email.email, additional_claims=additional_claims)
+        new_refresh_token = create_refresh_token(identity=email.email, 
+                                                 additional_claims=additional_claims.update({"nonce": self.generate_nonce()}))
+        
+        return new_access_token, new_refresh_token    
 
 
     def reset_user_password(self, token, new_password: str):
@@ -179,13 +192,37 @@ class UserService:
         hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), salt)
 
         self._user_dal.update_user_password(user, hashed_password.decode('utf-8'))
-        new_jwt = create_access_token(identity=user.email)
-        new_refresh = create_refresh_token(identity=user.email)
+        access_token, refresh_token = await create_new_access_and_refresh_tokens(email=user.email, username=user.username, user_id=user.id, new_user=False )
 
-        response = jsonify({"message": "Password reset successful"})
-        set_access_cookies(response, new_jwt)
-        set_refresh_cookies(response, new_refresh)
+        result_data = ResponseDataDTO(
+            user_id=user.id,
+            email=user.email,
+            username=user.username,
+            new_user=user.new_user,
+            access_token = access_token,
+            refresh_token = refresh_token
+        )
+        response = jsonify(result_data.model_dump())
+        response.set_cookie(
+            "access_token",
+            access_token,
+            httponly=False,
+            secure=True,
+            samesite="None",
+            path="/",
+            max_age=3600
+        )
 
+        response.set_cookie(
+            "refresh_token",
+            refresh_token,
+            httponly=False,
+            secure=True,
+            samesite="None",
+            path="/",
+            max_age=7 * 24 * 3600
+        )
+        
         return response
 
 
@@ -211,7 +248,7 @@ class UserService:
 
             return response
         else:
-            revoke = self._refresh_dal.revoke_all_refresh_and_access_tokens_for_user(user_id)
+            self._refresh_dal.revoke_all_refresh_and_access_tokens_for_user(user_id)
 
 
     async def __generate_auth_token(self, user, salt):
@@ -312,20 +349,7 @@ class UserService:
         saved_nonce = self._refresh_dal.get_nonce_by_user_id(user.id)
 
         return saved_nonce == token_nonce
-    
-    async def create_new_access_and_refresh_tokens(self, email: str, username: str,user_id: int,new_user:bool, refresh: bool = False):
-        additional_claims = AdditionalClaimsDTO(
-            user_id=user_id,
-            email=email,
-            username=username,
-            new_user=new_user
-        )
-        new_access_token = create_access_token(identity=email.email, additional_claims=additional_claims)
-        new_refresh_token = create_refresh_token(identity=email.email, 
-                                                 additional_claims=additional_claims.update({"nonce": self.generate_nonce()}))
-        
-        return new_access_token, new_refresh_token
-    
+
 
     async def update_refresh_token(self, user_email: str):
         user = await self._user_dal.get_user_by_email(user_email)
@@ -357,11 +381,31 @@ class UserService:
             "access_token": new_access_token,
             "refresh_token": new_refresh_token
         })
-    
-        set_access_cookies(result, new_access_token)
-        set_refresh_cookies(result, new_refresh_token)
+
         
-        return result
+        response = jsonify(result.model_dump())
+        response.set_cookie(
+            "access_token",
+            new_access_token,
+            httponly=False,
+            secure=True,
+            samesite="None",
+            path="/",
+            max_age=3600
+        )
+
+        response.set_cookie(
+            "refresh_token",
+            new_refresh_token,
+            httponly=False,
+            secure=True,
+            samesite="None",
+            path="/",
+            max_age=7 * 24 * 3600
+        )
+        
+        return response
+        
 
     
     def add_preferences(self, dto: UpdateUserPreferencesDTO):

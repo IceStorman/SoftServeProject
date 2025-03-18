@@ -3,6 +3,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from typing import Optional
 from datetime import datetime
 from database.models.refresh_token_tracking import RefreshTokenTracking
+from database.models.users import User
 from database.models.token_blocklist import TokenBlocklist
 from database.postgres.dto.refresh import RefreshTokenDTO
 from marshmallow import ValidationError
@@ -59,6 +60,11 @@ class RefreshTokenDAL:
             )
             .first()
         )
+    
+    def get_user_info_by_nonce(self, nonce) -> int:
+        token_entry = self.db_session.query(RefreshTokenTracking).filter(RefreshTokenTracking.nonce == nonce).first()
+        user_info = self.db_session.query(User).filter(User.user_id == token_entry.user_id)
+        return user_info if user_info else None
 
     def verify_nonce(self, user_id: int, nonce: str) -> bool:
         token_entry = self.db_session.query(RefreshTokenTracking).filter_by(user_id=user_id, nonce=nonce).first()
@@ -93,19 +99,19 @@ class RefreshTokenDAL:
                 token_entry.updated_at = datetime.utcnow()
                 self.db_session.commit()
 
-def revoke_all_refresh_and_access_tokens_for_user(self, user_id: int) -> int:
-    revoked_count = (
-        self.db_session.query(TokenBlocklist)
-        .join(RefreshTokenTracking, RefreshTokenTracking.id == TokenBlocklist.id)
-        .filter(
-            RefreshTokenTracking.user_id == user_id,
-            TokenBlocklist.token_type.in_(["refresh", "access"])
+    def revoke_all_refresh_and_access_tokens_for_user(self, user_id: int) -> int:
+        revoked_count = (
+            self.db_session.query(TokenBlocklist)
+            .join(RefreshTokenTracking, RefreshTokenTracking.id == TokenBlocklist.id)
+            .filter(
+                RefreshTokenTracking.user_id == user_id,
+                TokenBlocklist.token_type.in_(["refresh", "access"])
+            )
+            .update({"revoked": True, "updated_at": datetime.utcnow()}, synchronize_session=False)
         )
-        .update({"revoked": True, "updated_at": datetime.utcnow()}, synchronize_session=False)
-    )
-        
-    self.db_session.commit()
-        
-    return revoked_count
+            
+        self.db_session.commit()
+            
+        return revoked_count
     
     
