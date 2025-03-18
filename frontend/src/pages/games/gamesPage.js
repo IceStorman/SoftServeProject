@@ -47,20 +47,16 @@ function GamesPage() {
             const response = await axios.post(
                 `${apiEndpoints.url}${apiEndpoints.games.getGames}`,
                 {
-                    filters: {
-                        filters
-                    },
                     pagination: {
                         page: page + 1,
                         per_page: gamesPerSlide,
-                    },
-                    models: [{'type': 'game'}]
+                    }
                 },
                 {
                     headers: { 'Content-Type': 'application/json' },
                 }
             );
-            setCurrentGames(response.data);
+            setCurrentGames(response.data.items);
             const totalGames = response.data.count;
             setSlidesCount(totalGames / gamesPerSlide);
         } catch (error) {

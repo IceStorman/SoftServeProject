@@ -58,7 +58,7 @@ function MainPage() {
     const [currentGames, setCurrentGames] = useState([]);
     const [slidesCount, setSlidesCount] = useState(0);
     const [currentSlide, setCurrentSlide] = useState(0);
-    const [gamesPerSlide, setGamesPerSlide] = useState(50);
+    const [gamesPerSlide, setGamesPerSlide] = useState(4050);
     const [recommendationNews, setRecommendationNews] = useState([]);
 
 

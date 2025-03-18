@@ -41,7 +41,7 @@ const apiEndpoints = {
         ver: 'localization/version'
     },
 
-    user:{
+    user: {
         signUp: 'user/sign-up',
         login: 'user/login',
         resetPasswordRequest: 'user/reset-password-request',
