@@ -93,16 +93,16 @@ def get_script_phrases():
         "main_page":          _("Main page"),
         "about_us":           _("About us"),
         "faq":                _("FAQ"),
-        "certatum_nostrum":   _("Certatum Nostrum"),
+        "QSPORT":             _("QSPORT"),
         "since":              _("since 1990"),
+        "sign_up_to":         _("Sign up to"),
 
         # Контактна інформація
-        "contact_info":       _("Contact info"),
+        "contact_info":       _("Contacts"),
         "address":            _("Address"),
         "phone":              _("Phone"),
         "email":              _("Email"),
-        "our_social_media":   _("Follow Us on Social Media"),
-        "our_newsletter":     _("Subscribe to our newsletter"),
+        "our_social_media":   _("Socials"),
 
         # Авторизація
         "log_out":            _("Logout"),
@@ -112,13 +112,14 @@ def get_script_phrases():
         "delete_check":       _("Are you sure?"),
         "delete_check_text":  _("Once deleted, the account cannot be restored"),
         "cancel":             _("Cancel"),
+        "required_field":     _("This field is required"),
 
         "confirm":            _("Confirm"),
         "skip":               _("Skip >"),
         "what_interesting_in": _("What are you interested in?"),
         "choose_sports":      _("Choose your favourite sports:"),
 
-        "sign_in":            _("Sign In"),
+        "sign_up":            _("Sign Up"),
         "log_in":             _("Log In"),
         "password":           _("Password:"),
         "forget_password":    _("Forget password?"),
@@ -126,8 +127,9 @@ def get_script_phrases():
         "no_account":         _("Do not have an account?"),
         "have_account":       _("Already have an account?"),
         "create":             _("Create"),
-        "nickname":           _("Nickname:"),
+        "nickname":           _("Username:"),
         "repeat_password":    _("Repeat password:"),
+        "email_account":      _("Email:"),
 
         # Новини та спорт
         "news":               _("News"),

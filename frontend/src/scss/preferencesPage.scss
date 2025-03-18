@@ -1,16 +1,18 @@
 .preferences{
-  max-width: 50vh;
-  position: relative;
+  max-width: 30%;
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  transition: all 0.5s ease;
 
-  .preferencesHeading{
+  .preferences-heading{
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    text-align: center;
+    margin: 0 1rem;
   }
 
-  .preferencesChoices{
-    max-width: 80%;
+  .preferences-choices{
     margin: 1.5rem auto 0;
     display: flex;
     flex-wrap: wrap;
@@ -24,20 +26,29 @@
     }
   }
 
-  .controlBtnBox{
+  .control-btn-box{
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
     align-items: center;
     margin: 2rem 0 0;
 
-    h3{
+    a{
+      text-decoration: none;
+      font-size: 1.5rem;
+      font-weight: bolder;
       color: #4b5563;
       cursor: pointer;
     }
 
-    h3:hover{
+    a:hover{
       transform: rotate(-5deg);
+    }
+
+    button{
+      padding: 0.5rem 1rem;
+      border: solid 0.1rem;
+      border-radius: 5rem;
     }
   }
 }
