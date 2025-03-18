@@ -1,23 +1,11 @@
 header {
     height: fit-content;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     position: relative;
     object-fit: contain;
     background-color: $bg-white;
-
-    .filled{
-        position: static;
-    }
-
-    .logo-btn{
-        position: relative;
-        left: 50%;
-        transform: translateX(-50%);
-        transition: all 0.5s ease;
-    }
-
 }
 
 .logo {
