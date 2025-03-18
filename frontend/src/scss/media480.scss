@@ -1,0 +1,81 @@
+@media (max-width: 480px) {
+
+  .navbar-outer{
+
+    .navbar{
+      margin: 0;
+    }
+  }
+
+  .news-block{
+    margin: 0;
+    max-width: 100%;
+    padding: 0 1rem;
+
+    h1{
+      font-size: 1.5rem;
+    }
+
+    .content{
+      font-size: 1rem;
+    }
+  }
+
+  .account-container, .registration{
+    max-width: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 2rem;
+    border: none;
+    border-radius: 0;
+
+    .account-title{
+      padding: 0 1rem;
+    }
+
+    .accountInfoContainer{
+      padding: 0 1rem;
+
+      .account-actions{
+        max-width: 100%;
+      }
+
+    }
+  }
+
+  .preferences{
+    position: static;
+  }
+
+  .notExistingPage {
+    margin: 7rem 0;
+
+    h1, p{
+      margin: 0 2rem;
+    }
+  }
+
+  .sportPage{
+    max-width: 100%;
+    width: 100%;
+    margin: 0;
+    border: none;
+
+
+    .sport-selection-grid {
+      justify-content: space-around;
+      padding: 0 2rem;
+      grid-template-columns: repeat(2, minmax(5.55rem, 1fr));
+    }
+  }
+
+  footer{
+    flex-direction: column;
+    align-items: center;
+
+    .info-column{
+      font-size: 1.1rem;
+      width: 50%;
+    }
+  }
+}

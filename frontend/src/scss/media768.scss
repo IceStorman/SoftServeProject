@@ -1,0 +1,68 @@
+@media (max-width: 768px) {
+
+  .account-container{
+      max-width: 60%;
+
+    .accountInfoContainer{
+      flex-direction: column;
+    }
+  }
+
+  .navbar-outer{
+
+    .navbar-box{
+
+      .btn-controller-box{
+        padding: 0.2rem 0;
+        margin-right: 1rem;
+
+        .nav-link{
+          padding: 0.45rem;
+        }
+      }
+    }
+
+    .navbar{
+      margin-left: 0;
+
+      .nav-link{
+        padding: 0.7rem 1.3rem;
+      }
+    }
+  }
+
+  .news-block{
+    max-width: 80%;
+
+    h1{
+      font-size: 2rem;
+    }
+  }
+
+  .sportPage{
+
+    .sport-selection-grid {
+      grid-template-columns: repeat(3, minmax(5.55rem, 1fr));
+      justify-content: space-around;
+    }
+  }
+
+  .notExistingPage {
+    font-size: 2rem;
+  }
+
+  .registration{
+
+    form{
+      p{
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+      }
+    }
+  }
+
+  .preferences{
+    max-width: 70%;
+  }
+}
