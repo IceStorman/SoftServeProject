@@ -1,29 +1,33 @@
 import React from 'react';
 import useTranslations from '../../translationsContext';
 
-const LanguageSwitcher = () => {
-    const { t, changeLanguage, language } = useTranslations();
+function LanguageSwitcher(){
+    const { changeLanguage, language } = useTranslations();
 
-    const languages = [
-        { code: 'en', label: 'EN' },
-        { code: 'uk', label: 'UA' },
-    ];
+    const isEnglish = language === 'en';
 
-    const handleLanguageChange = (newLang) => {
-        changeLanguage(newLang);
+    const toggleLanguage = () => {
+        changeLanguage(isEnglish ? 'uk' : 'en');
     };
 
     return (
-        <div className="language-switcher-container">
-            {languages.map((lang) => (
-                <button
-                    key={lang.code}
-                    className={`language-button ${language === lang.code ? 'active' : ''}`}
-                    onClick={() => handleLanguageChange(lang.code)}
-                >
-                    {lang.label}
-                </button>
-            ))}
+        <div className={"languageSwitcher"}>
+            <div className="flipswitch">
+                <input
+                    id="lang-switch"
+                    className="flipswitch-cb"
+                    type="checkbox"
+                    checked={isEnglish}
+                    onChange={toggleLanguage}
+                />
+                <label htmlFor="lang-switch" className="flipswitch-label">
+                    <div className="flipswitch-inner">
+                        <span className="flipswitch-en">EN</span>
+                        <span className="flipswitch-ua">UA</span>
+                    </div>
+                    <div className="flipswitch-switch"/>
+                </label>
+            </div>
         </div>
     );
 };

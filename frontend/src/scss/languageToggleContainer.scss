@@ -1,19 +1,71 @@
-.language-switcher-container {
-  display: flex;
-  align-items: center;
+// LanguageSwitcher.module.scss
+
+.languageSwitcher {
+  width: 4rem;
   margin-right: 1rem;
-}
 
-.language-button {
-  padding: 0.2rem 0.5rem;
-  border: 1px solid $main-shadow;
-  cursor: pointer;
-  font-size: 1rem;
-  text-transform: uppercase;
-  transition: background-color 0.3s, color 0.3s;
-}
+  .flipswitch {
+    position: relative;
+    width: 100%;
+  }
 
-.language-button.active {
-  background-color: $main-shadow;
-  color: white;
+  .flipswitch-cb {
+    display: none;
+  }
+
+  .flipswitch-label {
+    display: block;
+    overflow: hidden;
+    cursor: pointer;
+    border: 1px solid #999999;
+    border-radius: 50px;
+  }
+
+  .flipswitch-inner {
+    width: 200%;
+    margin-left: -100%;
+    transition: margin 0.3s ease-in-out;
+    display: flex;
+
+    .flipswitch-en, .flipswitch-ua {
+      width: 50%;
+      display: flex;
+      line-height: 1.2rem;
+      font-weight: 1000;
+      box-sizing: border-box;
+    }
+
+    .flipswitch-en {
+      padding-left: 0.65rem;
+      background-color: #437A99;
+      color: #FFFFFF;
+    }
+
+    .flipswitch-ua {
+      justify-content: end;
+      padding-right: 0.65rem;
+      background-color: #FFFFFF;
+      color: #437A99;
+    }
+  }
+
+  .flipswitch-switch {
+    width: 1.5rem;
+    background: #FFFFFF;
+    border: 1px solid #999999;
+    border-radius: 5rem;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 2.4rem;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .flipswitch-cb:checked + .flipswitch-label .flipswitch-inner {
+    margin-left: 0;
+  }
+
+  .flipswitch-cb:checked + .flipswitch-label .flipswitch-switch {
+    right: 0;
+  }
 }
