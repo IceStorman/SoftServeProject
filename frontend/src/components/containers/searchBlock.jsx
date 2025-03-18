@@ -27,13 +27,13 @@ const SearchBlock = ({
     return (
         <div className="search-container">
             <div className="header">
-                <input
-                    type="text"
-                    value={inputValue}
-                    onChange={handleChange}
-                    placeholder="Search..."
-                    className="input-field"
-                ></input>
+                {/*<input*/}
+                {/*    type="text"*/}
+                {/*    value={inputValue}*/}
+                {/*    onChange={handleChange}*/}
+                {/*    placeholder="Search..."*/}
+                {/*    className="input-field"*/}
+                {/*></input>*/}
 
                 <div className="controls">
                     <button onClick={() => [onGridSizeChange('large'), setSelectedGrid('large')]}

@@ -9,6 +9,8 @@ import NoItems from "../../components/NoItems";
 import Filters from "../../components/containers/filtersBlock.jsx";
 import { RiArrowLeftWideLine } from "react-icons/ri";
 import useTranslations from "../../translationsContext";
+import FilterImport, {filtersImports} from "../../components/filters/filterImport";
+import FiltersRenderer from "../../components/filters/filterRender";
 
 function LeaguePage() {
     const { sportName } = useParams();
@@ -20,9 +22,9 @@ function LeaguePage() {
     const sportId = stateData.sportId;
 
     const cardSizes = {
-        large: { rows: 4, columns: 4, cardSize: { width: 280, height: 350 }, postsPerPage: 16 },
-        medium: { rows: 5, columns: 5, cardSize: { width: 220, height: 280 }, postsPerPage: 25 },
-        small: { rows: 10, columns: 2, cardSize: { width: 600, height: 100 }, postsPerPage: 20 }
+        large: { rows: 4, columns: 4, cardSize: { width: 250, height: 280 }, postsPerPage: 16 },
+        medium: { rows: 5, columns: 5, cardSize: { width: 180, height: 210 }, postsPerPage: 25 },
+        small: { rows: 10, columns: 2, cardSize: { width: 500, height: 100 }, postsPerPage: 20 }
     };
 
     const [currentLeagues, setCurrentLeagues] = useState([]);
@@ -68,9 +70,19 @@ function LeaguePage() {
         getLeagues(0);
     }, []);
 
+
     const getLeagues = async (page) => {
 
         setPrevInputValue(inputValue);
+
+        const initialFiltersData = {
+            'filter_name': 'sport_id',
+            'filter_value': sportId
+        }
+
+        const filtersData = [...filters]
+        filtersData.push(initialFiltersData)
+        console.log(filtersData)
 
         try {
             const response = await axios.post(
@@ -80,12 +92,7 @@ function LeaguePage() {
                         page: page + 1,
                         per_page: leaguesPerPage,
                     },
-                    filters: [
-                        {
-                            'filter_name': 'sport_id',
-                            'filter_value': sportId
-                        }
-                    ]
+                    filters: filtersData
                 },
                 {
                     headers: { 'Content-Type': 'application/json' },
@@ -118,14 +125,32 @@ function LeaguePage() {
             )
     }, [loading]);
 
+    const [selectedModel, setSelectedModel] = useState("leagues");
+    const [filters, setFilters] = useState([]);
+
+    const handleFiltersChange = (newFilters) => {
+        setFilters(newFilters);
+        console.log("Filters:", newFilters);
+    };
+
+    const handleApplyFilters = () => {
+        getLeagues(0);
+    };
+
+
     return (
 
         <div className="leagues-page">
             <div className="title">
-                <button className="filled arrow" onClick={() => navigate(-1)}><RiArrowLeftWideLine className="arrow" /></button>
+                <button className="filled arrow" onClick={() => navigate(-1)}><RiArrowLeftWideLine className="arrow"/>
+                </button>
                 <h1>{sportName} {t("leagues")}</h1>
             </div>
-            <Filters></Filters>
+
+            <div className="filters">
+                <FiltersRenderer model={selectedModel} onFilterChange={handleFiltersChange} sportId={sportId}/>
+                <button onClick={handleApplyFilters}>Apply Filters</button>
+            </div>
 
             {!(currentLeagues.length === 0) ?
                 <SearchBlock
@@ -148,7 +173,7 @@ function LeaguePage() {
                         />
                     ))}
                 >
-                </SearchBlock> : <NoItems text='No leagues were found' />}
+                </SearchBlock> : <NoItems text='No leagues were found'/>}
         </div>
     );
 }
