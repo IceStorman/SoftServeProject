@@ -16,7 +16,6 @@ from database.postgres.dal import StreamDAL
 from service.api_logic.streams_logic import StreamService
 from service.api_logic.games_logic import GamesService
 from service.api_logic.teams_logic import TeamsService
-from api.refresh_token_logic import UserInfoService
 
 
 
