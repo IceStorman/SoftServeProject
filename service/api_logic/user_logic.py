@@ -189,7 +189,7 @@ class UserService:
         hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), salt)
 
         self._user_dal.update_user_password(user, hashed_password.decode('utf-8')) 
-        await create_access_token_response(user) 
+        await self.create_access_token_response(user) 
         
 
 
