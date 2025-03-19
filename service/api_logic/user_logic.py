@@ -118,7 +118,7 @@ class UserService:
 
         new_user = User(email = email, username = username, password_hash = hashed_password.decode('utf-8'))
         self.create_user(new_user)
-        user = OutputLogin(email = new_user.email, token = new_user, id = new_user.user_id, username = new_user.username, new_user = True)
+        user = OutputLogin(email = new_user.email, token = new_user, user_id= new_user.user_id, username = new_user.username, new_user = True)
         await self.create_access_token_response(user)
 
 
@@ -321,7 +321,7 @@ class UserService:
 
     async def verify_nonce(self, user_email: str, token_nonce: str) -> bool:
         user = await self._user_dal.get_user_by_email(user_email)
-        saved_nonce = self._refresh_dal.get_nonce_by_user_id(user.id)
+        saved_nonce = self._refresh_dal.get_nonce_by_user_id(user.user_id)
 
         return saved_nonce == token_nonce
 
@@ -330,13 +330,13 @@ class UserService:
         user = await self._user_dal.get_user_by_email(user_email)
         
         refresh_dto = RefreshTokenDTO(
-            user_id=user.id,
+            user_id=user.user_id,
             last_ip=self.__get_country_from_ip(),
             last_device=self.get_user_device(),
             nonce=self.generate_nonce()
         )
 
-        self._refresh_dal.update_refresh_token(user.id, refresh_dto)
+        self._refresh_dal.update_refresh_token(user.user_id, refresh_dto)
 
     async def refresh_tokens(self):
         identity = get_jwt_identity()   
