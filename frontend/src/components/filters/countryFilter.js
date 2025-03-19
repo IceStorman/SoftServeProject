@@ -21,7 +21,6 @@ export const CountryFilter= ({ onChange }) => {
                 const returnedCountries = res.data;
                 setCountries(returnedCountries);
                 countriesInput(returnedCountries)
-
             })
             .catch(error => {
                 toast.error(`Troubles With Country Loading: ${error}`);
@@ -30,7 +29,7 @@ export const CountryFilter= ({ onChange }) => {
 
     return (
 
-        <select onChange={onChange}>
+        <select className="filter-dropdown" onChange={onChange}>
             <option value="">Choose country: </option>
             {countries.map((country) => (
                 <option key={country.id} value={country.id}>

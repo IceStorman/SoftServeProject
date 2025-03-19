@@ -1,0 +1,131 @@
+$border-color: black;
+$border-radius: 6px;
+$background-light: #d6f1ff;
+$background-white: #fff;
+$primary-color: #00a6fb;
+$primary-hover: #0056b3;
+$font-size: 14px;
+
+.filters-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 15px;
+  border: 2px solid $border-color;
+  border-radius: 8px;
+  background: $main-clr;
+}
+
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.filter-search {
+
+  input {
+    border-radius: 10px;
+    outline: 2px solid $primary-color;
+    border: 0;
+    font-family: "Montserrat", sans-serif;
+    background-color: $background-light;
+    outline-offset: 3px;
+    padding: 10px 12.5px;
+    transition: all 0.2s ease;
+    width: 250px;
+  }
+
+  input:hover {
+    background-color: #fff;
+  }
+
+  input:focus {
+    outline-offset: -6px;
+    background-color: #d6f1ff;
+  }
+
+}
+
+.filter-group {
+  position: relative;
+
+  .filter-label {
+    font-size: $font-size;
+    font-weight: 600;
+    margin-bottom: 5px;
+    display: block;
+  }
+}
+
+.filter-dropdown {
+  position: relative;
+
+  option {
+    background: #fff;
+    color: #333;
+    padding: 10px;
+    font-size: 14px;
+
+    &:hover {
+      background: #007bff;
+      color: #fff;
+    }
+    
+  }
+  &-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 180px;
+    padding: 8px 12px;
+    font-size: $font-size;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+    background: $background-white;
+    cursor: pointer;
+  }
+
+  &-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: $background-white;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    display: none;
+
+    &.active {
+      display: block;
+    }
+  }
+}
+
+.filter-option {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  cursor: pointer;
+
+  input {
+    margin-right: 8px;
+  }
+}
+
+.filter-apply-btn {
+  padding: 10px 16px;
+  font-size: $font-size;
+  background: $primary-color;
+  color: white;
+  border: none;
+  border-radius: $border-radius;
+  cursor: pointer;
+  transition: background 0.3s;
+
+  &:hover {
+    background: $primary-hover;
+  }
+}

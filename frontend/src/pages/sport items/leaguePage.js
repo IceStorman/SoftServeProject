@@ -147,7 +147,7 @@ function LeaguePage() {
                 <h1>{sportName} {t("leagues")}</h1>
             </div>
 
-            <div className="filters">
+            <div className="filters-container">
                 <FiltersRenderer model={selectedModel} onFilterChange={handleFiltersChange} sportId={sportId}/>
                 <button onClick={handleApplyFilters}>Apply Filters</button>
             </div>

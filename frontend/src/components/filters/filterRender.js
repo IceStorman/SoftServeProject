@@ -29,7 +29,7 @@ const FiltersRenderer = ({ model, onFilterChange, sportId }) => {
     // }
 
     return (
-        <div>
+        <div className="filters">
             <h3>Filters for {model}:</h3>
             {Object.entries(selectedFilters).map(([key, Component]) => (
                 <div key={key}>
