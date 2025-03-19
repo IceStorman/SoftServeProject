@@ -36,6 +36,7 @@ $main-font: 'Times New Roman';
 @import "media1024";
 @import "media768";
 @import "media480";
+@import "mainPage";
 
 
 @font-face {
@@ -80,53 +81,7 @@ body {
   display: none;
 }
 
-.showcase {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  justify-self: center;
-  align-self: center;
-  margin: 2rem 0;
-  background-color: white;
-  box-shadow: 0 4px 10px $main-shadow;
-  width: fit-content;
-  padding-left: 2rem;
-  padding-right: 1rem;
 
-  .block-title {
-    font-size: 2.2rem;
-    color: $compl-clr;
-    background-color: $bg-white;
-    width: fit-content;
-    height: fit-content;
-    align-self: start;
-    padding: 0 5px;
-  }
-
-  .blue-placeholder {
-    margin-top: 1rem;
-    width: 404px;
-    padding: 1rem 0;
-    align-content: center;
-    justify-content: center;
-    align-self: center;
-    max-width: 400px;
-    background-color: $main-clr;
-    border: 2px solid $main-clr;
-    min-width: 25rem;
-    word-break: keep-all;
-    height: 160px;
-    text-align: center;
-
-    h1 {
-      margin: 1rem;
-    }
-
-    a {
-      text-decoration: underline;
-    }
-  }
-}
 
 hr {
   height: 2px;
