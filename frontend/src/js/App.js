@@ -31,78 +31,81 @@ import GoogleAuthCallback from "../pages/registration/googleCallBack";
 import PreferencesPage from "../pages/registration/PreferencesPage";
 import AccountPage from "../pages/registration/accountPage";
 import globalVariables from "../globalVariables";
+import {FilterProvider} from "../components/filters/filterContext";
 
 function App() {
 
 
     return (
         <>
-            <TranslationsProvider>
-                <Router
-                    future={{
-                        v7_startTransition: true,
-                        v7_relativeSplatPath: true,
-                    }}>
+                <TranslationsProvider>
 
-                <Toaster
-                    position="bottom-right"
-                    richColors
-                    expand={true}
-                    duration={5000}
-                    visibleToasts={globalVariables.windowsSizes.find(ws => window.innerWidth <= ws.maxWidth).limit || 0}
-                    closeButton
-                />
+                    <Router
+                        future={{
+                            v7_startTransition: true,
+                            v7_relativeSplatPath: true,
+                        }}>
 
-                    <Header />
-                    <NavBar />
+                        <Toaster
+                            position="bottom-right"
+                            richColors
+                            expand={true}
+                            duration={5000}
+                            visibleToasts={globalVariables.windowsSizes.find(ws => window.innerWidth <= ws.maxWidth).limit || 0}
+                            closeButton
+                        />
+
+                        <Header />
+                        <NavBar />
 
 
-                    <Routes>
-                        <Route path="/" element={<MainPage />} />
+                        <Routes>
+                            <Route path="/" element={<MainPage />} />
 
-                        <Route path="/sign-in" element={<SignInPage />} />
+                            <Route path="/sign-in" element={<SignInPage />} />
 
-                        <Route path="/sign-up" element={<SignUpPage />} />
+                            <Route path="/sign-up" element={<SignUpPage />} />
 
-                        <Route path="/user/preferences" element={<PreferencesPage />} />
+                            <Route path="/user/preferences" element={<PreferencesPage />} />
 
-                        <Route path="/user/account" element={<AccountPage />} />
+                            <Route path="/user/account" element={<AccountPage />} />
 
-                        <Route path="/sign-in/google" element={<GoogleAuthCallback />} />
+                            <Route path="/sign-in/google" element={<GoogleAuthCallback />} />
 
-                        <Route path="/sign-in/reset-password" element={<ForgotPasswordPage />} />
+                            <Route path="/sign-in/reset-password" element={<ForgotPasswordPage />} />
 
-                        <Route path="/sign-in/reset-password/:token" element={<ResetPasswordPage />} />
+                            <Route path="/sign-in/reset-password/:token" element={<ResetPasswordPage />} />
 
-                        <Route path="/check-email" element={<CheckEmailPage />} />
+                            <Route path="/check-email" element={<CheckEmailPage />} />
 
-                        <Route path="/sport" element={<SportPage />} />
+                            <Route path="/sport" element={<SportPage />} />
 
-                        <Route path="/sport/:sportName" element={<LeaguePage />} />
+                            <Route path="/sport/:sportName" element={<LeaguePage />} />
 
-                        <Route path="/sport/:sportName/league/:leagueName" element={<TeamPage />} />
+                            <Route path="/sport/:sportName/league/:leagueName" element={<TeamPage />} />
 
-                        <Route path="/stream" element={<GamesPage />} />
+                            <Route path="/stream" element={<GamesPage />} />
 
-                        <Route path="/stream/:gameId" element={<InsideStreamPage />} />
+                            <Route path="/stream/:gameId" element={<InsideStreamPage />} />
 
-                        <Route path="/news/:articleId" element={<InsideNewsPage />} />
+                            <Route path="/news/:articleId" element={<InsideNewsPage />} />
 
-                        <Route path="/not-existing" element={<NotExistingPage />} />
+                            <Route path="/not-existing" element={<NotExistingPage />} />
 
-                        <Route path="*" element={<Navigate to="/not-existing" replace />} />
+                            <Route path="*" element={<Navigate to="/not-existing" replace />} />
 
-                        <Route path="/FAQ" element={<FAQpage />} />
+                            <Route path="/FAQ" element={<FAQpage />} />
 
-                        <Route path="/AboutUs" element={<AboutUsPage />} />
+                            <Route path="/AboutUs" element={<AboutUsPage />} />
 
-                        <Route path="*" element={<Navigate to="/not-existing" replace />} />
-                    </Routes>
+                            <Route path="*" element={<Navigate to="/not-existing" replace />} />
+                        </Routes>
 
-                    {<Footer />}
+                        {<Footer />}
 
-                </Router>
-            </TranslationsProvider>
+                    </Router>
+
+                </TranslationsProvider>
         </>
     );
 }
