@@ -32,12 +32,8 @@ const FiltersRenderer = ({ model, onFilterChange, sportId }) => {
         <div className="filters">
             <h3>Filters for {model}:</h3>
             {Object.entries(selectedFilters).map(([key, Component]) => (
-                <div key={key}>
-                    <Component onChange={(e) => handleChange(key, e.target.value)} sportId={sportId}/>
-                </div>
+                <Component onChange={(e) => handleChange(key, e.target.value)} sportId={sportId}/>
             ))}
-            {/*<button onClick={onFilterChange}>Filter</button>*/}
-
         </div>
     );
 };

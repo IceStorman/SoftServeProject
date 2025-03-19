@@ -9,6 +9,11 @@ export const CountryFilter= ({ onChange }) => {
     const {countriesData, countriesInput } = useContext(FilterContext);
     const [countries, setCountries] = useState([])
 
+    const [selected, setSelected] = useState(null);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [filteredCountries, setFilteredCountries] = useState(countriesData);
+
+
     useEffect(() => {
 
         if (countriesData) {
@@ -27,15 +32,47 @@ export const CountryFilter= ({ onChange }) => {
             });
     }, [countriesData, countriesInput]);
 
-    return (
+    const handleClick = (e) => {
+        const countryId = e.target.id;
+        setSelected(countryId);
+        setSearchQuery("");
+        onChange({ target: { value: countryId } });
+    };
 
-        <select className="filter-dropdown" onChange={onChange}>
-            <option value="">Choose country: </option>
-            {countries.map((country) => (
-                <option key={country.id} value={country.id}>
-                    {country.name}
-                </option>
-            ))}
-        </select>
+    const handleSearch = (event) => {
+        const query = event.target.value.toLowerCase();
+        setSearchQuery(query);
+
+        const filtered = countries.filter((country) =>
+            country.name.toLowerCase().includes(query)
+        );
+        setFilteredCountries(filtered);
+    };
+
+
+    return (
+        <div className="scrollContainer">
+            <div className="filterSearch">
+                <input
+                    type="text"
+                    placeholder="Select a country..."
+                    value={searchQuery}
+                    onChange={handleSearch}
+                />
+            </div>
+
+            <div className="list">
+                {filteredCountries.map((country) => (
+                    <div
+                        key={country.id}
+                        id={country.id}
+                        className={`listItem ${selected == country.id ? "active" : ""}`}
+                        onClick={handleClick}
+                    >
+                        {country.name}
+                    </div>
+                ))}
+            </div>
+        </div>
     );
 };
