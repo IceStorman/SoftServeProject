@@ -207,6 +207,8 @@ class UserService:
 
         if existing_access_token and existing_refresh_token:
             await login_context.execute_log_in(credentials)
+            response = self.create_responce(existing_access_token, existing_refresh_token, user)
+            return response
             
         else:
             extended_credentials = ExtendedCredantialsDTO(
@@ -218,6 +220,40 @@ class UserService:
             response=await self.create_access_token_response(user=extended_credentials)
             await login_context.execute_log_in(credentials)
             return response
+    
+    async def create_responce(self, access_token, refresh_token,user):
+        result_data = ResponseDataDTO(
+            user_id=user.user_id,
+            email=user.email,
+            username=user.username,
+            new_user=user.new_user,
+            access_token = access_token,
+            refresh_token = refresh_token
+        )
+
+        response = jsonify(result_data.model_dump())
+        response.set_cookie(
+            "access_token",
+            access_token,
+            httponly=False,
+            secure=True,
+            samesite="None",
+            path="/",
+            max_age=3600
+        )
+
+        response.set_cookie(
+            "refresh_token",
+            refresh_token,
+            httponly=False,
+            secure=True,
+            samesite="None",
+            path="/",
+            max_age=30 * 24 * 3600
+        )
+        
+        return response
+        
 
 
 
