@@ -25,8 +25,8 @@ class InteractionWithNewsDAL:
 
     def update_interaction(self, interaction_id: int, interaction_dto):
         self.db_session.query(InteractionWithNews).filter(InteractionWithNews.interaction_id == interaction_id).update({
-            "timestamp": interaction_dto.timestamp,
-            "interaction_type": interaction_dto.interaction_type
+            InteractionWithNews.timestamp: interaction_dto.timestamp,
+            InteractionWithNews.interaction_type: interaction_dto.interaction_type
         })
         self.db_session.commit()
 
@@ -40,6 +40,3 @@ class InteractionWithNewsDAL:
         :return: An InteractionWithNews object if found, otherwise None.
         """
         return self.db_session.query(InteractionWithNews).filter_by(user_id=user_id, news_id=news_id, interaction_type=interaction_type_id).first()
-
-    def get_interaction_by_id(self, interaction_id: int) -> Optional[InteractionWithNews]:
-        return self.db_session.query(InteractionWithNews).filter_by(interaction_id=interaction_id).first()

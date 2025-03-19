@@ -7,6 +7,7 @@ import apiEndpoints from "../../apiEndpoints";
 import { AuthContext } from "../registration/AuthContext"
 import { toast } from "sonner";
 import useTranslations from "../../translationsContext";
+import { useInteractionTypes } from "../../interactionContext";
 
 export default function InsideNewsPage() {
 
@@ -53,12 +54,14 @@ export default function InsideNewsPage() {
 
     const { user } = useContext(AuthContext)
 
+    const interactionTypes = useInteractionTypes();
+
 
     useEffect(() => {
         const observer = new IntersectionObserver(
             ([entry]) => {
                 if (entry.isIntersecting && !hasRead) {
-                    saveInteraction('read');
+                    saveInteraction(interactionTypes.READ);
                     setHasRead(true);
                 }
             },
@@ -100,14 +103,14 @@ export default function InsideNewsPage() {
 
     const handleLikeStatus = async () => {
         if (likeStatusRef.current !== initialLikeStatusRef.current) {
-            let interactionType = likeStatusRef.current ? 'like' : 'dislike';
+            let interactionType = likeStatusRef.current ? interactionTypes.LIKE : interactionTypes.DISLIKE;
             saveInteraction(interactionType);
         }
     };
 
     useEffect(() => {
         const logInteraction = async () => {
-            await saveInteraction('open');
+            await saveInteraction(interactionTypes.OPEN);
         };
         logInteraction();
     }, []);
@@ -119,12 +122,12 @@ export default function InsideNewsPage() {
                     `${apiEndpoints.url}${apiEndpoints.interactions.saveInteraction}`,
                     {
                         user_id: user.id,
-                        blob_id: articleId,
+                        article_blob_id: articleId,
                         interaction_type: interactionType,
                     }
                 );
             } catch (error) {
-                toast.error(`Troubles with saving interaction: ${error}`)
+                toast.error(`Failed to save interaction: ${error}`)
             }
         }
     };
@@ -134,14 +137,14 @@ export default function InsideNewsPage() {
             try {
                 const { data } = await axios.get(`${apiEndpoints.url}${apiEndpoints.interactions.getInteractionsCounts}`, {
                     params: {
-                        blob_id: articleId,
+                        article_blob_id: articleId,
                     },
                 });
                 setLikes(data.likes);
                 setViews(data.views);
             }
             catch (error) {
-                toast.error(`Troubles with getting interactions count: ${error}`)
+                toast.error(`Failed to get interactions counts: ${error}`)
             }
         }
         getInteractionsCounts()
@@ -153,14 +156,14 @@ export default function InsideNewsPage() {
                 const { data } = await axios.get(`${apiEndpoints.url}${apiEndpoints.interactions.getInteractionStatus}`, {
                     params: {
                         user_id: user.id,
-                        blob_id: articleId,
-                        interaction_type: 'like'
+                        article_blob_id: articleId,
+                        interaction_type: interactionTypes.LIKE
                     },
                 });
                 setLikeStatus(data);
                 setInitialLikeStatus(data);
             } catch (error) {
-                toast.error(`Troubles with getting like status: ${error}`)
+                toast.error(`Failed to get like status: ${error}`)
             }
         }
 
@@ -178,7 +181,7 @@ export default function InsideNewsPage() {
             });
         }
         else {
-            const notify = () => toast('Sign in to leave your reaction', {
+            const notify = () => toast('Sign in to like this post', {
                 action: {
                     label: 'sign in',
                     onClick: () =>  navigate('/sign-in') ,

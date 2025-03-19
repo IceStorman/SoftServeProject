@@ -7,6 +7,7 @@ from logger.logger import Logger
 from service.api_logic.interactions_logic import InteractionWithNewsService
 from api.container.container import Container
 from dto.common_response import CommonResponse
+from service.api_logic.models.api_models import InteractionTypes
 
 logger = Logger("logger", "all.log")
 
@@ -41,9 +42,9 @@ def save_interaction(service: InteractionWithNewsService = Provide[Container.int
 def get_interaction_status_by_user_id(service: InteractionWithNewsService = Provide[Container.interaction_with_news_service]):
     try:
         dto = InteractionsDTO().load(request.args.to_dict())
-        response = service.get_interaction_status(dto)
+        interaction_status = service.has_interaction_occurred(dto)
 
-        return jsonify(response)
+        return jsonify(interaction_status)
 
     except CustomQSportException as e:
         logger.error(f"Error in GET /: {str(e)}")
@@ -57,9 +58,23 @@ def get_interaction_status_by_user_id(service: InteractionWithNewsService = Prov
 def get_interactions_count_by_blob_id(service: InteractionWithNewsService = Provide[Container.interaction_with_news_service]):
     try:
         dto = InteractionsDTO().load(request.args.to_dict())
-        response = service.get_interactions_counts(dto)
+        interactions_counts = service.get_interactions_counts(dto)
 
-        return response
+        return interactions_counts
+
+    except CustomQSportException as e:
+        logger.error(f"Error in GET /: {str(e)}")
+        return get_custom_error_response(e)
+
+
+@interactions_app.route('/fetchInteractionTypes', methods=['GET'])
+@logger.log_function_call()
+@inject
+@handle_exceptions
+def fetch_interaction_types():
+    try:
+
+        return jsonify({interaction.name: interaction.value for interaction in InteractionTypes})
 
     except CustomQSportException as e:
         logger.error(f"Error in GET /: {str(e)}")

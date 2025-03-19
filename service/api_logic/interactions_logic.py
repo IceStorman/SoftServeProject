@@ -3,7 +3,7 @@ from exept.exeptions import IncorrectInteractionType, BlobFetchError, DatabaseCo
 from service.api_logic.models.api_models import InteractionTypes
 from database.postgres.dto import InteractionWithNewsDTO
 from logger.logger import Logger
-from datetime import datetime
+from datetime import datetime, timezone
 
 LIKE_ID = InteractionTypes['LIKE'].value
 DISLIKE_ID = InteractionTypes['DISLIKE'].value
@@ -11,29 +11,22 @@ DISLIKE_ID = InteractionTypes['DISLIKE'].value
 class InteractionWithNewsService:
     def __init__(self, interaction_with_news_dal, news_dal):
         self._interaction_with_news_dal = interaction_with_news_dal
-        self._logger = Logger("logger", "all.log").logger
         self._news_dal = news_dal
+
+        self._logger = Logger("logger", "all.log").logger
 
 
     def __convert_input_to_db_dto(self, interaction_input_dto):
-        try:
-            interaction_type_id = InteractionTypes[interaction_input_dto.interaction_type.upper()].value
-            news_entry = self._news_dal.get_news_by_id(interaction_input_dto.blob_id)
+        news_entry = self._news_dal.get_news_by_id(interaction_input_dto.article_blob_id)
 
-            if not news_entry:
-                raise BlobFetchError(interaction_input_dto.blob_id)
+        db_dto = InteractionWithNewsDTO(
+            news_id=news_entry.news_id,
+            user_id=interaction_input_dto.user_id,
+            interaction_type=interaction_input_dto.interaction_type,
+            timestamp = datetime.now(timezone.utc)
+        )
 
-            db_dto = InteractionWithNewsDTO(
-                news_id=news_entry.news_id,
-                user_id=interaction_input_dto.user_id,
-                interaction_type=interaction_type_id,
-                timestamp=datetime.now()
-            )
-
-            return db_dto
-
-        except KeyError:
-            raise IncorrectInteractionType(interaction_input_dto.interaction_type)
+        return db_dto
 
 
     def save_interaction(self, interaction_input_dto):
@@ -56,18 +49,15 @@ class InteractionWithNewsService:
         self._interaction_with_news_dal.save_interaction(interaction_dto)
 
 
-    def get_interaction_status(self, interaction_input_dto) -> bool:
+    def has_interaction_occurred(self, interaction_input_dto) -> bool:
         interaction_dto = self.__convert_input_to_db_dto(interaction_input_dto)
         interaction_entry = self._interaction_with_news_dal.get_interaction(interaction_dto.user_id, interaction_dto.news_id, interaction_dto.interaction_type)
 
-        return True if interaction_entry else False
+        return bool(interaction_entry)
 
 
     def get_interactions_counts(self, interaction_input_dto):
-        interactions_counts = self._news_dal.get_interaction_counts(interaction_input_dto.blob_id)
-
-        if not interactions_counts:
-            raise BlobFetchError(interaction_input_dto.blob_id)
+        interactions_counts = self._news_dal.get_interaction_counts(interaction_input_dto.article_blob_id)
 
         return OutputInteractions().dump({
             "likes": interactions_counts[0],

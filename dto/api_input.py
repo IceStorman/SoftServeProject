@@ -157,5 +157,5 @@ class TablesAndColumnsForUserPreferencesDTO:
 
 class InteractionsDTO(BaseDTO):
     user_id = fields.Int(required=False)
-    blob_id = fields.String(required=True)
-    interaction_type = fields.String(required=False)
+    article_blob_id = fields.String(required=True)
+    interaction_type = fields.Int(required=False)
