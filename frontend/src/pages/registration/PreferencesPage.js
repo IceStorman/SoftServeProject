@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import apiEndpoints from "../../apiEndpoints";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import { Check, Plus } from "lucide-react";
 import { AuthContext } from "./AuthContext";
 import useTranslations from "../../translationsContext";
@@ -117,12 +117,12 @@ function PreferencesPage() {
 
     return (
         <section className={"preferences registration"}>
-            <div className={"preferencesHeading"}>
+            <div className={"preferences-heading"}>
                 <h1>{t('what_interesting_in')}</h1>
                 <h3>{t('choose_sports')}</h3>
             </div>
 
-            <section className={"preferencesChoices"}>
+            <section className={"preferences-choices"}>
                 {choices.map((choice) => (
                     <button
                         className={"choice filled"}
@@ -135,8 +135,8 @@ function PreferencesPage() {
                 ))}
             </section>
 
-            <div className={"controlBtnBox"}>
-                <h3 onClick={() => navigate('/')}>{t('skip')}</h3>
+            <div className={"control-btn-box"}>
+                <Link to={'/'}>{t('skip')}</Link>
                 <button className={"filled"} onClick={handleSubmit}>{t('confirm')}</button>
             </div>
         </section>

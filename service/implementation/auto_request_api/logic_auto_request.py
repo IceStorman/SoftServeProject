@@ -239,7 +239,7 @@ apis = [
         "index": "games",
         "url": "https://v1.rugby.api-sports.io/games?date=DATE",
         "host": "v1.rugby.api-sports.io",
-        "frequency": 0.3
+        "frequency": 4
     },
     {
         "name": "volleyball",

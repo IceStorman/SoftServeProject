@@ -17,8 +17,8 @@ class BaseFilterManager:
         for filter_obj in filters_list:
             filter_name = getattr(filter_obj, "filter_name", None)
             filter_value = getattr(filter_obj, "filter_value", None)
-            order_field = getattr(filter_obj, "field", order_field)
-            order_type = getattr(filter_obj, "order", order_type)
+            order_field = getattr(filter_obj, "order_field", order_field)
+            order_type = getattr(filter_obj, "order_type", order_type)
 
             if filter_name in cls.FILTERS and filter_value is not None:
                 query = cls.FILTERS[filter_name](query, filter_value)

@@ -47,11 +47,6 @@ class StreamDAL(BaseDAL):
         return new_url
 
 
-    def save_streams(self, streams_dto_list: List[StreamDTO]):
-        for stream in streams_dto_list:
-            self.create_stream(stream)
-
-
     def save_stream_statuses(self, status_dto_list: List[StreamStatusDTO]):
         for status in status_dto_list:
             self.create_stream_status(status)
@@ -60,20 +55,3 @@ class StreamDAL(BaseDAL):
     def save_stream_urls(self, url_dto_list: List[StreamUrlDTO]):
         for url in url_dto_list:
             self.create_stream_url(url)
-
-
-    def get_all_streams(self):
-        result = (self.session.query(
-            Stream.stream_id,
-            Stream.title,
-            Stream.start_time,
-            Stream.sport_id,
-            func.array_agg(StreamUrl.stream_url).label('stream_url')
-        ).join(
-            StreamUrl,
-            Stream.stream_id == StreamUrl.stream_id
-        ).group_by(
-            Stream.stream_id
-        ).all())
-
-        return result

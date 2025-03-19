@@ -54,7 +54,7 @@ class SimpleAuthHandler(AuthHandler[T]):
 
         token = await self._user_service.get_generate_auth_token(user)
 
-        return OutputLogin(email = user.email, token = token, id = user.user_id)
+        return OutputLogin(email = user.email, token = token, id = user.user_id, username = user.username, new_user = False)
 
 
 class GoogleAuthHandler(AuthHandler[T]):
@@ -67,7 +67,8 @@ class GoogleAuthHandler(AuthHandler[T]):
                 authorization_response=request.url,
                 redirect_url=current_app.config['REDIRECT_URI']
             )
-        token_response = requests.post(token_url, headers = headers, data = body)
+        token_response = requests.post(token_url, headers=headers, data=body)
+
         if not token_response.ok:
             raise InvalidAuthenticationDataError(credentials.auth_provider)
 
@@ -77,17 +78,26 @@ class GoogleAuthHandler(AuthHandler[T]):
             current_app.config['USER_INFO_URL'],
             headers={'Authorization': f'Bearer {client.token["access_token"]}'}
         )
+
         if not user_info_response.ok:
             raise InvalidAuthenticationDataError(credentials.auth_provider)
 
         data = user_info_response.json()
         user_info = InputUserLogInDTO().load(data)
 
-        user = self._user_service.get_user_by_email_or_username(email = user_info.email)
+        user = self._user_service.get_user_by_email_or_username(email=user_info.email)
+        output_login = OutputLogin(email=user_info.email, token=None, id=None, username=None, new_user=True)
+
         if not user:
-            user = User(email = user_info.email, username = user_info.email.split('@')[0])
+            user = User(email=user_info.email, username=user_info.email.split('@')[0])
             self._user_service.create_user(user)
+        else:
+            output_login.new_user = False  
 
         token = await self._user_service.get_generate_auth_token(user)
 
-        return OutputLogin(email = user.email, token = token, id = user.user_id)
+        output_login.token = token
+        output_login.id = user.user_id
+        output_login.username = user.username
+
+        return output_login

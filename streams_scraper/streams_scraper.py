@@ -4,8 +4,7 @@ from selenium.webdriver.common.by import By
 from api.container.container import Container
 from dependency_injector.wiring import Provide, inject
 from database.postgres.dto import StreamDTO
-import re
-from dto.api_input import GamesDTO, SearchDTO, PaginationDTO
+from dto.api_input import SearchDTO
 from datetime import datetime
 import undetected_chromedriver as uc
 
@@ -54,11 +53,6 @@ def game_name(game):
     return f"{game['home_team_name']} vs {game['away_team_name']}"
 
 
-def sport_name(url):
-    match = re.search(r'api-sports.io/([^/]+)/teams', url)
-    return match.group(1) if match else "unknown"
-
-
 def search_game_links(driver, future_games, games_today):
     base_url = "https://www.bing.com/search"
     stream_data = []
@@ -82,6 +76,7 @@ def search_game_links(driver, future_games, games_today):
         streams_number += 1
 
         date = datetime.strptime(matching_game.get("date"), "%Y-%m-%d")
+        
         stream_dto = StreamDTO(
             title=game_name(matching_game),
             stream_urls=urls if urls else None,

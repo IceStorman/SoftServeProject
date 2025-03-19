@@ -35,29 +35,32 @@ msgstr "About us"
 msgid "FAQ"
 msgstr "FAQ"
 
-msgid "Contact info"
-msgstr "Contact info"
+msgid "Contacts"
+msgstr "Contacts"
 
 msgid "Address"
-msgstr "Address"
+msgstr "Lviv, Kolomyiska 19"
 
 msgid "Phone"
-msgstr "Phone"
+msgstr "+380 97 584 22 34"
 
 msgid "Email"
+msgstr "q.sport.news@gmail.com"
+
+msgid "Email:"
 msgstr "Email"
 
-msgid "Follow Us on Social Media"
-msgstr "Follow Us on Social Media"
+msgid "Sign up to"
+msgstr "Sign up"
 
-msgid "Subscribe to our newsletter"
-msgstr "Subscribe to our newsletter"
+msgid "Socials"
+msgstr "Socials"
 
-msgid "Sign In"
-msgstr "Sign In"
+msgid "Sign Up"
+msgstr "Sign Up"
 
-msgid "Certatum Nostrum"
-msgstr "Very cool name"
+msgid "QSPORT"
+msgstr "QSPORT"
 
 msgid "since 1990"
 msgstr "since 1990"
@@ -122,8 +125,11 @@ msgstr "Do not have an account?"
 msgid "Create"
 msgstr "Create"
 
-msgid "Nickname:"
-msgstr "Nickname:"
+msgid "Username:"
+msgstr "Username:"
+
+msgid "This field is required"
+msgstr "This field is required"
 
 msgid "Repeat password:"
 msgstr "Repeat password:"

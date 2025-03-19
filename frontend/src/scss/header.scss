@@ -1,75 +1,30 @@
 header {
-    width: 100%;
     height: fit-content;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     position: relative;
+    object-fit: contain;
     background-color: $bg-white;
-
-    .filled{
-        position: static !important;
-    }
-
-    .header-btn{
-        display: flex;
-        align-items: center;
-        margin-right: 3rem;
-
-
-        .account-button {
-            display: flex;
-            align-items: center;
-            background: black;
-            color: white;
-            padding: 0.6rem;
-            border-radius: 50%;
-            border: none;
-            cursor: pointer;
-
-            .icon {
-                color: white;
-            }
-        }
-    }
-
-    .logo-btn{
-        position: relative;
-        left: 50%;
-        transform: translateX(-50%);
-    }
-
 }
 
 .logo {
-    color: black;
-    max-width: 25rem;
-    background-color: transparent;
-    padding: 0.5rem 0;
-    flex: 1;
+    display: flex;
+    flex-direction: column;
     text-align: center;
-    text-decoration: none;
-
-    p {
-        font-size: 2rem;
-        text-decoration: none;
-    }
+    max-width: 25rem;
+    color: black;
+    gap: 0.2rem;
+    padding: 0.3rem 0;
+    background-color: transparent;
 
     .subtitle {
         display: flex;
         align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-        margin-left: 1.5rem;
-        margin-right: 1.5rem;
-
-        p {
-            font-size: 0.9rem;
-            margin: 0;
-        }
+        justify-content: space-around;
 
         hr {
-            flex-grow: 1;
+            width: 15%;
             height: 1px;
             background-color: #000;
             border: none;
@@ -78,35 +33,142 @@ header {
 }
 
 .navbar-outer {
-    background-color: $bg-white;
+    background-color: $main-clr;
     box-shadow: 0 4px 30px $main-shadow;
+
+    .menu-btn{
+        text-decoration: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: auto 0;
+        padding: 0.35rem;
+        color: white;
+        background-color: transparent;
+        border: none;
+
+        &:hover{
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+    }
+
+    .navbar-box{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+
+        .btn-controller-box{
+            display: flex;
+            align-items: center;
+            margin-right: 3rem;
+            transition: all 0.5s ease;
+
+            .account-button {
+                display: flex;
+                align-items: center;
+                background: black;
+                color: white;
+                padding: 0.4rem;
+                border-radius: 50%;
+                border: none;
+                cursor: pointer;
+
+                .icon {
+                    color: white;
+                }
+            }
+        }
+    }
+
+    .burger-nav{
+        width: 50vw;
+        height: 100vh;
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        background-color: $main-clr-shadow;
+        z-index: 1;
+
+        transform: translateX(-100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: transform 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+
+        &.show {
+            transform: translateX(0);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .language-switcher-container{
+
+            .language-button {
+                border: 1px solid $main-shadow;
+            }
+
+            .language-button.active {
+                background-color: $main-shadow;
+            }
+
+        }
+
+        .nav-link{
+            position: relative;
+            display: block;
+            padding: 0.5rem;
+            text-decoration: none;
+            overflow: hidden;
+
+            &::before {
+                content: "";
+                position: absolute;
+                left: 0;
+                bottom: 0;
+                width: 0;
+                height: 100%;
+                background-color: rgba(255, 255, 255, 0.2);
+                transition: width 0.3s ease-in-out;
+                z-index: -1;
+            }
+
+            &:hover::before {
+                width: 100%;
+            }
+
+            &.active{
+                background-color: $main-shadow;
+
+                &::before {
+                    background-color: transparent;
+                }
+            }
+        }
+    }
+
     hr {
+        place-self: end;
+        width: 100%;
         height: 2px;
         background-color: black;
         border: none;
     }
 
-    nav {
-        overflow: visible;
-        display: unset;
-        background-color: red;
-    }
-
     .navbar {
-        position: sticky;
-        top: 0;
-        z-index: 100;
-        height: fit-content;
-        background-color: $main-clr;
         display: flex;
-        font-size: 1.2rem;
         align-items: center;
-        overflow: visible;
+        margin-left: 10rem;
+        font-size: 1.2rem;
+        transition: all 0.5s ease;
 
         .nav-link {
             text-decoration: none;
+            display: flex;
+            align-items: center;
             color: black;
-            padding: 0.5rem 2rem;
+            padding: 0.7rem 2rem;
+            height: fit-content;
             transition: color 0.3s ease, background-color 0.3s ease;
             position: relative;
 
@@ -115,7 +177,7 @@ header {
             }
 
             &.active {
-                background-color: $main-clr-shadow;
+                background-color: $main-shadow;
             }
 
             &::after {
@@ -130,9 +192,6 @@ header {
 
             &:last-child::after {
                 display: none;
-            }
-            &:first-child{
-                margin-left: 13.5rem;
             }
         }
     }
