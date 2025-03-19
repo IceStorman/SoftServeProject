@@ -70,6 +70,9 @@ class UserService:
             return response.json().get("country", unknown)
         except (requests.RequestException, ValueError):
             return unknown
+    
+    def get_country_from_ip(self) -> str:
+        return self.__get_country_from_ip()
 
     def has_ip_country_changed(self, stored_country: str) -> bool:
         current_country = self.get_country_from_ip()
@@ -82,21 +85,6 @@ class UserService:
     def generate_nonce(self):
         nonce = hashlib.sha256(f"{time.time()}{os.urandom(16)}".encode()).hexdigest()
         return nonce
-    
-    def is_suspicious_login(self, user_id: int) -> bool:
-        refresh_entry = self._refresh_dal.get_valid_refresh_token_by_user(user_id)
-        if not refresh_entry:
-            return False  
-
-        current_country = self.__get_country_from_ip()
-        current_device = self.get_user_device()
-
-        suspicious_conditions = [
-            refresh_entry.last_device and refresh_entry.last_device != current_device,
-            self._refresh_dal.is_nonce_used(user_id, refresh_entry.nonce)
-        ]
-
-        return any(suspicious_conditions)
 
 
     def get_user_by_email_or_username(self, email=None, username=None):
@@ -207,22 +195,30 @@ class UserService:
 
     async def log_in(self, credentials: InputUserLogInDTO):
         login_context = AuthManager(self)
-        user = self._user_dal.get_user_by_email_or_username(email=credentials.email_or_username, username=credentials.email_or_username)
-        sus_login = self.is_suspicious_login(user_id=user.user_id)
-        if sus_login is True:
-            
-            ex_access_token, ex_refesh_token = self._refresh_dal.get_valid_tokens_by_user(user_id=user.user_id)
-            
-            if ex_refesh_token and ex_access_token:
-                await login_context.execute_log_in(credentials)
+        
+        user = self._user_dal.get_user_by_email_or_username(
+            email=credentials.email_or_username,
+            username=credentials.email_or_username
+        )
 
-            else:
-                extended_credentials = ExtendedCredantialsDTO(user_id = user.user_id, email = user.email, username = user.username, new_user = False) 
-                await self.create_access_token_response(user=extended_credentials)
-                await login_context.execute_log_in(credentials)
+        if not user:
+            raise UserDoesNotExistError(credentials.email_or_username)
+        existing_access_token, existing_refresh_token = self._refresh_dal.get_valid_tokens_by_user(user.user_id)
 
+        if existing_access_token and existing_refresh_token:
+            await login_context.execute_log_in(credentials)
+            
         else:
-            self._refresh_dal.revoke_all_refresh_and_access_tokens_for_user(user.user_id)
+            extended_credentials = ExtendedCredantialsDTO(
+                user_id=user.user_id,
+                email=user.email,
+                username=user.username,
+                new_user=False
+            )
+            response=await self.create_access_token_response(user=extended_credentials)
+            await login_context.execute_log_in(credentials)
+            return response
+
 
 
     async def __generate_auth_token(self, user, salt):
@@ -315,6 +311,8 @@ class UserService:
             path="/",
             max_age=30 * 24 * 3600
         )
+        
+        return response
         
         
 

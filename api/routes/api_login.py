@@ -38,7 +38,7 @@ async def create_account_endpoint(service: UserService = Provide[Container.user_
         dto = InputUserDTO().load(data)
         response = await service.sign_up_user(dto.email, dto.username, dto.password)
 
-        return CommonResponseWithUser().to_dict()
+        return response
 
     except CustomQSportException as e:
         logger.error(f"Error in POST /: {str(e)}")
@@ -94,9 +94,9 @@ async def log_in(service: UserService = Provide[Container.user_service]):
     try:
         data = request.get_json()
         dto = InputUserLogInDTO().load(data)
-        await service.log_in(dto)
+        response = await service.log_in(dto)
 
-        return CommonResponseWithUser().to_dict()
+        return response
 
     except CustomQSportException as e:
         logger.error(f"Error in POST /login: {str(e)}")

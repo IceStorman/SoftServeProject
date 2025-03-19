@@ -17,6 +17,25 @@ T = TypeVar("T")
 class AuthHandler(ABC, Generic[T]):
     def __init__(self, user_service):
         self._user_service = user_service
+    
+    def __is_suspicious_login(self, user_id: int) -> bool:
+        refresh_entry = self._user_service._refresh_dal.get_valid_refresh_token_by_user(user_id)
+        if not refresh_entry:
+            return False  
+
+        current_ip = self._user_service.get_country_from_ip()
+        current_device = self._user_service.get_user_device()
+
+        suspicious_conditions = [
+            refresh_entry.last_ip and refresh_entry.last_ip == current_ip,
+            refresh_entry.last_device and refresh_entry.last_device != current_device,
+            self._user_service._refresh_dal.is_nonce_used(user_id, refresh_entry.nonce)
+        ]
+
+        return any(suspicious_conditions)
+
+    def is_suspicious_login(self, user_id: int) -> bool:
+        return self.__is_suspicious_login(user_id)
 
     @abstractmethod
     def authenticate(self, credentials: T):
@@ -51,6 +70,8 @@ class SimpleAuthHandler(AuthHandler[T]):
         if not bcrypt.checkpw(credentials.password.encode('utf-8'), user.password_hash.encode('utf-8')):
             self._user_service._logger.warning("Some log in data is incorrect")
             raise IncorrectUserDataError()
+        if not self.is_suspicious_login(user.user_id):
+            self._user_service.revoke_all_refresh_and_access_tokens_for_user(user.user_id)
 
         token = await self._user_service.get_generate_auth_token(user)
 
@@ -92,7 +113,9 @@ class GoogleAuthHandler(AuthHandler[T]):
             user = User(email=user_info.email, username=user_info.email.split('@')[0])
             self._user_service.create_user(user)
         else:
-            output_login.new_user = False  
+            output_login.new_user = False
+            if self.is_suspicious_login(user.user_id):
+                self._user_service.revoke_all_refresh_and_access_tokens_for_user(user.user_id)      
 
         token = await self._user_service.get_generate_auth_token(user)
 
