@@ -57,8 +57,13 @@ class CountriesOutput(Schema):
     name = fields.Str()
 
 class ListResponseDTO(Schema):
-    items = fields.List(fields.Raw(), required=True)
-    count = fields.Int(required=True)
+    def __init__(self, items: list, count: int):
+        super().__init__()
+        self.items = list(items)
+        self.count = count
+
+    def to_dict(self):
+        return {"items": self.items, "count": self.count}
 
 class OutputUser(Schema):
     username = fields.Str(required=True)

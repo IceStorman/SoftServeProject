@@ -35,6 +35,11 @@ class StreamDAL(BaseDAL):
         return new_stream_status
 
 
+    def save_stream_statuses(self, status_dto_list: List[StreamStatusDTO]):
+        for status in status_dto_list:
+            self.create_stream_status(status)
+
+
     def create_stream_url(self, url_dto: StreamUrlDTO) -> StreamUrl:
         new_url = StreamUrl(
             stream_id=url_dto.stream_id,
@@ -45,11 +50,6 @@ class StreamDAL(BaseDAL):
         self.session.commit()
 
         return new_url
-
-
-    def save_stream_statuses(self, status_dto_list: List[StreamStatusDTO]):
-        for status in status_dto_list:
-            self.create_stream_status(status)
 
 
     def save_stream_urls(self, url_dto_list: List[StreamUrlDTO]):

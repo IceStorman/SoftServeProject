@@ -7,6 +7,7 @@ from database.postgres.dto import StreamDTO
 from dto.api_input import SearchDTO
 from datetime import datetime
 import undetected_chromedriver as uc
+from fake_useragent import UserAgent
 
 sport_dal = Provide[Container.sport_dal]
 
@@ -22,11 +23,9 @@ def configure_driver():
     options.add_argument("--disable-extensions")
     options.add_argument("--disable-blink-features=AutomationControlled")
 
-    user_agents = [
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"
-    ]
-    options.add_argument(f"user-agent={random.choice(user_agents)}")
+    ua = UserAgent()
+    user_agent = ua.random
+    options.add_argument(f"user-agent={user_agent}")
 
     driver = uc.Chrome(options=options, use_subprocess=True)
 
@@ -39,6 +38,7 @@ def configure_driver():
         renderer="Intel Iris OpenGL Engine",
         fix_hairline=True
     )
+
     return driver
 
 

@@ -28,12 +28,10 @@ class StreamService:
         filtered_query, count = FilterManagerStrategy.apply_filters(Stream, query, filters_dto)
 
         streams = self._stream_dal.query_output(filtered_query)
-        stream_output = StreamsOutput(many=True)
-        streams = stream_output.dump(streams)
+        stream_output = StreamsOutput(many=True).dump(streams)
+        response_dto = ListResponseDTO(items = stream_output, count = count)
 
-        response_dto = ListResponseDTO()
-
-        return response_dto.dump({"items": streams, "count": count})
+        return response_dto.to_dict()
 
 
     def save_streams_to_streams_table(self, streams_data):
