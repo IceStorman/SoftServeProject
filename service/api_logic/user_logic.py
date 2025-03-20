@@ -207,7 +207,7 @@ class UserService:
 
         if existing_access_token and existing_refresh_token:
             await login_context.execute_log_in(credentials)
-            response = self.create_responce(existing_access_token, existing_refresh_token, user)
+            response = await self.create_responce(existing_access_token, existing_refresh_token, user)
             return response
             
         else:
