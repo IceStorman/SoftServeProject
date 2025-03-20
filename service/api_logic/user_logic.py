@@ -38,12 +38,13 @@ TEAM_TYPE = "team"
 
 class UserService:
 
-    def __init__(self, user_dal, preferences_dal, sport_dal, access_tokens_dal, refresh_dal):
+    def __init__(self, user_dal, preferences_dal, sport_dal, access_tokens_dal, refresh_dal, request_helper):
         self._user_dal = user_dal
         self._access_tokens_dal = access_tokens_dal
         self._refresh_dal = refresh_dal
         self._preferences_dal = preferences_dal
         self._sport_dal = sport_dal
+        self._request_helper = request_helper
         self._serializer = URLSafeTimedSerializer(current_app.secret_key)
         self._logger = Logger("logger", "all.log").logger
         
@@ -57,22 +58,6 @@ class UserService:
         
         return device_info_str
 
-    def __get_client_ip(self) -> str:
-        return request.headers.get("X-Forwarded-For", request.remote_addr)
-
-    def __get_country_from_ip(self) -> str:
-        ip = self.__get_client_ip()
-
-        try:
-            response = requests.get(f"https://ipinfo.io/{ip}/json", timeout=3)
-            response.raise_for_status()
-            unknown = "Unknown"
-            return response.json().get("country", unknown)
-        except (requests.RequestException, ValueError):
-            return unknown
-    
-    def get_country_from_ip(self) -> str:
-        return self.__get_country_from_ip()
 
     def has_ip_country_changed(self, stored_country: str) -> bool:
         current_country = self.get_country_from_ip()
@@ -107,7 +92,8 @@ class UserService:
         new_user = User(email = email, username = username, password_hash = hashed_password.decode('utf-8'))
         self.create_user(new_user)
         user = OutputLogin(email = new_user.email, token = new_user, user_id= new_user.user_id, username = new_user.username, new_user = True)
-        await self.create_access_token_response(user)
+        response = await self.create_access_token_response(user)
+        return response
 
 
     def create_user(self, new_user):
@@ -227,8 +213,8 @@ class UserService:
             email=user.email,
             username=user.username,
             new_user=user.new_user,
-            access_token = access_token,
-            refresh_token = refresh_token
+            access_token = access_token.token,
+            refresh_token = refresh_token.token
         )
 
         response = jsonify(result_data.model_dump())
@@ -280,6 +266,7 @@ class UserService:
             user_id=user.user_id,
             jti=decode_access_token[JTI],   
             token_type="access",
+            token=access_token,
             revoked=False,
             expires_at=access_expires_at
         )
@@ -289,6 +276,7 @@ class UserService:
             user_id=user.user_id,
             jti=decode_refresh_token[JTI],
             token_type="refresh",
+            token=refresh_token,
             revoked=False,
             expires_at=refresh_expires_at  
         )

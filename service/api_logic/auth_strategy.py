@@ -23,8 +23,8 @@ class AuthHandler(ABC, Generic[T]):
         if not refresh_entry:
             return False  
 
-        current_ip = self._user_service.get_country_from_ip()
-        current_device = self._user_service.get_user_device()
+        current_ip = self._user_service._request_helper.get_country_from_ip()
+        current_device = self._user_service._request_helper.get_user_device()
 
         suspicious_conditions = [
             refresh_entry.last_ip and refresh_entry.last_ip == current_ip,
