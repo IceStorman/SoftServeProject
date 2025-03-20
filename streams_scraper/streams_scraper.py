@@ -8,11 +8,10 @@ from dto.api_input import SearchDTO
 from datetime import datetime
 import undetected_chromedriver as uc
 from fake_useragent import UserAgent
+from service.api_logic.games_logic import GamesService
+from service.api_logic.streams_logic import StreamService
 
 sport_dal = Provide[Container.sport_dal]
-
-stream_service = Provide[Container.stream_service]
-games_service = Provide[Container.games_service]
 
 
 def configure_driver():
@@ -89,12 +88,12 @@ def search_game_links(driver, future_games, games_today):
 
 
 @inject
-def save_stream_data(streams_data):
-    stream_service.save_streams_to_streams_table(streams_data)
+def save_stream_data(streams_data, stream_service: StreamService = Provide[Container.stream_service]):
+    stream_service.save_streams_with_urls(streams_data)
 
 
 @inject
-def main():
+def main(games_service: GamesService = Provide[Container.games_service]):
     driver = configure_driver()
 
     try:
