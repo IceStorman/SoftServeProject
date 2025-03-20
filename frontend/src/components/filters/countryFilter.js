@@ -12,7 +12,7 @@ export const CountryFilter= ({ onChange }) => {
 
     const [selected, setSelected] = useState(null);
     const [searchQuery, setSearchQuery] = useState("");
-    const [filteredCountries, setFilteredCountries] = useState(countriesData);
+    const [filteredCountries, setFilteredCountries] = useState([]);
     const [isActiveAll, setIsActiveAll] = useState(false);
 
     const { t } = useTranslations();
@@ -20,7 +20,8 @@ export const CountryFilter= ({ onChange }) => {
     useEffect(() => {
 
         if (countriesData) {
-            setCountries(countriesData);
+            setFilteredCountries(countriesData);
+            setCountries(countriesData)
             return;
         }
 
@@ -28,6 +29,7 @@ export const CountryFilter= ({ onChange }) => {
             .then(res => {
                 const returnedCountries = res.data;
                 setCountries(returnedCountries);
+                setFilteredCountries(returnedCountries);
                 countriesInput(returnedCountries)
             })
             .catch(error => {
