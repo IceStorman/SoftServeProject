@@ -10,8 +10,6 @@ from .country import Country
 from .League import League
 from .game import Games
 from .teams_in_news import TeamInNews
-from .likes import Likes
-from .views import Views
 from .players import Players
 from .categories import Category
 from .streams_status import Streams_Status
