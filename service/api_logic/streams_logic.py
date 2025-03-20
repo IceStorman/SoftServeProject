@@ -28,21 +28,13 @@ class StreamService:
         filtered_query, count = FilterManagerStrategy.apply_filters(Stream, query, filters_dto)
 
         streams = self._stream_dal.query_output(filtered_query)
-        stream_output = StreamsOutput(many=True)
-        streams = stream_output.dump(streams)
+        stream_output = StreamsOutput(many=True).dump(streams)
+        response_dto = ListResponseDTO(items = stream_output, count = count)
 
-        response_dto = ListResponseDTO()
-
-        return response_dto.dump({"items": streams, "count": count})
+        return response_dto.to_dict()
 
 
-    def save_streams_to_streams_table(self, streams_data):
+    def save_streams_with_urls(self, streams_data):
         for stream in streams_data:
             if stream.stream_urls:
-                new_stream = self._stream_dal.create_stream(stream)
-                for url in stream.stream_urls:
-                    new_url = StreamUrlDTO(
-                        stream_url=url,
-                        stream_id=new_stream.stream_id
-                    )
-                    self._stream_dal.create_stream_url(new_url)
+                self._stream_dal.save_stream_with_urls(stream)
