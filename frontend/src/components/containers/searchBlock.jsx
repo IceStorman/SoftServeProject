@@ -17,24 +17,13 @@ const SearchBlock = ({
     loading,
     paginationKey,
 }) => {
+
     const [inputValue, setInputValue] = useState('');
-
-    const handleChange = (event) => {
-        setInputValue(event.target.value);
-    };
-
     const [selectedGrid, setSelectedGrid] = useState('large');
+
     return (
         <div className="search-container">
             <div className="header">
-                {/*<input*/}
-                {/*    type="text"*/}
-                {/*    value={inputValue}*/}
-                {/*    onChange={handleChange}*/}
-                {/*    placeholder="Search..."*/}
-                {/*    className="input-field"*/}
-                {/*></input>*/}
-
                 <div className="controls">
                     <button onClick={() => [onGridSizeChange('large'), setSelectedGrid('large')]}
                         className={selectedGrid === 'large' ? 'selected' : ''}><RiFunctionFill /></button>
