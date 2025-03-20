@@ -29,15 +29,6 @@ $font-size: 14px;
       background-color: $primary-hover;
       transform: scale(1.05);
     }
-
-    &:focus {
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
-    }
-
-    &:active {
-      transform: scale(0.98);
-    }
   }
 
   .filters {
@@ -73,6 +64,27 @@ $font-size: 14px;
       border: 2px solid $border-color;
       border-radius: 8px;
 
+      .buttonAll {
+        background-color: $background-light;
+        color: black;
+        width: 100%;
+        border: none;
+        border-radius: 0;
+        font-size: 1rem;
+        text-align: left;
+        padding: 0.5rem;
+
+        &:hover {
+          background-color: $main-clr-shadow;
+          transform: scale(1);
+        }
+
+        &.active {
+          background-color: $main-shadow;
+          color: white;
+          font-weight: bold;
+        }
+      }
 
       .scrollHeader {
         text-align: center;

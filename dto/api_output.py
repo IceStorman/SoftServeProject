@@ -150,5 +150,9 @@ def get_script_phrases():
         "sort":               _("Sort by:"),
         "more":               _("more..."),
         "continue":           _("Continue?"),
+        "all":                _("All"),
+        "select_country":     _("Select a country..."),
+        "apply_filters":      _("Apply Filters"),
+        "search_name":        _("Search by name..."),
     }
 

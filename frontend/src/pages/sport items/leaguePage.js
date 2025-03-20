@@ -149,7 +149,7 @@ function LeaguePage() {
 
             <div className="filters-container">
                 <FiltersRenderer model={selectedModel} onFilterChange={handleFiltersChange} sportId={sportId}/>
-                <button onClick={handleApplyFilters}>Apply Filters</button>
+                <button onClick={handleApplyFilters}>{t("apply_filters")}</button>
             </div>
 
             {!(currentLeagues.length === 0) ?
