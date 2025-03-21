@@ -8,6 +8,7 @@ class RequestHelper():
         self._user_service = user_service
         self._access_tokens_dal = access_tokens_dal
         self._refresh_dal = refresh_dal
+        #Probilllllllllll
     def __get_client_ip(self) -> str:
         return request.headers.get("X-Forwarded-For", request.remote_addr)
 
@@ -18,7 +19,9 @@ class RequestHelper():
             response = requests.get(f"https://ipinfo.io/{ip}/json", timeout=3)
             response.raise_for_status()
             unknown = "Unknown"
+            
             return response.json().get("country", unknown)
+        
         except (requests.RequestException, ValueError):
             return unknown
     
@@ -57,6 +60,8 @@ class RequestHelper():
         )
         
         return response
+    
+    
     async def refresh_tokens(self):
         identity = get_jwt_identity()   
         current_refresh_token = get_jwt()

@@ -178,7 +178,6 @@ class UserService:
             raise IncorrectSignatureError()
 
 
-
     async def log_in(self, credentials: InputUserLogInDTO):
         login_context = AuthManager(self)
         
@@ -193,8 +192,7 @@ class UserService:
 
         if existing_access_token and existing_refresh_token:
             await login_context.execute_log_in(credentials)
-            response = await self.create_responce(existing_access_token, existing_refresh_token, user)
-            return response
+            return existing_access_token.token, existing_refresh_token.token, user
             
         else:
             extended_credentials = ExtendedCredantialsDTO(
@@ -205,7 +203,7 @@ class UserService:
             )
             access_token, refresh_token=await self.create_tokens(user=extended_credentials)
             await login_context.execute_log_in(credentials)
-            return access_token, refresh_token
+            return access_token, refresh_token, user
 
 
     async def __generate_auth_token(self, user, salt):
@@ -255,7 +253,6 @@ class UserService:
             nonce=self.generate_nonce()
         )
         self._refresh_dal.save_refresh_token(refresh_dto)
-        # replace with the correct method user_id!!!
 
 
     async def create_tokens(self, user):
@@ -274,8 +271,6 @@ class UserService:
         return access_token, refresh_token
         
         
-
-
     async def verify_nonce(self, user_email: str, token_nonce: str) -> bool:
         user = await self._user_dal.get_user_by_email(user_email)
         saved_nonce = self._refresh_dal.get_nonce_by_user_id(user.user_id)
