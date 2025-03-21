@@ -18,12 +18,10 @@ class TeamsService:
         query, count = FilterManagerStrategy.apply_filters(TeamIndex, query, filters_dto)
 
         teams = self._teams_dal.query_output(query)
-        teams_output = TeamsLeagueOutput(many=True)
-        team = teams_output.dump(teams)
+        teams_output = TeamsLeagueOutput(many=True).dump(teams)
+        response_dto = ListResponseDTO(items = teams_output, count = count)
 
-        response_dto = ListResponseDTO()
-
-        return response_dto.dump({"items": team, "count": count})
+        return response_dto.to_dict()
 
 
 

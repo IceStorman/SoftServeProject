@@ -27,6 +27,14 @@ class TeamsLeagueOutputWithCount(Schema):
     teams = fields.List(fields.Nested(TeamsLeagueOutput))
     count = fields.Int()
 
+class StreamsOutput(Schema):
+    id = fields.Str(attribute="stream_id")
+    sport = fields.Int(attribute="sport_id")
+    title = fields.Str()
+    start_time = fields.DateTime()
+    stream_url = fields.List(fields.Str())
+
+
 class SportsOutput(Schema):
     id = fields.Int(attribute="sport_id")
     sport = fields.Str(attribute="sport_name")
@@ -49,8 +57,13 @@ class CountriesOutput(Schema):
     name = fields.Str()
 
 class ListResponseDTO(Schema):
-    items = fields.List(fields.Raw(), required=True)
-    count = fields.Int(required=True)
+    def __init__(self, items: list, count: int):
+        super().__init__()
+        self.items = list(items)
+        self.count = count
+
+    def to_dict(self):
+        return {"items": self.items, "count": self.count}
 
 class OutputUser(Schema):
     username = fields.Str(required=True)
