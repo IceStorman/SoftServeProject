@@ -206,7 +206,6 @@ function LeaguePage() {
                 </div>
             )}
 
-            {/*{!(currentLeagues.length === 0) ?*/}
                 <SearchBlock
                     cardSizes={cardLayouts}
                     gridSize={gridSize}
@@ -219,6 +218,7 @@ function LeaguePage() {
                     paginationKey={paginationKey}
                     handleOpenMenu={handleOpenMenu}
                     menuIcon={menuIcon}
+                    setMenuIcon={setMenuIcon}
                     burgerMenu={burgerMenu}
                     menuIsOpen={menuIsOpen}
                     selectedModel={selectedModel}
@@ -226,6 +226,7 @@ function LeaguePage() {
                     sportId={sportId}
                     count={currentLeagues.length}
                     handleApplyFilters={handleApplyFilters}
+                    setMenuIsOpen={setMenuIsOpen}
                     children={currentLeagues.map((item) => (
                         <LeagueCard
                             leagueName={item.name}
@@ -237,7 +238,6 @@ function LeaguePage() {
                     ))}
                 >
                 </SearchBlock>
-            {/*: <NoItems text='No leagues were found'/>}*/}
         </div>
     );
 }

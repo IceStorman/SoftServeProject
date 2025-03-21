@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import { RiFunctionFill, RiGridFill, RiListCheck2 } from "react-icons/ri";
 import ReactPaginate from "react-paginate";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
@@ -6,6 +6,7 @@ import { TfiLayoutLineSolid } from "react-icons/tfi";
 import FiltersRenderer from "../filters/filterRender";
 import useTranslations from "../../translationsContext";
 import NoItems from "../NoItems";
+import {FaFilter} from "react-icons/fa";
 
 
 const SearchBlock = ({
@@ -19,24 +20,45 @@ const SearchBlock = ({
     paginationKey,
     handleOpenMenu,
     menuIcon,
+    setMenuIcon,
     burgerMenu,
     menuIsOpen,
     selectedModel,
     handleFiltersChange,
     sportId,
     handleApplyFilters,
-    count
+    count,
+    setMenuIsOpen
 }) => {
+    const initialIcon = <FaFilter size={28} />
 
     const [selectedGrid, setSelectedGrid] = useState('large');
     const { t } = useTranslations();
+    const filterRef = useRef(null);
 
+    const handleClickOutside = (event) => {
+        if (filterRef.current && !filterRef.current.contains(event.target)) {
+            setMenuIsOpen(false);
+            setMenuIcon(initialIcon);
+        }
+    };
+
+    useEffect(() => {
+        if (menuIsOpen) {
+            document.addEventListener("mousedown", handleClickOutside);
+        } else {
+            document.removeEventListener("mousedown", handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [menuIsOpen]);
     return (
         <div className="search-container">
             <header className="header">
                 {burgerMenu  && (
-                    <>
-                    <div className="filter-wrapper">
+                    <div className="filter-wrapper" ref={filterRef}>
                         <button className="menu-btn" onClick={handleOpenMenu}>
                             {menuIcon}
                         </button>
@@ -50,7 +72,6 @@ const SearchBlock = ({
                             </div>
                         )}
                     </div>
-                    </>
                 )}
 
                 <div className="controls">
