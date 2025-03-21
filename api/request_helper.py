@@ -55,3 +55,43 @@ class RequestHelper():
         )
         
         return response
+    async def refresh_tokens(self):
+        identity = get_jwt_identity()   
+        current_refresh_token = get_jwt()
+
+        token_nonce = current_refresh_token.get("nonce")
+
+        if not self._refresh_dal.verify_nonce(identity, token_nonce):
+            raise InvalidRefreshTokenError()
+
+        new_access_token, new_refresh_token = await self.create_new_access_and_refresh_tokens(identity, refresh=True)
+
+        new_nonce = self.generate_nonce()
+        self._refresh_dal.update_refresh_token(identity, new_refresh_token, new_nonce)
+
+        result = jsonify({
+            "access_token": new_access_token,
+            "refresh_token": new_refresh_token
+        })
+
+        
+        response = jsonify(result.model_dump())
+        response.set_cookie(
+            "access_token",
+            new_access_token,
+            httponly=False,
+            secure=True,
+            samesite="None",
+            path="/",
+            max_age=3600
+        )
+
+        response.set_cookie(
+            "refresh_token",
+            new_refresh_token,
+            httponly=False,
+            secure=True,
+            samesite="None",
+            path="/",
+            max_age=7 * 24 * 3600
+        )

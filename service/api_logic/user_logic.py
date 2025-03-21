@@ -203,44 +203,9 @@ class UserService:
                 username=user.username,
                 new_user=False
             )
-            response=await self.create_access_token_response(user=extended_credentials)
+            access_token, refresh_token=await self.create_tokens(user=extended_credentials)
             await login_context.execute_log_in(credentials)
-            return response
-    
-    async def create_responce(self, access_token, refresh_token,user):
-        result_data = ResponseDataDTO(
-            user_id=user.user_id,
-            email=user.email,
-            username=user.username,
-            new_user=user.new_user,
-            access_token = access_token.token,
-            refresh_token = refresh_token.token
-        )
-
-        response = jsonify(result_data.model_dump())
-        response.set_cookie(
-            "access_token",
-            access_token,
-            httponly=False,
-            secure=True,
-            samesite="None",
-            path="/",
-            max_age=3600
-        )
-
-        response.set_cookie(
-            "refresh_token",
-            refresh_token,
-            httponly=False,
-            secure=True,
-            samesite="None",
-            path="/",
-            max_age=30 * 24 * 3600
-        )
-        
-        return response
-        
-
+            return access_token, refresh_token
 
 
     async def __generate_auth_token(self, user, salt):
@@ -293,7 +258,7 @@ class UserService:
         # replace with the correct method user_id!!!
 
 
-    async def create_access_token_response(self, user):
+    async def create_tokens(self, user):
         additional_claims = AdditionalClaimsDTO(
             user_id=user.user_id,
             email=user.email,
@@ -306,37 +271,7 @@ class UserService:
 
         self.save_tokens_to_db(user, access_token, refresh_token)
         
-        result_data = ResponseDataDTO(
-            user_id=user.user_id,
-            email=user.email,
-            username=user.username,
-            new_user=user.new_user,
-            access_token = access_token,
-            refresh_token = refresh_token
-        )
-
-        response = jsonify(result_data.model_dump())
-        response.set_cookie(
-            "access_token",
-            access_token,
-            httponly=False,
-            secure=True,
-            samesite="None",
-            path="/",
-            max_age=3600
-        )
-
-        response.set_cookie(
-            "refresh_token",
-            refresh_token,
-            httponly=False,
-            secure=True,
-            samesite="None",
-            path="/",
-            max_age=30 * 24 * 3600
-        )
-        
-        return response
+        return access_token, refresh_token
         
         
 
@@ -359,50 +294,6 @@ class UserService:
         )
 
         self._refresh_dal.update_refresh_token(user.user_id, refresh_dto)
-
-    async def refresh_tokens(self):
-        identity = get_jwt_identity()   
-        current_refresh_token = get_jwt()
-
-        token_nonce = current_refresh_token.get("nonce")
-
-        if not self._refresh_dal.verify_nonce(identity, token_nonce):
-            raise InvalidRefreshTokenError()
-
-        new_access_token, new_refresh_token = await self.create_new_access_and_refresh_tokens(identity, refresh=True)
-
-        new_nonce = self.generate_nonce()
-        self._refresh_dal.update_refresh_token(identity, new_refresh_token, new_nonce)
-
-        result = jsonify({
-            "access_token": new_access_token,
-            "refresh_token": new_refresh_token
-        })
-
-        
-        response = jsonify(result.model_dump())
-        response.set_cookie(
-            "access_token",
-            new_access_token,
-            httponly=False,
-            secure=True,
-            samesite="None",
-            path="/",
-            max_age=3600
-        )
-
-        response.set_cookie(
-            "refresh_token",
-            new_refresh_token,
-            httponly=False,
-            secure=True,
-            samesite="None",
-            path="/",
-            max_age=7 * 24 * 3600
-        )
-        
-
-        
 
     
     def add_preferences(self, dto: UpdateUserPreferencesDTO):
