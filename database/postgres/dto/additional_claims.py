@@ -7,6 +7,7 @@ class AdditionalClaimsDTO(BaseModel):
     email: str = Field(...)
     username: str = Field(...)
     new_user: bool = Field(...)
+    nonce: str = Field(default=None)
 
     class Config:  
         model_config = ConfigDict(from_attributes=True) 

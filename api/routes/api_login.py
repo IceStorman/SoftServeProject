@@ -6,6 +6,7 @@ from exept.handle_exeptions import get_custom_error_response, handle_exceptions
 from logger.logger import Logger
 from dependency_injector.wiring import inject, Provide
 from service.api_logic.user_logic import UserService
+from api.request_helper import RequestHelper
 from api.container.container import Container
 from flask_jwt_extended import jwt_required
 import os
@@ -32,12 +33,13 @@ def handle_db_timeout_error(e):
 @inject
 @handle_exceptions
 @logger.log_function_call()
-async def create_account_endpoint(service: UserService = Provide[Container.user_service]):
+async def create_account_endpoint(service: UserService = Provide[Container.user_service], helper: RequestHelper = Provide[Container.request_helper]):
     try:
         data = request.get_json()
         dto = InputUserDTO().load(data)
-        response = await service.sign_up_user(dto.email, dto.username, dto.password)
+        access_token, refresh_token, user = await service.sign_up_user(dto.email, dto.username, dto.password)
 
+        response = await helper.create_response(access_token, refresh_token, user)
         return response
 
     except CustomQSportException as e:
@@ -90,11 +92,13 @@ def reset_password(token, service: UserService = Provide[Container.user_service]
 @inject
 @handle_exceptions
 @logger.log_function_call()
-async def log_in(service: UserService = Provide[Container.user_service]):
+async def log_in(service: UserService = Provide[Container.user_service], helper: RequestHelper = Provide[Container.request_helper]):
     try:
         data = request.get_json()
         dto = InputUserLogInDTO().load(data)
-        response = await service.log_in(dto)
+        access_token, refresh_token, user = await service.log_in(dto)
+        
+        response = await helper.create_response(access_token, refresh_token, user)
 
         return response
 

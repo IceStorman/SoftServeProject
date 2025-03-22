@@ -53,6 +53,9 @@ function SignUpPage() {
                     password: password
                 },
                 {
+                    withCredentials: true // Will make project great again
+                },
+                {
                     headers: { 'Content-Type': 'application/json' },
                 }
             );

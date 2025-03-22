@@ -14,7 +14,7 @@ from service.api_logic.user_logic import UserService
 from service.api_logic.news_logic import NewsService
 from service.api_logic.games_logic import GamesService
 from service.api_logic.teams_logic import TeamsService
-from request_helper import RequestHelper
+from api.request_helper import RequestHelper
 
 
 

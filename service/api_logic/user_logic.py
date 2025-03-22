@@ -47,6 +47,7 @@ class UserService:
         self._request_helper = request_helper
         self._serializer = URLSafeTimedSerializer(current_app.secret_key)
         self._logger = Logger("logger", "all.log").logger
+        self.get_refresh_dal=self._refresh_dal
         
     @staticmethod    
     def get_user_device() -> str:
@@ -92,8 +93,8 @@ class UserService:
         new_user = User(email = email, username = username, password_hash = hashed_password.decode('utf-8'))
         self.create_user(new_user)
         user = OutputLogin(email = new_user.email, token = new_user, user_id= new_user.user_id, username = new_user.username, new_user = True)
-        response = await self.create_access_token_response(user)
-        return response
+        access_token, refresh_token = await self.create_tokens(user)
+        return access_token, refresh_token, user
 
 
     def create_user(self, new_user):
@@ -137,20 +138,6 @@ class UserService:
             raise UserDoesNotExistError(email)
 
         return self._serializer.dumps(user.username, salt = "email-confirm")
-        
-    async def create_new_access_and_refresh_tokens(self, email: str, username: str,user_id: int,new_user:bool):
-        additional_claims = AdditionalClaimsDTO(
-            user_id=user_id,
-            email=email,
-            username=username,
-            new_user=new_user
-        )
-        new_access_token = create_access_token(identity=email.email, additional_claims=additional_claims)
-        new_refresh_token = create_refresh_token(identity=email.email, 
-                                                 additional_claims=additional_claims.update({"nonce": self.generate_nonce()}))
-        
-        return new_access_token, new_refresh_token    
-
     
 
     async def reset_user_password(self, token, new_password: str):
@@ -163,7 +150,8 @@ class UserService:
         hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), salt)
 
         self._user_dal.update_user_password(user, hashed_password.decode('utf-8')) 
-        await self.create_access_token_response(user) 
+        access_token, refresh_token = await self.create_tokens(user) 
+        return access_token, refresh_token, user
         
 
 
@@ -188,22 +176,22 @@ class UserService:
 
         if not user:
             raise UserDoesNotExistError(credentials.email_or_username)
-        existing_access_token, existing_refresh_token = self._refresh_dal.get_valid_tokens_by_user(user.user_id)
-
-        if existing_access_token and existing_refresh_token:
-            await login_context.execute_log_in(credentials)
-            return existing_access_token.token, existing_refresh_token.token, user
-            
-        else:
-            extended_credentials = ExtendedCredantialsDTO(
+        extended_credentials = ExtendedCredantialsDTO(
                 user_id=user.user_id,
                 email=user.email,
                 username=user.username,
                 new_user=False
             )
+        existing_access_token, existing_refresh_token = self._refresh_dal.get_valid_tokens_by_user(user.user_id)
+
+        if existing_access_token and existing_refresh_token:
+            await login_context.execute_log_in(credentials)
+            return existing_access_token.token, existing_refresh_token.token, extended_credentials
+            
+        else:
             access_token, refresh_token=await self.create_tokens(user=extended_credentials)
             await login_context.execute_log_in(credentials)
-            return access_token, refresh_token, user
+            return access_token, refresh_token, extended_credentials
 
 
     async def __generate_auth_token(self, user, salt):
@@ -248,7 +236,7 @@ class UserService:
         refresh_dto = RefreshTokenDTO(
             id=id,
             user_id=user.user_id,
-            last_ip=self.__get_country_from_ip(),
+            last_ip=self._request_helper.get_country_from_ip(),
             last_device=self.get_user_device(),
             nonce=self.generate_nonce()
         )
@@ -263,12 +251,20 @@ class UserService:
             new_user=user.new_user
         )
 
-        access_token = create_access_token(identity=user.email, additional_claims=additional_claims)
-        refresh_token = create_refresh_token(identity=user.email, additional_claims=additional_claims)
+        access_token = create_access_token(identity=user.email, additional_claims=additional_claims.model_dump())
+
+        nonce = self.generate_nonce()
+
+        refresh_claims_dict = additional_claims.model_dump()
+        refresh_claims_dict["nonce"] = nonce
+        refresh_claims = AdditionalClaimsDTO(**refresh_claims_dict)
+
+        refresh_token = create_refresh_token(identity=user.email, additional_claims=refresh_claims.model_dump())
 
         self.save_tokens_to_db(user, access_token, refresh_token)
-        
+
         return access_token, refresh_token
+
         
         
     async def verify_nonce(self, user_email: str, token_nonce: str) -> bool:
@@ -289,6 +285,24 @@ class UserService:
         )
 
         self._refresh_dal.update_refresh_token(user.user_id, refresh_dto)
+        
+    async def refresh_tokens(self):
+        identity = get_jwt_identity()   
+        current_refresh_token = get_jwt()
+
+        token_nonce = current_refresh_token.get("nonce")
+
+        if not self._refresh_dal.verify_nonce(identity, token_nonce):
+            raise InvalidRefreshTokenError()
+
+        new_access_token, new_refresh_token = await self.create_tokens(identity, refresh=True)
+
+        new_nonce = self.generate_nonce()
+        self._refresh_dal.update_refresh_token(identity, new_refresh_token, new_nonce)
+
+        user = await self._user_dal.get_user_by_email(identity)
+        
+        return new_access_token, new_refresh_token, user
 
     
     def add_preferences(self, dto: UpdateUserPreferencesDTO):

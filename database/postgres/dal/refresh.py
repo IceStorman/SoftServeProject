@@ -63,7 +63,7 @@ class RefreshTokenDAL:
         )
 
         refresh_token = (
-            self.db_session.query(RefreshTokenTracking)
+            self.db_session.query(TokenBlocklist)
             .filter(
                 TokenBlocklist.user_id == user_id,
                 TokenBlocklist.revoked == False,

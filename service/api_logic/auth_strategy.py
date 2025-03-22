@@ -24,7 +24,7 @@ class AuthHandler(ABC, Generic[T]):
             return False  
 
         current_ip = self._user_service._request_helper.get_country_from_ip()
-        current_device = self._user_service._request_helper.get_user_device()
+        current_device = self._user_service.get_user_device()
 
         suspicious_conditions = [
             refresh_entry.last_ip and refresh_entry.last_ip == current_ip,
@@ -71,7 +71,7 @@ class SimpleAuthHandler(AuthHandler[T]):
             self._user_service._logger.warning("Some log in data is incorrect")
             raise IncorrectUserDataError()
         if not self.is_suspicious_login(user.user_id):
-            self._user_service.revoke_all_refresh_and_access_tokens_for_user(user.user_id)
+            self._user_service._refresh_dal.revoke_all_refresh_and_access_tokens_for_user(user.user_id)
 
         token = await self._user_service.get_generate_auth_token(user)
 
@@ -115,7 +115,7 @@ class GoogleAuthHandler(AuthHandler[T]):
         else:
             output_login.new_user = False
             if self.is_suspicious_login(user.user_id):
-                self._user_service.revoke_all_refresh_and_access_tokens_for_user(user.user_id)      
+                self._user_service.get_refresh_dal.revoke_all_refresh_and_access_tokens_for_user(user.user_id)      
 
         token = await self._user_service.get_generate_auth_token(user)
 

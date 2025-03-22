@@ -51,6 +51,9 @@ function SignInPage() {
                     auth_provider: globalVariables.authStrategies.simpleStrategy
                 },
                 {
+                    withCredentials: true // Will make project great again
+                },
+                {
                     headers: { 'Content-Type': 'application/json' },
                 }
             );
