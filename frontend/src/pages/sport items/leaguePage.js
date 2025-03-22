@@ -192,7 +192,7 @@ function LeaguePage() {
 
     return (
 
-        <div className="leagues-page">
+        <div className="leaguesTeamsPage">
             <div className="title">
                 <button className="filled arrow" onClick={() => navigate(-1)}><RiArrowLeftWideLine className="arrow"/>
                 </button>
@@ -235,8 +235,7 @@ function LeaguePage() {
                             id={item.id}
                             sportId={sportId}
                         />
-                    ))}
-                >
+                    ))}>
                 </SearchBlock>
         </div>
     );

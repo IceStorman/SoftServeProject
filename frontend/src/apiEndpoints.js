@@ -17,7 +17,8 @@ const apiEndpoints = {
     },
 
     teams:{
-        getAll: 'teams/league',
+        getTeamsSearch: 'teams/search',
+        getTeamsAll: 'teams/league',
     },
     
     games:{
