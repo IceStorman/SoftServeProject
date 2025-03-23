@@ -24,6 +24,7 @@ CUSTOM_GAMES = {
     'not_played': ['Technical Loss', 'WalkOver'],
 
 }
+MMA_LOGO = "https://www.api-football.com/public/img/home1/mma-logo.png"
 
 IN_PROGRESS = 'play'
 
@@ -207,10 +208,18 @@ def save_country_and_get_id(country_entry, country_dal: CountryDAL) -> int:
 def process_entity_teams(json_data, sport_id: int, session: SessionLocal, league_id=None):
     team_dal = TeamDAL(session)
     team_dto_list = []
+
+
     for team in json_data:
+        if sport_id == 10:
+            team_bad_logo_info = team.get('logo', {})
+            team_bad_photo_info = team.get('photo', {})
+        else:
+            team_bad_logo_info, team_bad_photo_info = True, True
+
         team_dto = TeamDTO(sport_id=sport_id,
                            name=team.get('name') or team.get('team').get('name'),
-                           logo=team.get('logo') or team.get('photo') or team.get('team').get('logo') or team.get('team').get('photo'),
+                           logo=team.get('logo') or team.get('photo') or team.get('team').get('logo') or team.get('team').get('photo') if team_bad_logo_info or team_bad_photo_info else MMA_LOGO,
                            api_id=team.get('id') or team.get('team').get('id'),
                            league_id=league_id)
         team_dto_list.append(team_dto)
