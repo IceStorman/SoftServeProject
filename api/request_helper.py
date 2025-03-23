@@ -51,7 +51,7 @@ class RequestHelper():
         )
 
         response.set_cookie(
-            "refresh_token",
+            "refresh_token_cookie",
             refresh_token,
             httponly=False,
             secure=True,
