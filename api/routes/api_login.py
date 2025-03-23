@@ -111,9 +111,13 @@ async def log_in(service: UserService = Provide[Container.user_service], helper:
 @handle_exceptions
 @logger.log_function_call()
 @jwt_required(refresh=True)
-async def refresh(service: UserService = Provide[Container.user_service]):
+async def refresh(service: UserService = Provide[Container.user_service], helper: UserService = Provide[Container.request_helper]):
     try:
-        return await service.refresh_tokens()
+        access_token, refresh_token, user =  await service.refresh_tokens()
+        response = await helper.create_response(access_token, refresh_token, user)
+
+        return response
+        
     except CustomQSportException as e:
         logger.error(f"Error in POST /refresh: {str(e)}")
         return get_custom_error_response(e)
