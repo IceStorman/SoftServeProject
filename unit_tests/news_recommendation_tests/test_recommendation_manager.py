@@ -13,6 +13,7 @@ class TestRecommendationManager:
         self.user_dal = MagicMock()
         self.manager = RecommendationManager(self.user_service, self.news_service, self.user_dal)
 
+
     def test_get_recommended_news_for_user_success(self):
         self.user_dal.get_user_id_by_email.return_value = [42]
         self.user_service.get_user_sport_and_club_preferences.return_value = ([2,3,4], [1,2,4,5])

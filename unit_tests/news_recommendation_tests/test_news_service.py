@@ -104,15 +104,16 @@ class TestNewsService:
                  }, index=[3, 4]
             )
 
+
     @pytest.fixture
     def first_setup(self):
         self.calculating_helper = MagicMock()
         self.user_preferred_teams = [1, 2, 3]
         self.user_preferred_sports = [4, 5]
 
+
     def teardown(self):
         self.app_context.pop()
-
 
 
     def test_user_recommendations_based_on_preferences_and_last_watch_success(self, first_setup):
