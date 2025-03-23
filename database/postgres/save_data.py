@@ -244,7 +244,7 @@ def process_entity_players(json_data, sport_id: int, session: SessionLocal, team
         player_team = None
 
         if not team_id:
-            teams = player.get("teams", [])
+            teams = player.get("team", [])
             team_api_id = teams[0].get("team", {}).get("id") if teams else player.get("team").get("id")
             player_team = team_dal.get_team_by_api_id_and_sport_id(team_api_id, sport_id)
 
