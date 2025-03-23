@@ -23,7 +23,6 @@ function TeamPage() {
 
     const calculateColumns = (width, layout) => {
         if (width > 1400) return layout.baseColumns;
-        // if (width > 1200) return Math.max(layout.baseColumns - 1, layout.minColumns);
         if (width > 1000) return Math.max(layout.baseColumns - 1, layout.minColumns);
         if (width > 450) {
             return layout.baseColumns === 4
@@ -78,6 +77,7 @@ function TeamPage() {
     const stateData = location.state || {};
     const leagueId = stateData.leagueId;
     const sportId = stateData.sportId;
+    const sportName = stateData.sportName;
 
     const [currentTeams, setCurrentTeams] = useState([]);
     const [pageCount, setPageCount] = useState(0);
@@ -121,37 +121,50 @@ function TeamPage() {
     const getTeams = async (page) => {
 
         setPrevInputValue(inputValue);
-        const initialFiltersData1 = {
-            'filter_name': 'sport_id',
-            'filter_value': sportId
-        }
-        const initialFiltersData2 = {
-            'filter_name': 'league_id',
-            'filter_value': leagueId
-        }
-
-        const filtersData = [...filters]
-        filtersData.push(initialFiltersData1)
-        filtersData.push(initialFiltersData2)
 
         try {
-            const response = await axios.post(
-                `${apiEndpoints.url}${apiEndpoints.teams.getTeamsAll}`,
-                {
-                    sport_id: sportId,
-                    league_id: leagueId,
-                    filters_data: {
-                        pagination: {
-                            page: page + 1,
-                            per_page: teamsPerPage,
-                        },
-                        filters: filtersData
+            let response;
+
+            if (sportName !== "formula-1" && sportName !== "mma") {
+
+                const filtersData = [
+                    ...filters,
+                    { 'filter_name': 'sport_id', 'filter_value': sportId },
+                    { 'filter_name': 'league_id', 'filter_value': leagueId }
+                ];
+
+                response = await axios.post(
+                    `${apiEndpoints.url}${apiEndpoints.teams.getTeamsAll}`,
+                    {
+                        sport_id: sportId,
+                        league_id: leagueId,
+                        filters_data: {
+                            pagination: {
+                                page: page + 1,
+                                per_page: teamsPerPage,
+                            },
+                            filters: filtersData
+                        }
+                    },
+                    {
+                        headers: { 'Content-Type': 'application/json' },
                     }
-                },
-                {
-                    headers: { 'Content-Type': 'application/json' },
-                }
-            );
+                );
+            }
+            else {
+                response = await axios.post(
+                    `${apiEndpoints.url}${apiEndpoints.players.getPlayersAll}`,
+                    {
+                        sport_id: sportId,
+                        team_id: leagueId,
+
+                    },
+                    {
+                        headers: { 'Content-Type': 'application/json' },
+                    }
+                );
+            }
+
             if (!response.data.items) {
                 if (response.data.results === 0) {
                     setCurrentTeams([]);

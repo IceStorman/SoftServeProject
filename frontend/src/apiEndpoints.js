@@ -20,6 +20,10 @@ const apiEndpoints = {
         getTeamsSearch: 'teams/search',
         getTeamsAll: 'teams/league',
     },
+
+    players:{
+        getPlayersAll: 'teams/players',
+    },
     
     games:{
         getGames: 'games/specific',

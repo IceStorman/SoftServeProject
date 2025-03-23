@@ -231,6 +231,7 @@ function LeaguePage() {
                         <LeagueCard
                             leagueName={item.name}
                             img={item.logo}
+                            sportName={sportName}
                             size={gridSize.baseColumns === 2 ? "small" : gridSize.baseColumns === 5 ? "medium" : "large"}
                             id={item.id}
                             sportId={sportId}
