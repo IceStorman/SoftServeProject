@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
             const userData = decodeJwt(token);
 
             if (userData) {
-                Cookies.set("user", JSON.stringify(userData), { expires: 30 });
+                Cookies.set("user", JSON.stringify(userData), { expires: 1/24 });
                 setUser(userData);
             }
         }
@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }) => {
         let token = Cookies.get("access_token");
 
         if (!token) {
-            const refreshToken = Cookies.get("refresh_token");
+            const refreshToken = Cookies.get("refresh_token_cookie");
 
             if (refreshToken) {
                 try {
