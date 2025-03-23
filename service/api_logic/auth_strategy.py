@@ -10,6 +10,7 @@ from exept.exeptions import IncorrectUserDataError, UserDoesNotExistError, Incor
     InvalidAuthenticationDataError
 from typing import Generic, TypeVar
 from service.api_logic.models.api_models import AuthStrategies
+from api.request_helper import RequestHelper
 
 T = TypeVar("T")
 
@@ -23,7 +24,7 @@ class AuthHandler(ABC, Generic[T]):
         if not refresh_entry:
             return False  
 
-        current_ip = self._user_service._request_helper.get_country_from_ip()
+        current_ip = RequestHelper.get_country_from_ip()
         current_device = self._user_service.get_user_device()
 
         suspicious_conditions = [

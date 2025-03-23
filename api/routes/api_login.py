@@ -33,13 +33,13 @@ def handle_db_timeout_error(e):
 @inject
 @handle_exceptions
 @logger.log_function_call()
-async def create_account_endpoint(service: UserService = Provide[Container.user_service], helper: RequestHelper = Provide[Container.request_helper]):
+async def create_account_endpoint(service: UserService = Provide[Container.user_service]):
     try:
         data = request.get_json()
         dto = InputUserDTO().load(data)
         access_token, refresh_token, user = await service.sign_up_user(dto.email, dto.username, dto.password)
 
-        response = await helper.create_response(access_token, refresh_token, user)
+        response = await RequestHelper.create_response(access_token, refresh_token, user)
         return response
 
     except CustomQSportException as e:
@@ -92,13 +92,13 @@ def reset_password(token, service: UserService = Provide[Container.user_service]
 @inject
 @handle_exceptions
 @logger.log_function_call()
-async def log_in(service: UserService = Provide[Container.user_service], helper: RequestHelper = Provide[Container.request_helper]):
+async def log_in(service: UserService = Provide[Container.user_service]):
     try:
         data = request.get_json()
         dto = InputUserLogInDTO().load(data)
         access_token, refresh_token, user = await service.log_in(dto)
         
-        response = await helper.create_response(access_token, refresh_token, user)
+        response = await RequestHelper.create_response(access_token, refresh_token, user)
 
         return response
 
@@ -111,10 +111,10 @@ async def log_in(service: UserService = Provide[Container.user_service], helper:
 @handle_exceptions
 @logger.log_function_call()
 @jwt_required(refresh=True)
-async def refresh(service: UserService = Provide[Container.user_service], helper: UserService = Provide[Container.request_helper]):
+async def refresh(service: UserService = Provide[Container.user_service]):
     try:
         access_token, refresh_token, user =  await service.refresh_tokens()
-        response = await helper.create_response(access_token, refresh_token, user)
+        response = await RequestHelper.create_response(access_token, refresh_token, user)
 
         return response
         

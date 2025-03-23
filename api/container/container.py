@@ -14,7 +14,6 @@ from service.api_logic.user_logic import UserService
 from service.api_logic.news_logic import NewsService
 from service.api_logic.games_logic import GamesService
 from service.api_logic.teams_logic import TeamsService
-from api.request_helper import RequestHelper
 
 
 
@@ -46,13 +45,6 @@ class Container(containers.DeclarativeContainer):
     teams_service = providers.Factory(TeamsService, teams_dal=teams_dal)
     sports_service = providers.Factory(SportService, sports_dal=sport_dal, leagues_dal=leagues_dal)
     
-    request_helper = providers.Factory(
-        RequestHelper,
-        user_service=user_dal,
-        access_tokens_dal=access_tokens_dal,
-        refresh_dal=refresh_dal,
-   )
-    
     user_service = providers.Factory(
         UserService,
         user_dal=user_dal,
@@ -60,7 +52,6 @@ class Container(containers.DeclarativeContainer):
         sport_dal=sport_dal,
         access_tokens_dal=access_tokens_dal,
         refresh_dal=refresh_dal,
-        request_helper=request_helper
     )
 
     news_service = providers.Factory(

@@ -19,10 +19,7 @@ class RefreshTokenDAL:
 
     def save_refresh_token(self, refresh_dto: RefreshTokenDTO) -> Optional[int]: 
             try:
-                refresh_entry = None
-                
-                if refresh_dto.id:
-                    refresh_entry = self.get_refresh_token_by_id(refresh_dto.id)
+                refresh_entry = self.get_refresh_token_by_id(refresh_dto.id) if refresh_dto.id else None
 
                 if refresh_entry:
                     refresh_entry.user_id = refresh_dto.user_id
@@ -75,10 +72,14 @@ class RefreshTokenDAL:
 
         return access_token, refresh_token
     
-    def get_user_info_by_nonce(self, nonce) -> int:
-        token_entry = self.db_session.query(RefreshTokenTracking).filter(RefreshTokenTracking.nonce == nonce).first()
-        user_info = self.db_session.query(User).filter(User.user_id == token_entry.user_id)
-        return user_info if user_info else None
+    def get_user_info_by_nonce(self, nonce) -> User | None:
+        user_info = (
+            self.db_session.query(User)
+            .join(RefreshTokenTracking, RefreshTokenTracking.user_id == User.user_id)
+            .filter(RefreshTokenTracking.nonce == nonce)
+            .first()
+        )
+        return user_info
 
     def verify_nonce(self, user_id: int, nonce: str) -> bool:
         token_entry = self.db_session.query(RefreshTokenTracking).filter_by(user_id=user_id, nonce=nonce).first()

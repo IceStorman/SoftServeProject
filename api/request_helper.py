@@ -4,12 +4,7 @@ import requests
 from flask_jwt_extended import get_jwt_identity, get_jwt
 from exept.exeptions import InvalidRefreshTokenError
 class RequestHelper():
-    
-    def __init__(self, access_tokens_dal, refresh_dal):
-        self._access_tokens_dal = access_tokens_dal
-        self._refresh_dal = refresh_dal
-       
-        
+         
     def __get_client_ip(self) -> str:
         return request.headers.get("X-Forwarded-For", request.remote_addr)
 
@@ -18,11 +13,11 @@ class RequestHelper():
         ip = self.__get_client_ip()
 
         try:
-            response = requests.get(f"https://ipinfo.io/{ip}/json", timeout=3)
-            response.raise_for_status()
+            country = requests.get(f"https://ipinfo.io/{ip}/json", timeout=3)
+            country.raise_for_status()
             unknown = "Unknown"
             
-            return response.json().get("country", unknown)
+            return country.json().get("country", unknown)
         
         except (requests.RequestException, ValueError):
             return unknown
