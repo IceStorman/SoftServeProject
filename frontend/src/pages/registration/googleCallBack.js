@@ -10,8 +10,8 @@ function GoogleAuthCallback() {
     const authContext = useContext(AuthContext);
     const navigate = useNavigate();
 
-    const {user} = useContext(AuthContext);
-
+    const { login } = authContext;
+    
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get("code");
@@ -39,8 +39,6 @@ function GoogleAuthCallback() {
             });
         }
     }, []);
-    
-    const { login } = authContext;
 
     return <></>;
 }
