@@ -45,7 +45,8 @@ const apiEndpoints = {
         signUp: 'user/sign-up',
         login: 'user/login',
         resetPasswordRequest: 'user/reset-password-request',
-        resetPassword: 'user/reset-password'
+        resetPassword: 'user/reset-password',
+        refresh: 'user/refresh'
     },
 
     preference:{

@@ -20,22 +20,23 @@ function GoogleAuthCallback() {
             axios.post(`${apiEndpoints.url}${apiEndpoints.user.login}?code=${code}`,
                 {
                     auth_provider: globalVariables.authStrategies.googleStrategy
-                }, {withCredentials: true},)
-                .then(response => {
-                    login({ email: response?.data?.email, username: response?.data?.username, id: response?.data?.user_id });
-                    toast.success(globalVariables.authMessages.successLogIn);
-
-                    response?.data?.new_user === true ? navigate('/user/preferences') : navigate('/');
-                })
-                .catch(error => {
-                    const errorStatus = error?.response?.status
-                    const errorMessage = error?.response?.data?.error;
-                    toast.error(
-                            `Google Authentication Error
-                        ${errorStatus ? errorStatus : ''} 
-                        ${errorMessage ? errorMessage : ''}`
-                    );
-                });
+                },
+                {withCredentials: true}
+            )
+            .then(response => {
+                login();
+                toast.success(globalVariables.authMessages.successLogIn);
+                response?.data?.new_user === true ? navigate('/user/preferences') : navigate('/');
+            })
+            .catch(error => {
+                const errorStatus = error?.response?.status
+                const errorMessage = error?.response?.data?.error;
+                toast.error(
+                        `Google Authentication Error
+                    ${errorStatus ? errorStatus : ''} 
+                    ${errorMessage ? errorMessage : ''}`
+                );
+            });
         }
     }, []);
     
