@@ -52,7 +52,10 @@ export const AuthProvider = ({ children }) => {
                         { withCredentials: true }
                     );
                     token = Cookies.get("access_token");
-                } catch (error) { }
+                } catch (error) {
+                    logout();
+                    token = null
+                }
             }
         }
 
