@@ -114,7 +114,7 @@ class GoogleAuthHandler(AuthHandler[T]):
             self._user_service.create_user(user)
         else:
             output_login.new_user = False
-            if self.is_suspicious_login(user.user_id):
+            if not self.is_suspicious_login(user.user_id):
                 self._user_service.get_refresh_dal.revoke_all_refresh_and_access_tokens_for_user(user.user_id)      
 
         token = await self._user_service.get_generate_auth_token(user)

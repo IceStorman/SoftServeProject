@@ -168,30 +168,16 @@ class UserService:
 
     async def log_in(self, credentials: InputUserLogInDTO):
         login_context = AuthManager(self)
-        
-        user = self._user_dal.get_user_by_email_or_username(
-            email=credentials.email_or_username,
-            username=credentials.email_or_username
-        )
 
-        if not user:
-            raise UserDoesNotExistError(credentials.email_or_username)
-        extended_credentials = ExtendedCredantialsDTO(
-                user_id=user.user_id,
-                email=user.email,
-                username=user.username,
-                new_user=False
-            )
+        user=await login_context.execute_log_in(credentials)
         existing_access_token, existing_refresh_token = self._refresh_dal.get_valid_tokens_by_user(user.user_id)
 
         if existing_access_token and existing_refresh_token:
-            await login_context.execute_log_in(credentials)
-            return existing_access_token.token, existing_refresh_token.token, extended_credentials
+            return existing_access_token.token, existing_refresh_token.token, user
             
         else:
-            access_token, refresh_token=await self.create_tokens(user=extended_credentials)
-            await login_context.execute_log_in(credentials)
-            return access_token, refresh_token, extended_credentials
+            access_token, refresh_token=await self.create_tokens(user=user)
+            return access_token, refresh_token, user
 
 
     async def __generate_auth_token(self, user, salt):
