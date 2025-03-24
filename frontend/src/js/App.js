@@ -24,88 +24,82 @@ import InsideStreamPage from "../pages/games/insideStreamPage";
 import NavBar from "../components/basic/nav";
 import InsideNewsPage from "../pages/news/insideNewsPage";
 import AboutUsPage from "../pages/misc/aboutAs";
-import { TranslationsProvider } from '../translationsContext';
 import ResetPasswordPage from "../components/passwordReset/resetPasswordPage";
 import CheckEmailPage from "../components/passwordReset/checkEmailPage";
 import GoogleAuthCallback from "../pages/registration/googleCallBack";
 import PreferencesPage from "../pages/registration/PreferencesPage";
 import AccountPage from "../pages/registration/accountPage";
 import globalVariables from "../globalVariables";
-import {FilterProvider} from "../components/filters/filterContext";
 
 function App() {
 
 
     return (
         <>
-                <TranslationsProvider>
+            <Router
+                future={{
+                    v7_startTransition: true,
+                    v7_relativeSplatPath: true,
+                }}>
 
-                    <Router
-                        future={{
-                            v7_startTransition: true,
-                            v7_relativeSplatPath: true,
-                        }}>
+                <Toaster
+                    position="bottom-right"
+                    richColors
+                    expand={true}
+                    duration={5000}
+                    visibleToasts={globalVariables.windowsSizes.find(ws => window.innerWidth <= ws.maxWidth).limit || 0}
+                    closeButton
+                />
 
-                        <Toaster
-                            position="bottom-right"
-                            richColors
-                            expand={true}
-                            duration={5000}
-                            visibleToasts={globalVariables.windowsSizes.find(ws => window.innerWidth <= ws.maxWidth).limit || 0}
-                            closeButton
-                        />
-
-                        <Header />
-                        <NavBar />
+                <Header />
+                <NavBar />
 
 
-                        <Routes>
-                            <Route path="/" element={<MainPage />} />
+                <Routes>
+                    <Route path="/" element={<MainPage />} />
 
-                            <Route path="/sign-in" element={<SignInPage />} />
+                    <Route path="/sign-in" element={<SignInPage />} />
 
-                            <Route path="/sign-up" element={<SignUpPage />} />
+                    <Route path="/sign-up" element={<SignUpPage />} />
 
-                            <Route path="/user/preferences" element={<PreferencesPage />} />
+                    <Route path="/user/preferences" element={<PreferencesPage />} />
 
-                            <Route path="/user/account" element={<AccountPage />} />
+                    <Route path="/user/account" element={<AccountPage />} />
 
-                            <Route path="/sign-in/google" element={<GoogleAuthCallback />} />
+                    <Route path="/sign-in/google" element={<GoogleAuthCallback />} />
 
-                            <Route path="/sign-in/reset-password" element={<ForgotPasswordPage />} />
+                    <Route path="/sign-in/reset-password" element={<ForgotPasswordPage />} />
 
-                            <Route path="/sign-in/reset-password/:token" element={<ResetPasswordPage />} />
+                    <Route path="/sign-in/reset-password/:token" element={<ResetPasswordPage />} />
 
-                            <Route path="/check-email" element={<CheckEmailPage />} />
+                    <Route path="/check-email" element={<CheckEmailPage />} />
 
-                            <Route path="/sport" element={<SportPage />} />
+                    <Route path="/sport" element={<SportPage />} />
 
-                            <Route path="/sport/:sportName" element={<LeaguePage />} />
+                    <Route path="/sport/:sportName" element={<LeaguePage />} />
 
-                            <Route path="/sport/:sportName/league/:leagueName" element={<TeamPage />} />
+                    <Route path="/sport/:sportName/league/:leagueName" element={<TeamPage />} />
 
-                            <Route path="/stream" element={<StreamsPage />} />
+                    <Route path="/stream" element={<StreamsPage />} />
 
-                            <Route path="/stream/:streamId" element={<InsideStreamPage />} />
+                    <Route path="/stream/:streamId" element={<InsideStreamPage />} />
 
-                            <Route path="/news/:articleId" element={<InsideNewsPage />} />
+                    <Route path="/news/:articleId" element={<InsideNewsPage />} />
 
-                            <Route path="/not-existing" element={<NotExistingPage />} />
+                    <Route path="/not-existing" element={<NotExistingPage />} />
 
-                            <Route path="*" element={<Navigate to="/not-existing" replace />} />
+                    <Route path="*" element={<Navigate to="/not-existing" replace />} />
 
-                            <Route path="/FAQ" element={<FAQpage />} />
+                    <Route path="/FAQ" element={<FAQpage />} />
 
-                            <Route path="/AboutUs" element={<AboutUsPage />} />
+                    <Route path="/AboutUs" element={<AboutUsPage />} />
 
-                            <Route path="*" element={<Navigate to="/not-existing" replace />} />
-                        </Routes>
+                    <Route path="*" element={<Navigate to="/not-existing" replace />} />
+                </Routes>
 
-                        {<Footer />}
+                {<Footer />}
 
-                    </Router>
-
-                </TranslationsProvider>
+            </Router>
         </>
     );
 }
