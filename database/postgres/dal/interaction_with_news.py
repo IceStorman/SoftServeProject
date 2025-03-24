@@ -5,13 +5,6 @@ from typing import Optional
 class InteractionWithNewsDAL:
     def __init__(self, db_session = None):
         self.db_session = db_session
-        
-    def save_interaction(self, interaction_dto):
-        interaction_entry = self.get_interaction(interaction_dto.user_id, interaction_dto.news_id, interaction_dto.interaction_type)
-        if interaction_entry:
-            self.update_interaction(interaction_entry.interaction_id, interaction_dto)
-        else:
-            self.create_interaction(interaction_dto)
     
     def create_interaction(self, interaction_dto):
         new_interaction = InteractionWithNews(
@@ -23,12 +16,19 @@ class InteractionWithNewsDAL:
         self.db_session.add(new_interaction)
         self.db_session.commit()
 
-    def update_interaction(self, interaction_id: int, interaction_dto):
-        self.db_session.query(InteractionWithNews).filter(InteractionWithNews.interaction_id == interaction_id).update({
+
+    def update_interaction(self, interaction_dto, interaction_type_id: int = None) -> bool:
+        rows_updated = (self.db_session.query(InteractionWithNews).filter(InteractionWithNews.user_id==interaction_dto.user_id,
+                                                          InteractionWithNews.news_id==interaction_dto.news_id,
+                                                          InteractionWithNews.interaction_type==(interaction_type_id if interaction_type_id is not None else interaction_dto.interaction_type))
+        .update({
             InteractionWithNews.timestamp: interaction_dto.timestamp,
             InteractionWithNews.interaction_type: interaction_dto.interaction_type
-        })
+        }))
         self.db_session.commit()
+
+        return bool(rows_updated)
+
 
     def get_interaction(self, user_id: int, news_id: int, interaction_type_id: int) -> Optional[InteractionWithNews]:
         """

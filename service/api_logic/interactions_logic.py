@@ -1,5 +1,4 @@
 from dto.api_output import OutputInteractions
-from exept.exeptions import IncorrectInteractionType, BlobFetchError, DatabaseConnectionError
 from service.api_logic.models.api_models import InteractionTypes
 from database.postgres.dto import InteractionWithNewsDTO
 from logger.logger import Logger
@@ -31,22 +30,11 @@ class InteractionWithNewsService:
 
     def save_interaction(self, interaction_input_dto):
         interaction_dto = self.__convert_input_to_db_dto(interaction_input_dto)
+        opposite_interaction = {LIKE_ID: DISLIKE_ID, DISLIKE_ID: LIKE_ID}.get(interaction_dto.interaction_type)
+        was_updated = self._interaction_with_news_dal.update_interaction(interaction_dto, opposite_interaction)
 
-        opposite_interaction = {
-            LIKE_ID: DISLIKE_ID,
-            DISLIKE_ID: LIKE_ID
-        }.get(interaction_dto.interaction_type)
-
-        if opposite_interaction:
-            interaction_entry = self._interaction_with_news_dal.get_interaction(
-                interaction_dto.user_id, interaction_dto.news_id, opposite_interaction
-            )
-
-            if interaction_entry:
-                self._interaction_with_news_dal.update_interaction(interaction_entry.interaction_id, interaction_dto)
-                return
-
-        self._interaction_with_news_dal.save_interaction(interaction_dto)
+        if not was_updated:
+            self._interaction_with_news_dal.create_interaction(interaction_dto)
 
 
     def has_interaction_occurred(self, interaction_input_dto) -> bool:
