@@ -61,7 +61,7 @@ class NewsDAL(BaseDAL):
                     InteractionWithNews.news_id.label('news_id'),
                     literal(1).label('interaction')
             )
-            .filter(InteractionWithNews.timestamp >= period_of_time, InteractionWithNews.user_id == user_id, InteractionWithNews.interaction_id == 2)
+            .filter(InteractionWithNews.timestamp >= period_of_time, InteractionWithNews.user_id == user_id, InteractionWithNews.interaction_id == 4)
         )
 
         union_query = union_all(likes_query, views_query)

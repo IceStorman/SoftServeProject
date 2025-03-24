@@ -122,7 +122,7 @@ const SearchBlock = ({
                         key={paginationKey}
                     />
                 </>
-                : <NoItems text='No leagues were found'/>
+                : <NoItems text={`No ${selectedModel} were found`}/>
             }
         </div>
     );

@@ -191,7 +191,7 @@ function LeaguePage() {
 
     return (
 
-        <div className="leagues-page">
+        <div className="leaguesTeamsPage">
             <div className="title">
                 <button className="filled arrow" onClick={() => navigate(-1)}><RiArrowLeftWideLine className="arrow"/>
                 </button>
@@ -230,12 +230,12 @@ function LeaguePage() {
                         <LeagueCard
                             leagueName={item.name}
                             img={item.logo}
+                            sportName={sportName}
                             size={gridSize.baseColumns === 2 ? "small" : gridSize.baseColumns === 5 ? "medium" : "large"}
                             id={item.id}
                             sportId={sportId}
                         />
-                    ))}
-                >
+                    ))}>
                 </SearchBlock>
         </div>
     );
