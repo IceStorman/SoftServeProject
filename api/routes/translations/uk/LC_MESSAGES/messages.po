@@ -189,3 +189,7 @@ msgstr "Застосувати фільтри"
 
 msgid "Search by name..."
 msgstr "Шукати по назві..."
+
+msgid "Search"
+msgstr "Пошук"
+

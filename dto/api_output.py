@@ -142,6 +142,7 @@ def get_script_phrases():
         "tags":               _("Tags:"),
         "select_sport":       _("Select sport"),
         "teams":              _("teams"),
+        "search":             _("Search"),
 
         # Додаткові опції
         "first_option":       _("Option 1"),

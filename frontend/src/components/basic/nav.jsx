@@ -6,7 +6,7 @@ import {FaBars, FaTimes} from "react-icons/fa";
 import clsx from "clsx";
 import LanguageBtn from "./languageSwitcherBtn";
 import LoginBtn from "./loginBtn";
-import {User} from "lucide-react";
+import {Import, User} from "lucide-react";
 import {AuthContext} from "../../pages/registration/AuthContext";
 
 function NavBar() {
@@ -19,6 +19,7 @@ function NavBar() {
             <NavLink to={"/"} className={({ isActive }) => clsx("nav-link", { active: isActive })}>{t("news")}</NavLink>
             <NavLink to={"/sport"} className={({ isActive }) => clsx("nav-link", { active: isActive })}>{t("leagues")}</NavLink>
             <NavLink to={"/stream"} className={({ isActive }) => clsx("nav-link", { active: isActive })}>{t("games")}</NavLink>
+            <NavLink to={"/search"} className={({ isActive }) => clsx("nav-link", { active: isActive })}>{t("search")}</NavLink>
         </>
     )
 
@@ -83,7 +84,7 @@ function NavBar() {
                             {navBar}
                         </nav>
                 }
-
+                
                 <div className={"btn-controller-box"}>
 
                     <LanguageBtn/>{
