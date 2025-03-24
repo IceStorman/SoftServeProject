@@ -247,7 +247,7 @@ function MainPage() {
                     {
                         !user ? (
                             <div className="blue-placeholder">
-                                <h1><NavLink to={"/sign-in"} className="nav-link" activeClassName="active">{t("sign_in")}</NavLink> {t("follow_teams")}</h1>
+                                <h1><NavLink to={"/sign-in"} className="nav-link" activeClassName="active">{t("sign_up_to")}</NavLink> {t("follow_teams")}</h1>
                             </div>
                         ) : null
                     }

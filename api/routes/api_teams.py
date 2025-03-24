@@ -1,8 +1,6 @@
 from flask import Blueprint, request
 from dto.pagination import Pagination
-from exept.handle_exeptions import get_custom_error_response
-from service.implementation.auto_request_api.logic_request_by_react import basketball_players
-from api.routes.cache import cache
+from exept.handle_exeptions import get_custom_error_response, handle_exceptions
 from dto.api_input import TeamsLeagueDTO, TeamsStatisticsOrPlayersDTO, SearchDTO
 from exept.exeptions import DatabaseConnectionError, CustomQSportException
 from service.implementation.auto_request_api.sport_data_managers.players_data_manager import PlayersDataManager
@@ -31,23 +29,25 @@ def handle_db_timeout_error(e):
 
 
 @teams_app.route("/league", methods=['POST'])
+@handle_exceptions
 @logger.log_function_call()
 def get_teams_sport_endpoint():
     try:
         data = request.get_json()
         dto = TeamsLeagueDTO().load(data)
-        pagination = Pagination(**data)
 
         data_manager = TeamsDataManager(dto)
-        league_teams = data_manager.get_teams_data(pagination)
+        league_teams = data_manager.get_teams_data()
 
         return league_teams
+
     except CustomQSportException as e:
         logger.error(f"Error in POST /: {str(e)}")
-        get_custom_error_response(e)
+        return get_custom_error_response(e)
 
 
 @teams_app.route('/statistics', methods=['POST'])
+@handle_exceptions
 @logger.log_function_call()
 def get_teams_statistics_endpoint():
     try:
@@ -58,12 +58,14 @@ def get_teams_statistics_endpoint():
         team_statistics = data_manager.get_teams_statistics()
 
         return team_statistics
+
     except CustomQSportException as e:
         logger.error(f"Error in POST /: {str(e)}")
-        get_custom_error_response(e)
+        return get_custom_error_response(e)
 
 
 @teams_app.route('/players', methods=['POST'])
+@handle_exceptions
 @logger.log_function_call()
 def get_players_endpoint():
     try:
@@ -74,11 +76,14 @@ def get_players_endpoint():
         team_players = data_manager.get_data()
 
         return team_players
+
     except CustomQSportException as e:
         logger.error(f"Error in POST /: {str(e)}")
-        get_custom_error_response(e)
+        return get_custom_error_response(e)
+
 
 @teams_app.route('/search', methods=['POST'])
+@handle_exceptions
 @inject
 @logger.log_function_call()
 def get_team_filtered_endpoint(teams_service: TeamsService = Provide[Container.teams_service]):
@@ -86,8 +91,10 @@ def get_team_filtered_endpoint(teams_service: TeamsService = Provide[Container.t
         data = request.get_json()
         dto = SearchDTO().load(data)
         teams = teams_service.get_teams_filtered(dto)
+
         return teams
+
     except CustomQSportException as e:
         logger.error(f"Error in POST /: {str(e)}")
-        get_custom_error_response(e)
+        return get_custom_error_response(e)
 

@@ -37,29 +37,32 @@ msgstr "Про нас"
 msgid "FAQ"
 msgstr "FAQ"
 
-msgid "Contact info"
-msgstr "Контактна інформація"
+msgid "Contacts"
+msgstr "Контакти"
 
 msgid "Address"
-msgstr "Адреса"
+msgstr "Львів, Коломийська 19"
 
 msgid "Phone"
-msgstr "Телефон"
+msgstr "+380 97 584 22 34"
 
 msgid "Email"
-msgstr "Електрона пошта"
+msgstr "q.sport.news@gmail.com"
 
-msgid "Follow Us on Social Media"
-msgstr "Слідкуйте за нами в соціальних мережах"
+msgid "Email:"
+msgstr "Електронна пошта"
 
-msgid "Subscribe to our newsletter"
-msgstr "Підписатись на нашу розсилку"
+msgid "Sign up to"
+msgstr "Зареєструйтесь"
 
-msgid "Sign In"
-msgstr "Ввійти"
+msgid "Socials"
+msgstr "Соц. Мережі"
+ 
+msgid "Sign Up"
+msgstr "Зареєструватись"
 
-msgid "Certatum Nostrum"
-msgstr "Дуже крута назв"
+msgid "QSPORT"
+msgstr "QSPORT"
 
 msgid "since 1990"
 msgstr "з 1990"
@@ -124,8 +127,11 @@ msgstr "Немає облікового запису?"
 msgid "Create"
 msgstr "Створити"
 
-msgid "Nickname:"
+msgid "Username:"
 msgstr "Імʼя:"
+
+msgid "This field is required"
+msgstr "Це поле обов'язкове"
 
 msgid "Repeat password:"
 msgstr "Повторити пароль:"
@@ -134,7 +140,7 @@ msgid "Already have an account?"
 msgstr "Вже є акаунт?"
 
 msgid "Select sport"
-msgstr "Виберіть вид спорту"
+msgstr "Оберіть спорт"
 
 msgid "teams"
 msgstr "команди"
@@ -188,4 +194,16 @@ msgid "Choose your favourite sports:"
 msgstr "Оберіть свої улюблені види спорту:"
 
 msgid "Games not found"
-msgstr "Ігор, не знайдений"
+msgstr "Наразі нема матчів"
+
+msgid "All"
+msgstr "Всі"
+
+msgid "Select a country..."
+msgstr "Обрати країну..."
+
+msgid "Apply Filters"
+msgstr "Застосувати фільтри"
+
+msgid "Search by name..."
+msgstr "Шукати по назві..."

@@ -1,9 +1,13 @@
 from transformers import pipeline
 from huggingface_hub import login
 import re
+import os
+from dotenv import load_dotenv
 
-login(token='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')
-ner_pipeline = pipeline("ner", model="dbmdz/bert-large-cased-finetuned-conll03-english",
+load_dotenv()
+
+login(token=os.getenv('TOKEN_HUGGI_FACE'))
+ner_pipeline = pipeline("ner", model=os.getenv('MODEL_TOKENIZATOR'),
                             aggregation_strategy="simple")
 
 def what_teams_here(text):

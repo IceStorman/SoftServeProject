@@ -57,7 +57,7 @@ function SignUpPage() {
                 }
             );
 
-            login({ email: response?.data?.user?.email, username: response?.data?.user?.username, id: response?.data?.user?.id });
+            login({ email: response?.data?.email, username: response?.data?.username, id: response?.data?.user_id });
             toast.success(globalVariables.authMessages.successLogIn);
             navigate('/user/preferences')
         } catch (error) {
@@ -73,7 +73,7 @@ function SignUpPage() {
     return (
         <section className="registration">
             <form method="post" onSubmit={handleSubmit}>
-                <h2>{t("sign_in")}</h2>
+                <h2>{t("sign_up")}</h2>
                 <p>
                     {t("nickname")}
                     <input
@@ -82,7 +82,7 @@ function SignUpPage() {
                     />
                 </p>
                 <p>
-                    {t("email")}:
+                    {t("email_account")}
                     <input
                         value={email}
                         onChange={e => setEmail(e.target.value)}
@@ -106,7 +106,7 @@ function SignUpPage() {
                         onChange={e => setRepPassword(e.target.value)}
                     />
                 </p>
-                <button className="filled text" type="submit">{t("sign_in")}</button>
+                <button className="filled text" type="submit">{t("sign_up")}</button>
             </form>
 
             <div className="redirect">

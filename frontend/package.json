@@ -1,5 +1,5 @@
 {
-  "name": "Placeholder",
+  "name": "QSPORT",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -9,10 +9,12 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.9",
+    "clsx": "^2.1.1",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.477.0",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.7",
+    "react-burger-menu": "^3.1.0",
     "react-dom": "^18.3.1",
     "react-google-button": "^0.8.0",
     "react-icons": "^5.4.0",
@@ -22,6 +24,7 @@
     "react-scripts": "5.0.1",
     "sass": "^1.85.0",
     "sonner": "^1.7.1",
+    "store": "^2.0.12",
     "styled-components": "^6.1.13",
     "web-vitals": "^2.1.4"
   },
