@@ -30,6 +30,7 @@ const SearchBlock = ({
     count,
     setMenuIsOpen
 }) => {
+
     const initialIcon = <FaFilter size={28} />
 
     const [selectedGrid, setSelectedGrid] = useState('large');
@@ -54,6 +55,7 @@ const SearchBlock = ({
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, [menuIsOpen]);
+
     return (
         <div className="search-container">
             <header className="header">
