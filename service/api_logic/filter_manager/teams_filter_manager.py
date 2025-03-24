@@ -5,8 +5,8 @@ from service.api_logic.filter_manager.base_filter_manager import BaseFilterManag
 
 class TeamsFilterManager(BaseFilterManager):
 
-    @classmethod
-    def apply_sport_filter(cls, query: Query, value: int) -> Query:
+    @staticmethod
+    def apply_sport_filter(query: Query, value: int) -> Query:
         return query.filter(TeamIndex.sport_id == value)
 
     @staticmethod

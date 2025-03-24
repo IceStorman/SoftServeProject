@@ -3,56 +3,90 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import apiEndpoints from "../../apiEndpoints.js";
 import { toast } from "sonner";
-import SearchBlock from "../../components/containers/searchBlock.jsx";
 import LeagueCard from "../../components/cards/leagueCard"
-import NoItems from "../../components/NoItems";
-import Filters from "../../components/containers/filtersBlock.jsx";
 import { RiArrowLeftWideLine } from "react-icons/ri";
 import useTranslations from "../../translationsContext";
-import FilterImport, {filtersImports} from "../../components/filters/filterImport";
 import FiltersRenderer from "../../components/filters/filterRender";
+import {FaFilter, FaTimes} from "react-icons/fa";
+import SearchBlock from "../../components/containers/searchBlock";
+
 
 function LeaguePage() {
     const { sportName } = useParams();
 
     const navigate = useNavigate();
-
     const location = useLocation();
     const stateData = location.state || {};
     const sportId = stateData.sportId;
 
-    const cardSizes = {
-        large: { rows: 4, columns: 4, cardSize: { width: 250, height: 280 }, postsPerPage: 16 },
-        medium: { rows: 5, columns: 5, cardSize: { width: 180, height: 210 }, postsPerPage: 25 },
-        small: { rows: 10, columns: 2, cardSize: { width: 500, height: 100 }, postsPerPage: 20 }
+    const cardLayouts = {
+        large: { baseRows: 4, baseColumns: 4, minColumns: 1, alwaysColumns: 4},
+        medium: { baseRows: 5, baseColumns: 5, minColumns: 2, alwaysColumns: 4},
+        small: { baseRows: 8, baseColumns: 2, minColumns: 2, alwaysColumns: 2}
+    };
+
+    const calculateColumns = (width, layout) => {
+        if (width > 1400) return layout.baseColumns;
+        if (width > 1200) return Math.max(layout.baseColumns - 1, layout.minColumns);
+        if (width > 1000) return Math.max(layout.baseColumns - 2, layout.minColumns);
+        if (width > 450) {
+            return layout.baseColumns === 4
+                ? Math.max(layout.baseColumns - 2, layout.minColumns)
+                : Math.max(layout.baseColumns - 3, layout.minColumns);
+        }
+        if (width < 600) {
+            if (layout.baseColumns === 2) {
+                return layout.minColumns - 1;
+            }
+        }
+        return layout.minColumns;
+    };
+
+    const [gridSize, setGridSize] = useState({ ...cardLayouts.large, columns: calculateColumns(window.innerWidth, cardLayouts.large) });
+
+    const calculateLeaguesPerPage = (layout) => {
+        if (layout.minColumns === 1) return layout.alwaysColumns * 2;
+        return gridSize.baseRows * gridSize.alwaysColumns
+    }
+
+    const [leaguesPerPage, setLeaguesPerPage] = useState(calculateLeaguesPerPage(cardLayouts.large));
+
+    useEffect(() => {
+        setLeaguesPerPage(gridSize.baseRows * gridSize.columns);
+    }, [gridSize]);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setGridSize(prev => ({
+                ...prev,
+                columns: calculateColumns(window.innerWidth, prev)
+            }));
+        };
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    const handleGridSizeChange = (size) => {
+        if (cardLayouts[size]) {
+            setGridSize({
+                ...cardLayouts[size],
+                columns: calculateColumns(window.innerWidth, cardLayouts[size])
+            });
+        }
     };
 
     const [currentLeagues, setCurrentLeagues] = useState([]);
     const [pageCount, setPageCount] = useState(0);
     const [paginationKey, setPaginationKey] = useState(0);
     const [currentPage, setCurrentPage] = useState(0);
-    const [leaguesPerPage, setLeaguesPerPage] = useState(cardSizes.large.postsPerPage);
-    const [gridSize, setGridSize] = useState(cardSizes.large);
     const [passedPosts, setPassedPosts] = useState(0);
     const { t } = useTranslations();
-
 
     useEffect(() => {
         let page = Math.floor(passedPosts / leaguesPerPage);
         setCurrentPage(page);
         getLeagues(page);
     }, [leaguesPerPage]);
-
-    const handleGridSizeChange = (size) => {
-        console.log('size: ', size);
-        if (cardSizes[size]) {
-            setPassedPosts(gridSize.rows * gridSize.columns * currentPage);
-            setLeaguesPerPage(cardSizes[size].postsPerPage);
-            setGridSize(cardSizes[size]);
-        } else {
-            setGridSize(cardSizes.large);
-        }
-    };
 
     const [loading, setLoading] = useState(false);
     const [inputValue, setInputValue] = useState('');
@@ -82,7 +116,6 @@ function LeaguePage() {
 
         const filtersData = [...filters]
         filtersData.push(initialFiltersData)
-        console.log(filtersData)
 
         try {
             const response = await axios.post(
@@ -98,7 +131,6 @@ function LeaguePage() {
                     headers: { 'Content-Type': 'application/json' },
                 }
             );
-            console.log(response)
             setCurrentLeagues(response.data.items);
             const totalPosts = response.data.count;
             setPageCount(Math.ceil(totalPosts / leaguesPerPage));
@@ -125,12 +157,32 @@ function LeaguePage() {
             )
     }, [loading]);
 
+    const initialIcon = <FaFilter size={28} />
+
     const [selectedModel, setSelectedModel] = useState("leagues");
     const [filters, setFilters] = useState([]);
+    const [burgerMenu, setBurgerMenu] = useState(false)
+    const [menuIsOpen, setMenuIsOpen] = useState(false)
+    const [menuIcon, setMenuIcon] = useState(initialIcon)
+
+    useEffect(() => {
+
+        const handleResize = () => {
+            const smallScreen = window.innerWidth <= 1050
+            setBurgerMenu(smallScreen)
+        }
+
+        handleResize();
+        window.addEventListener("resize", handleResize);
+    }, []);
+
+    const handleOpenMenu = () => {
+        setMenuIsOpen(prev => !prev)
+        setMenuIcon(!menuIsOpen ? <FaTimes size={28} color="black" /> : initialIcon)
+    }
 
     const handleFiltersChange = (newFilters) => {
         setFilters(newFilters);
-        console.log("Filters:", newFilters);
     };
 
     const handleApplyFilters = () => {
@@ -140,21 +192,22 @@ function LeaguePage() {
 
     return (
 
-        <div className="leagues-page">
+        <div className="leaguesTeamsPage">
             <div className="title">
                 <button className="filled arrow" onClick={() => navigate(-1)}><RiArrowLeftWideLine className="arrow"/>
                 </button>
                 <h1>{sportName} {t("leagues")}</h1>
             </div>
 
-            <div className="filters-container">
-                <FiltersRenderer model={selectedModel} onFilterChange={handleFiltersChange} sportId={sportId}/>
-                <button onClick={handleApplyFilters}>{t("apply_filters")}</button>
-            </div>
+            { !burgerMenu && (
+                <div className="filters-container">
+                    <FiltersRenderer model={selectedModel} onFilterChange={handleFiltersChange} sportId={sportId}/>
+                    <button onClick={handleApplyFilters}>{t("apply_filters")}</button>
+                </div>
+            )}
 
-            {!(currentLeagues.length === 0) ?
                 <SearchBlock
-                    cardSizes={cardSizes}
+                    cardSizes={cardLayouts}
                     gridSize={gridSize}
                     postsPerPage={leaguesPerPage}
                     onGridSizeChange={handleGridSizeChange}
@@ -163,17 +216,28 @@ function LeaguePage() {
                     onPageChange={handlePageClick}
                     loading={loading}
                     paginationKey={paginationKey}
+                    handleOpenMenu={handleOpenMenu}
+                    menuIcon={menuIcon}
+                    setMenuIcon={setMenuIcon}
+                    burgerMenu={burgerMenu}
+                    menuIsOpen={menuIsOpen}
+                    selectedModel={selectedModel}
+                    handleFiltersChange={handleFiltersChange}
+                    sportId={sportId}
+                    count={currentLeagues.length}
+                    handleApplyFilters={handleApplyFilters}
+                    setMenuIsOpen={setMenuIsOpen}
                     children={currentLeagues.map((item) => (
                         <LeagueCard
                             leagueName={item.name}
                             img={item.logo}
-                            sport={item.sport}
+                            sportName={sportName}
+                            size={gridSize.baseColumns === 2 ? "small" : gridSize.baseColumns === 5 ? "medium" : "large"}
                             id={item.id}
                             sportId={sportId}
                         />
-                    ))}
-                >
-                </SearchBlock> : <NoItems text='No leagues were found'/>}
+                    ))}>
+                </SearchBlock>
         </div>
     );
 }

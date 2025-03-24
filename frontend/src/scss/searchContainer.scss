@@ -3,7 +3,6 @@
     padding-top: 0;
     display: flex;
     flex-direction: column;
-    max-height: fit-content;
     width: 100%;
 
     .grid {
@@ -19,6 +18,28 @@
     .header {
         display: flex;
         align-items: center;
+        max-width: 100%;
+        margin: 0 1.5rem;
+
+        .filter-wrapper {
+            position: relative;
+            display: inline-block;
+
+            .burger-filter {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                background: none;
+                padding: 0.1rem;
+                display: none;
+                z-index: 1000;
+            }
+
+            .burger-filter.show {
+                display: block;
+            }
+        }
+
 
         .controls {
             display: flex;

@@ -3,24 +3,22 @@ $border-radius: 6px;
 $background-light: #d6f1ff;
 $background-white: #fff;
 $primary-color: #00a6fb;
-$primary-hover: #0056b3;
 $font-size: 14px;
 
 .filters-container {
   display: flex;
   width: 12rem;
   flex-direction: column;
+  margin-top: 0.4rem;
   gap: 1.5rem;
   padding: 1rem;
   border: 2px solid $border-color;
-  border-radius: 8px;
   background: $main-clr;
 
   button {
     background-color: $main-shadow;
     color: $bg-white;
     padding: 0.7rem;
-    border-radius: 0.5rem;
     font-size: 1.2rem;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
@@ -128,10 +126,3 @@ $font-size: 14px;
     }
   }
 }
-
-
-
-
-
-
-
