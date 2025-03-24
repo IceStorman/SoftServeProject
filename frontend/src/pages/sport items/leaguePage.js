@@ -9,6 +9,7 @@ import useTranslations from "../../translationsContext";
 import FiltersRenderer from "../../components/filters/filterRender";
 import {FaFilter, FaTimes} from "react-icons/fa";
 import SearchBlock from "../../components/containers/searchBlock";
+import globalVariables from "../../globalVariables";
 
 
 function LeaguePage() {
@@ -19,22 +20,16 @@ function LeaguePage() {
     const stateData = location.state || {};
     const sportId = stateData.sportId;
 
-    const cardLayouts = {
-        large: { baseRows: 4, baseColumns: 4, minColumns: 1, alwaysColumns: 4},
-        medium: { baseRows: 5, baseColumns: 5, minColumns: 2, alwaysColumns: 4},
-        small: { baseRows: 8, baseColumns: 2, minColumns: 2, alwaysColumns: 2}
-    };
-
     const calculateColumns = (width, layout) => {
-        if (width > 1400) return layout.baseColumns;
-        if (width > 1200) return Math.max(layout.baseColumns - 1, layout.minColumns);
-        if (width > 1000) return Math.max(layout.baseColumns - 2, layout.minColumns);
-        if (width > 450) {
+        if (width > globalVariables.windowsSizesForCards.desktopLarge) return layout.baseColumns;
+        if (width > globalVariables.windowsSizesForCards.desktopMid) return Math.max(layout.baseColumns - 1, layout.minColumns);
+        if (width > globalVariables.windowsSizesForCards.tablet) return Math.max(layout.baseColumns - 2, layout.minColumns);
+        if (width > globalVariables.windowsSizesForCards.mobileLarge) {
             return layout.baseColumns === 4
                 ? Math.max(layout.baseColumns - 2, layout.minColumns)
                 : Math.max(layout.baseColumns - 3, layout.minColumns);
         }
-        if (width < 600) {
+        if (width < globalVariables.windowsSizesForCards.mobileSmall) {
             if (layout.baseColumns === 2) {
                 return layout.minColumns - 1;
             }
@@ -42,14 +37,17 @@ function LeaguePage() {
         return layout.minColumns;
     };
 
-    const [gridSize, setGridSize] = useState({ ...cardLayouts.large, columns: calculateColumns(window.innerWidth, cardLayouts.large) });
+    const [gridSize, setGridSize] = useState({
+        ...globalVariables.cardLayouts.large,
+        columns: calculateColumns(window.innerWidth, globalVariables.cardLayouts.large)
+    });
 
     const calculateLeaguesPerPage = (layout) => {
         if (layout.minColumns === 1) return layout.alwaysColumns * 2;
         return gridSize.baseRows * gridSize.alwaysColumns
     }
 
-    const [leaguesPerPage, setLeaguesPerPage] = useState(calculateLeaguesPerPage(cardLayouts.large));
+    const [leaguesPerPage, setLeaguesPerPage] = useState(calculateLeaguesPerPage(globalVariables.cardLayouts.large));
 
     useEffect(() => {
         setLeaguesPerPage(gridSize.baseRows * gridSize.columns);
@@ -67,10 +65,10 @@ function LeaguePage() {
     }, []);
 
     const handleGridSizeChange = (size) => {
-        if (cardLayouts[size]) {
+        if (globalVariables.cardLayouts[size]) {
             setGridSize({
-                ...cardLayouts[size],
-                columns: calculateColumns(window.innerWidth, cardLayouts[size])
+                ...globalVariables.cardLayouts[size],
+                columns: calculateColumns(window.innerWidth, globalVariables.cardLayouts[size])
             });
         }
     };
@@ -131,6 +129,7 @@ function LeaguePage() {
                     headers: { 'Content-Type': 'application/json' },
                 }
             );
+
             setCurrentLeagues(response.data.items);
             const totalPosts = response.data.count;
             setPageCount(Math.ceil(totalPosts / leaguesPerPage));
@@ -168,7 +167,7 @@ function LeaguePage() {
     useEffect(() => {
 
         const handleResize = () => {
-            const smallScreen = window.innerWidth <= 1050
+            const smallScreen = window.innerWidth <= globalVariables.windowSizeForBurger.filters
             setBurgerMenu(smallScreen)
         }
 
@@ -207,7 +206,7 @@ function LeaguePage() {
             )}
 
                 <SearchBlock
-                    cardSizes={cardLayouts}
+                    cardSizes={globalVariables.cardLayouts}
                     gridSize={gridSize}
                     postsPerPage={leaguesPerPage}
                     onGridSizeChange={handleGridSizeChange}

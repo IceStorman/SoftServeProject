@@ -11,8 +11,6 @@ const FiltersRenderer = ({ model, onFilterChange, sportId }) => {
             let newFilter = {
                 filter_name: key,
                 filter_value: value,
-                // order_type:  order ? order : "",
-                // order_field: field ? field : ""
             };
 
             updatedFilters.push(newFilter);
@@ -20,13 +18,6 @@ const FiltersRenderer = ({ model, onFilterChange, sportId }) => {
         setFilters(updatedFilters);
         onFilterChange(updatedFilters);
     };
-
-    // const handleOrder = () => {
-    //     if (filters) {
-    //         filters[0].order_type = filters.order_type;
-    //         filters[0].order_field = filters.order_field;
-    //     }
-    // }
 
     return (
         <div className="filters">

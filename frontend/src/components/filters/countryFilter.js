@@ -27,7 +27,9 @@ export const CountryFilter= ({ onChange }) => {
 
         axios.get(`${apiEndpoints.url}${apiEndpoints.countries.getAll}`)
             .then(res => {
+
                 const returnedCountries = res.data;
+
                 setCountries(returnedCountries);
                 setFilteredCountries(returnedCountries);
                 countriesInput(returnedCountries)
@@ -41,7 +43,9 @@ export const CountryFilter= ({ onChange }) => {
         const countryId = e.target.id;
         setSelected(countryId);
         setSearchQuery("");
-        if (isActiveAll) { setIsActiveAll(!isActiveAll); }
+        if (isActiveAll) {
+            setIsActiveAll(!isActiveAll);
+        }
 
         onChange({ target: { value: countryId } });
     };
