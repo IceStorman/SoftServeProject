@@ -1,5 +1,5 @@
 import pandas as pd
-from database.models import Likes, Views, News, TeamInNews, Sport
+from database.models import Likes, Views, News, TeamInNews, Sport, InteractionWithNews
 from sqlalchemy import union_all, literal, func, ClauseElement
 from datetime import timedelta, datetime
 from database.postgres.dal.base import BaseDAL
@@ -50,18 +50,18 @@ class NewsDAL(BaseDAL):
 
         likes_query = (
                 self.session.query(
-                    Likes.news_id.label('news_id'),
+                    InteractionWithNews.news_id.label('news_id'),
                     literal(4).label('interaction')
             )
-            .filter(Likes.timestamp >= period_of_time, Likes.users_id == user_id)
+            .filter(InteractionWithNews.timestamp >= period_of_time, InteractionWithNews.user_id == user_id, InteractionWithNews.interaction_type == 1)
         )
 
         views_query = (
                 self.session.query(
-                    Views.news_id.label('news_id'),
+                    InteractionWithNews.news_id.label('news_id'),
                     literal(1).label('interaction')
             )
-            .filter(Views.timestamp >= period_of_time, Views.users_id == user_id)
+            .filter(InteractionWithNews.timestamp >= period_of_time, InteractionWithNews.user_id == user_id, InteractionWithNews.interaction_type == 2)
         )
 
         union_query = union_all(likes_query, views_query)
