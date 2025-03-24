@@ -42,7 +42,7 @@ class SportsOutput(Schema):
 
 
 class SportsLeagueOutput(Schema):
-    id = fields.Int(attribute="league_id")
+    id = fields.Int(attribute="api_id")
     sport = fields.Int(attribute="sport_id")
     logo = fields.Str()
     name = fields.Str()

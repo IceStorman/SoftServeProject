@@ -12,5 +12,12 @@ export const filtersImports = {
             return <SportFilter {...props} />;
         },
         country_id: (props) => <CountryFilter {...props} />,
+    },
+    teams: {
+        name: (props) => <NameFilter {...props} />,
+        sport_id: (props) => {
+            if (props.sportId) return null;
+            return <SportFilter {...props} />;
+        }
     }
 };

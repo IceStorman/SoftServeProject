@@ -17,7 +17,12 @@ const apiEndpoints = {
     },
 
     teams:{
-        getAll: 'teams/league',
+        getTeamsSearch: 'teams/search',
+        getTeamsAll: 'teams/league',
+    },
+
+    players:{
+        getPlayersAll: 'teams/players',
     },
     
     games:{
