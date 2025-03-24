@@ -57,10 +57,13 @@ class CountriesOutput(Schema):
     name = fields.Str()
 
 class ListResponseDTO(Schema):
-    def __init__(self, items: list, count: int):
-        super().__init__()
-        self.items = list(items)
-        self.count = count
+    items = fields.List(fields.Raw(), missing=[])
+    count = fields.Int(missing=0)
+
+    def __init__(self, items=None, count=None, **kwargs):
+        super().__init__(**kwargs)
+        self.items = items if items is not None else []
+        self.count = count if count is not None else 0
 
     def to_dict(self):
         return {"items": self.items, "count": self.count}
