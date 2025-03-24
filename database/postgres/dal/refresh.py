@@ -6,6 +6,7 @@ from database.models.refresh_token_tracking import RefreshTokenTracking
 from database.models.users import User
 from database.models.token_blocklist import TokenBlocklist
 from database.postgres.dto.refresh import RefreshTokenDTO
+from database.postgres.dto.jwt import JwtDTO
 from marshmallow import ValidationError
 from exept.exeptions import CustomQSportException, TokenUpdatingError, TokenRevokingError, TokenSavingError
 from exept.handle_exeptions import get_custom_error_response
@@ -18,7 +19,6 @@ class RefreshTokenDAL:
         self.db_session = db_session
 
     def save_refresh_token(self, refresh_dto: RefreshTokenDTO) -> Optional[int]: 
-            try:
                 refresh_entry = self.get_refresh_token_by_id(refresh_dto.id) if refresh_dto.id else None
 
                 if refresh_entry:
@@ -39,10 +39,7 @@ class RefreshTokenDAL:
                 self.db_session.commit()
                 self.db_session.refresh(refresh_entry)
                 return refresh_entry.id
-            except SQLAlchemyError as e:
-                raise (f"Error in save_refresh_token: {e}")
-  
-
+    
 
     def get_refresh_token_by_id(self, refresh_id: int) -> Optional[RefreshTokenTracking]:
         return self.db_session.query(RefreshTokenTracking).filter(RefreshTokenTracking.id == refresh_id).first()

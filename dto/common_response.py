@@ -10,7 +10,7 @@ class CommonResponse:
 
 
 class CommonResponseWithUser:
-    def __init__(self, message= "Bajojajo Bajojajo.You successfully logged in! Ya cie kurwa dam bajojajo bajojajo"):
+    def __init__(self, message= "You successfully logged in!"):
         self.message = message
  
     def __str__(self):

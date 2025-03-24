@@ -77,6 +77,11 @@ class OutputLogin():
         self.new_user = new_user
         self.message = "You successfully logged in!"
 
+class UserAndTokensDTO(Schema):
+    access_token = fields.Str(required=True)
+    refresh_token = fields.Str(required=True)
+    user = fields.Nested(OutputLogin, required=True, many=False)
+
 
 class OutputRecommendationList(Schema):
     news_id = fields.Int(required=True)
