@@ -1,5 +1,5 @@
 import pandas as pd
-from database.models import Likes, Views, News, TeamInNews, Sport, InteractionWithNews
+from database.models import News, TeamInNews, Sport, InteractionWithNews
 from sqlalchemy import union_all, literal, func, ClauseElement
 from datetime import timedelta, datetime
 from database.postgres.dal.base import BaseDAL
@@ -53,7 +53,7 @@ class NewsDAL(BaseDAL):
                     InteractionWithNews.news_id.label('news_id'),
                     literal(4).label('interaction')
             )
-            .filter(InteractionWithNews.timestamp >= period_of_time, InteractionWithNews.user_id == user_id, InteractionWithNews.interaction_type == 1)
+            .filter(InteractionWithNews.timestamp >= period_of_time, InteractionWithNews.user_id == user_id, InteractionWithNews.interaction_id == 1)
         )
 
         views_query = (
@@ -61,7 +61,7 @@ class NewsDAL(BaseDAL):
                     InteractionWithNews.news_id.label('news_id'),
                     literal(1).label('interaction')
             )
-            .filter(InteractionWithNews.timestamp >= period_of_time, InteractionWithNews.user_id == user_id, InteractionWithNews.interaction_type == 2)
+            .filter(InteractionWithNews.timestamp >= period_of_time, InteractionWithNews.user_id == user_id, InteractionWithNews.interaction_id == 4)
         )
 
         union_query = union_all(likes_query, views_query)
@@ -73,7 +73,7 @@ class NewsDAL(BaseDAL):
                 News.sport_id,
                 News.save_at,
                 TeamInNews.team_index_id,
-                func.coalesce(News.interest_rate, 1).label('interest_rate'),
+                func.coalesce(News.likes, 1).label('interest_rate'),
                 func.coalesce(union_query.c.interaction, 0).label('interaction')
             )
             .select_from(News)

@@ -176,4 +176,15 @@ msgstr "What are you interested in?"
 msgid "Choose your favourite sports:"
 msgstr "Choose your favourite sports:"
 
+msgid "All"
+msgstr "All"
+
+msgid "Select a country..."
+msgstr "Select a country..."
+
+msgid "Apply Filters"
+msgstr "Apply Filters"
+
+msgid "Search by name..."
+msgstr "Search by name..."
 

@@ -1,10 +1,18 @@
-.leagues-page {
-    margin: 1rem 10rem;
+.leaguesTeamsPage {
+    margin: 1rem clamp(1rem, 10vw, 10rem) 0 clamp(1rem, 10vw, 10rem);
     display: grid;
     align-items: start;
     background-color: $bg-white;
     box-shadow: 0 4px 10px $main-shadow;
     padding: 1rem 2rem;
+    flex-direction: column;
+    gap: 1rem;
+
+    @media (max-width: 680px) {
+        margin: 0;
+        padding: 0;
+
+    }
 
     .title {
         grid-column: 1 /span 2;
@@ -13,30 +21,24 @@
         flex-direction: row;
         font-size: 1.4rem;
     }
+
+    .leagueTeamsContainer {
+        display: flex;
+    }
 }
 
 .league-card {
+    max-width: 90%;
+    height: 100%;
+    background-color: $bg-white ;
     display: flex;
-    box-shadow: 0 4px 6px $main-shadow;
-    overflow: hidden;
-    background-color: $bg-white;
+    justify-content: center;
     align-items: center;
-    position: relative;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 0.3rem;
 
-    &::before {
-        content: "";
-        position: absolute;
-        top: -40%;
-        left: -20%;
-        width: 100%;
-        height: 100%;
-        background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 40%);
-        opacity: 0;
-        transition: opacity 0.3s ease-in-out;
-    }
-    &:hover::before {
-        opacity: 1;
-    }
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
 
     &.vertical {
         flex-direction: column;
@@ -47,7 +49,29 @@
         flex-direction: row;
     }
 
+    &.large {
+        height: 15rem;
+    }
+
+    &.medium {
+        width: 100%;
+    }
+
+    &.small {
+        height: 100%;
+        width: 100%;
+    }
+
+
+
     .image {
+        width: 100%;
+        height: 70%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+
         &.vertical {
             height: 65%;
         }
@@ -55,6 +79,7 @@
         &.horizontal {
             width: fit-content;
             padding: 0.2rem;
+
             .img-content {
                 object-fit: scale-down;
             }
@@ -69,11 +94,7 @@
 
     .content {
         padding: 1rem;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        color: black;
-        text-decoration: none;
+        text-align: center;
 
         &.vertical {
             height: 50%;
@@ -104,124 +125,89 @@ a {
 
 .team-card {
     perspective: 1000px;
-    cursor: pointer;
     position: relative;
     width: 100%;
+    max-width: none;
     height: 100%;
-    position: relative;
-
-    &.vertical {
-        text-align: center;
-
-        .team-card-front,
-        .team-card-back {
-            flex-direction: column;
-        }
-    }
+    background-color: $bg-white ;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 0.3rem;
+    flex-wrap: wrap;
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
 
     &.horizontal {
-        .team-card-front,
-        .team-card-back {
-            flex-direction: row;
-        }
+        flex-direction: row;
+    }
+
+    &.large {
+        height: 15rem;
+    }
+
+    &.medium {
+        width: 100%;
+    }
+
+    &.small {
+        height: 100%;
+        width: 100%;
     }
 
     .team-card-front,
     .team-card-back {
-        position: absolute;
-        width: 100%;
         height: 100%;
+        width: 100%;
         backface-visibility: hidden;
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
         text-align: center;
         transition: transform 0.6s;
-        transform-style: preserve-3d;
-        background-color: $bg-white;
     }
 
     .team-card-front {
-        &::before {
-            content: "";
-            position: absolute;
-            top: -40%;
-            left: -20%;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 40%);
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out;
-        }
-        &:hover::before {
-            opacity: 1;
-        }
         .image {
-            margin: 0.2rem;
-
-            &.vertical {
-                height: 65%;
-            }
+            width: 100%;
+            height: 70%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
             &.horizontal {
-                width: 50%;
+                width: fit-content;
+                padding: 0.2rem;
 
                 .img-content {
-                    object-fit: contain;
+                    object-fit: scale-down;
                 }
             }
 
             .img-content {
-                object-fit: contain;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
             }
         }
+
         .content {
             padding: 1rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            color: black;
-            text-decoration: none;
-    
-            &.vertical {
-                height: 50%;
-            }
-    
-            &.horizontal {
-                width: 50%;
-            }
-    
-            .tag {
-                font-size: 0.875rem;
-                font-weight: 600;
-                color: $main-clr;
-            }
-    
-            .title {
-                font-size: 1.125rem;
-                font-weight: 700;
-                margin-top: 0.5rem;
-            }
+            text-align: center;
+            font-size: 0.8rem;
         }
     }
 
     .team-card-back {
         background-color: $main-clr;
         transform: rotateY(180deg);
-    }
+        position: absolute;
 
-    &:active {
-        z-index: 100;
-    }
-
-    &:hover {
-        z-index: 100;
     }
 
     &.flipped {
         .team-card-front {
-
             transform: rotateY(-180deg);
         }
 

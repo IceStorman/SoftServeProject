@@ -1,0 +1,128 @@
+$border-color: black;
+$border-radius: 6px;
+$background-light: #d6f1ff;
+$background-white: #fff;
+$primary-color: #00a6fb;
+$font-size: 14px;
+
+.filters-container {
+  display: flex;
+  width: 12rem;
+  flex-direction: column;
+  margin-top: 0.4rem;
+  gap: 1.5rem;
+  padding: 1rem;
+  border: 2px solid $border-color;
+  background: $main-clr;
+
+  button {
+    background-color: $main-shadow;
+    color: $bg-white;
+    padding: 0.7rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+
+    &:hover {
+      background-color: $primary-hover;
+      transform: scale(1.05);
+    }
+  }
+
+  .filters {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    .filterSearch {
+
+      input {
+        border-radius: 0.5rem;
+        outline: 2px solid $main-shadow;
+        border: 0;
+        background-color: $background-light;
+        outline-offset: 3px;
+        padding: 0.7rem 0.8rem;
+        transition: all 0.2s ease;
+        width: 10.3rem;
+      }
+
+      input:hover {
+        background-color: #fff;
+      }
+
+      input:focus {
+        outline-offset: -6px;
+        background-color: $background-light;
+      }
+    }
+
+    .scrollContainer {
+      background: $background-light;
+      border: 2px solid $border-color;
+      border-radius: 8px;
+
+      .buttonAll {
+        background-color: $background-light;
+        color: black;
+        width: 100%;
+        border: none;
+        border-radius: 0;
+        font-size: 1rem;
+        text-align: left;
+        padding: 0.5rem;
+
+        &:hover {
+          background-color: $main-clr-shadow;
+          transform: scale(1);
+        }
+
+        &.active {
+          background-color: $main-shadow;
+          color: white;
+          font-weight: bold;
+        }
+      }
+
+      .scrollHeader {
+        text-align: center;
+        font-size: 1rem;
+        padding: 0.5rem;
+        background: $main-clr-shadow;
+        font-weight: bold;
+      }
+
+      input {
+        font-size: 1rem;
+        font-weight: bold;
+
+        padding: 0.3rem 0.7rem;
+        outline-offset: 0;
+        border-bottom: 2px solid black;
+        border-radius: 0.5rem;
+        outline: none;
+      }
+
+      .list {
+        max-height: 10rem;
+        overflow-y: auto;
+
+        .listItem {
+          padding: 0.5rem;
+          cursor: pointer;
+          transition: background 0.2s;
+
+          &:hover {
+            background: $main-clr-shadow;
+          }
+
+          &.active {
+            background-color: $main-shadow;
+            color: white;
+            font-weight: bold;
+          }
+        }
+      }
+    }
+  }
+}

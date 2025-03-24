@@ -2,9 +2,9 @@ import React from "react";
 
 import { useState } from "react";
 
-function TeamCard({ leagueName: teamName, img, id, width, height, sportId }) {
+function TeamCard({ leagueName: teamName, img, id, size, sportId}) {
     const [isFlipped, setIsFlipped] = useState(false);
-    const isVertical = height >= width;
+    const hideText = size === "medium" || size === "large";
 
     const handleFlip = () => {
         setIsFlipped(!isFlipped);
@@ -12,25 +12,26 @@ function TeamCard({ leagueName: teamName, img, id, width, height, sportId }) {
 
     return (
         <div
-            className={`team-card ${isVertical ? "vertical" : "horizontal"} ${isFlipped ? "flipped" : ""}`}
-            style={{ width, height }}
+            className={`team-card  horizontal ${size} ${isFlipped ? "flipped" : ""}`}
             onClick={handleFlip}
         >
-                <div className={`team-card-front ${isVertical ? "vertical" : "horizontal"}`}>
-                    {img && (
-                        <div className={isVertical ? "image vertical" : "image horizontal"}>
-                            <img src={img} alt={teamName} className="img-content" />
-                        </div>
-                    )}
-                    <div className={`content ${isVertical ? "vertical" : "horizontal"}`}>
+            <div className="team-card-front">
+                {img && (
+                    <div className={`image horizontal ${size}`}>
+                        <img src={img} alt={teamName} className="img-content"/>
+                    </div>
+                )}
+                {!hideText && (
+                    <div className={`content ${size}`}>
                         <h1>{teamName}</h1>
                     </div>
-                </div>
+                )}
+            </div>
 
-                <div className="team-card-back">
-                    <h2>hello</h2>
-                    <p>how are u?</p>
-                </div>
+            <div className="team-card-back">
+                <h2>hello</h2>
+                <p>how are u?</p>
+            </div>
         </div>
     );
 }
