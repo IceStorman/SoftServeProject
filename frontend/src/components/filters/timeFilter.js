@@ -9,7 +9,7 @@ function TimeFilter({ onChange }) {
     const handleChange = (date) => {
         setSelectedDate(date);
         if (onChange) {
-            onChange({ target: { value: format(date, "yyyy-MM-dd") } }); // Емулюємо event.target.value
+            onChange({ target: { value: date ? format(date, "yyyy-MM-dd") : null } });
         }
     };
 

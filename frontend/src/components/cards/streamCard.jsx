@@ -13,7 +13,7 @@ function StreamCard(
     const navigate = useNavigate()
 
     return(
-        <section onClick={ () => navigate(`/stream/${streamId}`)}>
+        <section className={"game"} onClick={ () => navigate(`/stream/${streamId}`)}>
             <h2>{title}</h2>
             <p>{startTime}</p>
         </section>

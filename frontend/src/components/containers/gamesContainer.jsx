@@ -15,15 +15,13 @@ const GamesContainer = ({
             <div className='games'>
 
                 {streams?.length > 0 ? streams.map((item, index) => (
-                    <div className="game" key={item?.id || index}>
-                        <StreamCard
-                            title={item?.title}
-                            sportId={item?.sport}
-                            streamId={item?.id}
-                            startTime={item?.start_time}
-                            urls={item?.stream_url} // Передаємо весь масив
-                        />
-                    </div>
+                    <StreamCard
+                        title={item?.title}
+                        sportId={item?.sport}
+                        streamId={item?.id}
+                        startTime={item?.start_time}
+                        urls={item?.stream_url}
+                    />
                 )) : <p>No streams available</p>}
 
             </div>

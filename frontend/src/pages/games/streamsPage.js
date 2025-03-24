@@ -69,7 +69,7 @@ function StreamsPage() {
     };
 
     return (
-        <div className="games-page">
+        <div className="streams-page">
             <div className="filters-container">
                 <FiltersRenderer model={selectedModel} onFilterChange={handleFiltersChange} />
                 <button onClick={handleApplyFilters}>{t("apply_filters")}</button>
