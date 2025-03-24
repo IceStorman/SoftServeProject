@@ -72,7 +72,6 @@ def save_api_data(json_data: Dict, sport_name: str) -> None:
             game_dto_list = []
             for game in json_data_response:
 
-
                 if FIXTURE in game or GAME in game:
                     separated_data = game.get(FIXTURE) or game.get(GAME)
                     api_id = separated_data.get("id")

@@ -56,23 +56,32 @@ function MainPage() {
     }, []);
 
     const [currentGames, setCurrentGames] = useState([]);
-    const [slidesCount, setSlidesCount] = useState(0);
-    const [currentSlide, setCurrentSlide] = useState(0);
-    const [gamesPerSlide, setGamesPerSlide] = useState(4050);
+    // const [slidesCount, setSlidesCount] = useState(0);
+    // const [currentSlide, setCurrentSlide] = useState(0);
+    const [gamesPerSlide, setGamesPerSlide] = useState(5);
     const [recommendationNews, setRecommendationNews] = useState([]);
 
 
     useEffect(() => {
         getGames(0);
     }, []);
-
-    const handleSliderClick = (event) => {
-        const selectedSlide = event.selected;
-        setCurrentSlide(selectedSlide);
-        getGames(selectedSlide);
-    };
+    //
+    // const handleSliderClick = (event) => {
+    //     const selectedSlide = event.selected;
+    //     setCurrentSlide(selectedSlide);
+    //     getGames(selectedSlide);
+    // };
 
     const getGames = async (page) => {
+
+        const today = new Date();
+        const formattedDate = today.toISOString().split('T')[0];
+
+        const filtersData = [
+            { 'filter_name': 'date_from',  'filter_value': formattedDate},
+            { 'filter_name': 'date_to',  'filter_value': formattedDate},
+        ]
+
         try {
             setLoading(true);
             const response = await axios.post(
@@ -82,20 +91,16 @@ function MainPage() {
                         page: page + 1,
                         per_page: gamesPerSlide,
                     },
-                    filters: [
-                        {
-                            'filter_name': 'sport_id'
-                        }
-                    ]
+                    filters: filtersData
                 },
                 {
                     headers: { 'Content-Type': 'application/json' },
                 }
             );
-            console.log(response);
+
             setCurrentGames(response.data.items);
-            const totalGames = response.data.count;
-            setSlidesCount(Math.ceil(totalGames / gamesPerSlide));
+            // const totalGames = response.data.count;
+            // setSlidesCount(Math.ceil(totalGames / gamesPerSlide));
         } catch (error) {
             setPageCount(0);
             toast.error(`Troubles With games Loading: ${error}`);
@@ -189,7 +194,6 @@ function MainPage() {
         }
     };
     const [selectedSport, setSelectedSport] = useState("all");
-    const showcaseGames = currentGames.slice(0, 5)
     const element_height = 100
     const element_width = 350
     return (
@@ -226,7 +230,7 @@ function MainPage() {
                     <div className="games-column">
                         <Column>
                             {
-                                showcaseGames.map((item, index) => (
+                                currentGames.map((item, index) => (
                                     <GameCard
                                         key={index}
                                         nameHome={item.home_team_name}
@@ -311,11 +315,7 @@ function MainPage() {
                     }
                 </div>
                 <div className="games-slider-outer">
-                    <GameSlider
-                        games={selectedSport === "all"
-                            ? currentGames
-                            : currentGames.filter(game => game.sport_id === Number(selectedSport))}
-                    />
+                    <GameSlider sportId={selectedSport} />
                 </div>
             </section>
 
