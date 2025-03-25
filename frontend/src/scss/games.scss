@@ -240,6 +240,7 @@
 
     .filters-container{
         margin: 0;
+        height: fit-content;
     }
 
     .content {
@@ -254,6 +255,7 @@
             background-color: white;
             box-shadow: 0 4px 10px #43637046;
             cursor: pointer;
+            word-break: break-word;
         }
     }
 }

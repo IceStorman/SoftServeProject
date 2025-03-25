@@ -21,6 +21,7 @@ function StreamsPage() {
     const [currentPage, setCurrentPage] = useState(0);
     const [inputValue, setInputValue] = useState('');
     const [prevInputValue, setPrevInputValue] = useState('');
+    const [burgerMenu, setBurgerMenu] = useState(false);
 
     const getStreams = async (page = 0) => {
         setPrevInputValue(inputValue);
@@ -68,14 +69,25 @@ function StreamsPage() {
         getStreams(0);
     };
 
+    const filtersBlock = (
+        <div className="filters-container">
+            <FiltersRenderer model={selectedModel} onFilterChange={handleFiltersChange} />
+            <button onClick={handleApplyFilters}>{t("apply_filters")}</button>
+        </div>
+    )
+
     return (
         <div className="streams-page">
-            <div className="filters-container">
-                <FiltersRenderer model={selectedModel} onFilterChange={handleFiltersChange} />
-                <button onClick={handleApplyFilters}>{t("apply_filters")}</button>
-            </div>
+            {filtersBlock}
 
             <div className="content">
+
+                {
+                    burgerMenu ? <>
+                        <button>ХУЙ</button>
+                        {filtersBlock}
+                    </> : null
+                }
 
                 {
                     currentStreams ?
