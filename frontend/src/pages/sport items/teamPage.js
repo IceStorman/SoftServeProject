@@ -12,9 +12,11 @@ import useTranslations from "../../translationsContext";
 import {FaFilter, FaTimes} from "react-icons/fa";
 import FiltersRenderer from "../../components/filters/filterRender";
 import globalVariables from "../../globalVariables";
+import useBurgerMenu from "../../customHooks/useBurgerMenu";
 
 function TeamPage() {
     const { leagueName } = useParams();
+    const burgerMenu = useBurgerMenu(`${globalVariables.windowSizeForBurger.filters}`);
 
     const calculateColumns = (width, layout) => {
         if (width > globalVariables.windowsSizesForCards.desktopLarge) return layout.baseColumns;
@@ -197,20 +199,8 @@ function TeamPage() {
 
     const [selectedModel, setSelectedModel] = useState("teams");
     const [filters, setFilters] = useState([]);
-    const [burgerMenu, setBurgerMenu] = useState(false)
     const [menuIsOpen, setMenuIsOpen] = useState(false)
     const [menuIcon, setMenuIcon] = useState(initialIcon)
-
-    useEffect(() => {
-
-        const handleResize = () => {
-            const smallScreen = window.innerWidth <= globalVariables.windowSizeForBurger.filters
-            setBurgerMenu(smallScreen)
-        }
-
-        handleResize();
-        window.addEventListener("resize", handleResize);
-    }, []);
 
     const handleOpenMenu = () => {
         setMenuIsOpen(prev => !prev)
