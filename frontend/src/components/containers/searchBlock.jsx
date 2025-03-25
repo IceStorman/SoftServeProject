@@ -29,7 +29,7 @@ const SearchBlock = ({
     const { t } = useTranslations();
     const filterRef = useRef(null);
 
-    const { menuIsOpen, menuIcon, handleOpenMenu } = useBurgerMenuState({
+    const { menuIsOpen, menuIcon, handleOpenMenu, handleCloseMenu } = useBurgerMenuState({
         initialIcon: <FaFilter size={28} />,
         closeIcon: <FaTimes size={28} color="black" />,
         menuSelector: ".burger-filter",
@@ -51,7 +51,9 @@ const SearchBlock = ({
                                 <div className="filters-container">
                                     <FiltersRenderer model={selectedModel} onFilterChange={handleFiltersChange}
                                                      sportId={sportId}/>
-                                    <button onClick={handleApplyFilters}>{t("apply_filters")}</button>
+                                    <button onClick={() => { handleApplyFilters(); handleCloseMenu(); }}>
+                                        {t("apply_filters")}
+                                    </button>
                                 </div>
                             </div>
                         )}
