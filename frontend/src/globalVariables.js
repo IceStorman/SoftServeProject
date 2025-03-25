@@ -43,7 +43,7 @@ const globalVariables= {
     windowSizeForBurger: {
         filters: 1050,
         streams: 1000,
-        navBar: 480
+        navBar: 600
     },
 }
 
