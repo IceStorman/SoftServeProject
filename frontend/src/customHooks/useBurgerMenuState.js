@@ -9,7 +9,7 @@ function useBurgerMenuState({
                             }) {
     const [menuIsOpen, setMenuIsOpen] = useState(false);
     const [menuIcon, setMenuIcon] = useState(initialIcon);
-    const location = useLocation(); // Отримуємо поточний шлях
+    const location = useLocation();
 
     const handleCloseMenu = () => {
         setMenuIsOpen(false);
@@ -21,7 +21,6 @@ function useBurgerMenuState({
         setMenuIcon(!menuIsOpen ? closeIcon : initialIcon);
     };
 
-    // Закриває меню при зміні шляху
     useEffect(() => {
         handleCloseMenu();
     }, [location.pathname]);

@@ -13,7 +13,8 @@ import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
 import ReactPaginate from "react-paginate";
 import useBurgerMenu from "../../customHooks/useBurgerMenu";
 import globalVariables from "../../globalVariables";
-import {FaFilter} from "react-icons/fa";
+import {FaFilter, FaTimes} from "react-icons/fa";
+import useBurgerMenuState from "../../customHooks/useBurgerMenuState";
 
 
 function StreamsPage() {
@@ -26,6 +27,14 @@ function StreamsPage() {
     const [inputValue, setInputValue] = useState('');
     const [prevInputValue, setPrevInputValue] = useState('');
     const burgerMenu = useBurgerMenu(`${globalVariables.windowSizeForBurger.streams}`);
+    const initialIcon = <FaFilter size={28} />;
+    const closeIcon = <FaTimes size={28} color="black" />;
+
+    const { menuIsOpen, menuIcon, handleOpenMenu, handleCloseMenu } = useBurgerMenuState({
+        menuSelector: ".filters-container",
+        initialIcon: initialIcon,
+        closeIcon: closeIcon,
+    });
 
     const getStreams = async (page = 0) => {
         setPrevInputValue(inputValue);
@@ -73,9 +82,8 @@ function StreamsPage() {
         getStreams(0);
     };
 
-    const initialIcon = <FaFilter size={28} />
     const filtersBlock = (
-        <div className="filters-container">
+        <div className={`filters-container ${menuIsOpen ? "show" : ""}`}>
             <FiltersRenderer model={selectedModel} onFilterChange={handleFiltersChange} />
             <button onClick={handleApplyFilters}>{t("apply_filters")}</button>
         </div>
@@ -87,26 +95,27 @@ function StreamsPage() {
 
             <div className="content">
 
-                {
-                    burgerMenu ?
-                        <div className={"filters-burger-bar"}>
-                            <button>{initialIcon}</button>
-                            {filtersBlock}
-                        </div> : null
-                }
+                {burgerMenu  && (
+                    <div className="filter-wrapper">
+                        <button className={"menu-btn"} onClick={handleOpenMenu}>{menuIcon}</button>
+                        {menuIsOpen && filtersBlock }
+                    </div>
+                )}
 
                 {
                     currentStreams ?
-                    <GamesContainer
-                        streams={currentStreams}
-                    /> : null
+                        <GamesContainer
+                            streams={currentStreams}
+                        /> : null
                 }
 
                 {pageCount > 1 && (
                     <ReactPaginate
                         breakLabel="..."
-                        nextLabel={currentPage === pageCount - 1 ? <TfiLayoutLineSolid className="line" /> : <SlArrowRight className="arrow" />}
-                        previousLabel={currentPage === 0 ? <TfiLayoutLineSolid className="line" /> : <SlArrowLeft className="arrow" />}
+                        nextLabel={currentPage === pageCount - 1 ? <TfiLayoutLineSolid className="line"/> :
+                            <SlArrowRight className="arrow"/>}
+                        previousLabel={currentPage === 0 ? <TfiLayoutLineSolid className="line"/> :
+                            <SlArrowLeft className="arrow"/>}
                         onPageChange={handlePageClick}
                         pageRangeDisplayed={3}
                         marginPagesDisplayed={1}
