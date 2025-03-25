@@ -107,10 +107,10 @@ async def log_in(service: UserService = Provide[Container.user_service]):
         return get_custom_error_response(e)
 
 @login_app.route("/refresh", methods=['POST'])
+@jwt_required(refresh=True)
 @inject
 @handle_exceptions
 @logger.log_function_call()
-@jwt_required(refresh=True)
 async def refresh(service: UserService = Provide[Container.user_service]):
     try:
         user =  await service.refresh_tokens()

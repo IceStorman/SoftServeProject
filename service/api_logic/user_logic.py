@@ -279,20 +279,22 @@ class UserService:
 
         self._refresh_dal.update_refresh_token(user.user_id, refresh_dto)
         
-    async def refresh_tokens(self):
-        identity = get_jwt_identity()   
-        current_refresh_token = get_jwt()
+    async def refresh_tokens(self): 
+        current_refresh_token = get_jwt()  
+        identity = current_refresh_token.get("sub")  
+        user_data = self._user_dal.get_user_by_email(identity)
 
         token_nonce = current_refresh_token.get("nonce")
 
-        if not self._refresh_dal.verify_nonce(identity, token_nonce):
-            raise InvalidRefreshTokenError()
+        # if not self._refresh_dal.verify_nonce(identity, token_nonce):
+        #     raise InvalidRefreshTokenError()
 
-        new_access_token, new_refresh_token = await self.create_tokens(identity, refresh=True)
+        new_access_token, new_refresh_token = await self.create_tokens(user_data)
 
         new_nonce = self.generate_nonce()
         self._refresh_dal.update_refresh_token(identity, new_refresh_token, new_nonce)
-        user_data = await self._user_dal.get_user_by_email(identity)
+
+        
 
         user = OutputLogin(
             email=user_data.email,
@@ -301,10 +303,11 @@ class UserService:
             username=user_data.username,
             new_user=False,
             access_token=new_access_token,
-            refresh_token=new_refresh_token
+            refresh_token=new_refresh_token,
         )
 
         return user
+
 
     
     def add_preferences(self, dto: UpdateUserPreferencesDTO):
