@@ -69,19 +69,15 @@ class OutputTeamPreferences(Schema):
     logo = fields.Str(required=True)
 
 class OutputLogin():
-    def __init__(self, email: str, user_id: int, token: str, username: str, new_user:bool):
+    def __init__(self, email: str, user_id: int, token: str, username: str, new_user:bool, access_token:str, refresh_token:str):
         self.email = email
         self.user_id = user_id
         self.token = token
         self.username = username
         self.new_user = new_user
+        self.access_token = access_token
+        self.refresh_token = refresh_token
         self.message = "You successfully logged in!"
-
-class UserAndTokensDTO(Schema):
-    access_token = fields.Str(required=True)
-    refresh_token = fields.Str(required=True)
-    user = fields.Nested(OutputLogin, required=True, many=False)
-
 
 class OutputRecommendationList(Schema):
     news_id = fields.Int(required=True)

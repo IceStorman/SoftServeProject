@@ -122,7 +122,7 @@ class RefreshTokenDAL:
             .first()
         )
         
-    def revoke_all_refresh_and_access_tokens_for_user(self, user_id: int) -> int:
+    def revoke_all_refresh_and_access_tokens(self, user_id: int) -> int:
         revoked_count = (
             self.db_session.query(TokenBlocklist)
             .join(RefreshTokenTracking, RefreshTokenTracking.id == TokenBlocklist.id)

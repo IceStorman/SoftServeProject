@@ -19,24 +19,22 @@ class AuthHandler(ABC, Generic[T]):
     def __init__(self, user_service):
         self._user_service = user_service
     
-    def __is_suspicious_login(self, user_id: int) -> bool:
-        refresh_entry = self._user_service._refresh_dal.get_valid_refresh_token_by_user(user_id)
+    def is_suspicious_login(self, user_id: int) -> bool:
+        refresh_entry = self._user_service.get_valid_refresh_token_by_user(user_id)
         if not refresh_entry:
             return False  
 
         current_ip = RequestHelper.get_country_from_ip()
-        current_device = self._user_service.get_user_device()
+        current_device = RequestHelper.get_user_device()
 
         suspicious_conditions = [
             refresh_entry.last_ip and refresh_entry.last_ip == current_ip,
             refresh_entry.last_device and refresh_entry.last_device != current_device,
-            self._user_service._refresh_dal.is_nonce_used(user_id, refresh_entry.nonce)
+            self._user_service.is_nonce_used(user_id, refresh_entry.nonce)
         ]
 
         return any(suspicious_conditions)
-
-    def is_suspicious_login(self, user_id: int) -> bool:
-        return self.__is_suspicious_login(user_id)
+    
 
     @abstractmethod
     def authenticate(self, credentials: T):
@@ -72,11 +70,11 @@ class SimpleAuthHandler(AuthHandler[T]):
             self._user_service._logger.warning("Some log in data is incorrect")
             raise IncorrectUserDataError()
         if not self.is_suspicious_login(user.user_id):
-            self._user_service._refresh_dal.revoke_all_refresh_and_access_tokens_for_user(user.user_id)
+            self._user_service.revoke_all_refresh_and_access_tokens(user.user_id)
 
         token = await self._user_service.get_generate_auth_token(user)
 
-        return OutputLogin(email = user.email, token = token, user_id= user.user_id, username = user.username, new_user = False)
+        return OutputLogin(email = user.email, token = token, user_id= user.user_id, username = user.username, new_user = False, access_token = None, refresh_token = None)
 
 
 class GoogleAuthHandler(AuthHandler[T]):
@@ -108,7 +106,7 @@ class GoogleAuthHandler(AuthHandler[T]):
         user_info = InputUserLogInDTO().load(data)
 
         user = self._user_service.get_user_by_email_or_username(email=user_info.email)
-        output_login = OutputLogin(email=user_info.email, token=None, user_id=None, username=None, new_user=True)
+        output_login = OutputLogin(email=user_info.email, token=None, user_id=None, username=None, new_user=True, access_token = None, refresh_token = None)
 
         if not user:
             user = User(email=user_info.email, username=user_info.email.split('@')[0])
@@ -116,7 +114,7 @@ class GoogleAuthHandler(AuthHandler[T]):
         else:
             output_login.new_user = False
             if not self.is_suspicious_login(user.user_id):
-                self._user_service.get_refresh_dal.revoke_all_refresh_and_access_tokens_for_user(user.user_id)      
+                self._user_service.revoke_all_refresh_and_access_tokens(user.user_id)      
 
         token = await self._user_service.get_generate_auth_token(user)
 

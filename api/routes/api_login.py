@@ -37,9 +37,9 @@ async def create_account_endpoint(service: UserService = Provide[Container.user_
     try:
         data = request.get_json()
         dto = InputUserDTO().load(data)
-        access_token, refresh_token, user = await service.sign_up_user(dto.email, dto.username, dto.password)
+        user = await service.sign_up_user(dto.email, dto.username, dto.password)
 
-        response = await RequestHelper.create_response(access_token, refresh_token, user)
+        response = await RequestHelper.set_tokens_and_create_response(user)
         return response
 
     except CustomQSportException as e:
@@ -96,9 +96,9 @@ async def log_in(service: UserService = Provide[Container.user_service]):
     try:
         data = request.get_json()
         dto = InputUserLogInDTO().load(data)
-        access_token, refresh_token, user = await service.log_in(dto)
+        user = await service.log_in(dto)
         
-        response = await RequestHelper.create_response(access_token, refresh_token, user)
+        response = await RequestHelper.set_tokens_and_create_response(user)
 
         return response
 
@@ -113,8 +113,8 @@ async def log_in(service: UserService = Provide[Container.user_service]):
 @jwt_required(refresh=True)
 async def refresh(service: UserService = Provide[Container.user_service]):
     try:
-        access_token, refresh_token, user =  await service.refresh_tokens()
-        response = await RequestHelper.create_response(access_token, refresh_token, user)
+        user =  await service.refresh_tokens()
+        response = await RequestHelper.set_tokens_and_create_response(user)
 
         return response
         

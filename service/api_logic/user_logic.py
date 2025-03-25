@@ -1,5 +1,4 @@
 from flask import current_app, url_for, jsonify, make_response, request
-from user_agents import parse
 from flask_mail import Message
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 from dto.api_input import UpdateUserPreferencesDTO
@@ -29,6 +28,7 @@ import hashlib
 from  service.api_logic.models.api_models import JTI
 from flask_jwt_extended import get_jwt_identity, get_jwt
 from service.api_logic.models.api_models import SportPreferenceFields, TeamPreferenceFields
+from api.request_helper import RequestHelper
 
 
 
@@ -38,26 +38,14 @@ TEAM_TYPE = "team"
 
 class UserService:
 
-    def __init__(self, user_dal, preferences_dal, sport_dal, access_tokens_dal, refresh_dal, request_helper):
+    def __init__(self, user_dal, preferences_dal, sport_dal, access_tokens_dal, refresh_dal):
         self._user_dal = user_dal
         self._access_tokens_dal = access_tokens_dal
         self._refresh_dal = refresh_dal
         self._preferences_dal = preferences_dal
         self._sport_dal = sport_dal
-        self._request_helper = request_helper
         self._serializer = URLSafeTimedSerializer(current_app.secret_key)
         self._logger = Logger("logger", "all.log").logger
-        self.get_refresh_dal=self._refresh_dal
-        
-    @staticmethod    
-    def get_user_device() -> str:
-        user_agent = request.headers.get("User-Agent", "")
-        parsed_agent = parse(user_agent)
-        device_info_str = f"Browser: {parsed_agent.browser.family} {parsed_agent.browser.version_string}, " \
-                        f"OS: {parsed_agent.os.family} {parsed_agent.os.version_string}, " \
-                        f"Device: {parsed_agent.device.family}"
-        
-        return device_info_str
 
 
     def has_ip_country_changed(self, stored_country: str) -> bool:
@@ -71,6 +59,12 @@ class UserService:
     def generate_nonce(self):
         nonce = hashlib.sha256(f"{time.time()}{os.urandom(16)}".encode()).hexdigest()
         return nonce
+    
+    def is_nonce_used(self, user_id: int, nonce: str) -> bool:
+        return self._refresh_dal.is_nonce_used(user_id, nonce)
+    
+    def get_valid_refresh_token_by_user(self, user_id: int):
+        return self._refresh_dal.get_valid_refresh_token_by_user(user_id)
 
 
     def get_user_by_email_or_username(self, email=None, username=None):
@@ -91,12 +85,21 @@ class UserService:
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
 
         new_user = User(email = email, username = username, password_hash = hashed_password.decode('utf-8'))
+        
         self.create_user(new_user)
-        user = OutputLogin(email = new_user.email, token = new_user, user_id= new_user.user_id, username = new_user.username, new_user = True)
+        
+        user = OutputLogin(email = new_user.email, token = new_user, user_id = new_user.user_id, username = new_user.username, new_user = True, access_token=None, refresh_token=None)
         access_token, refresh_token = await self.create_tokens(user)
-        return access_token, refresh_token, user
+        user.access_token = access_token
+        user.refresh_token = refresh_token
+        
+        return user
+    
 
-
+    def revoke_all_refresh_and_access_tokens(self, user_id: int) -> int:
+        return self._refresh_dal.revoke_all_refresh_and_access_tokens_for_user(user_id)
+    
+    
     def create_user(self, new_user):
         return self._user_dal.create_user(new_user)
 
@@ -173,11 +176,15 @@ class UserService:
         existing_access_token, existing_refresh_token = self._refresh_dal.get_valid_tokens_by_user(user.user_id)
 
         if existing_access_token and existing_refresh_token:
-            return existing_access_token.token, existing_refresh_token.token, user
+            user.access_token = existing_access_token.token
+            user.refresh_token = existing_refresh_token.token
+            return user
             
         else:
             access_token, refresh_token=await self.create_tokens(user=user)
-            return access_token, refresh_token, user
+            user.access_token = access_token
+            user.refresh_token = refresh_token
+            return user
 
 
     async def __generate_auth_token(self, user, salt):
@@ -222,8 +229,8 @@ class UserService:
         refresh_dto = RefreshTokenDTO(
             id=id,
             user_id=user.user_id,
-            last_ip=self._request_helper.get_country_from_ip(),
-            last_device=self.get_user_device(),
+            last_ip=RequestHelper.get_country_from_ip(),
+            last_device=RequestHelper.get_user_device(),
             nonce=self.generate_nonce()
         )
         self._refresh_dal.save_refresh_token(refresh_dto)
@@ -285,10 +292,19 @@ class UserService:
 
         new_nonce = self.generate_nonce()
         self._refresh_dal.update_refresh_token(identity, new_refresh_token, new_nonce)
+        user_data = await self._user_dal.get_user_by_email(identity)
 
-        user = await self._user_dal.get_user_by_email(identity)
-        
-        return new_access_token, new_refresh_token, user
+        user = OutputLogin(
+            email=user_data.email,
+            user_id=user_data.user_id,
+            token=new_access_token,
+            username=user_data.username,
+            new_user=False,
+            access_token=new_access_token,
+            refresh_token=new_refresh_token
+        )
+
+        return user
 
     
     def add_preferences(self, dto: UpdateUserPreferencesDTO):
