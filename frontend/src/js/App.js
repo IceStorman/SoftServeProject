@@ -30,6 +30,7 @@ import CheckEmailPage from "../components/passwordReset/checkEmailPage";
 import GoogleAuthCallback from "../pages/registration/googleCallBack";
 import PreferencesPage from "../pages/registration/PreferencesPage";
 import AccountPage from "../pages/registration/accountPage";
+import SearchPage from "../pages/searchPage";
 import globalVariables from "../globalVariables";
 import {FilterProvider} from "../components/filters/filterContext";
 
@@ -97,6 +98,8 @@ function App() {
                             <Route path="/FAQ" element={<FAQpage />} />
 
                             <Route path="/AboutUs" element={<AboutUsPage />} />
+
+                            <Route path="/search" element={<SearchPage />} />
 
                             <Route path="*" element={<Navigate to="/not-existing" replace />} />
                         </Routes>
