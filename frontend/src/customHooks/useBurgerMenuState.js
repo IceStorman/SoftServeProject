@@ -17,8 +17,11 @@ function useBurgerMenuState({
     };
 
     const handleOpenMenu = () => {
-        setMenuIsOpen(prev => !prev);
-        setMenuIcon(!menuIsOpen ? closeIcon : initialIcon);
+        setMenuIsOpen((prev) => {
+            const newState = !prev;
+            setMenuIcon(newState ? closeIcon : initialIcon);
+            return newState;
+        });
     };
 
     useEffect(() => {
@@ -26,26 +29,23 @@ function useBurgerMenuState({
     }, [location.pathname]);
 
     useEffect(() => {
+        if (!menuIsOpen) return;
+
         const handleClickOutside = (event) => {
-            if (!event.target.closest(menuSelector) && !event.target.closest(buttonSelector)) {
+            if (
+                !event.target.closest(menuSelector) &&
+                !event.target.closest(buttonSelector)
+            ) {
                 handleCloseMenu();
             }
         };
 
-        const handleScrollOutside = () => {
-            handleCloseMenu();
-        };
-
-        if (menuIsOpen) {
-            document.addEventListener("mousedown", handleClickOutside);
-            document.addEventListener("scroll", handleScrollOutside);
-        }
+        document.addEventListener("mousedown", handleClickOutside);
 
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
-            document.removeEventListener("scroll", handleScrollOutside);
         };
-    }, [menuIsOpen, menuSelector, buttonSelector]);
+    }, [menuIsOpen]);
 
     return { menuIsOpen, menuIcon, handleOpenMenu, handleCloseMenu };
 }

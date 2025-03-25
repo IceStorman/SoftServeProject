@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import useTranslations from "../../translationsContext";
 import globalVariables from "../../globalVariables";
@@ -16,7 +16,7 @@ function NavBar() {
     const navigate = useNavigate();
     const burgerMenu = useBurgerMenu(`${globalVariables.windowSizeForBurger.navBar}`);
 
-    const { menuIsOpen, menuIcon, handleOpenMenu } = useBurgerMenuState({
+    const { menuIsOpen, menuIcon, handleOpenMenu, handleCloseMenu } = useBurgerMenuState({
         initialIcon: <FaBars size={28} />,
         closeIcon: <FaTimes size={28} color="black" />,
         menuSelector: ".burger-nav",
@@ -33,6 +33,20 @@ function NavBar() {
             <NavLink to={"/search"} className={({ isActive }) => clsx("nav-link", { active: isActive })}>{t("search")}</NavLink>
         </>
     );
+
+    useEffect(() => {
+        if (menuIsOpen) {
+            const handleScroll = () => {
+                handleCloseMenu();
+            };
+
+            window.addEventListener("scroll", handleScroll);
+
+            return () => {
+                window.removeEventListener("scroll", handleScroll);
+            };
+        }
+    }, [menuIsOpen, handleCloseMenu]);
 
     return (
         <div className="navbar-outer">

@@ -32,6 +32,7 @@ function StreamsPage() {
 
     const { menuIsOpen, menuIcon, handleOpenMenu, handleCloseMenu } = useBurgerMenuState({
         menuSelector: ".filters-container",
+        buttonSelector: ".menu-btn",
         initialIcon: initialIcon,
         closeIcon: closeIcon,
     });
@@ -78,6 +79,7 @@ function StreamsPage() {
     };
 
     const handleApplyFilters = () => {
+        handleCloseMenu()
         setCurrentPage(0);
         getStreams(0);
     };

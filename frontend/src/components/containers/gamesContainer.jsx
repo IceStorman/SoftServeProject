@@ -14,13 +14,10 @@ const GamesContainer = ({
 
             <div className='games'>
 
-                {streams?.length > 0 ? streams.map((item, index) => (
+                {streams?.length > 0 ? streams.map((item) => (
                     <StreamCard
-                        title={item?.title}
-                        sportId={item?.sport}
-                        streamId={item?.id}
-                        startTime={item?.start_time}
-                        urls={item?.stream_url}
+                        key={item?.id}
+                        stream={item}
                     />
                 )) : <p>No streams available</p>}
 
