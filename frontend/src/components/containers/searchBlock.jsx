@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { RiFunctionFill, RiGridFill, RiListCheck2 } from "react-icons/ri";
 import ReactPaginate from "react-paginate";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
@@ -6,55 +6,37 @@ import { TfiLayoutLineSolid } from "react-icons/tfi";
 import FiltersRenderer from "../filters/filterRender";
 import useTranslations from "../../translationsContext";
 import NoItems from "../NoItems";
-import {FaFilter} from "react-icons/fa";
+import {FaFilter, FaTimes} from "react-icons/fa";
+import useBurgerMenuState from "../../customHooks/useBurgerMenuState";
 
 
 const SearchBlock = ({
-    children,
-    gridSize,
-    postsPerPage,
-    onGridSizeChange,
-    pageCount,
-    currentPage,
-    onPageChange,
-    paginationKey,
-    handleOpenMenu,
-    menuIcon,
-    setMenuIcon,
-    burgerMenu,
-    menuIsOpen,
-    selectedModel,
-    handleFiltersChange,
-    sportId,
-    handleApplyFilters,
-    count,
-    setMenuIsOpen
-}) => {
-
-    const initialIcon = <FaFilter size={28} />
-
-    const [selectedGrid, setSelectedGrid] = useState('large');
+                         children,
+                         gridSize,
+                         postsPerPage,
+                         onGridSizeChange,
+                         pageCount,
+                         currentPage,
+                         onPageChange,
+                         paginationKey,
+                         burgerMenu,
+                         selectedModel,
+                         handleFiltersChange,
+                         sportId,
+                         handleApplyFilters,
+                         count
+                     }) => {
     const { t } = useTranslations();
     const filterRef = useRef(null);
 
-    const handleClickOutside = (event) => {
-        if (filterRef.current && !filterRef.current.contains(event.target)) {
-            setMenuIsOpen(false);
-            setMenuIcon(initialIcon);
-        }
-    };
+    const { menuIsOpen, menuIcon, handleOpenMenu } = useBurgerMenuState({
+        initialIcon: <FaFilter size={28} />,
+        closeIcon: <FaTimes size={28} color="black" />,
+        menuSelector: ".burger-filter",
+        buttonSelector: ".menu-btn"
+    });
 
-    useEffect(() => {
-        if (menuIsOpen) {
-            document.addEventListener("mousedown", handleClickOutside);
-        } else {
-            document.removeEventListener("mousedown", handleClickOutside);
-        }
-
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [menuIsOpen]);
+    const [selectedGrid, setSelectedGrid] = useState("large");
 
     return (
         <div className="search-container">
