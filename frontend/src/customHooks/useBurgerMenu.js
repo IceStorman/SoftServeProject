@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import globalVariables from "../globalVariables";
 
 
 const useBurgerMenu = (width) => {
@@ -8,7 +7,7 @@ const useBurgerMenu = (width) => {
     useEffect(() => {
 
         const handleResize = () => {
-            const smallScreen = window.innerWidth <= globalVariables.windowSizeForBurger.filters
+            const smallScreen = window.innerWidth <= width
             setBurgerMenu(smallScreen)
         }
 

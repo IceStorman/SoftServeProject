@@ -12,6 +12,8 @@ import { TfiLayoutLineSolid } from "react-icons/tfi";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
 import ReactPaginate from "react-paginate";
 import useBurgerMenu from "../../customHooks/useBurgerMenu";
+import globalVariables from "../../globalVariables";
+import {FaFilter} from "react-icons/fa";
 
 
 function StreamsPage() {
@@ -23,7 +25,7 @@ function StreamsPage() {
     const [currentPage, setCurrentPage] = useState(0);
     const [inputValue, setInputValue] = useState('');
     const [prevInputValue, setPrevInputValue] = useState('');
-    const burgerMenu = useBurgerMenu();
+    const burgerMenu = useBurgerMenu(`${globalVariables.windowSizeForBurger.streams}`);
 
     const getStreams = async (page = 0) => {
         setPrevInputValue(inputValue);
@@ -71,6 +73,7 @@ function StreamsPage() {
         getStreams(0);
     };
 
+    const initialIcon = <FaFilter size={28} />
     const filtersBlock = (
         <div className="filters-container">
             <FiltersRenderer model={selectedModel} onFilterChange={handleFiltersChange} />
@@ -80,15 +83,16 @@ function StreamsPage() {
 
     return (
         <div className="streams-page">
-            {filtersBlock}
+            {!burgerMenu ? filtersBlock : null}
 
             <div className="content">
 
                 {
-                    burgerMenu ? <>
-                        <button>ХУЙ</button>
-                        {filtersBlock}
-                    </> : null
+                    burgerMenu ?
+                        <div className={"filters-burger-bar"}>
+                            <button>{initialIcon}</button>
+                            {filtersBlock}
+                        </div> : null
                 }
 
                 {

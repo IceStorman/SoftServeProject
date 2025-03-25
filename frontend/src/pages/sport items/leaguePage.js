@@ -10,6 +10,7 @@ import FiltersRenderer from "../../components/filters/filterRender";
 import {FaFilter, FaTimes} from "react-icons/fa";
 import SearchBlock from "../../components/containers/searchBlock";
 import globalVariables from "../../globalVariables";
+import useBurgerMenu from "../../customHooks/useBurgerMenu";
 
 
 function LeaguePage() {
@@ -19,6 +20,7 @@ function LeaguePage() {
     const location = useLocation();
     const stateData = location.state || {};
     const sportId = stateData.sportId;
+    const burgerMenu = useBurgerMenu(`${globalVariables.windowSizeForBurger.filters}`);
 
     const calculateColumns = (width, layout) => {
         if (width > globalVariables.windowsSizesForCards.desktopLarge) return layout.baseColumns;
@@ -160,20 +162,8 @@ function LeaguePage() {
 
     const [selectedModel, setSelectedModel] = useState("leagues");
     const [filters, setFilters] = useState([]);
-    const [burgerMenu, setBurgerMenu] = useState(false)
     const [menuIsOpen, setMenuIsOpen] = useState(false)
     const [menuIcon, setMenuIcon] = useState(initialIcon)
-
-    useEffect(() => {
-
-        const handleResize = () => {
-            const smallScreen = window.innerWidth <= globalVariables.windowSizeForBurger.filters
-            setBurgerMenu(smallScreen)
-        }
-
-        handleResize();
-        window.addEventListener("resize", handleResize);
-    }, []);
 
     const handleOpenMenu = () => {
         setMenuIsOpen(prev => !prev)

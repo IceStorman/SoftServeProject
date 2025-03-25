@@ -8,10 +8,12 @@ import LanguageBtn from "./languageSwitcherBtn";
 import LoginBtn from "./loginBtn";
 import {User} from "lucide-react";
 import {AuthContext} from "../../pages/registration/AuthContext";
+import useBurgerMenu from "../../customHooks/useBurgerMenu";
 
 function NavBar() {
     const { t } = useTranslations();
     const location = useLocation();
+    const burgerMenu = useBurgerMenu(`${globalVariables.windowSizeForBurger.navBar}`);
 
     const initialIcon = <FaBars size={28} />
     const navBar = (
@@ -22,7 +24,6 @@ function NavBar() {
         </>
     )
 
-    const [burgerMenu, setBurgerMenu] = useState(false)
     const [menuIsOpen, setMenuIsOpen] = useState(false)
     const [menuIcon, setMenuIcon] = useState(initialIcon)
 
@@ -39,17 +40,6 @@ function NavBar() {
     useEffect(() => {
         handleCloseMenu()
     }, [location.pathname]);
-
-    useEffect(() => {
-
-        const handleResize = () => {
-            const smallScreen = globalVariables.windowsSizes.find(ws => window.innerWidth <= ws.maxWidth).maxWidth <= globalVariables.windowsSizes[0].maxWidth
-            setBurgerMenu(smallScreen)
-        }
-
-        handleResize();
-        window.addEventListener("resize", handleResize);
-    }, []);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
