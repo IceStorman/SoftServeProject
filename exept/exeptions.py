@@ -141,9 +141,9 @@ class IncorrectSignatureError(CustomQSportException):
         super().__init__(message)
 
 
-class IncorrectInteractionType(CustomQSportException):
-    status_code = 400
+class ArticleNotFoundError(CustomQSportException):
+    status_code = 404
 
-    def __init__(self, interaction_type):
-        message = f"Invalid interaction type: {interaction_type}"
+    def __init__(self, blob_id):
+        message = f"Article with blob_id {blob_id} not found"
         super().__init__(message)

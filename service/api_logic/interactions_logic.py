@@ -1,6 +1,7 @@
 from dto.api_output import OutputInteractions
 from service.api_logic.models.api_models import InteractionTypes
 from database.postgres.dto import InteractionWithNewsDTO
+from exept.exeptions import ArticleNotFoundError
 from logger.logger import Logger
 from datetime import datetime, timezone
 
@@ -17,6 +18,9 @@ class InteractionWithNewsService:
 
     def __convert_input_to_db_dto(self, interaction_input_dto):
         news_entry = self._news_dal.get_news_by_id(interaction_input_dto.article_blob_id)
+
+        if not news_entry:
+            raise ArticleNotFoundError(interaction_input_dto.article_blob_id)
 
         db_dto = InteractionWithNewsDTO(
             news_id=news_entry.news_id,
@@ -46,6 +50,9 @@ class InteractionWithNewsService:
 
     def get_interactions_counts(self, interaction_input_dto):
         interactions_counts = self._news_dal.get_interaction_counts(interaction_input_dto.article_blob_id)
+
+        if interactions_counts is None:
+            raise ArticleNotFoundError(interaction_input_dto.article_blob_id)
 
         return OutputInteractions().dump({
             "likes": interactions_counts[0],
