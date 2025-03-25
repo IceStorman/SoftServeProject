@@ -18,9 +18,10 @@ const GamesSlider = ({ sportId }) => {
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const [gamesCount, setGamesCount] = useState(10);
-
+    const [sportChanged, setSportChanged] = useState(false);
 
     const getGames = useCallback(async () => {
+
         if (!hasMore) return;
 
         const today = new Date().toISOString().split('T')[0];
@@ -46,23 +47,30 @@ const GamesSlider = ({ sportId }) => {
                 }
             );
 
-            setGames(prev => [...prev, ...response.data.items]);
-
             if (response.data.items.length === 0) {
                 setHasMore(false);
             } else {
                 setPage(prev => prev + 1);
+                setGames(prev => [...prev, ...response.data.items]);
             }
         } catch (error) {
             toast.error(`Troubles With games Loading: ${error}`);
         }
-    }, [page, hasMore, sportId]);
+    }, [sportId, page, hasMore, gamesCount]);
 
     useEffect(() => {
         setGames([]);
         setPage(1);
-        getGames();
-    }, [sportId])
+        setHasMore(true);
+        setSportChanged(true);
+    }, [sportId]);
+
+    useEffect(() => {
+        if (sportChanged) {
+            getGames();
+            setSportChanged(false);
+        }
+    }, [games, sportChanged, getGames]);
 
     useEffect(() => {
         if (!games.length || !sliderRef.current) return;
@@ -85,12 +93,6 @@ const GamesSlider = ({ sportId }) => {
             if (observerRef.current) observerRef.current.disconnect();
         };
     }, [games, getGames]);
-
-    useEffect(() => {
-        setPage(1);
-        setGames([]);
-        setHasMore(true);
-    }, [sportId]);
 
     const scroll = (direction) => {
         if (sliderRef.current) {
