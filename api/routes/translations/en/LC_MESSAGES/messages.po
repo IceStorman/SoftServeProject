@@ -72,7 +72,7 @@ msgid "Leagues"
 msgstr "Leagues"
 
 msgid "Games"
-msgstr "Games"
+msgstr "Streams"
 
 msgid "Filters"
 msgstr "Filters"

@@ -9,6 +9,9 @@ import useTranslations from "../../translationsContext";
 import FiltersRenderer from "../../components/filters/filterRender";
 import {FaFilter, FaTimes} from "react-icons/fa";
 import SearchBlock from "../../components/containers/searchBlock";
+import globalVariables from "../../globalVariables";
+import useBurgerMenu from "../../customHooks/useBurgerMenu";
+import useBurgerMenuState from "../../customHooks/useBurgerMenuState";
 
 
 function LeaguePage() {
@@ -18,23 +21,25 @@ function LeaguePage() {
     const location = useLocation();
     const stateData = location.state || {};
     const sportId = stateData.sportId;
+    const burgerMenu = useBurgerMenu(`${globalVariables.windowSizeForBurger.filters}`);
+    const initialIcon = <FaFilter size={28} />;
+    const closeIcon = <FaTimes size={28} color="black" />;
 
-    const cardLayouts = {
-        large: { baseRows: 4, baseColumns: 4, minColumns: 1, alwaysColumns: 4},
-        medium: { baseRows: 5, baseColumns: 5, minColumns: 2, alwaysColumns: 4},
-        small: { baseRows: 8, baseColumns: 2, minColumns: 2, alwaysColumns: 2}
-    };
+    const { menuIsOpen, menuIcon, handleOpenMenu, handleCloseMenu } = useBurgerMenuState({
+        initialIcon: initialIcon,
+        closeIcon: closeIcon,
+    });
 
     const calculateColumns = (width, layout) => {
-        if (width > 1400) return layout.baseColumns;
-        if (width > 1200) return Math.max(layout.baseColumns - 1, layout.minColumns);
-        if (width > 1000) return Math.max(layout.baseColumns - 2, layout.minColumns);
-        if (width > 450) {
+        if (width > globalVariables.windowsSizesForCards.desktopLarge) return layout.baseColumns;
+        if (width > globalVariables.windowsSizesForCards.desktopMid) return Math.max(layout.baseColumns - 1, layout.minColumns);
+        if (width > globalVariables.windowsSizesForCards.tablet) return Math.max(layout.baseColumns - 2, layout.minColumns);
+        if (width > globalVariables.windowsSizesForCards.mobileLarge) {
             return layout.baseColumns === 4
                 ? Math.max(layout.baseColumns - 2, layout.minColumns)
                 : Math.max(layout.baseColumns - 3, layout.minColumns);
         }
-        if (width < 600) {
+        if (width < globalVariables.windowsSizesForCards.mobileSmall) {
             if (layout.baseColumns === 2) {
                 return layout.minColumns - 1;
             }
@@ -42,14 +47,17 @@ function LeaguePage() {
         return layout.minColumns;
     };
 
-    const [gridSize, setGridSize] = useState({ ...cardLayouts.large, columns: calculateColumns(window.innerWidth, cardLayouts.large) });
+    const [gridSize, setGridSize] = useState({
+        ...globalVariables.cardLayouts.large,
+        columns: calculateColumns(window.innerWidth, globalVariables.cardLayouts.large)
+    });
 
     const calculateLeaguesPerPage = (layout) => {
         if (layout.minColumns === 1) return layout.alwaysColumns * 2;
         return gridSize.baseRows * gridSize.alwaysColumns
     }
 
-    const [leaguesPerPage, setLeaguesPerPage] = useState(calculateLeaguesPerPage(cardLayouts.large));
+    const [leaguesPerPage, setLeaguesPerPage] = useState(calculateLeaguesPerPage(globalVariables.cardLayouts.large));
 
     useEffect(() => {
         setLeaguesPerPage(gridSize.baseRows * gridSize.columns);
@@ -67,10 +75,10 @@ function LeaguePage() {
     }, []);
 
     const handleGridSizeChange = (size) => {
-        if (cardLayouts[size]) {
+        if (globalVariables.cardLayouts[size]) {
             setGridSize({
-                ...cardLayouts[size],
-                columns: calculateColumns(window.innerWidth, cardLayouts[size])
+                ...globalVariables.cardLayouts[size],
+                columns: calculateColumns(window.innerWidth, globalVariables.cardLayouts[size])
             });
         }
     };
@@ -131,6 +139,7 @@ function LeaguePage() {
                     headers: { 'Content-Type': 'application/json' },
                 }
             );
+
             setCurrentLeagues(response.data.items);
             const totalPosts = response.data.count;
             setPageCount(Math.ceil(totalPosts / leaguesPerPage));
@@ -157,29 +166,8 @@ function LeaguePage() {
             )
     }, [loading]);
 
-    const initialIcon = <FaFilter size={28} />
-
     const [selectedModel, setSelectedModel] = useState("leagues");
     const [filters, setFilters] = useState([]);
-    const [burgerMenu, setBurgerMenu] = useState(false)
-    const [menuIsOpen, setMenuIsOpen] = useState(false)
-    const [menuIcon, setMenuIcon] = useState(initialIcon)
-
-    useEffect(() => {
-
-        const handleResize = () => {
-            const smallScreen = window.innerWidth <= 1050
-            setBurgerMenu(smallScreen)
-        }
-
-        handleResize();
-        window.addEventListener("resize", handleResize);
-    }, []);
-
-    const handleOpenMenu = () => {
-        setMenuIsOpen(prev => !prev)
-        setMenuIcon(!menuIsOpen ? <FaTimes size={28} color="black" /> : initialIcon)
-    }
 
     const handleFiltersChange = (newFilters) => {
         setFilters(newFilters);
@@ -207,7 +195,7 @@ function LeaguePage() {
             )}
 
                 <SearchBlock
-                    cardSizes={cardLayouts}
+                    cardSizes={globalVariables.cardLayouts}
                     gridSize={gridSize}
                     postsPerPage={leaguesPerPage}
                     onGridSizeChange={handleGridSizeChange}
@@ -216,17 +204,12 @@ function LeaguePage() {
                     onPageChange={handlePageClick}
                     loading={loading}
                     paginationKey={paginationKey}
-                    handleOpenMenu={handleOpenMenu}
-                    menuIcon={menuIcon}
-                    setMenuIcon={setMenuIcon}
                     burgerMenu={burgerMenu}
-                    menuIsOpen={menuIsOpen}
                     selectedModel={selectedModel}
                     handleFiltersChange={handleFiltersChange}
                     sportId={sportId}
                     count={currentLeagues.length}
                     handleApplyFilters={handleApplyFilters}
-                    setMenuIsOpen={setMenuIsOpen}
                     children={currentLeagues.map((item) => (
                         <LeagueCard
                             leagueName={item.name}
