@@ -11,6 +11,8 @@ import { toast } from "sonner";
 import { TfiLayoutLineSolid } from "react-icons/tfi";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
 import ReactPaginate from "react-paginate";
+import useBurgerMenu from "../../customHooks/useBurgerMenu";
+
 
 function StreamsPage() {
     const { t } = useTranslations();
@@ -21,7 +23,7 @@ function StreamsPage() {
     const [currentPage, setCurrentPage] = useState(0);
     const [inputValue, setInputValue] = useState('');
     const [prevInputValue, setPrevInputValue] = useState('');
-    const [burgerMenu, setBurgerMenu] = useState(false);
+    const burgerMenu = useBurgerMenu();
 
     const getStreams = async (page = 0) => {
         setPrevInputValue(inputValue);

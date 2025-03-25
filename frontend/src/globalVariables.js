@@ -26,6 +26,14 @@ const globalVariables= {
         { maxWidth: Infinity, limit: 3 }
     ],
 
+    windowsSizesStreams: {
+        desktopLarge: 1400,
+        desktopMid: 1200,
+        tablet: 1000,
+        mobileLarge: 450,
+        mobileSmall: 600,
+    },
+
     windowsSizesForCards: {
         desktopLarge: 1400,
         desktopMid: 1200,
