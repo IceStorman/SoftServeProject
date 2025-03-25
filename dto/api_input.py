@@ -158,6 +158,8 @@ class InputUserLogInDTO(BaseDTO):
     email_or_username = fields.Str(required=False, missing=None)
     password = fields.Str(required=False, missing=None)
     auth_provider = fields.String(required=False, missing=None)
+    current_ip = fields.String(required=False, missing=None)
+    current_device = fields.String(required=False, missing=None)
     
     
 class TablesAndColumnsForUserPreferencesDTO:

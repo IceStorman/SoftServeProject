@@ -30,7 +30,8 @@ class RequestHelper():
         
         except (requests.RequestException, ValueError):
             return unknown
-        
+    
+
     @staticmethod
     async def set_tokens_and_create_response(user: OutputLogin):
         result_data = {
