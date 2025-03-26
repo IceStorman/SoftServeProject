@@ -56,7 +56,7 @@ function TeamCard({ leagueName: teamName, img, id, size, sportId, sportName, lea
                     headers: { 'Content-Type': 'application/json' },
                 }
             );
-            
+
             if (!response.data.items) {
                 if (response.data.results === 0) {
                     setPlayers([]);
