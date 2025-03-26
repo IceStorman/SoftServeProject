@@ -9,6 +9,7 @@ class ResponseDataDTO(BaseModel):
     new_user: bool = Field(...)
     access_token: str = Field(...)
     refresh_token: str = Field(...)
+    message: str = Field(...)
 
     class Config: 
         from_attributes = True

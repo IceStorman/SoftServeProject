@@ -94,10 +94,12 @@ def reset_password(token, service: UserService = Provide[Container.user_service]
 @logger.log_function_call()
 async def log_in(service: UserService = Provide[Container.user_service]):
     try:
-        current_ip = RequestHelper.get_country_ip()
+        current_ip = RequestHelper.get_country_from_ip()
         current_device = RequestHelper.get_user_device()
         data = request.get_json()
-        dto = InputUserLogInDTO(current_ip=current_ip,current_device=current_device).load(data)
+        data.update({"current_ip": current_ip, "current_device": current_device})
+
+        dto = InputUserLogInDTO().load(data)
         user = await service.log_in(dto)
         
         response = await RequestHelper.set_tokens_and_create_response(user)
@@ -108,6 +110,7 @@ async def log_in(service: UserService = Provide[Container.user_service]):
         logger.error(f"Error in POST /login: {str(e)}")
         return get_custom_error_response(e)
 
+
 @login_app.route("/refresh", methods=['POST'])
 @jwt_required(refresh=True)
 @inject
@@ -115,7 +118,7 @@ async def log_in(service: UserService = Provide[Container.user_service]):
 @logger.log_function_call()
 async def refresh(service: UserService = Provide[Container.user_service]):
     try:
-        user =  await service.refresh_tokens()
+        user = await service.refresh_tokens()
         response = await RequestHelper.set_tokens_and_create_response(user)
 
         return response

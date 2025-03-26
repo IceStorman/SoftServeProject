@@ -44,7 +44,7 @@ class RefreshTokenDAL:
     def get_refresh_token_by_id(self, refresh_id: int) -> Optional[RefreshTokenTracking]:
         return self.db_session.query(RefreshTokenTracking).filter(RefreshTokenTracking.id == refresh_id).first()
 
-    def get_valid_tokens_by_user(self, user_id: int) -> Tuple[Optional[JwtDTO], Optional[JwtDTO]]:
+    def get_valid_tokens_by_user(self, user_id: int) -> Tuple[Optional[str], Optional[str]]:
         access_token_obj = (
             self.db_session.query(TokenBlocklist)
             .filter(
@@ -57,7 +57,7 @@ class RefreshTokenDAL:
         )
 
         refresh_token_obj = (
-            self.db_session.query(TokenBlocklist)
+            self.db_session.query(TokenBlocklist.token)
             .filter(
                 TokenBlocklist.user_id == user_id,
                 TokenBlocklist.revoked == False,
@@ -66,10 +66,11 @@ class RefreshTokenDAL:
             )
             .first()
         )
-        access_token = JwtDTO.model_validate(access_token_obj) if access_token_obj else None
-        refresh_token = JwtDTO.model_validate(refresh_token_obj) if refresh_token_obj else None
+        access_token = access_token_obj.token
+        refresh_token = refresh_token_obj.token
 
         return access_token, refresh_token
+
     
     def get_user_info_by_nonce(self, nonce) -> User | None:
         user_info = (
@@ -87,21 +88,29 @@ class RefreshTokenDAL:
     def is_nonce_used(self,user_id: int, nonce: str) -> bool:
         nonce = self.db_session.query(RefreshTokenTracking).filter_by(user_id=user_id, nonce=nonce).first()
         return nonce is not None
+    
+    def get_refresh_token_by_jti(self, jti: str) -> Optional[RefreshTokenTracking]:
+        return self.db_session.query(TokenBlocklist).filter(TokenBlocklist.jti == jti).first()
         
-    def update_refresh_token(self, user_id: int, refresh_dto: RefreshTokenDTO):
-        entry = (self.db_session.query(RefreshTokenTracking)
-            .filter(RefreshTokenTracking.user_id == user_id)
-            .with_for_update()
-            .first()
-        )
-        if entry:
-            entry.user_id = refresh_dto.user_id
-            entry.nonce = refresh_dto.nonce
-            entry.last_ip = refresh_dto.last_ip
-            entry.last_device = refresh_dto.last_device
+    def update_refresh_token(self, jti: str, new_refresh_token: str, decoded: dict):
+        token_entry = self.get_refresh_token_by_jti(jti)
+
+        if token_entry:
+            token_entry.token = new_refresh_token
+            token_entry.expires_at = datetime.datetime.utcfromtimestamp(decoded.get("exp"))
+            token_entry.updated_at = datetime.datetime.utcnow()
+
+            refresh_entry = self.db_session.query(RefreshTokenTracking).filter(
+                RefreshTokenTracking.id == token_entry.id
+            ).first()
+
+            if refresh_entry:
+                refresh_entry.nonce = decoded.get("nonce", refresh_entry.nonce)
+                refresh_entry.last_ip = decoded.get("last_ip", refresh_entry.last_ip)
+                refresh_entry.last_device = decoded.get("last_device", refresh_entry.last_device)
+
+            # Зберігаємо зміни
             self.db_session.commit()
-        else:
-            self.save_refresh_token(refresh_dto)
 
 
     def revoke_refresh_token(self, refresh_id: int) -> bool:

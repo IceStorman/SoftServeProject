@@ -18,21 +18,8 @@ T = TypeVar("T")
 class AuthHandler(ABC, Generic[T]):
     def __init__(self, user_service):
         self._user_service = user_service
-
-    @abstractmethod
-    def authenticate(self, credentials: T):
-        pass
-
-
-class AuthManager(AuthHandler):
-    def __init__(self, user_service):
-        self._user_service = user_service
-        self.strategies = {
-            AuthStrategies.SIMPLE.value: SimpleAuthHandler(user_service = self._user_service),
-            AuthStrategies.GOOGLE.value: GoogleAuthHandler(user_service = self._user_service),
-        }
-    
-    def is_suspicious_login(self, user_id: int, current_ip:str, current_device:str) -> bool:
+        
+    def _is_suspicious_login(self, user_id: int, current_ip:str, current_device:str) -> bool:
             refresh_entry = self._user_service.get_valid_refresh_token_by_user(user_id)
             if not refresh_entry:
                 return False  
@@ -43,23 +30,37 @@ class AuthManager(AuthHandler):
                 self._user_service.is_nonce_used(user_id, refresh_entry.nonce)
             ]
 
-            return any(suspicious_conditions)    
+            return any(suspicious_conditions) 
 
-    async def execute_log_in(self, credentials: T):
-        
+    @abstractmethod
+    def _authenticate(self, credentials: T):
+        pass
+    
+    async def authenticate(self, credentials: T):
+        result = await self._authenticate(credentials)
+        if isinstance(credentials, InputUserLogInDTO):
+            self._is_suspicious_login(credentials.user_id, credentials.current_ip, credentials.current_device)
+        return result
+
+class AuthManager(AuthHandler):
+    def __init__(self, user_service):
+        self._user_service = user_service
+        self.strategies = {
+            AuthStrategies.SIMPLE.value: SimpleAuthHandler(user_service = self._user_service),
+            AuthStrategies.GOOGLE.value: GoogleAuthHandler(user_service = self._user_service),
+        }
+   
+
+    async def _authenticate(self, credentials: T):
         strategy = credentials.auth_provider
         if strategy not in self.strategies:
             raise IncorrectLogInStrategyError(strategy)
-        
-        if not self.is_suspicious_login(credentials.user_id, credentials.current_ip, credentials.current_device):
-            self._user_service.revoke_all_refresh_and_access_tokens(credentials.user_id)
 
-        login_strategy = await self.strategies[strategy].authenticate(credentials)
-        return login_strategy
+        return await self.strategies[strategy].authenticate(credentials)
 
 
 class SimpleAuthHandler(AuthHandler[T]):
-    async def authenticate(self, credentials: T):
+    async def _authenticate(self, credentials: T):
         user = self._user_service.get_user_by_email_or_username(credentials.email_or_username, credentials.email_or_username)
 
         if not user:
@@ -76,7 +77,7 @@ class SimpleAuthHandler(AuthHandler[T]):
 
 
 class GoogleAuthHandler(AuthHandler[T]):
-    async def authenticate(self, credentials: T):
+    async def _authenticate(self, credentials: T):
         with current_app.app_context():
             client = WebApplicationClient(current_app.config['GOOGLE_CLIENT_ID'])
             token_url, headers, body = client.prepare_token_request(

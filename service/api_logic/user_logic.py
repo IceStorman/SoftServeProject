@@ -29,6 +29,7 @@ from  service.api_logic.models.api_models import JTI
 from flask_jwt_extended import get_jwt_identity, get_jwt
 from service.api_logic.models.api_models import SportPreferenceFields, TeamPreferenceFields
 from api.request_helper import RequestHelper
+from types import SimpleNamespace
 
 
 
@@ -154,7 +155,9 @@ class UserService:
 
         self._user_dal.update_user_password(user, hashed_password.decode('utf-8')) 
         access_token, refresh_token = await self.create_tokens(user) 
-        return access_token, refresh_token, user
+        user.access_token = access_token
+        user.refresh_token = refresh_token
+        return user
         
 
 
@@ -172,12 +175,12 @@ class UserService:
     async def log_in(self, credentials: InputUserLogInDTO):
         login_context = AuthManager(self)
 
-        user=await login_context.execute_log_in(credentials)
+        user=await login_context.authenticate(credentials)
         existing_access_token, existing_refresh_token = self._refresh_dal.get_valid_tokens_by_user(user.user_id)
 
         if existing_access_token and existing_refresh_token:
-            user.access_token = existing_access_token.token
-            user.refresh_token = existing_refresh_token.token
+            user.access_token = existing_access_token
+            user.refresh_token = existing_refresh_token
             return user
             
         else:
@@ -257,6 +260,31 @@ class UserService:
         self.save_tokens_to_db(user, access_token, refresh_token)
 
         return access_token, refresh_token
+    
+    async def create_access_token(self, user):
+        additional_claims = AdditionalClaimsDTO(
+            user_id=user.user_id,
+            email=user.email,
+            username=user.username,
+            new_user=False
+        )
+
+        access_token = create_access_token(identity=user.email, additional_claims=additional_claims.model_dump())
+        
+        decode_access_token = decode_token(access_token)
+        access_expires_at = datetime.utcfromtimestamp(decode_access_token['exp'])        
+        
+        access_jwt_dto = JwtDTO(
+            user_id=user.user_id,
+            jti=decode_access_token[JTI],   
+            token_type="access",
+            token=access_token,
+            revoked=False,
+            expires_at=access_expires_at
+        )
+        self._access_tokens_dal.save_access_token(access_jwt_dto)
+
+        return access_token
 
         
         
@@ -283,19 +311,10 @@ class UserService:
         current_refresh_token = get_jwt()  
         identity = current_refresh_token.get("sub")  
         user_data = self._user_dal.get_user_by_email(identity)
-
-        token_nonce = current_refresh_token.get("nonce")
-
-        # if not self._refresh_dal.verify_nonce(identity, token_nonce):
-        #     raise InvalidRefreshTokenError()
+        user_data = SimpleNamespace(**user_data.__dict__, new_user=False)
 
         new_access_token, new_refresh_token = await self.create_tokens(user_data)
-
-        new_nonce = self.generate_nonce()
-        self._refresh_dal.update_refresh_token(identity, new_refresh_token, new_nonce)
-
         
-
         user = OutputLogin(
             email=user_data.email,
             user_id=user_data.user_id,
@@ -303,13 +322,12 @@ class UserService:
             username=user_data.username,
             new_user=False,
             access_token=new_access_token,
-            refresh_token=new_refresh_token,
+            refresh_token=new_refresh_token
         )
 
         return user
 
-
-    
+   
     def add_preferences(self, dto: UpdateUserPreferencesDTO):
         new_dto_by_type_of_preference = self.dto_for_type_of_preference(dto)
 
