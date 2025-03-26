@@ -9,16 +9,15 @@ from flask_mail import Message
 from dto.common_response import CommonResponse
 
 class UserSubscriptionManager:
-    def __init__(self, user_subscription_dal):
+    def __init__(self, user_subscription_dal, preference_dal):
         self.__user_subscription_dal = user_subscription_dal
-        current_dir = Path(__file__).resolve().parent if "__file__" in locals() else Path.cwd()
-        envars = current_dir / ".env"
-        load_dotenv(envars)
+        self.__preference_dal = preference_dal
 
         event.listen(TempSubscribersData, "after_insert", self.__on_subscribers_inserted)
 
     def try_add_subscribers_to_temp_table(self, team_index, news_name):
-        self.__user_subscription_dal.try_add_subscribers_data(team_index, news_name)
+        users = self.__preference_dal.get_users_by_preference_index(team_index)
+        self.__user_subscription_dal.try_add_subscribers_data(users, team_index, news_name)
 
     def __on_subscribers_inserted(self, mapper, connection, target):
         self.__try_send_email_to_users()
@@ -39,8 +38,6 @@ class UserSubscriptionManager:
                 html=self.__get_email_template(news_name, username, team_name)
             )
             current_app.extensions['mail'].send(msg)
-
-            return CommonResponse().to_dict()
 
     def __get_email_template(self, news_name, username, team_name):
         template_dir = os.path.join(os.path.dirname(__file__), "templates")

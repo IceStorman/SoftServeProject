@@ -73,5 +73,6 @@ class Container(containers.DeclarativeContainer):
 
     email_manager = providers.Factory(
         UserSubscriptionManager,
-        user_subscription_dal
+        user_subscription_dal,
+        preferences_dal
     )

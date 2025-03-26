@@ -289,9 +289,6 @@ def get_blob_data_for_all_sports(session, blob_indexes):
 
 
 def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
-    from api.container.container import Container
-    subscription_manager = Container.email_manager()
-
     try:
         existing_news = session.query(News).filter_by(blob_id=blob_name).first()
         if existing_news:
@@ -316,32 +313,30 @@ def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
         for team_name in teams:
             if isinstance(team_name, list):
                 for name in team_name:
-                    team_index_id = team_dict.get(name, None)
-                    if team_index_id is not None:
-                        team_index = TeamInNews(
-                            news_id=news_index.news_id,
-                            name=name,
-                            team_index_id=team_index_id
-                        )
-                        session.add(team_index)
-
-                        subscription_manager.try_add_subscribers_to_temp_table(team_index.team_index_id, blob_name)
+                    __add_team_index_to_db(team_dict, name, news_index, blob_name, session)
             else:
-                team_index_id = team_dict.get(team_name, None)
-                if team_index_id is not None:
-                    team_index = TeamInNews(
-                        news_id=news_index.news_id,
-                        name=team_name,
-                        team_index_id=team_index_id
-                    )
-                    session.add(team_index)
-
-                    subscription_manager.try_add_subscribers_to_temp_table(team_index.team_index_id, blob_name)
+                __add_team_index_to_db(team_dict, team_name, news_index, blob_name, session)
 
         session.commit()
     except Exception as e:
         session.rollback()
         print_error_message(f"Error when saving the news index in the database: {e}")
+
+
+def __add_team_index_to_db(team_dict, team_name, news_index, blob_name, session):
+    from api.container.container import Container
+    subscription_manager = Container.email_manager()
+
+    team_index_id = team_dict.get(team_name, None)
+    if team_index_id is not None:
+        team_index = TeamInNews(
+            news_id=news_index.news_id,
+            name=team_name,
+            team_index_id=team_index_id
+        )
+        session.add(team_index)
+
+        subscription_manager.try_add_subscribers_to_temp_table(team_index.team_index_id, blob_name)
 
 
 def get_news_by_index(blob_name: str, session) -> Dict:
