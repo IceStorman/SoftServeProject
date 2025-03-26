@@ -3,7 +3,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {format} from "date-fns";
 
-function TimeFilter({ onChange }) {
+function DateFilter({ onChange }) {
     const [selectedDate, setSelectedDate] = useState(null);
 
     const handleChange = (date) => {
@@ -25,4 +25,4 @@ function TimeFilter({ onChange }) {
     );
 }
 
-export default TimeFilter;
+export default DateFilter;

@@ -37,7 +37,6 @@ $font-size: 14px;
     .filterSearch {
 
       input {
-        border-radius: 0.5rem;
         outline: 2px solid $main-shadow;
         border: 0;
         background-color: $background-light;
@@ -124,5 +123,8 @@ $font-size: 14px;
         }
       }
     }
+
+
+
   }
 }

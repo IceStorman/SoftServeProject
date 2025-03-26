@@ -29,7 +29,7 @@ import CheckEmailPage from "../components/passwordReset/checkEmailPage";
 import GoogleAuthCallback from "../pages/registration/googleCallBack";
 import PreferencesPage from "../pages/registration/PreferencesPage";
 import AccountPage from "../pages/registration/accountPage";
-import SearchPage from "../pages/searchPage";
+import SearchPage from "../pages/search/searchPage";
 import globalVariables from "../globalVariables";
 
 function App() {

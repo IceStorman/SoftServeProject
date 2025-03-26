@@ -2,7 +2,7 @@ import React, {useMemo} from "react"
 import {SportFilter} from "./sportFilter";
 import {NameFilter} from "./nameFilter";
 import {CountryFilter} from "./countryFilter";
-import TimeFilter from "./timeFilter";
+import DateFilter from "./dateFilter";
 
 
 export const filtersImports = {
@@ -24,6 +24,6 @@ export const filtersImports = {
     streams: {
         name: (props) => <NameFilter {...props} />,
         sport_id: (props) => <SportFilter {...props} />,
-        date_from: (props) => <TimeFilter {...props} />
+        date_from: (props) => <DateFilter {...props} />
     }
 };
