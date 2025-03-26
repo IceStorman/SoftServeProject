@@ -1,3 +1,4 @@
+from typing import Optional
 from flask import current_app, url_for, jsonify, make_response, request
 from flask_mail import Message
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
@@ -172,10 +173,10 @@ class UserService:
             raise IncorrectSignatureError()
 
 
-    async def log_in(self, credentials: InputUserLogInDTO):
+    async def log_in(self, credentials):
         login_context = AuthManager(self)
 
-        user=await login_context.authenticate(credentials)
+        user = await login_context.authenticate(credentials)
         existing_access_token, existing_refresh_token = self._refresh_dal.get_valid_tokens_by_user(user.user_id)
 
         if existing_access_token and existing_refresh_token:

@@ -38,8 +38,8 @@ class AuthHandler(ABC, Generic[T]):
     
     async def authenticate(self, credentials: T):
         result = await self._authenticate(credentials)
-        if isinstance(credentials, InputUserLogInDTO):
-            self._is_suspicious_login(credentials.user_id, credentials.current_ip, credentials.current_device)
+        if result:
+            self._is_suspicious_login(result.user_id, credentials.current_ip, credentials.current_device)
         return result
 
 class AuthManager(AuthHandler):
@@ -109,13 +109,13 @@ class GoogleAuthHandler(AuthHandler[T]):
 
         if not user:
             user = User(email=user_info.email, username=user_info.email.split('@')[0])
-            self._user_service.create_user(user)
+            new_user = self._user_service.create_user(user)
+            output_login.user_id = new_user.user_id
+            output_login.username = new_user.username
+            await self._user_service.create_tokens(user=output_login)
         else:
             output_login.new_user = False   
 
-        token = await self._user_service.get_generate_auth_token(user)
-
-        output_login.token = token
         output_login.user_id = user.user_id
         output_login.username = user.username
 
