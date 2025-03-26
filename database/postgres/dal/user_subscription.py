@@ -18,7 +18,7 @@ class UserSubscriptionDAL:
 
     def pop_subscribed_users_data(self):
         rows_to_delete = (
-            self.db_session.query(TempSubscribersData, User)
+            self.db_session.query(TempSubscribersData, User.username)
             .join(User, TempSubscribersData.subscriber_emails == User.email)
             .join(TeamIndex, TempSubscribersData.team_ids == TeamIndex.team_index_id)
             .all()
@@ -31,7 +31,7 @@ class UserSubscriptionDAL:
                 team_ids=row[0].team_ids,
                 subscriber_emails=row[0].subscriber_emails,
                 news_name=row[0].news_name,
-                username=row[1].username
+                username=row[1]
             )
             subscribed_users_data_for_email.append(copied_user)
 
