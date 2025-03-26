@@ -57,7 +57,7 @@ class TestPlayersSavingData:
                     ]
                 },
                 {
-                    "id": 32,
+                    "id": 3,
                     "name": "John Doe",
                     "photo": "https://example.com/john_doe.png",
                 }
@@ -65,22 +65,16 @@ class TestPlayersSavingData:
         }
 
     @patch('database.postgres.dal.PlayerDal.save_players')
-    @patch('database.postgres.save_api_data')
-    def test_parameters_dict_with_team(self, mock_save_players, mock_save_api_data):
-        mock_save_api_data.return_value = None
+    def test_parameters_dict_with_team(self, mock_save_players):
         save_api_data(self.json_case_valid_parameters, self.sport_name)
-        assert 1 == 1
+        mock_save_players.assert_called_once()
 
     @patch('database.postgres.dal.PlayerDal.save_players')
-    @patch('database.postgres.save_api_data')
-    def test_full_info(self, mock_save_api_data, mock_save_players):
-        mock_save_api_data.return_value = None
+    def test_full_info(self, mock_save_players):
         save_api_data(self.json_case_full_info, self.sport_name)
-        assert 1 == 1
+        mock_save_players.assert_called_once()
 
     @patch('database.postgres.dal.PlayerDal.save_players')
-    @patch('database.postgres.save_api_data')
-    def test_full_bad_info(self, mock_save_api_data, mock_save_players):
-        mock_save_api_data.return_value = None
+    def test_full_bad_info(self, mock_save_players):
         save_api_data(self.json_case_full_bad_info, self.sport_name)
-        assert 1 == 1
+        mock_save_players.assert_called_once()
