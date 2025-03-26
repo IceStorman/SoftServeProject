@@ -18,6 +18,19 @@ T = TypeVar("T")
 class AuthHandler(ABC, Generic[T]):
     def __init__(self, user_service):
         self._user_service = user_service
+
+    @abstractmethod
+    def authenticate(self, credentials: T):
+        pass
+
+
+class AuthManager(AuthHandler):
+    def __init__(self, user_service):
+        self._user_service = user_service
+        self.strategies = {
+            AuthStrategies.SIMPLE.value: SimpleAuthHandler(user_service = self._user_service),
+            AuthStrategies.GOOGLE.value: GoogleAuthHandler(user_service = self._user_service),
+        }
     
     def is_suspicious_login(self, user_id: int, current_ip:str, current_device:str) -> bool:
             refresh_entry = self._user_service.get_valid_refresh_token_by_user(user_id)
@@ -30,27 +43,16 @@ class AuthHandler(ABC, Generic[T]):
                 self._user_service.is_nonce_used(user_id, refresh_entry.nonce)
             ]
 
-            return any(suspicious_conditions)
-    
-
-    @abstractmethod
-    def authenticate(self, credentials: T):
-        pass
-
-
-class AuthManager:
-    def __init__(self, user_service):
-        self._user_service = user_service
-        self.strategies = {
-            AuthStrategies.SIMPLE.value: SimpleAuthHandler(user_service = self._user_service),
-            AuthStrategies.GOOGLE.value: GoogleAuthHandler(user_service = self._user_service),
-        }
+            return any(suspicious_conditions)    
 
     async def execute_log_in(self, credentials: T):
         
         strategy = credentials.auth_provider
         if strategy not in self.strategies:
             raise IncorrectLogInStrategyError(strategy)
+        
+        if not self.is_suspicious_login(credentials.user_id, credentials.current_ip, credentials.current_device):
+            self._user_service.revoke_all_refresh_and_access_tokens(credentials.user_id)
 
         login_strategy = await self.strategies[strategy].authenticate(credentials)
         return login_strategy
@@ -67,8 +69,6 @@ class SimpleAuthHandler(AuthHandler[T]):
         if not bcrypt.checkpw(credentials.password.encode('utf-8'), user.password_hash.encode('utf-8')):
             self._user_service._logger.warning("Some log in data is incorrect")
             raise IncorrectUserDataError()
-        if not self.is_suspicious_login(user.user_id):
-            self._user_service.revoke_all_refresh_and_access_tokens(user.user_id, credentials.current_ip, credentials.current_device)
 
         token = await self._user_service.get_generate_auth_token(user)
 
@@ -110,9 +110,7 @@ class GoogleAuthHandler(AuthHandler[T]):
             user = User(email=user_info.email, username=user_info.email.split('@')[0])
             self._user_service.create_user(user)
         else:
-            output_login.new_user = False
-            if not self.is_suspicious_login(user.user_id):
-                self._user_service.revoke_all_refresh_and_access_tokens(user.user_id, credentials.current_ip, credentials.current_device)      
+            output_login.new_user = False   
 
         token = await self._user_service.get_generate_auth_token(user)
 
