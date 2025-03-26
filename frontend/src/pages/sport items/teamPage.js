@@ -267,8 +267,11 @@ function TeamPage() {
                             leagueName={item.team_name}
                             img={item.logo}
                             size={gridSize.baseColumns === 2 ? "small" : gridSize.baseColumns === 5 ? "medium" : "large"}
-                            sport={item.sport}
+                            sportId={item.sport_id}
+                            sportName={sportName}
                             id={item.id}
+                            leagueId={leagueId}
+                            page={currentPage}
                         />
                     ))}>
                 </SearchBlock>

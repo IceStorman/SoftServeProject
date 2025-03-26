@@ -66,13 +66,6 @@ class BaseDTO(Schema):
         return data
 
 
-class TeamsStatisticsOrPlayersDTO(BaseDTO):
-    sport_id = fields.Int(required=False, missing=None)
-    team_id = fields.Int(required=False, missing=None)
-    league_id = fields.Int(required=False, missing=None)
-    name = fields.Str(required=False, missing=None)
-
-
 class PaginationDTO(BaseDTO):
     page = fields.Int(required=False, missing=0)
     per_page = fields.Int(required=False, missing=0)
@@ -94,6 +87,14 @@ class TeamsLeagueDTO(BaseDTO):
     sport_id = fields.Int(required=False, missing=None)
     league_id = fields.Int(required=False, missing=None)
     country_id = fields.Int(required=False, missing=None)
+    name = fields.Str(required=False, missing=None)
+    filters_data = fields.Nested(SearchDTO, required=False, missing=None)
+
+
+class TeamsStatisticsOrPlayersDTO(BaseDTO):
+    sport_id = fields.Int(required=False, missing=None)
+    team_id = fields.Int(required=False, missing=None)
+    league_id = fields.Int(required=False, missing=None)
     name = fields.Str(required=False, missing=None)
     filters_data = fields.Nested(SearchDTO, required=False, missing=None)
 

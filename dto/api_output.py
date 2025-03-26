@@ -22,10 +22,19 @@ class TeamsLeagueOutput(Schema):
     team_name = fields.Str(attribute="name")
     logo = fields.Str()
     id = fields.Str(attribute="api_id")
+    sport_id = fields.Str()
+
 
 class TeamsLeagueOutputWithCount(Schema):
     teams = fields.List(fields.Nested(TeamsLeagueOutput))
     count = fields.Int()
+
+
+class PlayersOutput(Schema):
+    name = fields.Str(attribute="name")
+    id = fields.Str(attribute="api_id")
+    logo = fields.Str(attribute="logo")
+
 
 class SportsOutput(Schema):
     id = fields.Int(attribute="sport_id")
@@ -39,22 +48,27 @@ class SportsLeagueOutput(Schema):
     logo = fields.Str()
     name = fields.Str()
 
+
 class SportsLeagueOutputWithCount(Schema):
     teams = fields.List(fields.Nested(SportsLeagueOutput))
     count = fields.Int()
+
 
 class CountriesOutput(Schema):
     id = fields.Int(attribute="country_id")
     flag = fields.Str()
     name = fields.Str()
 
+
 class ListResponseDTO(Schema):
     items = fields.List(fields.Raw(), required=True)
     count = fields.Int(required=True)
 
+
 class OutputUser(Schema):
     username = fields.Str(required=True)
     email = fields.Str(required=True)
+
 
 class OutputSportPreferences(Schema):
     user_id = fields.Int(required=True)
@@ -62,11 +76,13 @@ class OutputSportPreferences(Schema):
     sport_name = fields.Str(required=True)
     sport_img = fields.Str(required=True)
 
+
 class OutputTeamPreferences(Schema):
     user_id = fields.Int(required=True)
     team_index_id = fields.Str(required=True)
     name = fields.Str(required=True)
     logo = fields.Str(required=True)
+
 
 class OutputLogin():
     def __init__(self, email: str, id: int, token: str, username: str, new_user:bool):
