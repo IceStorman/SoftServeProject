@@ -65,7 +65,7 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         Cookies.remove("user");
         Cookies.remove("access_token");
-        Cookies.remove("refresh_token");
+        Cookies.remove("refresh_token_cookie");
         setUser(null);
     };
 
