@@ -24,10 +24,10 @@ class UserSubscriptionManager:
         self.__try_send_email_to_users()
 
     def __try_send_email_to_users(self):
-        subscribed_users = self.__user_subscription_dal.pop_subscribed_users_data()
+        subscribed_users_email_data = self.__user_subscription_dal.pop_subscribed_users_data()
 
-        for user in subscribed_users:
-            self.__send_email_to_user(user.subscriber_emails, user.username, user.news_name, user.name)
+        for data in subscribed_users_email_data:
+            self.__send_email_to_user(data.subscriber_emails, data.username, data.news_name, "-")
 
     def __send_email_to_user(self, user_email: str, username: str, news_name: str, team_name: str):
         from api.routes.__init__ import app

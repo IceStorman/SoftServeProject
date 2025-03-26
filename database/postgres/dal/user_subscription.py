@@ -1,4 +1,5 @@
 from database.models import User, TempSubscribersData, UserClubPreferences, TeamIndex
+from dto.api_output import TempSubscriberDataWithUsernameDto
 
 
 class UserSubscriptionDAL:
@@ -33,16 +34,17 @@ class UserSubscriptionDAL:
             .all()
         )
 
-        subscribed_users = list()
+        subscribed_users_data_for_email = list()
 
         for row in rows_to_delete:
-            copied_user = TempSubscribersData(
-                team_ids=row.team_ids,
-                subscriber_emails=row.subscriber_emails,
-                news_name=row.news_name
+            copied_user = TempSubscriberDataWithUsernameDto(
+                team_ids=row[0].team_ids,
+                subscriber_emails=row[0].subscriber_emails,
+                news_name=row[0].news_name,
+                username=row[1].username
             )
-            subscribed_users.append(copied_user)
+            subscribed_users_data_for_email.append(copied_user)
 
         self.db_session.query(TempSubscribersData).delete(synchronize_session=False)
 
-        return subscribed_users
+        return subscribed_users_data_for_email

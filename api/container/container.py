@@ -71,7 +71,7 @@ class Container(containers.DeclarativeContainer):
         user_dal=user_dal,
     )
 
-    email_manager = providers.Singleton(
+    email_manager = providers.Factory(
         UserSubscriptionManager,
         user_subscription_dal
     )

@@ -85,6 +85,21 @@ class OutputRecommendationList(Schema):
     rating = fields.Int(required=True)
 
 
+class TempSubscriberDataWithUsernameDto(Schema):
+    team_ids: int
+    subscriber_emails: str
+    news_name: str
+    username: str
+
+    def __init__(self, team_ids, subscriber_emails, news_name, username):
+        super().__init__()
+
+        self.team_ids = team_ids
+        self.subscriber_emails = subscriber_emails
+        self.news_name = news_name
+        self.username = username
+
+
 def get_script_phrases():
     return {
         # Загальні
