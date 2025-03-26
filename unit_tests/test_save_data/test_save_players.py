@@ -1,4 +1,5 @@
 import pytest
+from unittest.mock import patch
 from database.postgres import save_api_data
 
 class TestPlayersSavingData:
@@ -10,10 +11,7 @@ class TestPlayersSavingData:
             'parameters': {
                 'team': 1488
             },
-            "response": [{
-
-                }
-            ]
+            "response": [{}]
         }
         self.json_case_full_bad_info = {
             "get": "players",
@@ -21,7 +19,7 @@ class TestPlayersSavingData:
             "response": [
                 {
                     "player": {
-                        "id": 276,
+                        "id": 2222,
                         "name": "Neymar",
                         "photo": "https://media.api-sports.io/football/players/276.png",
                         "team": {
@@ -32,7 +30,7 @@ class TestPlayersSavingData:
                 },
                 {
                     "player": {
-                        "id": 301,
+                        "id": 3,
                         "name": "John Doe",
                         "photo": "https://example.com/john_doe.png",
                         "team": {
@@ -48,32 +46,41 @@ class TestPlayersSavingData:
             'parameters': {},
             "response": [
                 {
-                    "id": 276,
+                    "id": 6,
                     "name": "Neymar",
                     "photo": "https://media.api-sports.io/football/players/276.png",
                     "team": [
                         {
-                            "id": 40,
+                            "id": 4,
                             "name": "SBG Ireland"
                         }
                     ]
                 },
                 {
-                    "id": 302,
+                    "id": 32,
                     "name": "John Doe",
                     "photo": "https://example.com/john_doe.png",
                 }
             ]
         }
 
-    def test_parameters_dict_with_team(self):
+    @patch('database.postgres.dal.PlayerDal.save_players')
+    @patch('database.postgres.save_api_data')
+    def test_parameters_dict_with_team(self, mock_save_players, mock_save_api_data):
+        mock_save_api_data.return_value = None
         save_api_data(self.json_case_valid_parameters, self.sport_name)
         assert 1 == 1
 
-    def test_full_info(self):
+    @patch('database.postgres.dal.PlayerDal.save_players')
+    @patch('database.postgres.save_api_data')
+    def test_full_info(self, mock_save_api_data, mock_save_players):
+        mock_save_api_data.return_value = None
         save_api_data(self.json_case_full_info, self.sport_name)
         assert 1 == 1
 
-    def test_full_bad_info(self):
+    @patch('database.postgres.dal.PlayerDal.save_players')
+    @patch('database.postgres.save_api_data')
+    def test_full_bad_info(self, mock_save_api_data, mock_save_players):
+        mock_save_api_data.return_value = None
         save_api_data(self.json_case_full_bad_info, self.sport_name)
         assert 1 == 1
