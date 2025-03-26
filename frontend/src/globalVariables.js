@@ -18,7 +18,31 @@ const globalVariables= {
         EmailError: "Email is empty or contains invalid characters",
         EmailMessage: "email: example@email.com",
         UsernameOrEmailError: "Email or Username are empty or contains invalid characters"
-    }
+    },
+
+    windowsSizes: [
+        { maxWidth: 480, limit: 0 },
+        { maxWidth: 1024, limit: 1 },
+        { maxWidth: Infinity, limit: 3 }
+    ],
+
+    windowsSizesForCards: {
+        desktopLarge: 1400,
+        desktopMid: 1200,
+        tablet: 1000,
+        mobileLarge: 450,
+        mobileSmall: 600,
+    },
+
+    cardLayouts: {
+        large: { baseRows: 4, baseColumns: 4, minColumns: 1, alwaysColumns: 4},
+        medium: { baseRows: 5, baseColumns: 5, minColumns: 2, alwaysColumns: 4},
+        small: { baseRows: 8, baseColumns: 2, minColumns: 2, alwaysColumns: 2}
+    },
+
+    windowSizeForBurger: {
+        filters: 1050
+    },
 }
 
 export default globalVariables;

@@ -2,14 +2,14 @@
   display: flex;
   flex-direction: column;
   width: 60rem;
+  max-width: 60%;
   margin: 5rem auto;
   padding: 1.5rem;
-  border-radius: 1rem;
   text-align: left;
+  transition: all 0.5s ease;
 }
 
 .accountInfoContainer {
-  width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -72,6 +72,7 @@
     }
 
     &.delete {
+      margin-top: 1rem;
       background: red;
 
       &:hover {

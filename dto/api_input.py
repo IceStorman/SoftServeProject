@@ -3,7 +3,6 @@ from collections import namedtuple
 from datetime import datetime
 from marshmallow import Schema, fields, pre_load, post_load, ValidationError, EXCLUDE
 
-
 class BaseDTO(Schema):
     class Meta:
         unknown = EXCLUDE
@@ -55,14 +54,16 @@ class BaseDTO(Schema):
                 raise ValidationError("Invalid password format", field_name="password_hash")
         return data
 
-
-class TeamsLeagueDTO(BaseDTO):
-    sport_id = fields.Int(required=False, missing=None)
-    league_id = fields.Int(required=False, missing=None)
-    country_id = fields.Int(required=False, missing=None)
-    name = fields.Str(required=False, missing=None)
-    page = fields.Int(required=False, missing=0)
-    per_page = fields.Int(required=False, missing=0)
+    @pre_load
+    def process_models(self, data, **kwargs):
+        if "models" in data and isinstance(data["models"], list):
+            processed_models = []
+            for item in data["models"]:
+                dto_class = self.detect_dto(item)
+                if dto_class:
+                    processed_models.append(dto_class().load(item))
+            data["models"] = processed_models
+        return data
 
 
 class TeamsStatisticsOrPlayersDTO(BaseDTO):
@@ -72,34 +73,52 @@ class TeamsStatisticsOrPlayersDTO(BaseDTO):
     name = fields.Str(required=False, missing=None)
 
 
-class SearchDTO(BaseDTO):
-    leagues__sport_id = fields.Int(required=False, missing=None)
-    countries__country_id = fields.Int(required=False, missing=None)
-    letter = fields.Str(required=False, missing="")
+class PaginationDTO(BaseDTO):
     page = fields.Int(required=False, missing=0)
     per_page = fields.Int(required=False, missing=0)
 
 
+class FilterDTO(BaseDTO):
+    filter_name = fields.Str(required=True)
+    filter_value = fields.Raw(required=True)
+    order_type = fields.Str(required=False, missing=None)
+    order_field = fields.Str(required=False, missing=None)
+
+
+class SearchDTO(BaseDTO):
+    filters = fields.List(fields.Nested(FilterDTO), required=False)
+    pagination = fields.Nested(PaginationDTO, many=False)
+
+
+class TeamsLeagueDTO(BaseDTO):
+    sport_id = fields.Int(required=False, missing=None)
+    league_id = fields.Int(required=False, missing=None)
+    country_id = fields.Int(required=False, missing=None)
+    name = fields.Str(required=False, missing=None)
+    filters_data = fields.Nested(SearchDTO, required=False, missing=None)
+
+
 class SportsLeagueDTO(BaseDTO):
-    leagues__sport_id = fields.Int(required=False, missing=None)
+    sport = fields.Str(required=False, missing=None)
     page = fields.Int(required=False, missing=0)
     per_page = fields.Int(required=False, missing=0)
 
 
 class GamesDTO(BaseDTO):
-    games__sport_id = fields.Int(required=False, missing=None)
-    games__league_id = fields.Int(required=False, missing=None)
-    games__country_id = fields.Int(required=False, missing=None)
+    sport_id = fields.Int(required=False, missing=None)
+    league_id = fields.Int(required=False, missing=None)
+    country_id = fields.Int(required=False, missing=None)
     status = fields.Str(required=False, missing=None)
-    games__date = fields.Date(required=False, missing=datetime.now().strftime('%Y-%m-%d'))
-    page = fields.Int(required=False, missing=0)
-    per_page = fields.Int(required=False, missing=0)
+    date = fields.Date(required=False, missing=datetime.now().strftime('%Y-%m-%d'))
+    time = fields.Time(required=False, allow_none=True)
 
 
 class NewsDTO(BaseDTO):
-    news__news_id = fields.Int(required=False, missing=None)
-    news__sport_id = fields.Int(required=False, missing=None)
-    news__interest_rate = fields.Int(required=False, missing=None)
+    news_id = fields.Int(required=False, missing=None)
+    sport_id = fields.Int(required=False, missing=None)
+    interest_rate = fields.Int(required=False, missing=None)
+    title_contains = fields.Str(required=False, allow_none=True)
+    team = fields.Str(required=False, allow_none=True)
 
 
 class StreamsDTO(BaseDTO):
