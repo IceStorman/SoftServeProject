@@ -73,7 +73,7 @@ class PaginationDTO(BaseDTO):
 
 class FilterDTO(BaseDTO):
     filter_name = fields.Str(required=True)
-    filter_value = fields.Raw(required=True)
+    filter_value = fields.Raw(required=False, missing=None)
     order_type = fields.Str(required=False, missing=None)
     order_field = fields.Str(required=False, missing=None)
 
