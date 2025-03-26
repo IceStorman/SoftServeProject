@@ -44,8 +44,8 @@ class RefreshTokenDAL:
     def get_refresh_token_by_id(self, refresh_id: int) -> Optional[RefreshTokenTracking]:
         return self.db_session.query(RefreshTokenTracking).filter(RefreshTokenTracking.id == refresh_id).first()
 
-    def get_valid_tokens_by_user(self, user_id: int) -> Tuple[Optional[TokenBlocklist], Optional[RefreshTokenTracking]]:
-        access_token = (
+    def get_valid_tokens_by_user(self, user_id: int) -> Tuple[Optional[JwtDTO], Optional[JwtDTO]]:
+        access_token_obj = (
             self.db_session.query(TokenBlocklist)
             .filter(
                 TokenBlocklist.user_id == user_id,
@@ -56,7 +56,7 @@ class RefreshTokenDAL:
             .first()
         )
 
-        refresh_token = (
+        refresh_token_obj = (
             self.db_session.query(TokenBlocklist)
             .filter(
                 TokenBlocklist.user_id == user_id,
@@ -66,6 +66,8 @@ class RefreshTokenDAL:
             )
             .first()
         )
+        access_token = JwtDTO.model_validate(access_token_obj) if access_token_obj else None
+        refresh_token = JwtDTO.model_validate(refresh_token_obj) if refresh_token_obj else None
 
         return access_token, refresh_token
     
