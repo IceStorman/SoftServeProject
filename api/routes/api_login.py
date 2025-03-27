@@ -23,7 +23,7 @@ FRONT_RESET_PASSWORD_URL = os.getenv('FRONT_RESET_PASSWORD_URL')
 
 logger = Logger("logger", "all.log")
 
-login_app = Blueprint('login_app', __name__, description="Login options", url_prefix='/login')
+login_app = Blueprint('login_app', __name__, description="Login options", url_prefix='/user')
 
 
 @login_app.errorhandler(DatabaseConnectionError)
@@ -37,8 +37,6 @@ def handle_db_timeout_error(e):
 @inject
 @handle_exceptions
 @logger.log_function_call()
-@login_app.arguments(InputUserDTO)
-@login_app.response(200, CommonResponse().to_dict())
 async def create_account_endpoint(service: UserService = Provide[Container.user_service]):
     """Create user account"""
     try:
@@ -77,10 +75,7 @@ def request_password_reset(dto: InputUserByEmailDTO, service: UserService = Prov
 @inject
 @handle_exceptions
 @logger.log_function_call()
-@login_app.arguments(NewPasswordDTO)
-@login_app.response(200, CommonResponse().to_dict())
-@login_app.response(302)
-def reset_password(dto: NewPasswordDTO, token, service: UserService = Provide[Container.user_service]):
+def reset_password(token, service: UserService = Provide[Container.user_service]):
     """
        Reset password functionality.
 
@@ -97,6 +92,8 @@ def reset_password(dto: NewPasswordDTO, token, service: UserService = Provide[Co
             return redirect(reset_front_url)
 
         if request.method == "POST":
+            data = request.get_json()
+            dto = NewPasswordDTO().load(data)
             token = service.reset_user_password(token, dto.password)
 
             return token
@@ -110,9 +107,7 @@ def reset_password(dto: NewPasswordDTO, token, service: UserService = Provide[Co
 @inject
 @handle_exceptions
 @logger.log_function_call()
-@login_app.arguments(InputUserLogInDTO)
-@login_app.response(200, CommonResponse().to_dict())
-async def log_in(dto: InputUserLogInDTO, service: UserService = Provide[Container.user_service]):
+async def log_in(service: UserService = Provide[Container.user_service]):
     try:
         current_ip = RequestHelper.get_country_from_ip()
         current_device = RequestHelper.get_user_device()
