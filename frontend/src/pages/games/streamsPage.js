@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
-import img1 from "../imgs/1.jpg";
-import img2 from "../imgs/2.jpg";
 import FiltersRenderer from "../../components/filters/filterRender";
 import GamesContainer from "../../components/containers/gamesContainer";
-import StreamCard from "../../components/cards/streamCard";
 import useTranslations from "../../translationsContext";
 import axios from "axios";
 import apiEndpoints from "../../apiEndpoints";
