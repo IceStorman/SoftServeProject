@@ -75,7 +75,7 @@ def request_password_reset(dto: InputUserByEmailDTO, service: UserService = Prov
 @inject
 @handle_exceptions
 @logger.log_function_call()
-def reset_password(token, service: UserService = Provide[Container.user_service]):
+async def reset_password(token, service: UserService = Provide[Container.user_service]):
     """
        Reset password functionality.
 
@@ -94,7 +94,7 @@ def reset_password(token, service: UserService = Provide[Container.user_service]
         if request.method == "POST":
             data = request.get_json()
             dto = NewPasswordDTO().load(data)
-            token = service.reset_user_password(token, dto.password)
+            token = await service.reset_user_password(token, dto.password)
 
             return token
 
