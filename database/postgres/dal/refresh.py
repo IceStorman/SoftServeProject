@@ -57,7 +57,7 @@ class RefreshTokenDAL:
         )
 
         refresh_token_obj = (
-            self.db_session.query(TokenBlocklist.token)
+            self.db_session.query(TokenBlocklist)
             .filter(
                 TokenBlocklist.user_id == user_id,
                 TokenBlocklist.revoked == False,
@@ -109,7 +109,6 @@ class RefreshTokenDAL:
                 refresh_entry.last_ip = decoded.get("last_ip", refresh_entry.last_ip)
                 refresh_entry.last_device = decoded.get("last_device", refresh_entry.last_device)
 
-            # Зберігаємо зміни
             self.db_session.commit()
 
 

@@ -67,27 +67,3 @@ class RequestHelper():
         
         return response
     
-    @staticmethod
-    async def set_access_token(user):
-        result_data = {
-            "user_id": user.user_id,
-            "email": user.email,
-            "username": user.username,
-            "new_user": user.new_user,
-            "access_token": user.access_token,
-            "refresh_token": user.refresh_token,
-            "message": user.message
-        }
-        
-        response = jsonify(result_data)
-        response.set_cookie(
-            "access_token",
-            user.access_token,
-            httponly=False,
-            secure=True,
-            samesite="None",
-            path="/",
-            max_age=3600
-        )
-        
-        return response
