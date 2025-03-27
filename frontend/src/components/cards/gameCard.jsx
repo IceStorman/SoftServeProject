@@ -1,7 +1,5 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-
-import img_placeholder from "../../pages/imgs/image_placeholder.png"
 import globalVariables from "../../globalVariables";
 
 
@@ -22,7 +20,7 @@ function GameCard({ nameHome, nameAway, logoHome, logoAway, scoreHome, scoreAway
                         alt={' '}
                         className="hometeam-img"
                     />
-                ) : (<img src={img_placeholder}
+                ) : (<img src={""}
                     alt={nameHome}
                     className="hometeam-img"
                 />)}
