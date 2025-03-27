@@ -2,6 +2,8 @@ from flask import request, jsonify
 from user_agents import parse
 import requests
 from dto.api_output import OutputLogin
+
+
 class RequestHelper():
     @staticmethod    
     def get_user_device() -> str:
