@@ -3,6 +3,7 @@ from flask_babel import _
 
 class GameOutput(Schema):
     id = fields.Int()
+    sport_id = fields.Int()
     status = fields.Str()
     date = fields.Str()
     time = fields.Str()
@@ -34,7 +35,7 @@ class SportsOutput(Schema):
 
 
 class SportsLeagueOutput(Schema):
-    id = fields.Int(attribute="league_id")
+    id = fields.Int(attribute="api_id")
     sport = fields.Int(attribute="sport_id")
     logo = fields.Str()
     name = fields.Str()
@@ -150,5 +151,14 @@ def get_script_phrases():
         "sort":               _("Sort by:"),
         "more":               _("more..."),
         "continue":           _("Continue?"),
+        "search":             _("Search"),
+        "all":                _("All"),
+        "recommend_pref":     _("Recommended news by your Preferences"),
+        "news_not_found":     _("No latest news were found"),
+        "recommend_watch":    _("Recommended by your Last Watch"),
+        "games_not_found":    _("Games not found"),
+        "select_country":     _("Select a country..."),
+        "apply_filters":      _("Apply Filters"),
+        "search_name":        _("Search by name..."),
     }
 

@@ -12,6 +12,7 @@ $bg-light: #f8f5f0;
 $bg-dark: #dbd3b2;
 
 $main-text-clr: #000;
+$primary-hover: #0056b3;
 
 $main-font: 'Times New Roman';
 
@@ -37,6 +38,7 @@ $main-font: 'Times New Roman';
 @import "media768";
 @import "media480";
 @import "mainPage";
+@import "filters";
 
 
 @font-face {
@@ -93,7 +95,6 @@ button {
   &.filled {
     background: black;
     border: none;
-    border-radius: none;
     padding: 0.5rem 0.5rem;
     transition: border-color 0.3s ease-in-out;
 
