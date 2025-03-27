@@ -65,12 +65,6 @@ class BaseDTO(Schema):
             data["models"] = processed_models
         return data
 
-class TeamsLeagueDTO(BaseDTO):
-    sport_id = fields.Int(required=False, missing=None)
-    league_id = fields.Int(required=False, missing=None)
-    country_id = fields.Int(required=False, missing=None)
-    name = fields.Str(required=False, missing=None)
-
 
 class TeamsStatisticsOrPlayersDTO(BaseDTO):
     sport_id = fields.Int(required=False, missing=None)
@@ -83,15 +77,25 @@ class PaginationDTO(BaseDTO):
     page = fields.Int(required=False, missing=0)
     per_page = fields.Int(required=False, missing=0)
 
+
 class FilterDTO(BaseDTO):
     filter_name = fields.Str(required=True)
-    filter_value = fields.Raw(required=True)
+    filter_value = fields.Raw(required=False, missing=None)
     order_type = fields.Str(required=False, missing=None)
     order_field = fields.Str(required=False, missing=None)
+
 
 class SearchDTO(BaseDTO):
     filters = fields.List(fields.Nested(FilterDTO), required=False)
     pagination = fields.Nested(PaginationDTO, many=False)
+
+
+class TeamsLeagueDTO(BaseDTO):
+    sport_id = fields.Int(required=False, missing=None)
+    league_id = fields.Int(required=False, missing=None)
+    country_id = fields.Int(required=False, missing=None)
+    name = fields.Str(required=False, missing=None)
+    filters_data = fields.Nested(SearchDTO, required=False, missing=None)
 
 
 class SportsLeagueDTO(BaseDTO):

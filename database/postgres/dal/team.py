@@ -26,7 +26,7 @@ class TeamDAL(BaseDAL):
             name=team_dto.name,
             logo=team_dto.logo,
             api_id=team_dto.api_id,
-            league_id=team_dto.league
+            league_id=team_dto.league_id
         )
         self.session.add(new_team_index)
         self.session.commit()

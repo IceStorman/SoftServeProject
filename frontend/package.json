@@ -25,6 +25,7 @@
     "react-scripts": "5.0.1",
     "sass": "^1.85.0",
     "sonner": "^1.7.1",
+    "store": "^2.0.12",
     "styled-components": "^6.1.13",
     "web-vitals": "^2.1.4"
   },

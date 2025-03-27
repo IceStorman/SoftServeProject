@@ -145,6 +145,21 @@ msgstr "Оберіть спорт"
 msgid "teams"
 msgstr "команди"
 
+msgid "Search"
+msgstr "Шукати..."
+
+msgid "All"
+msgstr "Всі"
+
+msgid "Recommended news by your Preferences"
+msgstr "Рекомендовані новини по вашим вподобаннях"
+
+msgid "No latest news were found"
+msgstr "Нових новин не знайдено"
+
+msgid "Recommended by your Last Watch"
+msgstr "Рекомендовані новини по вашим останнім переглядах"
+
 msgid "Account"
 msgstr "Акаунт"
 
@@ -177,3 +192,18 @@ msgstr "В чому ви зацікавлені?"
 
 msgid "Choose your favourite sports:"
 msgstr "Оберіть свої улюблені види спорту:"
+
+msgid "Games not found"
+msgstr "Наразі нема матчів"
+
+msgid "All"
+msgstr "Всі"
+
+msgid "Select a country..."
+msgstr "Обрати країну..."
+
+msgid "Apply Filters"
+msgstr "Застосувати фільтри"
+
+msgid "Search by name..."
+msgstr "Шукати по назві..."
