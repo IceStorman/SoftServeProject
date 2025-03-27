@@ -132,9 +132,6 @@ function MainPage() {
 
     }, [user]);
 
-    const game_element_height = 85
-    const game_element_width = 400
-
     const cardSizes = {
         large: { rows: 1, columns: 4, cardSize: { width: 320, height: 490 }, postsPerPage: 4 },
         medium: { rows: 3, columns: 5, cardSize: { width: 250, height: 300 }, postsPerPage: 18 },
@@ -240,8 +237,7 @@ function MainPage() {
                                         scoreHome={item.home_score}
                                         scoreAway={item.away_score}
                                         time={item.time}
-                                        height={game_element_height }
-                                        width={game_element_width}
+                                        isVertical={false}
                                     />
                                 ))
                             }
