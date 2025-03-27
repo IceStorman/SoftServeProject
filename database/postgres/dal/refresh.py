@@ -66,9 +66,9 @@ class RefreshTokenDAL:
             )
             .first()
         )
+
         access_token = access_token_obj.token
         refresh_token = refresh_token_obj.token
-
         return access_token, refresh_token
 
     
