@@ -80,7 +80,7 @@ class PaginationDTO(BaseDTO):
 
 class FilterDTO(BaseDTO):
     filter_name = fields.Str(required=True)
-    filter_value = fields.Raw(required=True)
+    filter_value = fields.Raw(required=False, missing=None)
     order_type = fields.Str(required=False, missing=None)
     order_field = fields.Str(required=False, missing=None)
 
@@ -162,8 +162,10 @@ class InputUserLogInDTO(BaseDTO):
     email_or_username = fields.Str(required=False, missing=None)
     password = fields.Str(required=False, missing=None)
     auth_provider = fields.String(required=False, missing=None)
-
-
+    current_ip = fields.String(required=False, missing=None)
+    current_device = fields.String(required=False, missing=None)
+    
+    
 class TablesAndColumnsForUserPreferencesDTO:
     def __init__(self, main_table, related_table, user_id_field, type_id_field, related_name, related_logo, related_id):
         self.main_table = main_table
