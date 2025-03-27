@@ -1,6 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import img1 from "../imgs/1.jpg"
-import img2 from "../imgs/2.jpg"
 import Filters from "../../components/containers/filtersBlock"
 import GamesContainer from "../../components/containers/gamesContainer";
 import GameCard from "../../components/cards/gameCard";
