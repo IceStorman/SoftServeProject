@@ -46,7 +46,7 @@ class RefreshTokenDAL:
 
     def get_valid_tokens_by_user(self, user_id: int) -> Tuple[Optional[str], Optional[str]]:
         access_token_obj = (
-            self.db_session.query(TokenBlocklist)
+            self.db_session.query(TokenBlocklist.token)
             .filter(
                 TokenBlocklist.user_id == user_id,
                 TokenBlocklist.revoked == False,
@@ -57,7 +57,7 @@ class RefreshTokenDAL:
         )
 
         refresh_token_obj = (
-            self.db_session.query(TokenBlocklist)
+            self.db_session.query(TokenBlocklist.token)
             .filter(
                 TokenBlocklist.user_id == user_id,
                 TokenBlocklist.revoked == False,
@@ -66,10 +66,9 @@ class RefreshTokenDAL:
             )
             .first()
         )
-        access_token = access_token_obj.token
-        refresh_token = refresh_token_obj.token
 
-        return access_token, refresh_token
+
+        return access_token_obj, refresh_token_obj
 
     
     def get_user_info_by_nonce(self, nonce) -> User | None:
