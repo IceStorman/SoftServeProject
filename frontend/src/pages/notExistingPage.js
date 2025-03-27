@@ -1,5 +1,6 @@
 import React from "react";
 import {Link} from "react-router-dom";
+import globalVariables from "../globalVariables";
 
 function NotExistingPage(){
 
@@ -7,7 +8,7 @@ function NotExistingPage(){
         <section className={"notExistingPage"}>
             <h1>Sorry...</h1>
             <h1>Such page doesn't exist!</h1>
-            <Link to={"/"}>Return to main page</Link>
+            <Link to={globalVariables.routeLinks.defaultRoute}>Return to main page</Link>
         </section>
     );
 }

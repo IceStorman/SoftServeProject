@@ -2,6 +2,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 
 import img_placeholder from "../../pages/imgs/image_placeholder.png"
+import globalVariables from "../../globalVariables";
 
 
 function GameCard({ nameHome, nameAway, logoHome, logoAway, scoreHome, scoreAway, time, id = 1, width, height }) {
@@ -9,7 +10,7 @@ function GameCard({ nameHome, nameAway, logoHome, logoAway, scoreHome, scoreAway
     const isBig = true;
 
     return (
-        <NavLink to={`/stream/${id}`} className="nav-link" activeClassName="active">
+        <NavLink to={`${globalVariables.routeLinks.streamRoute}${id}`} className="nav-link" activeClassName="active">
             <div
                 className={`game-card ${isVertical ? "vertical" : "horizontal"}`}
                 style={{ width: width, height: height }}

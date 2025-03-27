@@ -62,7 +62,7 @@ function SignUpPage() {
 
             login();
             toast.success(globalVariables.authMessages.successLogIn);
-            navigate('/user/preferences')
+            navigate(globalVariables.routeLinks.preferenceRoute)
         } catch (error) {
             const errorStatus = error?.response?.status
             const errorMessage = error?.response?.data?.error;
@@ -113,7 +113,7 @@ function SignUpPage() {
             </form>
 
             <div className="redirect">
-                <p className={"space"}> {t("have_account")} <Link to={"/sign-in"}>{t("log_in")}</Link></p>
+                <p className={"space"}> {t("have_account")} <Link to={globalVariables.routeLinks.signInRoute}>{t("log_in")}</Link></p>
                 <AuthBtn />
             </div>
         </section>

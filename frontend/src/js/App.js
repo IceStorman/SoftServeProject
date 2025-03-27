@@ -54,47 +54,44 @@ function App() {
                 <Header />
                 <NavBar />
 
-
                 <Routes>
-                    <Route path="/" element={<MainPage />} />
+                    <Route path={globalVariables.routeLinks.defaultRoute} element={<MainPage />} />
 
-                    <Route path="/sign-in" element={<SignInPage />} />
+                    <Route path={globalVariables.routeLinks.signInRoute} element={<SignInPage />} />
 
-                    <Route path="/sign-up" element={<SignUpPage />} />
+                    <Route path={globalVariables.routeLinks.signUpRoute} element={<SignUpPage />} />
 
-                    <Route path="/user/preferences" element={<PreferencesPage />} />
+                    <Route path={globalVariables.routeLinks.preferenceRoute} element={<PreferencesPage />} />
 
-                    <Route path="/user/account" element={<AccountPage />} />
+                    <Route path={globalVariables.routeLinks.accountRoute} element={<AccountPage />} />
 
-                    <Route path="/sign-in/google" element={<GoogleAuthCallback />} />
+                    <Route path={globalVariables.routeLinks.signInGoogleRoute} element={<GoogleAuthCallback />} />
 
-                    <Route path="/sign-in/reset-password" element={<ForgotPasswordPage />} />
+                    <Route path={globalVariables.routeLinks.forgotPasswordRoute} element={<ForgotPasswordPage />} />
 
-                    <Route path="/sign-in/reset-password/:token" element={<ResetPasswordPage />} />
+                    <Route path={globalVariables.routeLinks.resetPasswordTokenRoute} element={<ResetPasswordPage />} />
 
-                    <Route path="/check-email" element={<CheckEmailPage />} />
+                    <Route path={globalVariables.routeLinks.checkEmailRoute} element={<CheckEmailPage />} />
 
-                    <Route path="/sport" element={<SportPage />} />
+                    <Route path={globalVariables.routeLinks.sportPageRoute} element={<SportPage />} />
 
-                    <Route path="/sport/:sportName" element={<LeaguePage />} />
+                    <Route path={globalVariables.routeLinks.leaguePageRoute} element={<LeaguePage />} />
 
-                    <Route path="/sport/:sportName/league/:leagueName" element={<TeamPage />} />
+                    <Route path={globalVariables.routeLinks.teamPageRoute} element={<TeamPage />} />
 
-                    <Route path="/stream" element={<GamesPage />} />
+                    <Route path={globalVariables.routeLinks.streamRoute} element={<GamesPage />} />
 
-                    <Route path="/stream/:gameId" element={<InsideStreamPage />} />
+                    <Route path={globalVariables.routeLinks.streamPageRoute} element={<InsideStreamPage />} />
 
-                    <Route path="/news/:articleId" element={<InsideNewsPage />} />
+                    <Route path={globalVariables.routeLinks.newsPageRoute} element={<InsideNewsPage />} />
 
-                    <Route path="/not-existing" element={<NotExistingPage />} />
+                    <Route path={globalVariables.routeLinks.nonExistingRoute} element={<NotExistingPage />} />
 
-                    <Route path="*" element={<Navigate to="/not-existing" replace />} />
+                    <Route path={globalVariables.routeLinks.FAQRoute} element={<FAQpage />} />
 
-                    <Route path="/FAQ" element={<FAQpage />} />
+                    <Route path={globalVariables.routeLinks.aboutUsRoute} element={<AboutUsPage />} />
 
-                    <Route path="/AboutUs" element={<AboutUsPage />} />
-
-                    <Route path="*" element={<Navigate to="/not-existing" replace />} />
+                    <Route path={globalVariables.routeLinks.nonExistingPath} element={<Navigate to={globalVariables.routeLinks.nonExistingRoute} replace />} />
                 </Routes>
 
                 {<Footer />}
