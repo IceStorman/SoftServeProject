@@ -53,11 +53,14 @@ function SignUpPage() {
                     password: password
                 },
                 {
+                    withCredentials: true
+                },
+                {
                     headers: { 'Content-Type': 'application/json' },
                 }
             );
 
-            login({ email: response?.data?.email, username: response?.data?.username, id: response?.data?.user_id });
+            login();
             toast.success(globalVariables.authMessages.successLogIn);
             navigate('/user/preferences')
         } catch (error) {
