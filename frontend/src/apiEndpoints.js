@@ -1,5 +1,5 @@
 const apiEndpoints = {
-    url: 'http://localhost:5001/',
+    url: 'https://localhost:5001/',
 
     news: {
         getRecent: 'news/recent',
@@ -26,7 +26,7 @@ const apiEndpoints = {
     },
     
     games:{
-        getGames: 'games/specific',
+        getGames: 'games/search',
         getThisGame: 'games/this',
         getGame: 'games/today',
     },
@@ -46,11 +46,12 @@ const apiEndpoints = {
         ver: 'localization/version'
     },
 
-    user:{
+    user: {
         signUp: 'user/sign-up',
         login: 'user/login',
         resetPasswordRequest: 'user/reset-password-request',
-        resetPassword: 'user/reset-password'
+        resetPassword: 'user/reset-password',
+        refresh: 'user/refresh'
     },
 
     preference:{

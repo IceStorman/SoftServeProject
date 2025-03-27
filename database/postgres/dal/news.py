@@ -54,6 +54,7 @@ class NewsDAL(BaseDAL):
                     literal(4).label('interaction')
             )
             .filter(InteractionWithNews.timestamp >= period_of_time, InteractionWithNews.user_id == user_id, InteractionWithNews.interaction_id == 1)
+
         )
 
         views_query = (
@@ -61,6 +62,7 @@ class NewsDAL(BaseDAL):
                     InteractionWithNews.news_id.label('news_id'),
                     literal(1).label('interaction')
             )
+
             .filter(InteractionWithNews.timestamp >= period_of_time, InteractionWithNews.user_id == user_id, InteractionWithNews.interaction_id == 4)
         )
 

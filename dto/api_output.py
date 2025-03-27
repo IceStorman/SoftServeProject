@@ -3,6 +3,7 @@ from flask_babel import _
 
 class GameOutput(Schema):
     id = fields.Int()
+    sport_id = fields.Int()
     status = fields.Str()
     date = fields.Str()
     time = fields.Str()
@@ -85,14 +86,15 @@ class OutputTeamPreferences(Schema):
     logo = fields.Str(required=True)
 
 class OutputLogin():
-    def __init__(self, email: str, id: int, token: str, username: str, new_user:bool):
+    def __init__(self, email: str, user_id: int, token: str, username: str, new_user:bool, access_token:str, refresh_token:str):
         self.email = email
-        self.id = id
+        self.user_id = user_id
         self.token = token
         self.username = username
         self.new_user = new_user
+        self.access_token = access_token
+        self.refresh_token = refresh_token
         self.message = "You successfully logged in!"
-
 
 class OutputRecommendationList(Schema):
     news_id = fields.Int(required=True)
@@ -166,7 +168,12 @@ def get_script_phrases():
         "sort":               _("Sort by:"),
         "more":               _("more..."),
         "continue":           _("Continue?"),
+        "search":             _("Search"),
         "all":                _("All"),
+        "recommend_pref":     _("Recommended news by your Preferences"),
+        "news_not_found":     _("No latest news were found"),
+        "recommend_watch":    _("Recommended by your Last Watch"),
+        "games_not_found":    _("Games not found"),
         "select_country":     _("Select a country..."),
         "apply_filters":      _("Apply Filters"),
         "search_name":        _("Search by name..."),
