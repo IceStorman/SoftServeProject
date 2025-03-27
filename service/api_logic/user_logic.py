@@ -97,6 +97,13 @@ class UserService:
         
         return user
     
+    async def delete_user(self, dto):
+        self._refresh_dal.delete_all_refresh_and_access_tokens(dto.user_id)
+        self._user_dal.delete_user(dto.user_id)
+        self._preferences_dal.delete_all_user_preferences(dto)
+        
+        
+    
 
     def revoke_all_refresh_and_access_tokens(self, user_id: int) -> int:
         return self._refresh_dal.revoke_all_refresh_and_access_tokens_for_user(user_id)
