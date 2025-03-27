@@ -133,6 +133,7 @@ app = create_app()
 
 if __name__ == '__main__':
     LocalizationCompiler().compile_translations()
+    create_swagger_documentation()
     app.run(host='0.0.0.0', port=5001, debug=True, use_reloader=False, ssl_context=(cert_file, key_file))
 
 

@@ -24,7 +24,7 @@ function PreferencesPage() {
             const response = await axios.post(
                 `${apiEndpoints.url}${apiEndpoints.preference.getUserPreferences}`,
                 {
-                    user_id: user?.id,
+                    user_id: user?.user_id,
                     type: 'sport',
                 },
                 {
@@ -44,7 +44,7 @@ function PreferencesPage() {
                     `${apiEndpoints.url}${apiEndpoints.preference.changeUserPreferences}`,
                     {
                         preferences: preferences,
-                        user_id: user?.id,
+                        user_id: user?.user_id,
                         type: 'sport',
                     },
                     {
@@ -57,7 +57,7 @@ function PreferencesPage() {
                     {
                         data: {
                             preferences: [],
-                            user_id: user?.id,
+                            user_id: user?.user_id,
                             type: 'sport',
                         },
                         headers: { 'Content-Type': 'application/json' },
