@@ -5,6 +5,7 @@ const globalVariables= {
     },
 
     googleAuth:{
+        defaultLink: "https://accounts.google.com/o/oauth2/v2/auth?",
         clientId: process.env.REACT_APP_GOOGLE_CLIENT_ID,
         redirectUri: process.env.REACT_APP_GOOGLE_REDIRECT_URI,
         scope: "openid email",
@@ -43,6 +44,31 @@ const globalVariables= {
     windowSizeForBurger: {
         filters: 1050
     },
+
+    routeLinks: {
+        defaultRoute: "/",
+        nonExistingRoute: "/not-existing",
+        nonExistingPath: "*",
+        signInRoute: "/sign-in",
+        signInGoogleRoute: "/sign-in/google",
+        signUpRoute: "/sign-up",
+        preferenceRoute: "/user/preferences",
+        accountRoute: "/user/account",
+        forgotPasswordRoute: "/sign-in/reset-password",
+        resetPasswordTokenRoute: "/sign-in/reset-password/:token",
+        checkEmailRoute: "/check-email",
+        sportPageRoute: "/sport",
+        sportPagePath: "/sport/",
+        leaguePageRoute: "/sport/:sportName",
+        leaguePath: "/league/",
+        teamPageRoute: "/sport/:sportName/league/:leagueName",
+        streamRoute: "/stream",
+        streamPageRoute: "/stream/:gameId",
+        newsPageRoute: "/news/:articleId",
+        newsPath: "/news/",
+        FAQRoute: "/FAQ",
+        aboutUsRoute: "/AboutUs"
+    }
 }
 
 export default globalVariables;

@@ -13,6 +13,7 @@ import GridContainer from "../components/containers/gridBlock.jsx";
 import useTranslations from "../translationsContext";
 import {AuthContext} from "./registration/AuthContext";
 import GridRecommendationBlock from "../components/containers/gridRecommendationBlock";
+import globalVariables from "../globalVariables";
 
 
 function MainPage() {
@@ -256,7 +257,7 @@ function MainPage() {
                     {
                         !user ? (
                             <div className="blue-placeholder">
-                                <h1><NavLink to={"/sign-in"} className="nav-link" activeClassName="active">{t("sign_up_to")}</NavLink> {t("follow_teams")}</h1>
+                                <h1><NavLink to={globalVariables.routeLinks.signInRoute} className="nav-link" activeClassName="active">{t("sign_up_to")}</NavLink> {t("follow_teams")}</h1>
                             </div>
                         ) : null
                     }

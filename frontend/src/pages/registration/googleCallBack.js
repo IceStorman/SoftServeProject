@@ -26,7 +26,7 @@ function GoogleAuthCallback() {
             .then(response => {
                 login();
                 toast.success(globalVariables.authMessages.successLogIn);
-                response?.data?.new_user === true ? navigate('/user/preferences') : navigate('/');
+                response?.data?.new_user === true ? navigate(globalVariables.routeLinks.preferenceRoute) : navigate(globalVariables.routeLinks.defaultRoute);
             })
             .catch(error => {
                 const errorStatus = error?.response?.status
