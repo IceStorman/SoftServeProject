@@ -23,6 +23,30 @@ const GamesContainer = ({
 
             </div>
 
+            {!isCollapsed && (
+                <div className='games'>
+
+                    {children}
+
+                    <ReactPaginate
+                        breakLabel="..."
+                        nextLabel={currentPage === pageCount - 1 ? <TfiLayoutLineSolid className="line" /> : <SlArrowRight className="arrow" />}
+                        previousLabel={currentPage === 0 ? <TfiLayoutLineSolid className="line" /> : <SlArrowLeft className="arrow" />}
+                        onPageChange={onPageChange}
+                        pageRangeDisplayed={3}
+                        marginPagesDisplayed={1}
+                        pageCount={pageCount}
+                        forcePage={currentPage}
+                        renderOnZeroPageCount={null}
+                        activeClassName="activePaginationPane"
+                        containerClassName="pagination-games"
+                        pageLinkClassName="page-num"
+                        previousLinkClassName="page-prev"
+                        nextLinkClassName="page-next"
+                        activeLinkClassName="page-active"
+                        key={paginationKey}
+                    />
+                </div>)}
         </div>
     );
 };

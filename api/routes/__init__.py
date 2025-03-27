@@ -30,6 +30,12 @@ from pathlib import Path
 from api.routes.api_localization import babel, get_locale
 
 
+
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))  
+cert_file = os.path.join(BASE_DIR, "localhost.pem")
+key_file = os.path.join(BASE_DIR, "localhost-key.pem")
+
 load_dotenv()
 db = SQLAlchemy()
 mail = Mail()
@@ -38,7 +44,7 @@ jwt = JWTManager()
 
 def create_app():
     app = Flask(__name__, static_folder='static')
-    CORS(app)
+    CORS(app, supports_credentials=True)
 
     app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -61,6 +67,7 @@ def create_app():
     app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
     app.config['JWT_TOKEN_LOCATION'] = ['cookies']
     app.config['JWT_COOKIE_SECURE'] = False
+    app.config["JWT_COOKIE_CSRF_PROTECT"] = False
     app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1)
     app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30)
     jwt.init_app(app)
@@ -126,6 +133,6 @@ app = create_app()
 
 if __name__ == '__main__':
     LocalizationCompiler().compile_translations()
-    create_swagger_documentation()
-    app.run(host='0.0.0.0', port=5001, debug=True, use_reloader=False)
+    app.run(host='0.0.0.0', port=5001, debug=True, use_reloader=False, ssl_context=(cert_file, key_file))
+
 
