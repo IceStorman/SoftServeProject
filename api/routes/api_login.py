@@ -134,7 +134,7 @@ async def delete_account(service: UserService = Provide[Container.user_service])
     try:
         data = request.get_json()
         dto = InputUserByEmailDTO().load(data)
-        result = await service.delete_user(dto.email)
+        result = await service.delete_user(dto)
 
         return jsonify(result)
 
