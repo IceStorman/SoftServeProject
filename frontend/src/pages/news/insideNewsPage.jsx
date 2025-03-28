@@ -10,7 +10,6 @@ import useTranslations from "../../translationsContext";
 import { useInteractionTypes } from "../../interactionContext";
 
 export default function InsideNewsPage() {
-
     const { t } = useTranslations();
     const navigate = useNavigate();
     const { articleId } = useParams();
@@ -20,6 +19,14 @@ export default function InsideNewsPage() {
     const [likes, setLikes] = useState()
     const [sections, setSections] = useState()
     const [views, setViews] = useState()
+    const [likeStatus, setLikeStatus] = useState(false);
+    const [initialLikeStatus, setInitialLikeStatus] = useState(false);
+    const elementRef = useRef(null);
+    const [hasRead, setHasRead] = useState(false);
+    const likeStatusRef = useRef(likeStatus);
+    const initialLikeStatusRef = useRef(initialLikeStatus);
+    const { user } = useContext(AuthContext)
+    const interactionTypes = useInteractionTypes();
 
     useEffect(() => {
         if (!newsData) {
@@ -44,18 +51,6 @@ export default function InsideNewsPage() {
     useEffect(() => {
         if(article) setSections(Object.values(article?.article))
     }, [article]);
-
-    const [likeStatus, setLikeStatus] = useState(false);
-    const [initialLikeStatus, setInitialLikeStatus] = useState(false);
-    const elementRef = useRef(null);
-    const [hasRead, setHasRead] = useState(false);
-    const likeStatusRef = useRef(likeStatus);
-    const initialLikeStatusRef = useRef(initialLikeStatus);
-
-    const { user } = useContext(AuthContext)
-
-    const interactionTypes = useInteractionTypes();
-
 
     useEffect(() => {
         const observer = new IntersectionObserver(

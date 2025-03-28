@@ -11,9 +11,9 @@ export const InteractionProvider = ({ children }) => {
     });
 
     useEffect(() => {
-        const fetchInteractionTypes = async () => {
+        const getInteractionTypes = async () => {
             try {
-                const response = await axios.get(`${apiEndpoints.url}${apiEndpoints.interactions.fetchInteractionTypes}`);
+                const response = await axios.get(`${apiEndpoints.url}${apiEndpoints.interactions.getInteractionTypes}`);
                 const types = response.data;
                 localStorage.setItem('interactionTypes', JSON.stringify(types));
                 setInteractionTypes(types);
@@ -23,7 +23,7 @@ export const InteractionProvider = ({ children }) => {
         };
 
         if (Object.keys(interactionTypes).length === 0) {
-            fetchInteractionTypes();
+            getInteractionTypes();
         }
     }, []);
 

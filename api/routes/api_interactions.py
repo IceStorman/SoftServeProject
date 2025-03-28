@@ -29,7 +29,7 @@ def save_interaction(service: InteractionWithNewsService = Provide[Container.int
         dto = InteractionsDTO().load(data)
         service.save_interaction(dto)
 
-        return  CommonResponse().to_dict()
+        return CommonResponse().to_dict()
 
     except CustomQSportException as e:
         logger.error(f"Error in POST /: {str(e)}")
@@ -67,13 +67,12 @@ def get_interactions_count_by_blob_id(service: InteractionWithNewsService = Prov
         return get_custom_error_response(e)
 
 
-@interactions_app.route('/fetchInteractionTypes', methods=['GET'])
+@interactions_app.route('/getInteractionTypes', methods=['GET'])
 @logger.log_function_call()
 @inject
 @handle_exceptions
-def fetch_interaction_types():
+def get_interaction_types():
     try:
-
         return jsonify({interaction.name: interaction.value for interaction in InteractionTypes})
 
     except CustomQSportException as e:

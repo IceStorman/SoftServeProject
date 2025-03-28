@@ -15,7 +15,6 @@ class InteractionWithNewsService:
 
         self._logger = Logger("logger", "all.log").logger
 
-
     def __convert_input_to_db_dto(self, interaction_input_dto):
         news_entry = self._news_dal.get_news_by_id(interaction_input_dto.article_blob_id)
 
@@ -31,7 +30,6 @@ class InteractionWithNewsService:
 
         return db_dto
 
-
     def save_interaction(self, interaction_input_dto):
         interaction_dto = self.__convert_input_to_db_dto(interaction_input_dto)
         opposite_interaction = {LIKE_ID: DISLIKE_ID, DISLIKE_ID: LIKE_ID}.get(interaction_dto.interaction_type)
@@ -40,13 +38,11 @@ class InteractionWithNewsService:
         if not was_updated:
             self._interaction_with_news_dal.create_interaction(interaction_dto)
 
-
     def has_interaction_occurred(self, interaction_input_dto) -> bool:
         interaction_dto = self.__convert_input_to_db_dto(interaction_input_dto)
         interaction_entry = self._interaction_with_news_dal.get_interaction(interaction_dto.user_id, interaction_dto.news_id, interaction_dto.interaction_type)
 
         return bool(interaction_entry)
-
 
     def get_interactions_counts(self, interaction_input_dto):
         interactions_counts = self._news_dal.get_interaction_counts(interaction_input_dto.article_blob_id)
