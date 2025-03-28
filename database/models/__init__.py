@@ -23,5 +23,6 @@ from .stream_url import StreamUrl
 from .games_statuses import GamesStatuses
 from .interactions_with_news import InteractionWithNews
 from .interaction_types import InteractionTypes
+from .comments import Comment
 
 from .base import Base
