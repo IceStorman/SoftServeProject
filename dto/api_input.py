@@ -169,3 +169,11 @@ class TablesAndColumnsForUserPreferencesDTO:
         self.related_name = related_name
         self.related_logo = related_logo
         self.related_id = related_id
+
+
+class InputCommentDTO(BaseDTO):
+    comment_id = fields.Int(required=False, missing=None)
+    user_id = fields.Int(required=False, missing=None)
+    article_blob_id = fields.Str(required=False, missing=None)
+    content = fields.Str(required=False, missing=None)
+    parent_comment_id = fields.Int(required=False, missing=None)

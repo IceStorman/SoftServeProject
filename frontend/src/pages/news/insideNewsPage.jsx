@@ -5,6 +5,7 @@ import useTranslations from "../../translationsContext";
 import apiEndpoints from "../../apiEndpoints";
 import axios from "axios";
 import {toast} from "sonner";
+import CommentsBlock from "../../components/containers/commentsBlock";
 
 
 export default function InsideNewsPage() {
@@ -42,6 +43,26 @@ export default function InsideNewsPage() {
         if(article) setSections(Object.values(article?.article))
     }, [article]);
 
+    const [comments, setComments] = useState([])
+
+    const fetchComments = async () => {
+        try {
+            const response = await axios.get(
+                `${apiEndpoints.url}${apiEndpoints.comment.getComments}`, {
+                params:
+                    { article_blob_id: articleId },
+            }
+            );
+            console.log("comments:", {response})
+            setComments(response.data);
+        } catch (error) {
+            console.error("Error fetching replies:", error);
+        }
+    };
+
+    useEffect(()=>{
+        fetchComments()
+    }, []);
 
     return (
         <section className="news-block">
@@ -81,7 +102,7 @@ export default function InsideNewsPage() {
 
             <section className="comments">
             
-                <hr />
+                <CommentsBlock comments={comments} />
                
             </section>
         </section>

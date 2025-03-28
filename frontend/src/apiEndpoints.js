@@ -51,6 +51,13 @@ const apiEndpoints = {
     preference:{
         getUserPreferences: 'preferences/get',
         changeUserPreferences: 'preferences/'
+    },
+
+    comment:{
+        saveComment: 'comments/save',
+        editComment: 'comments/edit',
+        deleteComment: 'comments/delete',
+        getComments: 'comments/get'
     }
 };
 

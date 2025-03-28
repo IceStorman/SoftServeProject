@@ -8,7 +8,9 @@ from api.routes import (
     api_teams,
     api_countries,
     api_login,
-    api_user_preferences, api_localization
+    api_user_preferences,
+    api_localization,
+    api_comments
 )
 from api.routes.api_login import login_app
 from api.routes.cache import cache
@@ -97,6 +99,7 @@ def create_app():
     app.register_blueprint(api_localization.localization_app, url_prefix='/')
     app.register_blueprint(api_login.login_app, url_prefix='/user')
     app.register_blueprint(api_user_preferences.preferences_app, url_prefix='/preferences')
+    app.register_blueprint(api_comments.comments_app, url_prefix='/comments')
 
 
     app.container = Container()
