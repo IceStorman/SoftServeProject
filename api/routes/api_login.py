@@ -1,4 +1,3 @@
-from accelerate.commands.config.update import description
 from flask import request, current_app, redirect, jsonify
 from oauthlib.oauth2 import WebApplicationClient
 from flask_smorest import Blueprint
