@@ -29,7 +29,6 @@ from api.routes.api_localization import babel, get_locale
 
 
 
-
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))  
 cert_file = os.path.join(BASE_DIR, "localhost.pem")
 key_file = os.path.join(BASE_DIR, "localhost-key.pem")

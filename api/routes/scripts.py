@@ -1,6 +1,8 @@
 from flask import request
 import hashlib
 import json
+from flask_jwt_extended import get_jwt
+from api.routes.cache import cache
 from logger.logger import Logger
 
 logger = Logger("logger", "all.log")
@@ -28,3 +30,13 @@ def check_positive_param(param_name):
         return False
     logger.debug(f"Valid parameter value for {param_name}: {param_value}")
     return True
+
+
+def get_recommendation_key():
+    user = get_jwt()
+    return f"recommendation_{user['user_id']}"
+
+
+def delete_recommendation_key(user_id: int):
+    key = f"recommendation_{user_id}"
+    cache.delete(key)
