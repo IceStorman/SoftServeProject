@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     const getRefresh = async () => {
-        let token = Cookies.get("access_token");
+        let token = Cookies.get("access_token_cookie");
 
         if (!token) {
             const refreshToken = Cookies.get("refresh_token_cookie");
@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }) => {
                         {},
                         { withCredentials: true }
                     );
-                    token = Cookies.get("access_token");
+                    token = Cookies.get("access_token_cookie");
                 } catch (error) {
                     logout();
                     token = null
@@ -64,7 +64,7 @@ export const AuthProvider = ({ children }) => {
 
     const logout = () => {
         Cookies.remove("user");
-        Cookies.remove("access_token");
+        Cookies.remove("access_token_cookie");
         Cookies.remove("refresh_token_cookie");
         setUser(null);
     };

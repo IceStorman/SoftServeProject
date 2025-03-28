@@ -1,8 +1,11 @@
+from random import random
+import random
 import pandas as pd
 from database.models import News, TeamInNews, Sport, InteractionWithNews
 from sqlalchemy import union_all, literal, func, ClauseElement
 from datetime import timedelta, datetime
 from database.postgres.dal.base import BaseDAL
+from service.api_logic.helpers.calculating_helper import RecommendationConsts
 
 
 PERIOD_OF_TIME = 90

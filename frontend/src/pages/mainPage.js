@@ -106,16 +106,13 @@ function MainPage() {
         try {
             if (!user) return;
 
-            axios.post(`${apiEndpoints.url}${apiEndpoints.news.getRecommendations}`,
-                {
-                    email: user.email,
-                },
+            axios.get(`${apiEndpoints.url}${apiEndpoints.news.getRecommendations}`,
                 {
                     headers: { 'Content-Type': 'application/json' },
+                    withCredentials: true
                 })
                 .then(res => {
                     setRecommendationNews(res.data);
-
                 })
                 .catch(error => {
                     toast.error(`:( Troubles With Recommendation News Loading: ${error}`);
