@@ -9,16 +9,11 @@ import NewsShowcase from "../components/containers/newsShowcase.jsx";
 import Column from "../components/containers/column.jsx";
 import GameSlider from "../components/containers/gameSlider.jsx";
 import GameCard from "../components/cards/gameCard.jsx"
-import img1 from "./imgs/1.jpg"
-import img2 from "./imgs/2.jpg"
-import img3 from "./imgs/3.jpg"
-import img4 from "./imgs/4.jpg"
-import img5 from "./imgs/5.jpg"
 import GridContainer from "../components/containers/gridBlock.jsx";
 import useTranslations from "../translationsContext";
 import {AuthContext} from "./registration/AuthContext";
-import Cookies from "js-cookie";
 import GridRecommendationBlock from "../components/containers/gridRecommendationBlock";
+import globalVariables from "../globalVariables";
 
 function MainPage() {
     const { user } = useContext(AuthContext);
@@ -247,7 +242,7 @@ function MainPage() {
                     {
                         !user ? (
                             <div className="blue-placeholder">
-                                <h1><NavLink to={"/sign-in"} className="nav-link" activeClassName="active">{t("sign_up_to")}</NavLink> {t("follow_teams")}</h1>
+                                <h1><NavLink to={globalVariables.routeLinks.signInRoute} className="nav-link" activeClassName="active">{t("sign_up_to")}</NavLink> {t("follow_teams")}</h1>
                             </div>
                         ) : null
                     }

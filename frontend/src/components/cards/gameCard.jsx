@@ -1,5 +1,4 @@
 import React from "react";
-import img_placeholder from "../../pages/imgs/image_placeholder.png"
 
 
 function GameCard({ nameHome, nameAway, logoHome, logoAway, scoreHome, scoreAway, time, isVertical }) {
@@ -14,7 +13,7 @@ function GameCard({ nameHome, nameAway, logoHome, logoAway, scoreHome, scoreAway
                     alt={' '}
                     className="hometeam-img"
                 />
-            ) : (<img src={img_placeholder}
+            ) : (<img src={""}
                 alt={nameHome}
                 className="hometeam-img"
             />)}
