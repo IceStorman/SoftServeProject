@@ -8,6 +8,7 @@ from service.api_logic.interactions_logic import InteractionWithNewsService
 from api.container.container import Container
 from dto.common_response import CommonResponse
 from service.api_logic.models.api_models import InteractionTypes
+from api.routes.cache import cache
 
 logger = Logger("logger", "all.log")
 
@@ -69,6 +70,7 @@ def get_interactions_count_by_blob_id(service: InteractionWithNewsService = Prov
 
 @interactions_app.route('/getInteractionTypes', methods=['GET'])
 @logger.log_function_call()
+@cache.cached(timeout=60*60)
 @inject
 @handle_exceptions
 def get_interaction_types():
