@@ -18,11 +18,29 @@ function AccountPage() {
     const { user, logout } = useContext(AuthContext);
 
     const [isOpen, setIsOpen] = useState(false);
-
-    const handleDeleteAccount = () => {
+    const handleDeleteAccount = async () => {
         setIsOpen(false);
-        console.log("さようなら");  //future logic for delete
-        handleLogOut()
+    
+        if (!user?.email) {
+            toast.error("Не вдалося отримати email користувача");
+            return;
+        }
+    
+        try {
+            const response = await axios.delete(apiEndpoints.deleteAccount, {
+                data: { email: user.email }
+            });
+    
+            if (response.status === 200) {
+                toast.success("さようなら");
+                handleLogOut();
+            } else {
+                toast.error("Помилка видалення акаунту");
+            }
+        } catch (error) {
+            console.error("Помилка при видаленні акаунту:", error);
+            toast.error("Сталася помилка. Спробуйте ще раз.");
+        }
     };
 
     const handleLogOut = () => {
