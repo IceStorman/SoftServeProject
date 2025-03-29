@@ -3,6 +3,7 @@ from flask_babel import _
 
 class GameOutput(Schema):
     id = fields.Int()
+    sport_id = fields.Int()
     status = fields.Str()
     date = fields.Str()
     time = fields.Str()
@@ -22,10 +23,19 @@ class TeamsLeagueOutput(Schema):
     team_name = fields.Str(attribute="name")
     logo = fields.Str()
     id = fields.Str(attribute="api_id")
+    sport_id = fields.Str()
+
 
 class TeamsLeagueOutputWithCount(Schema):
     teams = fields.List(fields.Nested(TeamsLeagueOutput))
     count = fields.Int()
+
+
+class PlayersOutput(Schema):
+    name = fields.Str(attribute="name")
+    id = fields.Str(attribute="api_id")
+    logo = fields.Str(attribute="logo")
+
 
 class StreamsOutput(Schema):
     id = fields.Str(attribute="stream_id")
@@ -47,14 +57,17 @@ class SportsLeagueOutput(Schema):
     logo = fields.Str()
     name = fields.Str()
 
+
 class SportsLeagueOutputWithCount(Schema):
     teams = fields.List(fields.Nested(SportsLeagueOutput))
     count = fields.Int()
+
 
 class CountriesOutput(Schema):
     id = fields.Int(attribute="country_id")
     flag = fields.Str()
     name = fields.Str()
+
 
 class ListResponseDTO(Schema):
     items = fields.List(fields.Raw(), missing=[])
@@ -68,9 +81,11 @@ class ListResponseDTO(Schema):
     def to_dict(self):
         return {"items": self.items, "count": self.count}
 
+
 class OutputUser(Schema):
     username = fields.Str(required=True)
     email = fields.Str(required=True)
+
 
 class OutputSportPreferences(Schema):
     user_id = fields.Int(required=True)
@@ -78,21 +93,24 @@ class OutputSportPreferences(Schema):
     sport_name = fields.Str(required=True)
     sport_img = fields.Str(required=True)
 
+
 class OutputTeamPreferences(Schema):
     user_id = fields.Int(required=True)
     team_index_id = fields.Str(required=True)
     name = fields.Str(required=True)
     logo = fields.Str(required=True)
 
+
 class OutputLogin():
-    def __init__(self, email: str, id: int, token: str, username: str, new_user:bool):
+    def __init__(self, email: str, user_id: int, token: str, username: str, new_user:bool, access_token:str, refresh_token:str):
         self.email = email
-        self.id = id
+        self.user_id = user_id
         self.token = token
         self.username = username
         self.new_user = new_user
+        self.access_token = access_token
+        self.refresh_token = refresh_token
         self.message = "You successfully logged in!"
-
 
 class OutputRecommendationList(Schema):
     news_id = fields.Int(required=True)
@@ -167,7 +185,12 @@ def get_script_phrases():
         "sort":               _("Sort by:"),
         "more":               _("more..."),
         "continue":           _("Continue?"),
+        "search":             _("Search"),
         "all":                _("All"),
+        "recommend_pref":     _("Recommended news by your Preferences"),
+        "news_not_found":     _("No latest news were found"),
+        "recommend_watch":    _("Recommended by your Last Watch"),
+        "games_not_found":    _("Games not found"),
         "select_country":     _("Select a country..."),
         "apply_filters":      _("Apply Filters"),
         "search_name":        _("Search by name..."),

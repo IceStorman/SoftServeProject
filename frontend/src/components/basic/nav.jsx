@@ -27,10 +27,10 @@ function NavBar() {
 
     const navBar = (
         <>
-            <NavLink to={"/"} className={({ isActive }) => clsx("nav-link", { active: isActive })}>{t("news")}</NavLink>
-            <NavLink to={"/sport"} className={({ isActive }) => clsx("nav-link", { active: isActive })}>{t("leagues")}</NavLink>
-            <NavLink to={"/stream"} className={({ isActive }) => clsx("nav-link", { active: isActive })}>{t("games")}</NavLink>
-            <NavLink to={"/search"} className={({ isActive }) => clsx("nav-link", { active: isActive })}>{t("search")}</NavLink>
+            <NavLink to={globalVariables.routeLinks.defaultRoute} className={({ isActive }) => clsx("nav-link", { active: isActive })}>{t("news")}</NavLink>
+            <NavLink to={globalVariables.routeLinks.sportPageRoute} className={({ isActive }) => clsx("nav-link", { active: isActive })}>{t("leagues")}</NavLink>
+            <NavLink to={globalVariables.routeLinks.streamRoute} className={({ isActive }) => clsx("nav-link", { active: isActive })}>{t("games")}</NavLink>
+            <NavLink to={globalVariables.routeLinks.searchPageRoute} className={({ isActive }) => clsx("nav-link", { active: isActive })}>{t("search")}</NavLink>
         </>
     );
 
@@ -64,11 +64,12 @@ function NavBar() {
                     {!user ? (
                         <LoginBtn />
                     ) : (
-                        <button className="account-button filled" onClick={() => navigate("/user/account")}>
+                        <button className="account-button filled" onClick={() => navigate(globalVariables.routeLinks.accountRoute)}>
                             <User size={26} className="icon" />
                         </button>
                     )}
                 </div>
+
             </div>
 
             <hr />

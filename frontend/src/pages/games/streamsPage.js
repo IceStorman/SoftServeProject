@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
-import img1 from "../imgs/1.jpg";
-import img2 from "../imgs/2.jpg";
 import FiltersRenderer from "../../components/filters/filterRender";
 import GamesContainer from "../../components/containers/gamesContainer";
-import StreamCard from "../../components/cards/streamCard";
 import useTranslations from "../../translationsContext";
 import axios from "axios";
 import apiEndpoints from "../../apiEndpoints";
@@ -24,8 +21,6 @@ function StreamsPage() {
     const [currentStreams, setCurrentStreams] = useState([]);
     const [pageCount, setPageCount] = useState(0);
     const [currentPage, setCurrentPage] = useState(0);
-    const [inputValue, setInputValue] = useState('');
-    const [prevInputValue, setPrevInputValue] = useState('');
     const burgerMenu = useBurgerMenu(`${globalVariables.windowSizeForBurger.streams}`);
     const initialIcon = <FaFilter size={28} />;
     const closeIcon = <FaTimes size={28} color="black" />;
@@ -38,7 +33,6 @@ function StreamsPage() {
     });
 
     const getStreams = async (page = 0) => {
-        setPrevInputValue(inputValue);
 
         try {
             const response = await axios.post(

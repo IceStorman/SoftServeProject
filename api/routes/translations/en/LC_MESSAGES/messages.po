@@ -143,6 +143,21 @@ msgstr "Select sport"
 msgid "teams"
 msgstr "teams"
 
+msgid "Search"
+msgstr "Search..."
+
+msgid "All"
+msgstr "All"
+
+msgid "Recommended news by your Preferences"
+msgstr "Recommended news by your Preferences"
+
+msgid "No latest news were found"
+msgstr "No latest news were found"
+
+msgid "Recommended by your Last Watch"
+msgstr "Recommended by your Last Watch"
+
 msgid "Account"
 msgstr "Account"
 
@@ -175,6 +190,9 @@ msgstr "What are you interested in?"
 
 msgid "Choose your favourite sports:"
 msgstr "Choose your favourite sports:"
+
+msgid "Games not found"
+msgstr "Games not found"
 
 msgid "All"
 msgstr "All"

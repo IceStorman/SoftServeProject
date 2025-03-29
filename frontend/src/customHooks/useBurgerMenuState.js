@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 function useBurgerMenuState({
-                                initialIcon,
-                                closeIcon,
-                                menuSelector = ".burger-nav",
-                                buttonSelector = ".menu-btn"
-                            }) {
+    initialIcon,
+    closeIcon,
+    menuSelector = ".burger-nav",
+    buttonSelector = ".menu-btn"
+}) {
     const [menuIsOpen, setMenuIsOpen] = useState(false);
     const [menuIcon, setMenuIcon] = useState(initialIcon);
     const location = useLocation();

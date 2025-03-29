@@ -66,13 +66,6 @@ class BaseDTO(Schema):
         return data
 
 
-class TeamsStatisticsOrPlayersDTO(BaseDTO):
-    sport_id = fields.Int(required=False, missing=None)
-    team_id = fields.Int(required=False, missing=None)
-    league_id = fields.Int(required=False, missing=None)
-    name = fields.Str(required=False, missing=None)
-
-
 class PaginationDTO(BaseDTO):
     page = fields.Int(required=False, missing=0)
     per_page = fields.Int(required=False, missing=0)
@@ -94,6 +87,14 @@ class TeamsLeagueDTO(BaseDTO):
     sport_id = fields.Int(required=False, missing=None)
     league_id = fields.Int(required=False, missing=None)
     country_id = fields.Int(required=False, missing=None)
+    name = fields.Str(required=False, missing=None)
+    filters_data = fields.Nested(SearchDTO, required=False, missing=None)
+
+
+class TeamsStatisticsOrPlayersDTO(BaseDTO):
+    sport_id = fields.Int(required=False, missing=None)
+    team_id = fields.Int(required=False, missing=None)
+    league_id = fields.Int(required=False, missing=None)
     name = fields.Str(required=False, missing=None)
     filters_data = fields.Nested(SearchDTO, required=False, missing=None)
 
@@ -162,8 +163,10 @@ class InputUserLogInDTO(BaseDTO):
     email_or_username = fields.Str(required=False, missing=None)
     password = fields.Str(required=False, missing=None)
     auth_provider = fields.String(required=False, missing=None)
-
-
+    current_ip = fields.String(required=False, missing=None)
+    current_device = fields.String(required=False, missing=None)
+    
+    
 class TablesAndColumnsForUserPreferencesDTO:
     def __init__(self, main_table, related_table, user_id_field, type_id_field, related_name, related_logo, related_id):
         self.main_table = main_table

@@ -14,46 +14,6 @@ function InsideStreamPage() {
     const [stream, setStream] = useState(stateStream);
     const [videoIds, setVideoIds] = useState([]);
 
-    // useEffect(() => {
-    //
-    //     const fetchStreams = async () => {
-    //         try {
-    //             setLoading(true);
-    //
-    //             const response = await axios.post(
-    //                 `${apiEndpoints.url}${apiEndpoints.stream.getInfo}`,
-    //                 {
-    //                     stream_id: streamId,
-    //                 },
-    //                 {
-    //                     headers: {'Content-Type': 'application/json'},
-    //                 }
-    //             );
-    //             const fetchedStream = response.data;
-    //
-    //             const youtubeVideoIds = fetchedStream.links
-    //                 .map(link => extractYouTubeId(link))
-    //                 .filter(id => id !== null);
-    //
-    //             const otherLinks = fetchedStream.links.filter(link => extractYouTubeId(link) === null);
-    //
-    //             setStream({
-    //                 ...fetchedStream,
-    //                 youtubeVideoIds,
-    //                 otherLinks,
-    //             });
-    //         } catch (error) {
-    //             if (stream.length === 0) {
-    //                 navigate("/not-existing")
-    //             }
-    //             toast.error(`:( Troubles With This Stream Loading: ${error}`);
-    //         }
-    //     };
-    //
-    //     fetchStreams();
-    // }, []);
-    //
-
     useEffect(() => {
         if (!stream) {
             axios.post(
@@ -96,8 +56,5 @@ function InsideStreamPage() {
             otherLinks={stream?.stream_url}
         />
     )
-
-
-
 }
 export default InsideStreamPage;

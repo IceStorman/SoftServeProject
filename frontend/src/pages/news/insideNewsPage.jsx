@@ -5,6 +5,7 @@ import useTranslations from "../../translationsContext";
 import apiEndpoints from "../../apiEndpoints";
 import axios from "axios";
 import {toast} from "sonner";
+import globalVariables from "../../globalVariables";
 
 
 export default function InsideNewsPage() {
@@ -30,7 +31,7 @@ export default function InsideNewsPage() {
                 })
                 .catch((error) => {
                     toast.error(`:( Trouble loading news: ${error}`);
-                    navigate("/not-existing");
+                    navigate(globalVariables.routeLinks.nonExistingRoute);
                 });
         } else {
             setArticle(newsData?.article);

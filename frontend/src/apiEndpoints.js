@@ -1,5 +1,5 @@
 const apiEndpoints = {
-    url: 'http://localhost:5001/',
+    url: 'https://localhost:5001/',
 
     news: {
         getRecent: 'news/recent',
@@ -8,6 +8,7 @@ const apiEndpoints = {
         getCurrentNews: '',
         likeArticle: 'like',
         getRecommendations: 'news/recommendation',
+        getPaginated: 'news/search'
     },
 
     sports:{
@@ -19,6 +20,7 @@ const apiEndpoints = {
     teams:{
         getTeamsSearch: 'teams/search',
         getTeamsAll: 'teams/league',
+        getTeamsPlayers: 'teams/players',
     },
 
     players:{
@@ -26,7 +28,7 @@ const apiEndpoints = {
     },
     
     games:{
-        getGames: 'games/specific',
+        getGames: 'games/search',
         getThisGame: 'games/this',
         getGame: 'games/today',
     },
@@ -45,11 +47,12 @@ const apiEndpoints = {
         ver: 'localization/version'
     },
 
-    user:{
+    user: {
         signUp: 'user/sign-up',
         login: 'user/login',
         resetPasswordRequest: 'user/reset-password-request',
-        resetPassword: 'user/reset-password'
+        resetPassword: 'user/reset-password',
+        refresh: 'user/refresh'
     },
 
     preference:{

@@ -1,8 +1,4 @@
-import React, { useState } from 'react';
-import { SlArrowDown, SlArrowUp } from "react-icons/sl";
-import ReactPaginate from "react-paginate";
-import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
-import { TfiLayoutLineSolid } from "react-icons/tfi";
+import React from 'react';
 import StreamCard from "../cards/streamCard";
 
 const GamesContainer = ({
