@@ -14,7 +14,7 @@ class FilterManagerStrategy:
         "Games": GamesFilterManager,
         "League": LeagueFilterManager,
         "TeamIndex": TeamsFilterManager,
-        "Players": PlayersFilterManager
+        "Players": PlayersFilterManager,
         "Streams": StreamsFilterManager
     }
 

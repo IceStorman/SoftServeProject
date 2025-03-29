@@ -14,12 +14,10 @@ class PlayerService:
         query, count = FilterManagerStrategy.apply_filters(Players, query, filters_dto)
 
         players = self.__players_dal.query_output(query)
-        players_output = PlayersOutput(many=True)
-        player = players_output.dump(players)
+        players_output = PlayersOutput(many=True).dump(players)
+        response_dto = ListResponseDTO(items=players_output, count=count)
 
-        response_dto = ListResponseDTO()
-
-        return response_dto.dump({"items": player, "count": count})
+        return response_dto.to_dict()
 
 
 
