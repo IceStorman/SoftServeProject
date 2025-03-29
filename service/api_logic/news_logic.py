@@ -72,10 +72,9 @@ class NewsService:
 
         news = self._news_dal.query_output(filtered_query)
         news_output = self.json_news(news).json
+        response_dto = ListResponseDTO(items = news_output, count = count)
 
-        response_dto = ListResponseDTO()
-
-        return response_dto.dump({"items": news_output, "count": count})
+        return response_dto.to_dict()
 
     def user_recommendations_based_on_preferences_and_last_watch(
             self,
