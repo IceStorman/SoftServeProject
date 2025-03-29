@@ -1,4 +1,5 @@
 from flask import Blueprint, request
+from api.routes.scripts import delete_recommendation_key
 from dto.api_input import UpdateUserPreferencesDTO, GetUserPreferencesDTO
 from dto.common_response import CommonResponse
 from exept.exeptions import DatabaseConnectionError, CustomQSportException
@@ -7,8 +8,6 @@ from logger.logger import Logger
 from dependency_injector.wiring import inject, Provide
 from service.api_logic.user_logic import UserService
 from api.container.container import Container
-
-
 
 logger = Logger("api_routes_logger", "api_routes_logger.log")
 
@@ -34,6 +33,7 @@ def sport_preferences_endpoint(service: UserService = Provide[Container.user_ser
 
         if request.method == "POST":
             service.add_preferences(dto)
+            delete_recommendation_key(dto.user_id)
 
             return  CommonResponse().to_dict()
 
