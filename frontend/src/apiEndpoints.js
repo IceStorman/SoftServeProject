@@ -36,8 +36,7 @@ const apiEndpoints = {
     },
 
     stream:{
-        getAll: 'streams/all',
-        getInfo: 'streams/info'
+        getStreamsSearch: 'streams/search'
     },
 
     localization:{
