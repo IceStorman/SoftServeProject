@@ -66,6 +66,7 @@ const globalVariables= {
         teamPageRoute: "/sport/:sportName/league/:leagueName",
         streamRoute: "/stream",
         streamPageRoute: "/stream/:streamId",
+        streamPagePath: "/stream/",
         newsPageRoute: "/news/:articleId",
         newsPath: "/news/",
         FAQRoute: "/FAQ",

@@ -63,7 +63,7 @@ function NavBar() {
                     {!user ? (
                         <LoginBtn />
                     ) : (
-                        <button className="account-button filled" onClick={() => navigate("/user/account")}>
+                        <button className="account-button filled" onClick={() => navigate(globalVariables.routeLinks.accountRoute)}>
                             <User size={26} className="icon" />
                         </button>
                     )}
