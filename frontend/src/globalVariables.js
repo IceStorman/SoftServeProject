@@ -42,7 +42,9 @@ const globalVariables= {
     },
 
     windowSizeForBurger: {
-        filters: 1050
+        filters: 1050,
+        streams: 1000,
+        navBar: 600
     },
 
     routeLinks: {
@@ -63,7 +65,8 @@ const globalVariables= {
         leaguePath: "/league/",
         teamPageRoute: "/sport/:sportName/league/:leagueName",
         streamRoute: "/stream",
-        streamPageRoute: "/stream/:gameId",
+        streamPageRoute: "/stream/:streamId",
+        streamPagePath: "/stream/",
         newsPageRoute: "/news/:articleId",
         newsPath: "/news/",
         FAQRoute: "/FAQ",

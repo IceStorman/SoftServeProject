@@ -19,6 +19,7 @@ const apiEndpoints = {
     teams:{
         getTeamsSearch: 'teams/search',
         getTeamsAll: 'teams/league',
+        getTeamsPlayers: 'teams/players',
     },
 
     players:{
@@ -36,8 +37,7 @@ const apiEndpoints = {
     },
 
     stream:{
-        getAll: 'streams/all',
-        getInfo: 'streams/info'
+        getStreamsSearch: 'streams/search'
     },
 
     localization:{

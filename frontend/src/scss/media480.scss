@@ -88,5 +88,21 @@
     }
   }
 
+  .streams-page{
+    
+    .content{
 
+      .game{
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+      }
+
+      .filter-wrapper{
+        .menu-btn{
+          padding: 0.25rem;
+        }
+      }
+    }
+  }
 }
