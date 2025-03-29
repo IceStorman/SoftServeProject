@@ -5,6 +5,7 @@ from flask import Response
 from sqlalchemy import desc
 from database.models import News
 from database.azure_blob_storage.save_get_blob import blob_get_news
+from dto.api_output import ListResponseDTO
 from service.api_logic.scripts import get_sport_by_name
 from logger.logger import Logger
 from service.api_logic.filter_manager.filter_manager_strategy import FilterManagerStrategy
@@ -70,7 +71,10 @@ class NewsService:
         filtered_query, count = FilterManagerStrategy.apply_filters(News, query, filters)
 
         news = self._news_dal.query_output(filtered_query)
-        return self.json_news(news)
+        news_output = self.json_news(news).json
+        response_dto = ListResponseDTO(items = news_output, count = count)
+
+        return response_dto.to_dict()
 
     def user_recommendations_based_on_preferences_and_last_watch(
             self,
