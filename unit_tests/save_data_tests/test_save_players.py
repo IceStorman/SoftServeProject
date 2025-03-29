@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import patch
 from database.postgres import save_api_data
-from database.session import SessionLocal
+from database.postgres.dto import PlayerDTO
 
 
 class TestPlayersSavingData:
@@ -15,14 +15,13 @@ class TestPlayersSavingData:
         json_case_valid_parameters = {
             "get": "players",
             'parameters': {
-                'team': 1488
+                'team': 148
             },
             "response": [{}]
         }
 
         save_api_data(json_case_valid_parameters, self.sport_name)
-        mock_save_players.assert_called_once()
-
+        mock_save_players.assert_called_once_with([])
 
     @patch('database.postgres.dal.PlayerDal.save_players')
     def test_full_info(self, mock_save_players):
@@ -50,7 +49,22 @@ class TestPlayersSavingData:
         }
 
         save_api_data(json_case_full_info, self.sport_name)
-        mock_save_players.assert_called_once()
+        mock_save_players.assert_called_once_with([
+            PlayerDTO(
+            name="Neymar",
+            logo="https://media.api-sports.io/football/players/276.png",
+            sport_id=11,
+            api_id=6,
+            team_index_id=1414
+            ),
+            PlayerDTO(
+                name="John Doe",
+                logo="https://example.com/john_doe.png",
+                sport_id=11,
+                api_id=3,
+                team_index_id=None
+            )
+        ])
 
 
     @patch('database.postgres.dal.PlayerDal.save_players')
@@ -85,4 +99,19 @@ class TestPlayersSavingData:
         }
 
         save_api_data(json_case_full_bad_info, self.sport_name)
-        mock_save_players.assert_called_once()
+        mock_save_players.assert_called_once_with([
+            PlayerDTO(
+                name="Neymar",
+                logo="https://media.api-sports.io/football/players/276.png",
+                sport_id=11,
+                api_id=2222,
+                team_index_id=1450
+            ),
+            PlayerDTO(
+                name="John Doe",
+                logo="https://example.com/john_doe.png",
+                sport_id=11,
+                api_id=3,
+                team_index_id=1460
+            )
+        ])
