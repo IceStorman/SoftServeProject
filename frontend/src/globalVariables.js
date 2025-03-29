@@ -70,7 +70,8 @@ const globalVariables= {
         newsPageRoute: "/news/:articleId",
         newsPath: "/news/",
         FAQRoute: "/FAQ",
-        aboutUsRoute: "/AboutUs"
+        aboutUsRoute: "/AboutUs",
+        searchPageRoute: "/search" 
     }
 }
 

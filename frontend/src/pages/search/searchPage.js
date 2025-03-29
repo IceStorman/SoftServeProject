@@ -18,7 +18,7 @@ import TeamCard from "../../components/cards/teamCard";
 
 function SearchPage() {
     const { t } = useTranslations();
-    const [selectedModel, setSelectedModel] = useState("streams");
+    const [selectedModel, setSelectedModel] = useState("leagues");
     const [filters, setFilters] = useState([]);
     const [currentItems, setCurrentItems] = useState([]);
     const [pageCount, setPageCount] = useState(0);
@@ -38,18 +38,28 @@ function SearchPage() {
 
     const componentMap = (type, item) => {
         const componentsCard = {
+            streams: <StreamCard key={`${type}-${item.id}`} stream={item}/>,
             leagues: <LeagueCard
+                    key={`${type}-${item.id}`}
                     leagueName={item.name}
                     img={item.logo}
                     id={item.id}
                     sportId={sportId}
                     />,
+            teams:  <TeamCard
+                    key={`${type}-${item.id}`}
+                    leagueName={item.team_name}
+                    img={item.logo}
+                    sportId={item.sport_id}
+                    id={item.id}
+                    />
         }
-        console.log(componentsCard[type]);
-        return componentsCard[type] || {};
+        
+        return componentsCard[type] || null;
     };
 
     const fetchData = async (model, page = 0) => {
+        setCurrentItems([]);
         setPrevInputValue(inputValue);
     
         let filtersData = [...filters];
@@ -75,14 +85,14 @@ function SearchPage() {
             const response = await axios.post(
                 `${apiEndpoints.url}${endpointMap[model]}`,
                 {
-                    pagination: { page: page + 1, per_page: 10 },
+                    pagination: { page: page + 1, per_page: 9 },
                     filters: filtersData,
                 },
                 { headers: { "Content-Type": "application/json" } }
             );
     
             setCurrentItems(response.data.items || []);
-            setPageCount(Math.ceil(response.data.count / 10));
+            setPageCount(Math.ceil(response.data.count / 9));
             console.log(response.data.items)
         } catch (error) {
             setPageCount(0);
@@ -91,6 +101,7 @@ function SearchPage() {
     };    
 
     useEffect(() => {
+        setCurrentItems([]);
         fetchData(selectedModel, 0);
     }, [selectedModel, filters]);
 
@@ -128,6 +139,7 @@ function SearchPage() {
             )}
 
             <SearchBlock
+                key={selectedModel}
                 gridSize={{ columns: 3, rows: 2, cardSize: { width: 4000, height: 400 } }}
                 postsPerPage={10}
                 pageCount={pageCount}
@@ -141,7 +153,7 @@ function SearchPage() {
             
                 children={currentItems.length > 0 ? (
                     currentItems.map((item) => {
-                       return componentMap(selectedModel, item);
+                        return componentMap(selectedModel, item);
                     })
                 ) : (
                     <div>{t("no_results_found")}</div>
