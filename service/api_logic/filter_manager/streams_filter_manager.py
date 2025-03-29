@@ -2,7 +2,7 @@ from sqlalchemy import cast
 from database.models import Stream
 from service.api_logic.filter_manager.base_filter_manager import BaseFilterManager
 from sqlalchemy.orm import Query
-from sqlalchemy.sql.sqltypes import Time
+from sqlalchemy.sql.sqltypes import Time, Date
 
 
 class StreamsFilterManager(BaseFilterManager):
@@ -20,13 +20,13 @@ class StreamsFilterManager(BaseFilterManager):
         return query.filter(Stream.title.ilike(f"%{value}%"))
 
     @staticmethod
-    def apply_time_from_filter(query: Query, value: str) -> Query:
-        return query.filter(cast(Stream.start_time, Time) >= value)
+    def apply_date_from(query: Query, value: str) -> Query:
+        return query.filter(cast(Stream.start_time, Date) >= value)
 
 
     FILTERS = {
         "sport_id": apply_sport_id_filter,
-        "title_contains": apply_title_contains,
-        "time_from": apply_time_from_filter,
+        "name": apply_title_contains,
+        "date_from": apply_date_from,
         "stream_id": apply_stream_id_filter
     }

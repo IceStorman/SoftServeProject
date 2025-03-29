@@ -240,30 +240,40 @@ def process_entity_leagues(json_data, sport_id: int, country_dal: CountryDAL, se
         league_dto_list.append(league_dto)
     league_dal.save_leagues(league_dto_list)
 
-def process_entity_players(json_data, sport_id: int, session: SessionLocal, team_id):
+def process_entity_players(json_data, sport_id: int, session: SessionLocal, team_id=None):
     player_dal = PlayerDal(session)
     team_dal = TeamDAL(session)
-    players_dto_list =[]
+    players_dto_list = []
 
     team = None
     if team_id:
         team = team_dal.get_team_by_api_id_and_sport_id(team_id, sport_id)
 
-    for player in json_data:
+    for player_entry in json_data:
+        player_info = player_entry.get("player", player_entry)
+        if not player_info:
+            continue
+
         player_team = None
-
         if not team_id:
-            teams = player.get("teams", [])
-            team_api_id = teams[0].get("team", {}).get("id") if teams else player.get("team").get("id")
-            player_team = team_dal.get_team_by_api_id_and_sport_id(team_api_id, sport_id)
+            team_data = player_info.get("team")
+            if isinstance(team_data, list) and team_data:
+                team_api_id = team_data[0].get("id")
+            elif isinstance(team_data, dict):
+                team_api_id = team_data.get("id")
+            else:
+                team_api_id = None
 
-        player_bad_sport_info = player.get('player', {})
+            if team_api_id:
+                player_team = team_dal.get_team_by_api_id_and_sport_id(team_api_id, sport_id)
 
-        player_dto = PlayerDTO(name=player.get('name') or (player_bad_sport_info.get('name') if player_bad_sport_info else None),
-                               logo=player.get('image') or player.get('photo') or (player_bad_sport_info.get('photo') if player_bad_sport_info else None),
-                               sport_id=sport_id,
-                               api_id=player.get('id') or  (player_bad_sport_info.get('id') if player_bad_sport_info else None),
-                               team_index_id = team.team_index_id if team else (player_team.team_index_id if player_team else None))
+        player_dto = PlayerDTO(
+            name=player_info.get("name"),
+            logo=player_info.get("photo") or player_info.get("image"),
+            sport_id=sport_id,
+            api_id=player_info.get("id"),
+            team_index_id=team.team_index_id if team else (player_team.team_index_id if player_team else None)
+        )
         players_dto_list.append(player_dto)
 
     player_dal.save_players(players_dto_list)

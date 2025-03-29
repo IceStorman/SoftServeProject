@@ -17,7 +17,7 @@ import ForgotPasswordPage from "../pages/registration/forgotPasswordPage";
 import SportPage from "../pages/sport items/sportPage";
 import LeaguePage from "../pages/sport items/leaguePage";
 import TeamPage from "../pages/sport items/teamPage";
-import GamesPage from "../pages/games/gamesPage";
+import StreamsPage from "../pages/games/streamsPage";
 import FAQpage from "../pages/misc/FAQ";
 import NotExistingPage from "../pages/notExistingPage";
 import InsideStreamPage from "../pages/games/insideStreamPage";
@@ -79,7 +79,7 @@ function App() {
 
                     <Route path={globalVariables.routeLinks.teamPageRoute} element={<TeamPage />} />
 
-                    <Route path={globalVariables.routeLinks.streamRoute} element={<GamesPage />} />
+                    <Route path={globalVariables.routeLinks.streamRoute} element={<StreamsPage />} />
 
                     <Route path={globalVariables.routeLinks.streamPageRoute} element={<InsideStreamPage />} />
 

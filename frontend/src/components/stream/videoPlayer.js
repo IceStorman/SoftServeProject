@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 
-const VideoPlayer = ({game, youtubeLinks = [], otherLinks = [] }) => {
+const VideoPlayer = ({ youtubeLinks = [], otherLinks = [] }) => {
     const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
 
     const handleVideoSwitch = (index) => {
@@ -51,9 +51,9 @@ const VideoPlayer = ({game, youtubeLinks = [], otherLinks = [] }) => {
                             <h2>Other:</h2>
                             <div className="linksContainer">
                                 {otherLinks.map((link, index) => (
-                                    <a href={link.url} target="_blank" rel="noopener noreferrer">
+                                    <a href={link} target="_blank" rel="noopener noreferrer">
                                         <div className="partnerLink">
-                                            {link.name || `Partner ${index + 1}`}
+                                            {`Partner ${index + 1}`}
                                         </div>
                                     </a>
                                 ))}

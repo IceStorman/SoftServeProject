@@ -103,6 +103,7 @@ const GamesSlider = ({ sportId }) => {
         }
     };
 
+
     return (
         <div className="games-slider-container">
             <div className="slider-controls">
@@ -127,8 +128,7 @@ const GamesSlider = ({ sportId }) => {
                                 scoreHome={item.home_score}
                                 scoreAway={item.away_score}
                                 time={item.time}
-                                height={160}
-                                width={300}
+                                isVertical={true}
                             />
                         ))
                     ) : (
