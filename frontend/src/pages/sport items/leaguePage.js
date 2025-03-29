@@ -10,6 +10,8 @@ import FiltersRenderer from "../../components/filters/filterRender";
 import {FaFilter, FaTimes} from "react-icons/fa";
 import SearchBlock from "../../components/containers/searchBlock";
 import globalVariables from "../../globalVariables";
+import useBurgerMenu from "../../customHooks/useBurgerMenu";
+import useBurgerMenuState from "../../customHooks/useBurgerMenuState";
 
 
 function LeaguePage() {
@@ -19,6 +21,14 @@ function LeaguePage() {
     const location = useLocation();
     const stateData = location.state || {};
     const sportId = stateData.sportId;
+    const burgerMenu = useBurgerMenu(`${globalVariables.windowSizeForBurger.filters}`);
+    const initialIcon = <FaFilter size={28} />;
+    const closeIcon = <FaTimes size={28} color="black" />;
+
+    const { menuIsOpen, menuIcon, handleOpenMenu, handleCloseMenu } = useBurgerMenuState({
+        initialIcon: initialIcon,
+        closeIcon: closeIcon,
+    });
 
     const calculateColumns = (width, layout) => {
         if (width > globalVariables.windowsSizesForCards.desktopLarge) return layout.baseColumns;
@@ -156,29 +166,8 @@ function LeaguePage() {
             )
     }, [loading]);
 
-    const initialIcon = <FaFilter size={28} />
-
     const [selectedModel, setSelectedModel] = useState("leagues");
     const [filters, setFilters] = useState([]);
-    const [burgerMenu, setBurgerMenu] = useState(false)
-    const [menuIsOpen, setMenuIsOpen] = useState(false)
-    const [menuIcon, setMenuIcon] = useState(initialIcon)
-
-    useEffect(() => {
-
-        const handleResize = () => {
-            const smallScreen = window.innerWidth <= globalVariables.windowSizeForBurger.filters
-            setBurgerMenu(smallScreen)
-        }
-
-        handleResize();
-        window.addEventListener("resize", handleResize);
-    }, []);
-
-    const handleOpenMenu = () => {
-        setMenuIsOpen(prev => !prev)
-        setMenuIcon(!menuIsOpen ? <FaTimes size={28} color="black" /> : initialIcon)
-    }
 
     const handleFiltersChange = (newFilters) => {
         setFilters(newFilters);
@@ -215,17 +204,12 @@ function LeaguePage() {
                     onPageChange={handlePageClick}
                     loading={loading}
                     paginationKey={paginationKey}
-                    handleOpenMenu={handleOpenMenu}
-                    menuIcon={menuIcon}
-                    setMenuIcon={setMenuIcon}
                     burgerMenu={burgerMenu}
-                    menuIsOpen={menuIsOpen}
                     selectedModel={selectedModel}
                     handleFiltersChange={handleFiltersChange}
                     sportId={sportId}
                     count={currentLeagues.length}
                     handleApplyFilters={handleApplyFilters}
-                    setMenuIsOpen={setMenuIsOpen}
                     children={currentLeagues.map((item) => (
                         <LeagueCard
                             leagueName={item.name}

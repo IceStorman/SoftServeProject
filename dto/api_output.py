@@ -23,10 +23,27 @@ class TeamsLeagueOutput(Schema):
     team_name = fields.Str(attribute="name")
     logo = fields.Str()
     id = fields.Str(attribute="api_id")
+    sport_id = fields.Str()
+
 
 class TeamsLeagueOutputWithCount(Schema):
     teams = fields.List(fields.Nested(TeamsLeagueOutput))
     count = fields.Int()
+
+
+class PlayersOutput(Schema):
+    name = fields.Str(attribute="name")
+    id = fields.Str(attribute="api_id")
+    logo = fields.Str(attribute="logo")
+
+
+class StreamsOutput(Schema):
+    id = fields.Str(attribute="stream_id")
+    sport = fields.Int(attribute="sport_id")
+    title = fields.Str()
+    start_time = fields.DateTime()
+    stream_url = fields.List(fields.Str())
+
 
 class SportsOutput(Schema):
     id = fields.Int(attribute="sport_id")
@@ -40,22 +57,35 @@ class SportsLeagueOutput(Schema):
     logo = fields.Str()
     name = fields.Str()
 
+
 class SportsLeagueOutputWithCount(Schema):
     teams = fields.List(fields.Nested(SportsLeagueOutput))
     count = fields.Int()
+
 
 class CountriesOutput(Schema):
     id = fields.Int(attribute="country_id")
     flag = fields.Str()
     name = fields.Str()
 
+
 class ListResponseDTO(Schema):
-    items = fields.List(fields.Raw(), required=True)
-    count = fields.Int(required=True)
+    items = fields.List(fields.Raw(), missing=[])
+    count = fields.Int(missing=0)
+
+    def __init__(self, items=None, count=None, **kwargs):
+        super().__init__(**kwargs)
+        self.items = items if items is not None else []
+        self.count = count if count is not None else 0
+
+    def to_dict(self):
+        return {"items": self.items, "count": self.count}
+
 
 class OutputUser(Schema):
     username = fields.Str(required=True)
     email = fields.Str(required=True)
+
 
 class OutputSportPreferences(Schema):
     user_id = fields.Int(required=True)
@@ -63,11 +93,13 @@ class OutputSportPreferences(Schema):
     sport_name = fields.Str(required=True)
     sport_img = fields.Str(required=True)
 
+
 class OutputTeamPreferences(Schema):
     user_id = fields.Int(required=True)
     team_index_id = fields.Str(required=True)
     name = fields.Str(required=True)
     logo = fields.Str(required=True)
+
 
 class OutputLogin():
     def __init__(self, email: str, user_id: int, token: str, username: str, new_user:bool, access_token:str, refresh_token:str):
