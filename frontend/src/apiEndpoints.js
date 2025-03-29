@@ -1,5 +1,5 @@
 const apiEndpoints = {
-    url: 'http://localhost:5001/',
+    url: 'https://localhost:5001/',
 
     news: {
         getRecent: 'news/recent',
@@ -37,8 +37,7 @@ const apiEndpoints = {
     },
 
     stream:{
-        getAll: 'streams/all',
-        getInfo: 'streams/info'
+        getStreamsSearch: 'streams/search'
     },
 
     localization:{
@@ -51,7 +50,8 @@ const apiEndpoints = {
         signUp: 'user/sign-up',
         login: 'user/login',
         resetPasswordRequest: 'user/reset-password-request',
-        resetPassword: 'user/reset-password'
+        resetPassword: 'user/reset-password',
+        refresh: 'user/refresh'
     },
 
     preference:{

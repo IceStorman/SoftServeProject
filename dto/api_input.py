@@ -123,10 +123,10 @@ class NewsDTO(BaseDTO):
 
 
 class StreamsDTO(BaseDTO):
-    streams__stream_id = fields.Int(required=False, missing = None)
-    streams__stream_url = fields.Str(required=False, missing=None)
-    streams__start_time = fields.Int(required=False, missing=None)#don't know if it is correct
-    streams__sport_id = fields.Int(required=False, missing=None)
+    stream_id = fields.Int(required=False, missing = None)
+    start_time = fields.Date(required=False, missing=datetime.now().strftime('%Y-%m-%d'))
+    sport_id = fields.Int(required=False, missing=None)
+    title = fields.Str(required=False, missing=None)
 
 
 class InputUserDTO(BaseDTO):
@@ -163,8 +163,10 @@ class InputUserLogInDTO(BaseDTO):
     email_or_username = fields.Str(required=False, missing=None)
     password = fields.Str(required=False, missing=None)
     auth_provider = fields.String(required=False, missing=None)
-
-
+    current_ip = fields.String(required=False, missing=None)
+    current_device = fields.String(required=False, missing=None)
+    
+    
 class TablesAndColumnsForUserPreferencesDTO:
     def __init__(self, main_table, related_table, user_id_field, type_id_field, related_name, related_logo, related_id):
         self.main_table = main_table

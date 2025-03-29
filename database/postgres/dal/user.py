@@ -23,6 +23,7 @@ class UserDAL:
     def create_user(self, new_user):
         self.session.add(new_user)
         self.session.commit()
+        return new_user
 
     def get_user_by_id(self, user_id: int) -> User:
         return self.session.query(User).filter(User.user_id == user_id).first()

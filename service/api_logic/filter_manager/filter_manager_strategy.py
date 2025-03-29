@@ -1,3 +1,4 @@
+from service.api_logic.filter_manager.streams_filter_manager import StreamsFilterManager
 from service.api_logic.filter_manager.games_filter_manager import GamesFilterManager
 from service.api_logic.filter_manager.league_filter_manager import LeagueFilterManager
 from service.api_logic.filter_manager.news_filter_manager import NewsFilterManager
@@ -14,6 +15,7 @@ class FilterManagerStrategy:
         "League": LeagueFilterManager,
         "TeamIndex": TeamsFilterManager,
         "Players": PlayersFilterManager
+        "Streams": StreamsFilterManager
     }
 
     @classmethod

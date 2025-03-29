@@ -6,6 +6,7 @@ import {Link, useNavigate} from "react-router-dom";
 import { Check, Plus } from "lucide-react";
 import { AuthContext } from "./AuthContext";
 import useTranslations from "../../translationsContext";
+import globalVariables from "../../globalVariables";
 
 
 function PreferencesPage() {
@@ -24,7 +25,7 @@ function PreferencesPage() {
             const response = await axios.post(
                 `${apiEndpoints.url}${apiEndpoints.preference.getUserPreferences}`,
                 {
-                    user_id: user?.id,
+                    user_id: user?.user_id,
                     type: 'sport',
                 },
                 {
@@ -44,7 +45,7 @@ function PreferencesPage() {
                     `${apiEndpoints.url}${apiEndpoints.preference.changeUserPreferences}`,
                     {
                         preferences: preferences,
-                        user_id: user?.id,
+                        user_id: user?.user_id,
                         type: 'sport',
                     },
                     {
@@ -57,7 +58,7 @@ function PreferencesPage() {
                     {
                         data: {
                             preferences: [],
-                            user_id: user?.id,
+                            user_id: user?.user_id,
                             type: 'sport',
                         },
                         headers: { 'Content-Type': 'application/json' },
@@ -66,7 +67,7 @@ function PreferencesPage() {
             }
 
             toast.success('Your preferences have been updated');
-            navigate('/');
+            navigate(globalVariables.routeLinks.defaultRoute);
         } catch (err) {
             toast.error("Error with changing user preferences");
         }

@@ -37,6 +37,14 @@ class PlayersOutput(Schema):
     logo = fields.Str(attribute="logo")
 
 
+class StreamsOutput(Schema):
+    id = fields.Str(attribute="stream_id")
+    sport = fields.Int(attribute="sport_id")
+    title = fields.Str()
+    start_time = fields.DateTime()
+    stream_url = fields.List(fields.Str())
+
+
 class SportsOutput(Schema):
     id = fields.Int(attribute="sport_id")
     sport = fields.Str(attribute="sport_name")
@@ -62,8 +70,16 @@ class CountriesOutput(Schema):
 
 
 class ListResponseDTO(Schema):
-    items = fields.List(fields.Raw(), required=True)
-    count = fields.Int(required=True)
+    items = fields.List(fields.Raw(), missing=[])
+    count = fields.Int(missing=0)
+
+    def __init__(self, items=None, count=None, **kwargs):
+        super().__init__(**kwargs)
+        self.items = items if items is not None else []
+        self.count = count if count is not None else 0
+
+    def to_dict(self):
+        return {"items": self.items, "count": self.count}
 
 
 class OutputUser(Schema):
@@ -86,14 +102,15 @@ class OutputTeamPreferences(Schema):
 
 
 class OutputLogin():
-    def __init__(self, email: str, id: int, token: str, username: str, new_user:bool):
+    def __init__(self, email: str, user_id: int, token: str, username: str, new_user:bool, access_token:str, refresh_token:str):
         self.email = email
-        self.id = id
+        self.user_id = user_id
         self.token = token
         self.username = username
         self.new_user = new_user
+        self.access_token = access_token
+        self.refresh_token = refresh_token
         self.message = "You successfully logged in!"
-
 
 class OutputRecommendationList(Schema):
     news_id = fields.Int(required=True)

@@ -2,6 +2,7 @@ import React from "react";
 import { FaHeart } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import globalVariables from "../../globalVariables";
 
 
 function NewsCard({ title, date, img, sport, id = 1, content, likes = 10, width, height, isFoil, article}) {
@@ -16,7 +17,7 @@ function NewsCard({ title, date, img, sport, id = 1, content, likes = 10, width,
 
   return (
       <NavLink
-          to={`/news/${id}`} state={{ newsData }}
+          to={`${globalVariables.routeLinks.newsPath}${id}`} state={{ newsData }}
           className="nav-link"
           activeClassName="active"
       >
