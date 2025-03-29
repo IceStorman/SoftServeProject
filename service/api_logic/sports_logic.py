@@ -26,12 +26,10 @@ class SportService:
 
         execute_query = self._leagues_dal.query_output(filtered_query)
 
-        sport_output = SportsLeagueOutput(many=True)
-        leagues = sport_output.dump(execute_query)
+        leagues_output = SportsLeagueOutput(many=True).dump(execute_query)
+        response_dto = ListResponseDTO(items=leagues_output, count=count)
 
-        response_dto = ListResponseDTO()
-
-        return response_dto.dump({"items": leagues, "count": count})
+        return response_dto.to_dict()
 
 
 
