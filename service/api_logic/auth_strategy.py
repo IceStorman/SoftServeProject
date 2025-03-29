@@ -10,6 +10,7 @@ from exept.exeptions import IncorrectUserDataError, UserDoesNotExistError, Incor
     InvalidAuthenticationDataError
 from typing import Generic, TypeVar
 from service.api_logic.models.api_models import AuthStrategies
+from api.request_helper import RequestHelper
 
 T = TypeVar("T")
 
@@ -17,31 +18,49 @@ T = TypeVar("T")
 class AuthHandler(ABC, Generic[T]):
     def __init__(self, user_service):
         self._user_service = user_service
+        
+    def _is_suspicious_login(self, user_id: int, current_ip:str, current_device:str) -> bool:
+            refresh_entry = self._user_service.get_valid_refresh_token_by_user(user_id)
+            if not refresh_entry:
+                return False  
+
+            suspicious_conditions = [
+                refresh_entry.last_ip and refresh_entry.last_ip == current_ip,
+                refresh_entry.last_device and refresh_entry.last_device != current_device,
+                self._user_service.is_nonce_used(user_id, refresh_entry.nonce)
+            ]
+
+            return any(suspicious_conditions) 
 
     @abstractmethod
-    def authenticate(self, credentials: T):
+    def _authenticate(self, credentials: T):
         pass
+    
+    async def authenticate(self, credentials: T):
+        result = await self._authenticate(credentials)
+        if result:
+            self._is_suspicious_login(result.user_id, credentials.current_ip, credentials.current_device)
+        return result
 
-
-class AuthManager:
+class AuthManager(AuthHandler):
     def __init__(self, user_service):
         self._user_service = user_service
         self.strategies = {
             AuthStrategies.SIMPLE.value: SimpleAuthHandler(user_service = self._user_service),
             AuthStrategies.GOOGLE.value: GoogleAuthHandler(user_service = self._user_service),
         }
+   
 
-    async def execute_log_in(self, credentials: T):
+    async def _authenticate(self, credentials: T):
         strategy = credentials.auth_provider
         if strategy not in self.strategies:
             raise IncorrectLogInStrategyError(strategy)
 
-        login_strategy = await self.strategies[strategy].authenticate(credentials)
-        return login_strategy
+        return await self.strategies[strategy].authenticate(credentials)
 
 
 class SimpleAuthHandler(AuthHandler[T]):
-    async def authenticate(self, credentials: T):
+    async def _authenticate(self, credentials: T):
         user = self._user_service.get_user_by_email_or_username(credentials.email_or_username, credentials.email_or_username)
 
         if not user:
@@ -54,11 +73,11 @@ class SimpleAuthHandler(AuthHandler[T]):
 
         token = await self._user_service.get_generate_auth_token(user)
 
-        return OutputLogin(email = user.email, token = token, id = user.user_id, username = user.username, new_user = False)
+        return OutputLogin(email = user.email, token = token, user_id= user.user_id, username = user.username, new_user = False, access_token = None, refresh_token = None)
 
 
 class GoogleAuthHandler(AuthHandler[T]):
-    async def authenticate(self, credentials: T):
+    async def _authenticate(self, credentials: T):
         with current_app.app_context():
             client = WebApplicationClient(current_app.config['GOOGLE_CLIENT_ID'])
             token_url, headers, body = client.prepare_token_request(
@@ -86,18 +105,21 @@ class GoogleAuthHandler(AuthHandler[T]):
         user_info = InputUserLogInDTO().load(data)
 
         user = self._user_service.get_user_by_email_or_username(email=user_info.email)
-        output_login = OutputLogin(email=user_info.email, token=None, id=None, username=None, new_user=True)
+        output_login = OutputLogin(email=user_info.email, token=None, user_id=None, username=None, new_user=True, access_token = None, refresh_token = None)
 
         if not user:
             user = User(email=user_info.email, username=user_info.email.split('@')[0])
-            self._user_service.create_user(user)
+            new_user = self._user_service.create_user(user)
+            output_login.user_id = new_user.user_id
+            output_login.username = new_user.username
+            await self._user_service.create_tokens(user=output_login)
         else:
-            output_login.new_user = False  
-
+            output_login.new_user = False   
+        
         token = await self._user_service.get_generate_auth_token(user)
-
+        
         output_login.token = token
-        output_login.id = user.user_id
+        output_login.user_id = user.user_id
         output_login.username = user.username
 
         return output_login

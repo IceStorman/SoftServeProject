@@ -10,10 +10,12 @@ from exept.handle_exeptions import get_custom_error_response, handle_exceptions
 from logger.logger import Logger
 from dependency_injector.wiring import inject, Provide
 from service.api_logic.user_logic import UserService
+from api.request_helper import RequestHelper
 from api.container.container import Container
 from flask_jwt_extended import jwt_required
 import os
 from dotenv import load_dotenv
+from dto.common_response import CommonResponseWithUser
 
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 load_dotenv()
@@ -21,7 +23,7 @@ FRONT_RESET_PASSWORD_URL = os.getenv('FRONT_RESET_PASSWORD_URL')
 
 logger = Logger("logger", "all.log")
 
-login_app = Blueprint('login_app', __name__, description="Login options", url_prefix='/login')
+login_app = Blueprint('login_app', __name__, description="Login options", url_prefix='/user')
 
 
 @login_app.errorhandler(DatabaseConnectionError)
@@ -35,15 +37,14 @@ def handle_db_timeout_error(e):
 @inject
 @handle_exceptions
 @logger.log_function_call()
-@login_app.arguments(InputUserDTO)
-@login_app.response(200, CommonResponse().to_dict())
 async def create_account_endpoint(service: UserService = Provide[Container.user_service]):
     """Create user account"""
     try:
         data = request.get_json()
         dto = InputUserDTO().load(data)
-        response = await service.sign_up_user(dto.email, dto.username, dto.password)
+        user = await service.sign_up_user(dto.email, dto.username, dto.password)
 
+        response = await RequestHelper.set_tokens_and_create_response(user)
         return response
 
     except CustomQSportException as e:
@@ -74,10 +75,7 @@ def request_password_reset(dto: InputUserByEmailDTO, service: UserService = Prov
 @inject
 @handle_exceptions
 @logger.log_function_call()
-@login_app.arguments(NewPasswordDTO)
-@login_app.response(200, CommonResponse().to_dict())
-@login_app.response(302)
-def reset_password(dto: NewPasswordDTO, token, service: UserService = Provide[Container.user_service]):
+async def reset_password(token, service: UserService = Provide[Container.user_service]):
     """
        Reset password functionality.
 
@@ -94,7 +92,9 @@ def reset_password(dto: NewPasswordDTO, token, service: UserService = Provide[Co
             return redirect(reset_front_url)
 
         if request.method == "POST":
-            token = service.reset_user_password(token, dto.password)
+            data = request.get_json()
+            dto = NewPasswordDTO().load(data)
+            token = await service.reset_user_password(token, dto.password)
 
             return token
 
@@ -107,12 +107,17 @@ def reset_password(dto: NewPasswordDTO, token, service: UserService = Provide[Co
 @inject
 @handle_exceptions
 @logger.log_function_call()
-@login_app.arguments(InputUserLogInDTO)
-@login_app.response(200, CommonResponse().to_dict())
-async def log_in(dto: InputUserLogInDTO, service: UserService = Provide[Container.user_service]):
-    """Log in to account"""
+async def log_in(service: UserService = Provide[Container.user_service]):
     try:
-        response = await service.log_in(dto)
+        current_ip = RequestHelper.get_country_from_ip()
+        current_device = RequestHelper.get_user_device()
+        data = request.get_json()
+        data.update({"current_ip": current_ip, "current_device": current_device})
+
+        dto = InputUserLogInDTO().load(data)
+        user = await service.log_in(dto)
+        
+        response = await RequestHelper.set_tokens_and_create_response(user)
 
         return response
 
@@ -120,14 +125,19 @@ async def log_in(dto: InputUserLogInDTO, service: UserService = Provide[Containe
         logger.error(f"Error in POST /login: {str(e)}")
         return get_custom_error_response(e)
 
+
 @login_app.route("/refresh", methods=['POST'])
+@jwt_required(refresh=True)
 @inject
 @handle_exceptions
 @logger.log_function_call()
-@jwt_required(refresh=True)
 async def refresh(service: UserService = Provide[Container.user_service]):
     try:
-        return await service.refresh_tokens()
+        user = await service.refresh_tokens()
+        response = await RequestHelper.set_tokens_and_create_response(user)
+
+        return response
+        
     except CustomQSportException as e:
         logger.error(f"Error in POST /refresh: {str(e)}")
         return get_custom_error_response(e)

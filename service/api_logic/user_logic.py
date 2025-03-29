@@ -1,5 +1,5 @@
+from typing import Optional
 from flask import current_app, url_for, jsonify, make_response, request
-from user_agents import parse
 from flask_mail import Message
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 from dto.api_input import UpdateUserPreferencesDTO
@@ -19,9 +19,9 @@ from flask_jwt_extended import create_access_token,create_refresh_token, set_acc
 from service.api_logic.auth_strategy import AuthManager
 from database.postgres.dto.jwt import JwtDTO
 from database.postgres.dto.refresh import RefreshTokenDTO
+from database.postgres.dto.extended_credentials import ExtendedCredantialsDTO
 from database.postgres.dto.additional_claims import AdditionalClaimsDTO
 from database.postgres.dto.response_data import ResponseDataDTO
-from database.postgres.dto.device_info import DeviceInfoDTO
 from datetime import datetime
 import time
 import requests
@@ -29,6 +29,9 @@ import hashlib
 from  service.api_logic.models.api_models import JTI
 from flask_jwt_extended import get_jwt_identity, get_jwt
 from service.api_logic.models.api_models import SportPreferenceFields, TeamPreferenceFields
+from api.request_helper import RequestHelper
+from types import SimpleNamespace
+
 
 
 
@@ -45,33 +48,7 @@ class UserService:
         self._sport_dal = sport_dal
         self._serializer = URLSafeTimedSerializer(current_app.secret_key)
         self._logger = Logger("logger", "all.log").logger
-        
-    @staticmethod    
-    def get_user_device(self) -> str:
-        user_agent = request.headers.get("User-Agent", "")
-        parsed_agent = parse(user_agent)
 
-        device_info = DeviceInfoDTO(
-            browser=f"{parsed_agent.browser.family} {parsed_agent.browser.version_string}",
-            os=f"{parsed_agent.os.family} {parsed_agent.os.version_string}",
-            device=parsed_agent.device.family
-        )
-        
-        return device_info
-
-    def __get_client_ip(self) -> str:
-        return request.headers.get("X-Forwarded-For", request.remote_addr)
-
-    def __get_country_from_ip(self) -> str:
-        ip = self.__get_client_ip()
-
-        try:
-            response = requests.get(f"https://ipinfo.io/{ip}/json", timeout=3)
-            response.raise_for_status()
-            unknown = "Unknown"
-            return response.json().get("country", unknown)
-        except (requests.RequestException, ValueError):
-            return unknown
 
     def has_ip_country_changed(self, stored_country: str) -> bool:
         current_country = self.get_country_from_ip()
@@ -85,23 +62,11 @@ class UserService:
         nonce = hashlib.sha256(f"{time.time()}{os.urandom(16)}".encode()).hexdigest()
         return nonce
     
-    def is_suspicious_login(self, user_id: int) -> bool:
-        refresh_entry = self._access_token_dal.get_valid_refresh_token_by_user(user_id)
-        if not refresh_entry:
-            return False  
-
-        current_ip = self.__get_client_ip()
-        current_country = self.__get_country_from_ip()
-        current_device = self.get_user_device()
-
-        suspicious_conditions = [
-            refresh_entry.last_ip and refresh_entry.last_ip != current_ip,
-            refresh_entry.last_country and refresh_entry.last_country != current_country,
-            refresh_entry.last_device and refresh_entry.last_device != current_device,
-            self._access_token_dal.is_nonce_used(user_id, refresh_entry.nonce)
-        ]
-
-        return any(suspicious_conditions)
+    def is_nonce_used(self, user_id: int, nonce: str) -> bool:
+        return self._refresh_dal.is_nonce_used(user_id, nonce)
+    
+    def get_valid_refresh_token_by_user(self, user_id: int):
+        return self._refresh_dal.get_valid_refresh_token_by_user(user_id)
 
 
     def get_user_by_email_or_username(self, email=None, username=None):
@@ -122,13 +87,21 @@ class UserService:
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
 
         new_user = User(email = email, username = username, password_hash = hashed_password.decode('utf-8'))
+        
         self.create_user(new_user)
-        user = OutputLogin(email = new_user.email, token = new_user, id = new_user.user_id, username = new_user.username, new_user = True)
-        response = await self.create_access_token_response(user)
+        
+        user = OutputLogin(email = new_user.email, token = new_user, user_id = new_user.user_id, username = new_user.username, new_user = True, access_token=None, refresh_token=None)
+        access_token, refresh_token = await self.create_tokens(user)
+        user.access_token = access_token
+        user.refresh_token = refresh_token
+        
+        return user
+    
 
-        return response 
-
-
+    def revoke_all_refresh_and_access_tokens(self, user_id: int) -> int:
+        return self._refresh_dal.revoke_all_refresh_and_access_tokens_for_user(user_id)
+    
+    
     def create_user(self, new_user):
         return self._user_dal.create_user(new_user)
 
@@ -170,9 +143,9 @@ class UserService:
             raise UserDoesNotExistError(email)
 
         return self._serializer.dumps(user.username, salt = "email-confirm")
+    
 
-
-    def reset_user_password(self, token, new_password: str):
+    async def reset_user_password(self, token, new_password: str):
         username = self.confirm_token(token)
         user = self.get_user_by_email_or_username(username = username)
         if not user:
@@ -181,15 +154,9 @@ class UserService:
         salt = bcrypt.gensalt()
         hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), salt)
 
-        self._user_dal.update_user_password(user, hashed_password.decode('utf-8'))
-        new_jwt = create_access_token(identity=user.email)
-        new_refresh = create_refresh_token(identity=user.email)
-
-        response = jsonify({"message": "Password reset successful"})
-        set_access_cookies(response, new_jwt)
-        set_refresh_cookies(response, new_refresh)
-
-        return response
+        self._user_dal.update_user_password(user, hashed_password.decode('utf-8')) 
+        return user
+        
 
 
     def confirm_token(self, token: str, expiration=3600):
@@ -203,18 +170,22 @@ class UserService:
             raise IncorrectSignatureError()
 
 
-
-    async def log_in(self, credentials: InputUserLogInDTO):
+    async def log_in(self, credentials):
         login_context = AuthManager(self)
-        user_id = self._user_dal.get_user_by_email(credentials.email)
-        sus_login = self.is_suspicious_login(user_id)
-        if not sus_login:
-            user = await login_context.execute_log_in(credentials)
-            response = await self.create_access_token_response(user)
 
-            return response
+        user = await login_context.authenticate(credentials)
+        existing_access_token, existing_refresh_token = self._refresh_dal.get_valid_tokens_by_user(user.user_id)
+
+        if existing_access_token and existing_refresh_token:
+            user.access_token = existing_access_token
+            user.refresh_token = existing_refresh_token
+            return user
+            
         else:
-            revoke = self._refresh_dal.revoke_all_refresh_and_access_tokens_for_user(user_id)
+            access_token, refresh_token=await self.create_tokens(user=user)
+            user.access_token = access_token
+            user.refresh_token = refresh_token
+            return user
 
 
     async def __generate_auth_token(self, user, salt):
@@ -237,117 +208,124 @@ class UserService:
         refresh_expires_at = datetime.utcfromtimestamp(decode_refresh_token['exp'])
 
         access_jwt_dto = JwtDTO(
-            user_id=user.id,
+            user_id=user.user_id,
             jti=decode_access_token[JTI],   
             token_type="access",
+            token=access_token,
             revoked=False,
             expires_at=access_expires_at
         )
         self._access_tokens_dal.save_access_token(access_jwt_dto)
 
         refresh_jwt_dto = JwtDTO(
-            user_id=user.id,
+            user_id=user.user_id,
             jti=decode_refresh_token[JTI],
             token_type="refresh",
+            token=refresh_token,
             revoked=False,
             expires_at=refresh_expires_at  
         )
-        self._access_tokens_dal.save_access_token(refresh_jwt_dto)
+        id = self._access_tokens_dal.save_access_token(refresh_jwt_dto)
 
         refresh_dto = RefreshTokenDTO(
-            user_id=user.id,
-            last_ip=self.get_country_from_ip(),
-            last_device=self.get_user_device(),
+            id=id,
+            user_id=user.user_id,
+            last_ip=RequestHelper.get_country_from_ip(),
+            last_device=RequestHelper.get_user_device(),
             nonce=self.generate_nonce()
         )
         self._refresh_dal.save_refresh_token(refresh_dto)
 
 
-    async def create_access_token_response(self, user, return_tokens: bool = False):
+    async def create_tokens(self, user):
         additional_claims = AdditionalClaimsDTO(
-            user_id=user.id,
+            user_id=user.user_id,
             email=user.email,
             username=user.username,
             new_user=user.new_user
         )
 
-        access_token = create_access_token(identity=user.email, additional_claims=additional_claims)
-        refresh_token = create_refresh_token(identity=user.email, additional_claims=additional_claims)
+        access_token = create_access_token(identity=user.email, additional_claims=additional_claims.model_dump())
+
+        nonce = self.generate_nonce()
+
+        refresh_claims_dict = additional_claims.model_dump()
+        refresh_claims_dict["nonce"] = nonce
+        refresh_claims = AdditionalClaimsDTO(**refresh_claims_dict)
+
+        refresh_token = create_refresh_token(identity=user.email, additional_claims=refresh_claims.model_dump())
 
         self.save_tokens_to_db(user, access_token, refresh_token)
-        
-        response_data = ResponseDataDTO(
-            user_id=user.id,
+
+        return access_token, refresh_token
+    
+    async def create_access_token(self, user):
+        additional_claims = AdditionalClaimsDTO(
+            user_id=user.user_id,
             email=user.email,
             username=user.username,
-            new_user=user.new_user
+            new_user=False
         )
 
-        if return_tokens:
-            response_data["access_token"] = access_token
-            response_data["refresh_token"] = refresh_token
+        access_token = create_access_token(identity=user.email, additional_claims=additional_claims.model_dump())
+        
+        decode_access_token = decode_token(access_token)
+        access_expires_at = datetime.utcfromtimestamp(decode_access_token['exp'])        
+        
+        access_jwt_dto = JwtDTO(
+            user_id=user.user_id,
+            jti=decode_access_token[JTI],   
+            token_type="access",
+            token=access_token,
+            revoked=False,
+            expires_at=access_expires_at
+        )
+        self._access_tokens_dal.save_access_token(access_jwt_dto)
 
-        response = jsonify(response_data)
-        set_access_cookies(response, access_token)
-        set_refresh_cookies(response, refresh_token)
+        return access_token
 
-
+        
+        
     async def verify_nonce(self, user_email: str, token_nonce: str) -> bool:
         user = await self._user_dal.get_user_by_email(user_email)
-        saved_nonce = self._refresh_dal.get_nonce_by_user_id(user.id)
+        saved_nonce = self._refresh_dal.get_nonce_by_user_id(user.user_id)
 
         return saved_nonce == token_nonce
-    
-    async def create_new_access_and_refresh_tokens(self, email: str, username: str,user_id: int,new_user:bool, refresh: bool = False):
-        additional_claims = AdditionalClaimsDTO(
-            user_id=user_id,
-            email=email,
-            username=username,
-            new_user=new_user
-        )
-        new_access_token = create_access_token(identity=email.email, additional_claims=additional_claims)
-        new_refresh_token = create_refresh_token(identity=email.email, 
-                                                 additional_claims=additional_claims.update({"nonce": self.generate_nonce()}))
-        
-        return new_access_token, new_refresh_token
-    
 
-    async def update_refresh_token(self, user_email: str, new_refresh_token: str):
+
+    async def update_refresh_token(self, user_email: str):
         user = await self._user_dal.get_user_by_email(user_email)
         
         refresh_dto = RefreshTokenDTO(
-            user_id=user.id,
+            user_id=user.user_id,
             last_ip=self.__get_country_from_ip(),
             last_device=self.get_user_device(),
-            refresh_token=new_refresh_token,
             nonce=self.generate_nonce()
         )
 
-        self._refresh_dal.update_refresh_token(user.id, refresh_dto)
+        self._refresh_dal.update_refresh_token(user.user_id, refresh_dto)
+        
+    async def refresh_tokens(self): 
+        current_refresh_token = get_jwt()  
+        identity = current_refresh_token.get("sub")  
+        user_data = self._user_dal.get_user_by_email(identity)
+        user_data = SimpleNamespace(**user_data.__dict__, new_user=False)
 
-    async def refresh_tokens(self):
-        identity = get_jwt_identity()   
-        current_refresh_token = get_jwt()
+        new_access_token, new_refresh_token = await self.create_tokens(user_data)
+        
+        user = OutputLogin(
+            email=user_data.email,
+            user_id=user_data.user_id,
+            token=new_access_token,
+            username=user_data.username,
+            new_user=False,
+            access_token=new_access_token,
+            refresh_token=new_refresh_token
+        )
 
-        token_nonce = current_refresh_token.get("nonce")
+        return user
 
-        if not self._refresh_dal.verify_nonce(identity, token_nonce):
-            raise InvalidRefreshTokenError()
-
-        new_access_token, new_refresh_token = await self.create_new_access_and_refresh_tokens(identity, refresh=True)
-
-        new_nonce = self.generate_nonce()
-        self._refresh_dal.update_refresh_token(identity, new_refresh_token, new_nonce)
-
-        response = jsonify({
-            "access_token": new_access_token,
-            "refresh_token": new_refresh_token
-        })
-    
-        set_access_cookies(response, new_access_token)
-        set_refresh_cookies(response, new_refresh_token)
-
-    
+   
     def add_preferences(self, dto: UpdateUserPreferencesDTO):
         new_dto_by_type_of_preference = self.dto_for_type_of_preference(dto)
 
