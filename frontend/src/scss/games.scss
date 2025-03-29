@@ -36,39 +36,6 @@
             height: 0;
         }
 
-        //.sport-options-controls {
-        //    position: absolute;
-        //    top: 50%;
-        //    width: 100%;
-        //    display: flex;
-        //    justify-content: space-between;
-        //    pointer-events: none;
-        //
-        //    button {
-        //        pointer-events: all;
-        //        background: rgba(0, 0, 0, 0.5);
-        //        color: white;
-        //        padding: 0.5rem;
-        //        border: none;
-        //        cursor: pointer;
-        //        position: absolute;
-        //        transform: translateY(-50%);
-        //
-        //        &:first-child {
-        //            left: 10px;
-        //        }
-        //
-        //        &:last-child {
-        //            right: 10px;
-        //        }
-        //
-        //        &:disabled {
-        //            background: rgba(0, 0, 0, 0.2);
-        //            cursor: default;
-        //        }
-        //    }
-        //}
-
         button {
             background-color: $main-clr;
             color: black;
@@ -148,6 +115,7 @@
                 display: flex;
                 justify-content: flex-start;
                 overflow-x: auto;
+                overflow-y: hidden;
                 scroll-behavior: smooth;
                 margin: 0.4rem 0.5rem 0.3rem;
                 height: clamp(8rem, 12vw, 10rem);

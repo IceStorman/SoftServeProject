@@ -1,7 +1,9 @@
 .noItems{
   display: flex;
+  justify-content: center;
+  align-items: center;
   width: 80%;
-  height: 25rem;
+  height: 100%;
   font-size: 2rem;
   margin: auto;
 }
