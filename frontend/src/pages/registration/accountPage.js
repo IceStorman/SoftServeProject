@@ -21,7 +21,7 @@ function AccountPage() {
 
     const handleDeleteAccount = () => {
         setIsOpen(false);
-        console.log("Акаунт видалено");  //future logic for delete
+        console.log("さようなら");  //future logic for delete
         handleLogOut()
     };
 

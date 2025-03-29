@@ -98,12 +98,13 @@ class UserService:
         return user
     
     async def delete_user(self, dto):
-        self._refresh_dal.delete_all_refresh_and_access_tokens(dto.user_id)
-        self._user_dal.delete_user(dto.user_id)
         team_type_dto = self.dto_for_type_of_preference(TEAM_TYPE)
         self._preferences_dal.delete_all_user_preferences(team_type_dto, dto)
         sport_type_dto = self.dto_for_type_of_preference(SPORT_TYPE)
         self._preferences_dal.delete_all_user_preferences(sport_type_dto, dto)
+        self._refresh_dal.delete_all_refresh_and_access_tokens(dto.user_id)
+        self._user_dal.delete_user(dto.user_id)
+        return "さようなら"
 
         
     def revoke_all_refresh_and_access_tokens(self, user_id: int) -> int:
