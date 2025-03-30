@@ -4,9 +4,6 @@ import useTranslations from "../../translationsContext";
 import axios from "axios";
 import apiEndpoints from "../../apiEndpoints";
 import { toast } from "sonner";
-import { TfiLayoutLineSolid } from "react-icons/tfi";
-import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
-import ReactPaginate from "react-paginate";
 import useBurgerMenu from "../../customHooks/useBurgerMenu";
 import globalVariables from "../../globalVariables";
 import { FaFilter, FaTimes } from "react-icons/fa";
@@ -15,6 +12,8 @@ import SearchBlock from "../../components/containers/searchBlock";
 import StreamCard from "../../components/cards/streamCard";
 import LeagueCard from "../../components/cards/leagueCard";
 import TeamCard from "../../components/cards/teamCard";
+import NewsCard from "../../components/cards/newsCard";
+import GameCard from "../../components/cards/gameCard";
 
 function SearchPage() {
     const { t } = useTranslations();
@@ -39,6 +38,7 @@ function SearchPage() {
     const componentMap = (type, item) => {
         const componentsCard = {
             streams: <StreamCard key={`${type}-${item.id}`} stream={item}/>,
+
             leagues: <LeagueCard
                     key={`${type}-${item.id}`}
                     leagueName={item.name}
@@ -46,13 +46,36 @@ function SearchPage() {
                     id={item.id}
                     sportId={sportId}
                     />,
+
             teams:  <TeamCard
                     key={`${type}-${item.id}`}
                     leagueName={item.team_name}
                     img={item.logo}
                     sportId={item.sport_id}
                     id={item.id}
-                    />
+                    />,
+
+            news:   <NewsCard
+                    key={`${type}-${item.id}`}
+                    title={item?.data?.title}
+                    date={item?.data?.timestamp}
+                    img={item?.data?.images[0] || null}
+                    content={item?.data?.article?.section_1?.content}
+                    id={item?.blob_id}
+                    article={item?.data?.article}
+                    />,
+
+            games: <GameCard
+                    key={`${type}-${item.id}`}
+                    nameHome={item.home_team_name}
+                    nameAway={item.away_team_name}
+                    logoHome={item.home_team_logo}
+                    logoAway={item.away_team_logo}
+                    scoreHome={item.home_score}
+                    scoreAway={item.away_score}
+                    time={item.time}
+                    isVertical={true}
+        />
         }
         
         return componentsCard[type] || null;
@@ -75,7 +98,9 @@ function SearchPage() {
             const endpointMap = {
                 streams: apiEndpoints.stream.getStreamsSearch,
                 leagues: apiEndpoints.sports.getLeagueSearch,
-                teams: apiEndpoints.teams.getTeamsAll, 
+                teams: apiEndpoints.teams.getTeamsAll,
+                news: apiEndpoints.news.getPaginated,
+                games: apiEndpoints.games.getGames
             };
     
             if (!endpointMap[model]) {
@@ -108,7 +133,7 @@ function SearchPage() {
     return (
         <div className="streams-page">
             <div className="model-selection">
-                {["streams", "leagues", "teams"].map((model) => (
+                {["streams", "leagues", "teams", "news", "games"].map((model) => (
                     <button
                         key={model}
                         className={selectedModel === model ? "active" : ""}

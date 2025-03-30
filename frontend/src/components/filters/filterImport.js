@@ -25,5 +25,15 @@ export const filtersImports = {
         name: (props) => <NameFilter {...props} />,
         sport_id: (props) => <SportFilter {...props} />,
         date_from: (props) => <DateFilter {...props} />
+    },
+    news: {
+        name: (props) => <NameFilter {...props} />,
+        sport_id: (props) => <SportFilter {...props} />,
+        date_from: (props) => <DateFilter {...props} />
+    },
+    games: {
+        name: (props) => <NameFilter {...props} />,
+        sport_id: (props) => <SportFilter {...props} />,
+        date_from: (props) => <DateFilter {...props} />
     }
 };
