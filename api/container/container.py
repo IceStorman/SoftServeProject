@@ -27,11 +27,11 @@ class Container(containers.DeclarativeContainer):
             "api.routes.api_login",
             "api.routes.api_news",
             "api.routes.api_user_preferences",
-            "service.implementation.email_sender.user_subscription_manager",
             "api.routes.api_streams",
             "api.routes.api_games",
             "api.routes.api_teams",
             "api.routes.api_sports",
+            "service.implementation.email_sender.user_subscription_manager",
         ]
     )
 

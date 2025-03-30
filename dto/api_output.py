@@ -119,7 +119,7 @@ class OutputRecommendationList(Schema):
     rating = fields.Int(required=True)
 
 
-class TempSubscriberDataWithUsernameDto(Schema):
+class TempSubscriberDataDto(Schema):
     team_ids: int
     subscriber_emails: str
     news_name: str
