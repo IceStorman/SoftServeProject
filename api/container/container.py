@@ -63,6 +63,7 @@ class Container(containers.DeclarativeContainer):
         sport_dal=sport_dal,
         access_tokens_dal=access_tokens_dal,
         refresh_dal=refresh_dal,
+        teams_dal=teams_dal
     )
 
     news_service = providers.Factory(
