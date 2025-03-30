@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { RiFunctionFill, RiGridFill, RiListCheck2 } from "react-icons/ri";
 import { GoSortAsc, GoSortDesc } from "react-icons/go";
 import ReactPaginate from "react-paginate";
@@ -10,26 +10,25 @@ import useTranslations from "../../translationsContext";
 
 const GridContainer = ({
     title,
-    cardSizes,
     children,
     gridSize,
-    postsPerPage,
     onGridSizeChange,
     pageCount,
     currentPage,
     onPageChange,
-    loading,
-    paginationKey,
+    setSortValue
 }) => {
     const { t } = useTranslations();
     const [sortBy, setSortBy] = useState("popularity");
-    const [sortOrder, setSortOrder] = useState("asc");
+    const [sortOrder, setSortOrder] = useState("desc");
     const [selectedGrid, setSelectedGrid] = useState('large');
     const options = [
-        { value: "short", label: "Date" },
-        { value: "medium", label: "Popularity" },
-        { value: "long", label: "This is a very long option" }
+        { value: "short", label: "Date" }
     ];
+
+    useEffect(() => {
+        setSortValue(sortOrder)
+    }, [sortOrder]);
 
     return (
         <div className="grid-container">
@@ -70,9 +69,10 @@ const GridContainer = ({
             </div>
             <hr />
             <ReactPaginate
+                forcePage={currentPage}
                 breakLabel="..."
-                nextLabel={currentPage === pageCount ? <TfiLayoutLineSolid className="line"/>  :  <SlArrowRight />}
-                previousLabel={currentPage === 1 ? <TfiLayoutLineSolid className="line"/> : <SlArrowLeft />}
+                nextLabel={currentPage + 1 >= pageCount ? <TfiLayoutLineSolid className="line"/> : <SlArrowRight />}
+                previousLabel={currentPage === 0 ? <TfiLayoutLineSolid className="line"/> : <SlArrowLeft />}
                 onPageChange={onPageChange}
                 pageRangeDisplayed={3}
                 marginPagesDisplayed={1}
@@ -84,8 +84,7 @@ const GridContainer = ({
                 previousLinkClassName="page-prev"
                 nextLinkClassName="page-next"
                 activeLinkClassName="page-active"
-                key={paginationKey}
-            />
+            />;
         </div>
     );
 };

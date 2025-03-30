@@ -1,48 +1,39 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
-
-import img_placeholder from "../../pages/imgs/image_placeholder.png"
 
 
-function GameCard({ nameHome, nameAway, logoHome, logoAway, scoreHome, scoreAway, time, id = 1, width, height }) {
-    const isVertical = (width / height < 4);
-    const isBig = true;
+function GameCard({ nameHome, nameAway, logoHome, logoAway, scoreHome, scoreAway, time, isVertical }) {
+    const layoutClass = isVertical ? "vertical" : "horizontal";
 
     return (
-        <NavLink to={`/stream/${id}`} className="nav-link" activeClassName="active">
-            <div
-                className={`game-card ${isVertical ? "vertical" : "horizontal"}`}
-                style={{ width: width, height: height }}
-            >
-                <h1 className="hometeam-name">{nameHome}</h1>
+        <div className={`game-card ${layoutClass}`}>
+            <h1 className="hometeam-name">{nameHome}</h1>
 
-                {logoHome ? (
-                    <img src={logoHome}
-                        alt={' '}
-                        className="hometeam-img"
-                    />
-                ) : (<img src={img_placeholder}
-                    alt={nameHome}
-                    className="hometeam-img"
-                />)}
-
-                <div className={`score-or-time ${isVertical ? "vertical" : "horizontal"}`}>
-                    {scoreHome !== null && scoreAway !== null ? (
-                        <p className="score">{scoreHome}:{scoreAway}</p>
-                    ) : (
-                        <div className="time">
-                            <h3>VS</h3>
-                            <p>{time}</p>
-                        </div>
-                    )}
-                </div>
-                <img src={logoAway}
+            {logoHome ? (
+                <img src={logoHome}
                     alt={' '}
-                    className="awayteam-img"
+                    className="hometeam-img"
                 />
-                <h1 className="awayteam-name">{nameAway}</h1>
+            ) : (<img src={""}
+                alt={nameHome}
+                className="hometeam-img"
+            />)}
+
+            <div className={`score-or-time ${layoutClass}`}>
+                {scoreHome !== null && scoreAway !== null ? (
+                    <p className="score">{scoreHome}:{scoreAway}</p>
+                ) : (
+                    <div className="time">
+                        <h3>VS</h3>
+                        <p>{time}</p>
+                    </div>
+                )}
             </div>
-        </NavLink>
+            <img src={logoAway}
+                alt={' '}
+                className="awayteam-img"
+            />
+            <h1 className="awayteam-name">{nameAway}</h1>
+        </div>
     );
 }
 
