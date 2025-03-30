@@ -1,5 +1,5 @@
 from functools import lru_cache
-from database.models import UserPreference, Sport, TeamIndex
+from database.models import UserPreference, Sport, User, UserClubPreferences, TeamIndex
 import database.models
 from dto.api_input import TablesAndColumnsForUserPreferencesDTO
 from service.api_logic.user_logic import PREFERENCES
@@ -105,3 +105,13 @@ class PreferencesDAL:
         ).delete(synchronize_session=False)
 
         self.session.commit()
+
+    def get_users_by_preference_index(self, preference_index):
+        query = (
+            self.session.query(User)
+            .join(UserClubPreferences, User.user_id == UserClubPreferences.users_id)
+            .filter(UserClubPreferences.preferences == preference_index)
+            .all()
+        )
+
+        return query

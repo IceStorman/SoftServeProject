@@ -30,7 +30,6 @@ from pathlib import Path
 from api.routes.api_localization import babel, get_locale
 
 
-
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))  
 cert_file = os.path.join(BASE_DIR, "localhost.pem")
 key_file = os.path.join(BASE_DIR, "localhost-key.pem")
@@ -61,6 +60,7 @@ def create_app():
     app.config['MAIL_USE_SSL'] = False
     app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
     app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+    app.config['FRONTEND_NEWS_URL'] = os.getenv('FRONTEND_NEWS_URL')
     mail.init_app(app)
     
     app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
