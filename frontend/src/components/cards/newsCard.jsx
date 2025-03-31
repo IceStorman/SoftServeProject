@@ -23,7 +23,7 @@ function NewsCard({ title, date, img, sport, id = 1, content, likes = 10, width,
       >
         <div
             className={`news-card ${isVertical ? "vertical" : "horizontal"} ${isSmall ? "small" : "big"} ${isFoil ? "foil" : ""}`}
-            style={{width: width, height: height}}
+            style={{ width: `${width}rem`, height: `${height}rem` }}
         >
           {img && (
               <div className={isVertical ? "image vertical" : "image horizontal"}>
