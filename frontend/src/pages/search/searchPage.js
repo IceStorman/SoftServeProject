@@ -27,6 +27,7 @@ function SearchPage() {
     const [leagueId, setLeagueId] = useState(null);
     const [inputValue, setInputValue] = useState(""); 
     const [prevInputValue, setPrevInputValue] = useState("");
+    const [openFilterModel, setOpenFilterModel] = useState(null);
 
     const { menuIsOpen, menuIcon, handleOpenMenu, handleCloseMenu } = useBurgerMenuState({
         menuSelector: ".filters-container",
@@ -59,7 +60,7 @@ function SearchPage() {
                     key={`${type}-${item.id}`}
                     title={item?.data?.title}
                     date={item?.data?.timestamp}
-                    img={item?.data?.images[0] || null}
+                    img={item?.data?.images || null}
                     content={item?.data?.article?.section_1?.content}
                     id={item?.blob_id}
                     article={item?.data?.article}
@@ -110,14 +111,14 @@ function SearchPage() {
             const response = await axios.post(
                 `${apiEndpoints.url}${endpointMap[model]}`,
                 {
-                    pagination: { page: page + 1, per_page: 9 },
+                    pagination: { page: page + 1, per_page: 8 },
                     filters: filtersData,
                 },
                 { headers: { "Content-Type": "application/json" } }
             );
     
             setCurrentItems(response.data.items || []);
-            setPageCount(Math.ceil(response.data.count / 9));
+            setPageCount(Math.ceil(response.data.count / 8));
             console.log(response.data.items)
         } catch (error) {
             setPageCount(0);
@@ -130,42 +131,89 @@ function SearchPage() {
         fetchData(selectedModel, 0);
     }, [selectedModel, filters]);
 
+    const calculateColumns = (width, layout) => {
+        if (width > globalVariables.windowsSizesForCards.desktopLarge) return layout.baseColumns;
+        if (width > globalVariables.windowsSizesForCards.desktopMid) return Math.max(layout.baseColumns - 1, layout.minColumns);
+        if (width > globalVariables.windowsSizesForCards.tablet) return Math.max(layout.baseColumns - 2, layout.minColumns);
+        if (width > globalVariables.windowsSizesForCards.mobileLarge) {
+            return layout.baseColumns === 4
+                ? Math.max(layout.baseColumns - 2, layout.minColumns)
+                : Math.max(layout.baseColumns - 3, layout.minColumns);
+        }
+        if (width < globalVariables.windowsSizesForCards.mobileSmall) {
+            if (layout.baseColumns === 2) {
+                return layout.minColumns - 1;
+            }
+        }
+        return layout.minColumns;
+    };
+
+    const [gridSize, setGridSize] = useState({
+        ...globalVariables.cardLayouts.large,
+        columns: calculateColumns(window.innerWidth, globalVariables.cardLayouts.large)
+    });
+
+    const calculateLeaguesPerPage = (layout) => {
+        if (layout.minColumns === 1) return layout.alwaysColumns * 2;
+        return gridSize.baseRows * gridSize.alwaysColumns
+    }
+
+    const [leaguesPerPage, setLeaguesPerPage] = useState(calculateLeaguesPerPage(globalVariables.cardLayouts.large));
+
+    useEffect(() => {
+        setLeaguesPerPage(gridSize.baseRows * gridSize.columns);
+    }, [gridSize]);
+
+    const handleGridSizeChange = (size) => {
+        if (globalVariables.cardLayouts[size]) {
+            setGridSize({
+                ...globalVariables.cardLayouts[size],
+                columns: calculateColumns(window.innerWidth, globalVariables.cardLayouts[size])
+            });
+        }
+    };
+
+    const toggleFilters = (model) => {
+        setOpenFilterModel((prevModel) => {
+            const newModel = prevModel === model ? null : model;
+            console.log("openFilterModel:", newModel); 
+            return newModel;
+        });
+    };
+    
+
     return (
         <div className="streams-page">
-            <div className="model-selection">
-                {["streams", "leagues", "teams", "news", "games"].map((model) => (
-                    <button
-                        key={model}
-                        className={selectedModel === model ? "active" : ""}
-                        onClick={() => setSelectedModel(model)}
-                    >
-                        {model.charAt(0).toUpperCase() + model.slice(1)}
-                    </button>
-                ))}
-            </div>
+        <div className="model-selection">
+            {["streams", "leagues", "teams", "news", "games"].map((model) => (
+                <button
+                    key={model}
+                    className={selectedModel === model ? "active" : ""}
+                    onClick={() => {
+                        setSelectedModel(model);
+                        toggleFilters(model); 
+                    }}
+                >
+                    {model.charAt(0).toUpperCase() + model.slice(1)}
+                </button>
+            ))}
+        </div>
 
-            {!burgerMenu && (
-                <div className={`filters-container ${menuIsOpen ? "show" : ""}`}>
+        {openFilterModel === selectedModel && (
+            <div className="filter-wrapper">
+                <div className={`filters-container ${openFilterModel === selectedModel ? "show" : ""}`}>
                     <FiltersRenderer model={selectedModel} onFilterChange={setFilters} />
                     <button onClick={() => fetchData(selectedModel, 0)}>{t("apply_filters")}</button>
+                    <button onClick={() => setOpenFilterModel(null)}>{t("close_filters")}</button>
                 </div>
-            )}
+            </div>
+        )}
 
-            {burgerMenu && (
-                <div className="filter-wrapper">
-                    <button className={"menu-btn"} onClick={handleOpenMenu}>{menuIcon}</button>
-                    {menuIsOpen && (
-                        <div className="filters-container show">
-                            <FiltersRenderer model={selectedModel} onFilterChange={setFilters} />
-                            <button onClick={() => fetchData(selectedModel, 0)}>{t("apply_filters")}</button>
-                        </div>
-                    )}
-                </div>
-            )}
 
             <SearchBlock
                 key={selectedModel}
-                gridSize={{ columns: 3, rows: 2, cardSize: { width: 4000, height: 400 } }}
+                gridSize={gridSize}
+                onGridSizeChange={handleGridSizeChange}
                 postsPerPage={10}
                 pageCount={pageCount}
                 currentPage={currentPage}

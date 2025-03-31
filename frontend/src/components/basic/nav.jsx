@@ -30,7 +30,7 @@ function NavBar() {
             <NavLink to={globalVariables.routeLinks.defaultRoute} className={({ isActive }) => clsx("nav-link", { active: isActive })}>{t("news")}</NavLink>
             <NavLink to={globalVariables.routeLinks.sportPageRoute} className={({ isActive }) => clsx("nav-link", { active: isActive })}>{t("leagues")}</NavLink>
             <NavLink to={globalVariables.routeLinks.streamRoute} className={({ isActive }) => clsx("nav-link", { active: isActive })}>{t("games")}</NavLink>
-            <NavLink to={globalVariables.routeLinks.searchPageRoute} className={({ isActive }) => clsx("nav-link", { active: isActive })}>{t("search")}</NavLink>
+            <NavLink to={globalVariables.routeLinks.searchPageRoute} className={({ isActive }) => clsx("nav-link", { active: isActive })}>{t("search_page")}</NavLink>
         </>
     );
 

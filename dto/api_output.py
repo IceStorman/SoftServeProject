@@ -185,7 +185,7 @@ def get_script_phrases():
         "sort":               _("Sort by:"),
         "more":               _("more..."),
         "continue":           _("Continue?"),
-        "search":             _("Search"),
+        "search_page":        _("SearchPage"),
         "all":                _("All"),
         "recommend_pref":     _("Recommended news by your Preferences"),
         "news_not_found":     _("No latest news were found"),

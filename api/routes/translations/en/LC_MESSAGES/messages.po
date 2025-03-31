@@ -206,7 +206,7 @@ msgstr "Apply Filters"
 msgid "Search by name..."
 msgstr "Search by name..."
 
-msgid "Search"
+msgid "SearchPage"
 msgstr "Search"
 
 
