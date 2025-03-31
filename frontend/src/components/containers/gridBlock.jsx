@@ -84,7 +84,7 @@ const GridContainer = ({
                 previousLinkClassName="page-prev"
                 nextLinkClassName="page-next"
                 activeLinkClassName="page-active"
-            />;
+            />
         </div>
     );
 };

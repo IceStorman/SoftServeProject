@@ -13,8 +13,8 @@ function NewsShowcase({ newsData }) {
 
     const postsPerPage = 1;
     const pageCount = Math.ceil(newsData.length / postsPerPage);
-    const element_height = 600;
-    const element_width = 500;
+    // const element_height = 600;
+    // const element_width = 500;
 
     const handlePageChange = ({ selected }) => {
         setCurrentPage(selected + 1);
@@ -32,8 +32,8 @@ function NewsShowcase({ newsData }) {
                     content={newsData[currentPage - 1]?.data?.article?.section_1?.content}
                     id={newsData[currentPage - 1]?.blob_id}
                     article={newsData[currentPage - 1]?.data}
-                    height={element_height}
-                    width={element_width}
+                    // height={element_height}//Нахуя?
+                    // width={element_width}//Нахуя?
                     isFoil={true}
                 />
             ) : !loading ? (
