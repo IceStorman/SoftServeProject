@@ -12,6 +12,7 @@ import GameCard from "../components/cards/gameCard.jsx"
 import GridContainer from "../components/containers/gridBlock.jsx";
 import useTranslations from "../translationsContext";
 import {AuthContext} from "./registration/AuthContext";
+import useBurgerMenu from "../customHooks/useBurgerMenu";
 import GridRecommendationBlock from "../components/containers/gridRecommendationBlock";
 import globalVariables from "../globalVariables";
 
@@ -23,13 +24,14 @@ function MainPage() {
     const { t } = useTranslations();
     const [news, setNews] = useState([])
     const [newsPaginated, setNewsPaginated] = useState([])
+    const noLatestNews = useBurgerMenu(`${globalVariables.windowSizeForBurger.latestNews}`);
 
     const game_element_height = 85
     const game_element_width = 400
 
     const cardSizes = {
         large: { rows: 1, columns: 4, cardSize: { width: 320, height: 490 }, postsPerPage: 4 },
-        medium: { rows: 3, columns: 5, cardSize: { width: 250, height: 300 }, postsPerPage: 10 },
+        medium: { rows: 3, columns: 5, cardSize: { width: 250, height: 350 }, postsPerPage: 10 },
         small: { rows: 5, columns: 2, cardSize: { width: 650, height: 100 }, postsPerPage: 8 }
     };
 
@@ -197,12 +199,11 @@ function MainPage() {
     };
 
     const [selectedSport, setSelectedSport] = useState("all");
-    const element_height = 100
-    const element_width = 350
     return (
         <>
             <div className="showcase">
-                <section>
+                {!noLatestNews ? (
+                <section class="news-column-section">
                     <p className="block-title">Latest news</p>
                     <div className="news-column">
                         <Column>
@@ -211,13 +212,9 @@ function MainPage() {
                                     key={index}
                                     title={item?.data?.title}
                                     date={item?.data?.timestamp}
-                                    img={item?.data?.images[0] || null}
                                     sport={item?.data?.S_P_O_R_T}
-                                    content={item?.data?.article?.section_1?.content}
                                     id={item?.blob_id}
                                     article={item?.data}
-                                    height={element_height}
-                                    width={element_width}
                                     className="news-card"
                                 />
                                 )
@@ -225,6 +222,7 @@ function MainPage() {
                         </Column></div>
                     <button onClick={scrollToTarget} className="boxed">{t("more")}</button>
                 </section>
+                ): null}
 
                 <NewsShowcase newsData={news} />
 

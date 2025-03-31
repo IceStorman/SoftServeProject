@@ -29,7 +29,7 @@ apis = [
         "index": "fixtures",
         "url": "https://v3.football.api-sports.io/fixtures?date=DATE",
         "host": "v3.football.api-sports.io",
-        "frequency": 3
+        "frequency": 0.3
     },
     {
         "name": "football",

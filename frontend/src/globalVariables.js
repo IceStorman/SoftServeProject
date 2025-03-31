@@ -44,7 +44,8 @@ const globalVariables= {
     windowSizeForBurger: {
         filters: 1050,
         streams: 1000,
-        navBar: 600
+        navBar: 600,
+        latestNews: 1220
     },
 
     routeLinks: {
