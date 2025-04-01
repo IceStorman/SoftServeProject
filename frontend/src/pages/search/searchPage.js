@@ -184,30 +184,32 @@ function SearchPage() {
 
     return (
         <div className="streams-page">
-        <div className="model-selection">
-            {["streams", "leagues", "teams", "news", "games"].map((model) => (
-                <button
-                    key={model}
-                    className={selectedModel === model ? "active" : ""}
-                    onClick={() => {
-                        setSelectedModel(model);
-                        toggleFilters(model); 
-                    }}
-                >
-                    {model.charAt(0).toUpperCase() + model.slice(1)}
-                </button>
-            ))}
-        </div>
+            <div className="model-selection">
+                {["streams", "leagues", "teams", "news", "games"].map((model) => (
+                    <div className="menu">
+                        <button
+                        key={model}
+                        className={selectedModel === model ? "active" : "menu-button"}
+                        onClick={() => {
+                            setSelectedModel(model);
+                            toggleFilters(model); 
+                        }}
+                        >
+                        {model.charAt(0).toUpperCase() + model.slice(1)}
+                        </button>
 
-        {openFilterModel === selectedModel && (
-            <div className="filter-wrapper">
-                <div className={`filters-container ${openFilterModel === selectedModel ? "show" : ""}`}>
-                    <FiltersRenderer model={selectedModel} onFilterChange={setFilters} />
-                    <button onClick={() => fetchData(selectedModel, 0)}>{t("apply_filters")}</button>
-                    <button onClick={() => setOpenFilterModel(null)}>{t("close_filters")}</button>
-                </div>
+                        {openFilterModel === model && (
+                        <div className="filter-wrapper">
+                            <div className={`filters-container ${openFilterModel === selectedModel ? "show" : ""}`}>
+                                <FiltersRenderer model={selectedModel} onFilterChange={setFilters} />
+                                <button onClick={() => fetchData(selectedModel, 0)}>{t("apply_filters")}</button>
+                                <button onClick={() => setOpenFilterModel(null)}>{t("close_filters")}</button>
+                             </div>
+                        </div>
+                        )}
+                    </div>
+                ))}
             </div>
-        )}
 
 
             <SearchBlock

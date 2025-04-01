@@ -1,0 +1,18 @@
+.model-selection{
+    .menu{
+        .menu-button{
+            background-color: $main-clr; 
+            width: 14.2rem;
+            padding: 1rem;
+        }
+        .menu-button:hover{
+            background-color: $main-clr-shadow;
+        }
+
+        .active{
+            background-color: $main-shadow; 
+            width: 14.2rem;
+            padding: 1rem;
+        }
+    }
+}
