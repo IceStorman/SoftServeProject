@@ -50,6 +50,7 @@ function SearchPage() {
                     img={item.logo}
                     id={item.id}
                     sportId={sportId}
+                    size={gridSize.baseColumns === 2 ? "small" : gridSize.baseColumns === 5 ? "medium" : "large"}
                     />,
 
             teams:  <TeamCard
@@ -170,6 +171,17 @@ function SearchPage() {
         setItemPerPage(gridSize.baseRows * gridSize.columns);
     }, [gridSize]);
 
+    useEffect(() => {
+            const handleResize = () => {
+                setGridSize(prev => ({
+                    ...prev,
+                    columns: calculateColumns(window.innerWidth, prev)
+                }));
+            };
+            window.addEventListener("resize", handleResize);
+            return () => window.removeEventListener("resize", handleResize);
+        }, []);
+
     const handleGridSizeChange = (size) => {
         if (globalVariables.cardLayouts[size]) {
             setGridSize({
@@ -250,6 +262,7 @@ function SearchPage() {
             </div>
 
             <SearchBlock
+                cardSizes={globalVariables.cardLayouts}
                 gridSize={gridSize}
                 onGridSizeChange={handleGridSizeChange}
                 postsPerPage={itemPerPage}
