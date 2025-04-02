@@ -194,5 +194,6 @@ def get_script_phrases():
         "select_country":     _("Select a country..."),
         "apply_filters":      _("Apply Filters"),
         "search_name":        _("Search by name..."),
+        "close_filters":      _("Close Filters")
     }
 

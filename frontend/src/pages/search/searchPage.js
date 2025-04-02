@@ -28,6 +28,10 @@ function SearchPage() {
     const [inputValue, setInputValue] = useState(""); 
     const [prevInputValue, setPrevInputValue] = useState("");
     const [openFilterModel, setOpenFilterModel] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [passedPosts, setPassedPosts] = useState(0);
+    const [paginationKey, setPaginationKey] = useState(0);
+    const [searchClicked, setSearchClicked] = useState(false);
 
     const { menuIsOpen, menuIcon, handleOpenMenu, handleCloseMenu } = useBurgerMenuState({
         menuSelector: ".filters-container",
@@ -82,8 +86,15 @@ function SearchPage() {
         return componentsCard[type] || null;
     };
 
-    const fetchData = async (model, page = 0) => {
-        setCurrentItems([]);
+    const handlePageClick = (event) => {
+        const selectedPage = event.selected;
+        setCurrentPage(selectedPage);
+        fetchData(selectedModel, selectedPage);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    const fetchData = async (model, page) => {
+        
         setPrevInputValue(inputValue);
     
         let filtersData = [...filters];
@@ -111,25 +122,20 @@ function SearchPage() {
             const response = await axios.post(
                 `${apiEndpoints.url}${endpointMap[model]}`,
                 {
-                    pagination: { page: page + 1, per_page: 8 },
+                    pagination: { page: page + 1, per_page: itemPerPage || 10 },
                     filters: filtersData,
                 },
                 { headers: { "Content-Type": "application/json" } }
             );
     
             setCurrentItems(response.data.items || []);
-            setPageCount(Math.ceil(response.data.count / 8));
-            console.log(response.data.items)
+            const totalPosts = response.data.count;
+            setPageCount(Math.ceil(totalPosts / itemPerPage));
         } catch (error) {
             setPageCount(0);
             toast.error(`Error loading ${model}: ${error.message}`);
         }
     };    
-
-    useEffect(() => {
-        setCurrentItems([]);
-        fetchData(selectedModel, 0);
-    }, [selectedModel, filters]);
 
     const calculateColumns = (width, layout) => {
         if (width > globalVariables.windowsSizesForCards.desktopLarge) return layout.baseColumns;
@@ -153,15 +159,15 @@ function SearchPage() {
         columns: calculateColumns(window.innerWidth, globalVariables.cardLayouts.large)
     });
 
-    const calculateLeaguesPerPage = (layout) => {
+    const calculateItemPerPage = (layout) => {
         if (layout.minColumns === 1) return layout.alwaysColumns * 2;
         return gridSize.baseRows * gridSize.alwaysColumns
     }
 
-    const [leaguesPerPage, setLeaguesPerPage] = useState(calculateLeaguesPerPage(globalVariables.cardLayouts.large));
+    const [itemPerPage, setItemPerPage] = useState(calculateItemPerPage(globalVariables.cardLayouts.large));
 
     useEffect(() => {
-        setLeaguesPerPage(gridSize.baseRows * gridSize.columns);
+        setItemPerPage(gridSize.baseRows * gridSize.columns);
     }, [gridSize]);
 
     const handleGridSizeChange = (size) => {
@@ -176,10 +182,41 @@ function SearchPage() {
     const toggleFilters = (model) => {
         setOpenFilterModel((prevModel) => {
             const newModel = prevModel === model ? null : model;
-            console.log("openFilterModel:", newModel); 
             return newModel;
         });
     };
+
+    useEffect(() => {
+            let page = Math.floor(passedPosts / itemPerPage);
+            setCurrentPage(page);
+            fetchData(selectedModel, page);
+    }, [itemPerPage]);
+
+    useEffect(() => {
+            (loading === false) ? setLoading(false) :
+                (
+                    (currentItems.length > 0) ? setLoading(false)
+                        : setTimeout(() => {
+                            setLoading(false);
+                        }, 2000)
+                )
+    }, [loading]);
+
+    useEffect(() => {
+            if (prevInputValue !== inputValue) {
+                handlePageClick({ selected: 0 });
+                setPaginationKey((prevKey) => prevKey + 1);
+            }
+        }, [searchClicked]);
+    
+    useEffect(() => {
+        setCurrentPage(0);
+    }, [selectedModel, filters, itemPerPage]);
+        
+    useEffect(() => {
+        fetchData(selectedModel, currentPage);
+    }, [selectedModel, filters, itemPerPage, currentPage]);
+    
     
 
     return (
@@ -193,6 +230,7 @@ function SearchPage() {
                         onClick={() => {
                             setSelectedModel(model);
                             toggleFilters(model); 
+                            setCurrentItems([]);
                         }}
                         >
                         {model.charAt(0).toUpperCase() + model.slice(1)}
@@ -211,20 +249,16 @@ function SearchPage() {
                 ))}
             </div>
 
-
             <SearchBlock
-                key={selectedModel}
                 gridSize={gridSize}
                 onGridSizeChange={handleGridSizeChange}
-                postsPerPage={10}
+                postsPerPage={itemPerPage}
                 pageCount={pageCount}
                 currentPage={currentPage}
-                onPageChange={(event) => {
-                    setCurrentPage(event.selected);
-                    fetchData(selectedModel, event.selected);
-                }}
-                paginationKey={selectedModel}
+                onPageChange={handlePageClick}
+                paginationKey={paginationKey}
                 count={currentItems.length}
+                loading={loading}
             
                 children={currentItems.length > 0 ? (
                     currentItems.map((item) => {

@@ -211,3 +211,6 @@ msgstr "Шукати по назві..."
 msgid "SearchPage"
 msgstr "Пошук"
 
+msgid "Close Filters"
+msgstr "Закрити фільтри"
+
