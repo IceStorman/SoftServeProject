@@ -65,7 +65,6 @@ function SearchPage() {
                     key={`${type}-${item.id}`}
                     title={item?.data?.title}
                     date={item?.data?.timestamp}
-                    img={item?.data?.images || null}
                     content={item?.data?.article?.section_1?.content}
                     id={item?.blob_id}
                     article={item?.data?.article}
@@ -138,26 +137,29 @@ function SearchPage() {
         }
     };    
 
-    const calculateColumns = (width, layout) => {
-        if (width > globalVariables.windowsSizesForCards.desktopLarge) return layout.baseColumns;
-        if (width > globalVariables.windowsSizesForCards.desktopMid) return Math.max(layout.baseColumns - 1, layout.minColumns);
-        if (width > globalVariables.windowsSizesForCards.tablet) return Math.max(layout.baseColumns - 2, layout.minColumns);
-        if (width > globalVariables.windowsSizesForCards.mobileLarge) {
-            return layout.baseColumns === 4
-                ? Math.max(layout.baseColumns - 2, layout.minColumns)
-                : Math.max(layout.baseColumns - 3, layout.minColumns);
-        }
-        if (width < globalVariables.windowsSizesForCards.mobileSmall) {
-            if (layout.baseColumns === 2) {
-                return layout.minColumns - 1;
+    const calculateColumns = (width, layout, selectedModel) => {
+        if (selectedModel != "games"){
+            if (width > globalVariables.windowsSizesForCards.desktopLarge) return layout.baseColumns;
+            if (width > globalVariables.windowsSizesForCards.desktopMid) return Math.max(layout.baseColumns - 1, layout.minColumns);
+            if (width > globalVariables.windowsSizesForCards.tablet) return Math.max(layout.baseColumns - 2, layout.minColumns);
+            if (width > globalVariables.windowsSizesForCards.mobileLarge) {
+                return layout.baseColumns === 4
+                    ? Math.max(layout.baseColumns - 2, layout.minColumns)
+                    : Math.max(layout.baseColumns - 3, layout.minColumns);
             }
+            if (width < globalVariables.windowsSizesForCards.mobileSmall) {
+                if (layout.baseColumns === 2) {
+                    return layout.minColumns - 1;
+                }
+            }
+            return layout.minColumns;
         }
-        return layout.minColumns;
+        return 2
     };
 
     const [gridSize, setGridSize] = useState({
         ...globalVariables.cardLayouts.large,
-        columns: calculateColumns(window.innerWidth, globalVariables.cardLayouts.large)
+        columns: calculateColumns(window.innerWidth, globalVariables.cardLayouts.large, selectedModel)
     });
 
     const calculateItemPerPage = (layout) => {
@@ -175,7 +177,7 @@ function SearchPage() {
             const handleResize = () => {
                 setGridSize(prev => ({
                     ...prev,
-                    columns: calculateColumns(window.innerWidth, prev)
+                    columns: calculateColumns(window.innerWidth, prev, selectedModel)
                 }));
             };
             window.addEventListener("resize", handleResize);
@@ -186,7 +188,7 @@ function SearchPage() {
         if (globalVariables.cardLayouts[size]) {
             setGridSize({
                 ...globalVariables.cardLayouts[size],
-                columns: calculateColumns(window.innerWidth, globalVariables.cardLayouts[size])
+                columns: calculateColumns(window.innerWidth, globalVariables.cardLayouts[size], selectedModel)
             });
         }
     };
@@ -260,7 +262,7 @@ function SearchPage() {
                     </div>
                 ))}
             </div>
-
+           
             <SearchBlock
                 cardSizes={globalVariables.cardLayouts}
                 gridSize={gridSize}

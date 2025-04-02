@@ -34,11 +34,10 @@ export const filtersImports = {
         date_to: (props) => <DateFilter {...props} />,
     },
     games: {
-        name: (props) => <NameFilter {...props} />,
+        team_home: (props) => <NameFilter {...props} />,
         sport_id: (props) => <SportFilter {...props} />,
         date_from: (props) => <DateFilter {...props} />,
         date_to: (props) => <DateFilter {...props} />,
         country_id: (props) => <CountryFilter {...props} />,
-        team_home: (props) => <TeamFilter {...props} />,
     }
 };
