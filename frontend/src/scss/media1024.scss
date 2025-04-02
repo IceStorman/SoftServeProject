@@ -91,4 +91,15 @@
       max-width: 80%;
     }
   }
+
+  .grid-container{
+    max-width: 80%;
+
+    .grid{
+      grid-template-columns: repeat(2, 1fr) !important;
+      margin:1rem auto;
+      gap: 3rem;
+    }
+  }
+  
 }

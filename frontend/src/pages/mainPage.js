@@ -196,6 +196,7 @@ function MainPage() {
         const selectedPage = event.selected;
         setCurrentPage(selectedPage);
         getPaginatedNews(selectedPage);
+        scrollToTarget();
     };
 
     const [selectedSport, setSelectedSport] = useState("all");
