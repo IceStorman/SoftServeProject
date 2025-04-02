@@ -3,8 +3,7 @@
     padding-top: 0;
     display: flex;
     flex-direction: column;
-    max-height: fit-content;
-    width: 1fr;
+    width: 100%;
 
     .grid {
         margin: 1rem;
@@ -19,6 +18,28 @@
     .header {
         display: flex;
         align-items: center;
+        max-width: 100%;
+        margin: 0 1.5rem;
+
+        .filter-wrapper {
+            position: relative;
+            display: inline-block;
+
+            .burger-filter {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                background: none;
+                padding: 0.1rem;
+                display: none;
+                z-index: 1;
+            }
+
+            .burger-filter.show {
+                display: block;
+            }
+        }
+
 
         .controls {
             display: flex;
@@ -77,14 +98,4 @@
             left: 0;
         }
     }
-}
-
-.filters {
-    padding: 1rem;
-    padding-top: 0;
-    background-color: $main-clr;
-    max-height: fit-content;
-    min-width: 13rem;
-    max-width: 25rem;
-    box-shadow: 5px 5px #000;
 }

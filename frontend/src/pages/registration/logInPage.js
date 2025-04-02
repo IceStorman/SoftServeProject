@@ -51,13 +51,16 @@ function SignInPage() {
                     auth_provider: globalVariables.authStrategies.simpleStrategy
                 },
                 {
+                    withCredentials: true 
+                },
+                {
                     headers: { 'Content-Type': 'application/json' },
                 }
             );
 
-            login({ email: response?.data?.user?.email, username: response?.data?.user?.username, id: response?.data?.user?.id });
+            login();
             toast.success(globalVariables.authMessages.successLogIn);
-            navigate('/');
+            navigate(globalVariables.routeLinks.defaultRoute);
         } catch (error) {
             const errorStatus = error?.response?.status
             const errorMessage = error?.response?.data?.error;
@@ -92,11 +95,11 @@ function SignInPage() {
             </form>
 
             <div className="reset-passwrd">
-                <Link to={"/sign-in/reset-password"}>{t("forget_password")}</Link>
+                <Link to={globalVariables.routeLinks.forgotPasswordRoute}>{t("forget_password")}</Link>
             </div>
 
             <div className="redirect">
-                <p className="space"> {t("no_account")} <Link to={"/sign-up"}>{t("create")}</Link></p>
+                <p className="space"> {t("no_account")} <Link to={globalVariables.routeLinks.signUpRoute}>{t("create")}</Link></p>
                 <AuthBtn />
             </div>
 

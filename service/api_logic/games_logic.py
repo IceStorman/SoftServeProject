@@ -20,14 +20,15 @@ class GamesService:
             Games.status,
             Games.date,
             Games.time,
+            Games.sport_id,
+            Games.score_away_team,
+            Games.score_home_team,
             League.name.label("league_name"),
             League.logo.label("league_logo"),
             HomeTeam.name.label("home_team_name"),
             HomeTeam.logo.label("home_team_logo"),
             AwayTeam.name.label("away_team_name"),
             AwayTeam.logo.label("away_team_logo"),
-            Games.score_home_team.label("home_score"),
-            Games.score_away_team.label("away_score"),
         )
         .join(League, Games.league_id == League.league_id)
         .join(AwayTeam, Games.team_away_id == AwayTeam.team_index_id)
@@ -37,11 +38,7 @@ class GamesService:
         filtered_query, count = FilterManagerStrategy.apply_filters(Games, query, filters_dto)
 
         games = self._games_dal.query_output(filtered_query)
-        game_output = GameOutput(many=True)
-        games = game_output.dump(games)
+        game_output = GameOutput(many=True).dump(games)
+        response_dto = ListResponseDTO(items=game_output, count=count)
 
-        response_dto = ListResponseDTO()
-
-        return response_dto.dump({"items": games, "count": count})
-
-
+        return response_dto.to_dict()

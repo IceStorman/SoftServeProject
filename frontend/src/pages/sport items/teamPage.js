@@ -9,14 +9,70 @@ import NoItems from "../../components/NoItems.js";
 import Filters from "../../components/containers/filtersBlock.jsx";
 import { RiArrowLeftWideLine } from "react-icons/ri";
 import useTranslations from "../../translationsContext";
+import {FaFilter, FaTimes} from "react-icons/fa";
+import FiltersRenderer from "../../components/filters/filterRender";
+import globalVariables from "../../globalVariables";
+import useBurgerMenu from "../../customHooks/useBurgerMenu";
+import useBurgerMenuState from "../../customHooks/useBurgerMenuState";
 
 function TeamPage() {
     const { leagueName } = useParams();
+    const burgerMenu = useBurgerMenu(`${globalVariables.windowSizeForBurger.filters}`);
+    const initialIcon = <FaFilter size={28} />;
+    const closeIcon = <FaTimes size={28} color="black" />;
 
-    const cardSizes = {
-        large: { rows: 4, columns: 4, cardSize: { width: 280, height: 350 }, postsPerPage: 16 },
-        medium: { rows: 5, columns: 5, cardSize: { width: 220, height: 280 }, postsPerPage: 25 },
-        small: { rows: 10, columns: 2, cardSize: { width: 600, height: 100 }, postsPerPage: 20 }
+    const { menuIsOpen, menuIcon, handleOpenMenu, handleCloseMenu } = useBurgerMenuState({
+        initialIcon: initialIcon,
+        closeIcon: closeIcon,
+    });
+
+    const calculateColumns = (width, layout) => {
+        if (width > globalVariables.windowsSizesForCards.desktopLarge) return layout.baseColumns;
+        if (width > globalVariables.windowsSizesForCards.tablet) return Math.max(layout.baseColumns - 1, layout.minColumns);
+        if (width > globalVariables.windowsSizesForCards.mobileLarge) {
+            return layout.baseColumns === 4
+                ? Math.max(layout.baseColumns - 1, layout.minColumns)
+                : Math.max(layout.baseColumns - 1, layout.minColumns);
+        }
+        if (width < globalVariables.windowsSizesForCards.mobileSmall) {
+            if (layout.baseColumns === 2) {
+                return layout.minColumns - 1;
+            }
+        }
+        return layout.minColumns;
+    };
+
+    const [gridSize, setGridSize] = useState({ ...globalVariables.cardLayouts.large, columns: calculateColumns(window.innerWidth, globalVariables.cardLayouts.large) });
+
+    const calculateLeaguesPerPage = (layout) => {
+        if (layout.minColumns === 1) return layout.alwaysColumns * 2;
+        return gridSize.baseRows * gridSize.alwaysColumns
+    }
+
+    const [teamsPerPage, setTeamsPerPage] =  useState(calculateLeaguesPerPage(globalVariables.cardLayouts.large));
+
+    useEffect(() => {
+        setTeamsPerPage(gridSize.baseRows * gridSize.columns);
+    }, [gridSize]);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setGridSize(prev => ({
+                ...prev,
+                columns: calculateColumns(window.innerWidth, prev)
+            }));
+        };
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    const handleGridSizeChange = (size) => {
+        if (globalVariables.cardLayouts[size]) {
+            setGridSize({
+                ...globalVariables.cardLayouts[size],
+                columns: calculateColumns(window.innerWidth, globalVariables.cardLayouts[size])
+            });
+        }
     };
 
     const navigate = useNavigate();
@@ -24,13 +80,12 @@ function TeamPage() {
     const stateData = location.state || {};
     const leagueId = stateData.leagueId;
     const sportId = stateData.sportId;
+    const sportName = stateData.sportName;
 
     const [currentTeams, setCurrentTeams] = useState([]);
     const [pageCount, setPageCount] = useState(0);
     const [paginationKey, setPaginationKey] = useState(0);
     const [currentPage, setCurrentPage] = useState(0);
-    const [teamsPerPage, setTeamsPerPage] = useState(cardSizes.large.postsPerPage);
-    const [gridSize, setGridSize] = useState(cardSizes.large);
 
     const [loading, setLoading] = useState(false);
     const [inputValue, setInputValue] = useState('');
@@ -39,23 +94,11 @@ function TeamPage() {
     const [passedPosts, setPassedPosts] = useState(0);
     const { t } = useTranslations();
 
-
     useEffect(() => {
         let page = Math.floor(passedPosts / teamsPerPage);
         setCurrentPage(page);
         getTeams(page);
     }, [teamsPerPage]);
-
-    const handleGridSizeChange = (size) => {
-        console.log('size: ', size);
-        if (cardSizes[size]) {
-            setPassedPosts(gridSize.rows * gridSize.columns * currentPage);
-            setTeamsPerPage(cardSizes[size].postsPerPage);
-            setGridSize(cardSizes[size]);
-        } else {
-            setGridSize(cardSizes.large);
-        }
-    };
 
     useEffect(() => {
         getTeams(0);
@@ -83,23 +126,68 @@ function TeamPage() {
         setPrevInputValue(inputValue);
 
         try {
-            setLoading(true);
+            let response;
 
-            const response = await axios.post(
-                `${apiEndpoints.url}${apiEndpoints.teams.getAll}`,
-                {
-                    teams__sport_id: sportId,
-                    leagues__league_id: leagueId,
-                    page: page + 1,
-                    per_page: teamsPerPage
-                },
-                {
-                    headers: { 'Content-Type': 'application/json' },
+            const filtersData = [
+                ...filters,
+                { 'filter_name': 'sport_id', 'filter_value': sportId },
+                { 'filter_name': 'league_id', 'filter_value': leagueId }
+            ];
+
+            if (sportName !== "formula-1" && sportName !== "mma") {
+                response = await axios.post(
+                    `${apiEndpoints.url}${apiEndpoints.teams.getTeamsAll}`,
+                    {
+                        sport_id: sportId,
+                        league_id: leagueId,
+                        filters_data: {
+                            pagination: {
+                                page: page + 1,
+                                per_page: teamsPerPage,
+                            },
+                            filters: filtersData
+                        }
+                    },
+                    {
+                        headers: { 'Content-Type': 'application/json' },
+                    }
+                );
+            }
+            else {
+                if (sportName !== "formula-1") {
+                    response = await axios.post(
+                        `${apiEndpoints.url}${apiEndpoints.players.getPlayersAll}`,
+                        {
+                            sport_id: sportId,
+                            team_id: leagueId,
+                            filters_data: {
+                                pagination: {
+                                    page: page + 1,
+                                    per_page: teamsPerPage,
+                                },
+                                filters: filtersData
+                            }
+                        },
+                        {
+                            headers: { 'Content-Type': 'application/json' },
+                        }
+                    );
                 }
-            );
+                else {
+                    response = { data: { results: 0 } };
+                }
+            }
 
-            setCurrentTeams(response.data.teams);
-            console.log(response.data.teams);
+            if (!response.data.items) {
+                if (response.data.results === 0) {
+                    setCurrentTeams([]);
+                    setPageCount(0);
+                    return;
+                }
+                return getTeams(0)
+            }
+
+            setCurrentTeams(response.data.items);
             const totalPosts = response.data.count;
             setPageCount(Math.ceil(totalPosts / teamsPerPage));
         } catch (error) {
@@ -125,18 +213,34 @@ function TeamPage() {
             )
     }, [loading]);
 
-    return (
-        <div className="leagues-page">
+    const [selectedModel, setSelectedModel] = useState("teams");
+    const [filters, setFilters] = useState([]);
 
+    const handleFiltersChange = (newFilters) => {
+        setFilters(newFilters);
+    };
+
+    const handleApplyFilters = () => {
+        getTeams(0);
+    };
+
+    return (
+        <div className="leaguesTeamsPage">
             <div className="title">
-                <button className="filled arrow" onClick={() => navigate(-1)}><RiArrowLeftWideLine className="arrow" /></button>
+                <button className="filled arrow" onClick={() => navigate(-1)}><RiArrowLeftWideLine className="arrow"/>
+                </button>
                 <h1>{leagueName} {t("teams")}</h1>
             </div>
-            <Filters></Filters>
 
-            {!(currentTeams.length === 0) ?
+            { !burgerMenu && (
+                <div className="filters-container">
+                    <FiltersRenderer model={selectedModel} onFilterChange={handleFiltersChange} sportId={sportId}/>
+                    <button onClick={handleApplyFilters}>{t("apply_filters")}</button>
+                </div>
+            )}
+
                 <SearchBlock
-                    cardSizes={cardSizes}
+                    cardSizes={globalVariables.cardLayouts}
                     gridSize={gridSize}
                     postsPerPage={teamsPerPage}
                     onGridSizeChange={handleGridSizeChange}
@@ -145,15 +249,26 @@ function TeamPage() {
                     onPageChange={handlePageClick}
                     loading={loading}
                     paginationKey={paginationKey}
+                    burgerMenu={burgerMenu}
+                    selectedModel={selectedModel}
+                    handleFiltersChange={handleFiltersChange}
+                    sportId={sportId}
+                    count={currentTeams.length}
+                    handleApplyFilters={handleApplyFilters}
+
                     children={currentTeams.map((item) => (
                         <TeamCard
-                            leagueName={item.name}
+                            leagueName={item.team_name}
                             img={item.logo}
-                            sport={item.sport}
+                            size={gridSize.baseColumns === 2 ? "small" : gridSize.baseColumns === 5 ? "medium" : "large"}
+                            sportId={item.sport_id}
+                            sportName={sportName}
                             id={item.id}
+                            leagueId={leagueId}
+                            page={currentPage}
                         />
                     ))}>
-                </SearchBlock> : <NoItems text='No teams were found' />}
+                </SearchBlock>
         </div>
     );
 }

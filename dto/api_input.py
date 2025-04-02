@@ -65,11 +65,30 @@ class BaseDTO(Schema):
             data["models"] = processed_models
         return data
 
+
+class PaginationDTO(BaseDTO):
+    page = fields.Int(required=False, missing=0)
+    per_page = fields.Int(required=False, missing=0)
+
+
+class FilterDTO(BaseDTO):
+    filter_name = fields.Str(required=True)
+    filter_value = fields.Raw(required=False, missing=None)
+    order_type = fields.Str(required=False, missing=None)
+    order_field = fields.Str(required=False, missing=None)
+
+
+class SearchDTO(BaseDTO):
+    filters = fields.List(fields.Nested(FilterDTO), required=False)
+    pagination = fields.Nested(PaginationDTO, many=False)
+
+
 class TeamsLeagueDTO(BaseDTO):
     sport_id = fields.Int(required=False, missing=None)
     league_id = fields.Int(required=False, missing=None)
     country_id = fields.Int(required=False, missing=None)
     name = fields.Str(required=False, missing=None)
+    filters_data = fields.Nested(SearchDTO, required=False, missing=None)
 
 
 class TeamsStatisticsOrPlayersDTO(BaseDTO):
@@ -77,21 +96,7 @@ class TeamsStatisticsOrPlayersDTO(BaseDTO):
     team_id = fields.Int(required=False, missing=None)
     league_id = fields.Int(required=False, missing=None)
     name = fields.Str(required=False, missing=None)
-
-
-class PaginationDTO(BaseDTO):
-    page = fields.Int(required=False, missing=0)
-    per_page = fields.Int(required=False, missing=0)
-
-class FilterDTO(BaseDTO):
-    filter_name = fields.Str(required=True)
-    filter_value = fields.Raw(required=True)
-    order_type = fields.Str(required=False, missing=None)
-    order_field = fields.Str(required=False, missing=None)
-
-class SearchDTO(BaseDTO):
-    filters = fields.List(fields.Nested(FilterDTO), required=False)
-    pagination = fields.Nested(PaginationDTO, many=False)
+    filters_data = fields.Nested(SearchDTO, required=False, missing=None)
 
 
 class SportsLeagueDTO(BaseDTO):
@@ -118,10 +123,10 @@ class NewsDTO(BaseDTO):
 
 
 class StreamsDTO(BaseDTO):
-    streams__stream_id = fields.Int(required=False, missing = None)
-    streams__stream_url = fields.Str(required=False, missing=None)
-    streams__start_time = fields.Int(required=False, missing=None)#don't know if it is correct
-    streams__sport_id = fields.Int(required=False, missing=None)
+    stream_id = fields.Int(required=False, missing = None)
+    start_time = fields.Date(required=False, missing=datetime.now().strftime('%Y-%m-%d'))
+    sport_id = fields.Int(required=False, missing=None)
+    title = fields.Str(required=False, missing=None)
 
 
 class InputUserDTO(BaseDTO):
@@ -158,8 +163,10 @@ class InputUserLogInDTO(BaseDTO):
     email_or_username = fields.Str(required=False, missing=None)
     password = fields.Str(required=False, missing=None)
     auth_provider = fields.String(required=False, missing=None)
-
-
+    current_ip = fields.String(required=False, missing=None)
+    current_device = fields.String(required=False, missing=None)
+    
+    
 class TablesAndColumnsForUserPreferencesDTO:
     def __init__(self, main_table, related_table, user_id_field, type_id_field, related_name, related_logo, related_id):
         self.main_table = main_table
