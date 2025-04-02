@@ -23,9 +23,16 @@ class UserDAL:
     def create_user(self, new_user):
         self.session.add(new_user)
         self.session.commit()
+        return new_user
 
     def get_user_by_id(self, user_id: int) -> User:
         return self.session.query(User).filter(User.user_id == user_id).first()
+    
+    def get_user_by_email(self, email: str) -> User:
+        return self.session.query(User).filter(User.email == email).first()
+    
+    def get_user_by_name(self, name:str) -> User:
+        return self.session.query(User).filter(User.username == name).first()
 
 
     def update_user_password(self, user: User, new_password):

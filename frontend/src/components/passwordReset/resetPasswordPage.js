@@ -42,7 +42,7 @@ function ResetPasswordPage() {
             }
 
             toast.success("You successfully reset password")
-            navigate("/sign-in");
+            navigate(globalVariables.routeLinks.signInRoute);
         } catch (err) {
             toast.error(t("error_resetting_password"))
         }

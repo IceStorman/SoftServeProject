@@ -53,13 +53,16 @@ function SignUpPage() {
                     password: password
                 },
                 {
+                    withCredentials: true
+                },
+                {
                     headers: { 'Content-Type': 'application/json' },
                 }
             );
 
-            login({ email: response?.data?.user?.email, username: response?.data?.user?.username, id: response?.data?.user?.id });
+            login();
             toast.success(globalVariables.authMessages.successLogIn);
-            navigate('/user/preferences')
+            navigate(globalVariables.routeLinks.preferenceRoute)
         } catch (error) {
             const errorStatus = error?.response?.status
             const errorMessage = error?.response?.data?.error;
@@ -73,7 +76,7 @@ function SignUpPage() {
     return (
         <section className="registration">
             <form method="post" onSubmit={handleSubmit}>
-                <h2>{t("sign_in")}</h2>
+                <h2>{t("sign_up")}</h2>
                 <p>
                     {t("nickname")}
                     <input
@@ -82,7 +85,7 @@ function SignUpPage() {
                     />
                 </p>
                 <p>
-                    {t("email")}:
+                    {t("email_account")}
                     <input
                         value={email}
                         onChange={e => setEmail(e.target.value)}
@@ -106,11 +109,11 @@ function SignUpPage() {
                         onChange={e => setRepPassword(e.target.value)}
                     />
                 </p>
-                <button className="filled text" type="submit">{t("sign_in")}</button>
+                <button className="filled text" type="submit">{t("sign_up")}</button>
             </form>
 
             <div className="redirect">
-                <p className={"space"}> {t("have_account")} <Link to={"/sign-in"}>{t("log_in")}</Link></p>
+                <p className={"space"}> {t("have_account")} <Link to={globalVariables.routeLinks.signInRoute}>{t("log_in")}</Link></p>
                 <AuthBtn />
             </div>
         </section>

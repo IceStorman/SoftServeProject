@@ -27,7 +27,7 @@ function AccountPage() {
 
     const handleLogOut = () => {
         logout();
-        navigate("/");
+        navigate(globalVariables.routeLinks.defaultRoute);
     }
 
     return (
@@ -40,12 +40,12 @@ function AccountPage() {
                             <p className="value">{user?.username}</p>
                         </div>
                         <div className="account-row">
-                            <p className="label">{t('email')}:</p>
+                            <p className="label">{t('email_account')}:</p>
                             <p className="value">{user?.email}</p>
                         </div>
                     </div>
                     <div className="account-actions">
-                        <button className="btn edit" onClick={()=>navigate('/user/preferences')}>{t('change_preferences')}</button>
+                        <button className="btn edit" onClick={()=>navigate(globalVariables.routeLinks.preferenceRoute)}>{t('change_preferences')}</button>
                         <button className="btn logout" onClick={handleLogOut}>{t('log_out')}</button>
                         <button className="btn delete" onClick={() => setIsOpen(true)}>{t('delete_account')}</button>
 

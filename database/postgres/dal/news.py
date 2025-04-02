@@ -1,12 +1,16 @@
+from random import random
+import random
 import pandas as pd
-
-from database.models import News, TeamInNews, Sport
-from sqlalchemy import union_all, literal, func, ClauseElement
+from database.models import News, TeamInNews, Sport, InteractionWithNews
+from sqlalchemy import union_all, literal, func, ClauseElement, case
 from datetime import timedelta, datetime
+from database.postgres.dal.base import BaseDAL
+from service.api_logic.helpers.calculating_helper import RecommendationConsts
+
 
 PERIOD_OF_TIME = 90
 
-class NewsDAL:
+class NewsDAL(BaseDAL):
     def __init__(self, session = None):
         self.session = session
 
@@ -32,7 +36,6 @@ class NewsDAL:
     def get_news_by_id(self, blob_id: str):
         return self.session.query(News).filter(News.blob_id == blob_id).first()
 
-
     def get_news_by_native_id(self, news_ids):
         return self.session.query(News).filter(News.news_id.in_(news_ids)).all()
 
@@ -50,18 +53,20 @@ class NewsDAL:
 
         likes_query = (
                 self.session.query(
-                    Likes.news_id.label('news_id'),
+                    InteractionWithNews.news_id.label('news_id'),
                     literal(4).label('interaction')
             )
-            .filter(Likes.timestamp >= period_of_time, Likes.users_id == user_id)
+            .filter(InteractionWithNews.timestamp >= period_of_time, InteractionWithNews.user_id == user_id, InteractionWithNews.interaction_id == 1)
+
         )
 
         views_query = (
                 self.session.query(
-                    Views.news_id.label('news_id'),
+                    InteractionWithNews.news_id.label('news_id'),
                     literal(1).label('interaction')
             )
-            .filter(Views.timestamp >= period_of_time, Views.users_id == user_id)
+
+            .filter(InteractionWithNews.timestamp >= period_of_time, InteractionWithNews.user_id == user_id, InteractionWithNews.interaction_id == 4)
         )
 
         union_query = union_all(likes_query, views_query)
@@ -73,7 +78,9 @@ class NewsDAL:
                 News.sport_id,
                 News.save_at,
                 TeamInNews.team_index_id,
-                func.coalesce(News.interest_rate, 1).label('interest_rate'),
+                func.coalesce(case(
+            (News.likes == 0, 1),
+                    else_=News.likes ), 1),
                 func.coalesce(union_query.c.interaction, 0).label('interaction')
             )
             .select_from(News)
@@ -109,13 +116,20 @@ class NewsDAL:
 
 
     def clean_duplicate_news_where_is_more_than_one_club(self, news_coefficients: pd.DataFrame) -> pd.DataFrame:
+
+        def process_team_score(group):
+            if (group != 0.1).any():
+                return group[group != 0.1].sum()
+            else:
+                return group.iloc[0]
+
         news_coefficients_without_duplicates = news_coefficients.groupby('news_id').agg({
             'blob_id': 'first',
             'interest_rate_score': 'first',
             'interaction_score': 'first',
             'time_score': 'first',
             'sport_score': 'first',
-            'team_score': 'sum',
+            'team_score': process_team_score,
         }).reset_index()
 
         news_coefficients_without_duplicates = news_coefficients_without_duplicates.set_index('news_id')

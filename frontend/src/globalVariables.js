@@ -5,6 +5,7 @@ const globalVariables= {
     },
 
     googleAuth:{
+        defaultLink: "https://accounts.google.com/o/oauth2/v2/auth?",
         clientId: process.env.REACT_APP_GOOGLE_CLIENT_ID,
         redirectUri: process.env.REACT_APP_GOOGLE_REDIRECT_URI,
         scope: "openid email",
@@ -18,6 +19,58 @@ const globalVariables= {
         EmailError: "Email is empty or contains invalid characters",
         EmailMessage: "email: example@email.com",
         UsernameOrEmailError: "Email or Username are empty or contains invalid characters"
+    },
+
+    windowsSizes: [
+        { maxWidth: 480, limit: 0 },
+        { maxWidth: 1024, limit: 1 },
+        { maxWidth: Infinity, limit: 3 }
+    ],
+
+    windowsSizesForCards: {
+        desktopLarge: 1400,
+        desktopMid: 1200,
+        tablet: 1000,
+        mobileLarge: 450,
+        mobileSmall: 600,
+    },
+
+    cardLayouts: {
+        large: { baseRows: 4, baseColumns: 4, minColumns: 1, alwaysColumns: 4},
+        medium: { baseRows: 5, baseColumns: 5, minColumns: 2, alwaysColumns: 4},
+        small: { baseRows: 8, baseColumns: 2, minColumns: 2, alwaysColumns: 2}
+    },
+
+    windowSizeForBurger: {
+        filters: 1050,
+        streams: 1000,
+        navBar: 600
+    },
+
+    routeLinks: {
+        defaultRoute: "/",
+        nonExistingRoute: "/not-existing",
+        nonExistingPath: "*",
+        signInRoute: "/sign-in",
+        signInGoogleRoute: "/sign-in/google",
+        signUpRoute: "/sign-up",
+        preferenceRoute: "/user/preferences",
+        accountRoute: "/user/account",
+        forgotPasswordRoute: "/sign-in/reset-password",
+        resetPasswordTokenRoute: "/sign-in/reset-password/:token",
+        checkEmailRoute: "/check-email",
+        sportPageRoute: "/sport",
+        sportPagePath: "/sport/",
+        leaguePageRoute: "/sport/:sportName",
+        leaguePath: "/league/",
+        teamPageRoute: "/sport/:sportName/league/:leagueName",
+        streamRoute: "/stream",
+        streamPageRoute: "/stream/:streamId",
+        streamPagePath: "/stream/",
+        newsPageRoute: "/news/:articleId",
+        newsPath: "/news/",
+        FAQRoute: "/FAQ",
+        aboutUsRoute: "/AboutUs"
     }
 }
 

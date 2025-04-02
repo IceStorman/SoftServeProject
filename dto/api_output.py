@@ -3,6 +3,7 @@ from flask_babel import _
 
 class GameOutput(Schema):
     id = fields.Int()
+    sport_id = fields.Int()
     status = fields.Str()
     date = fields.Str()
     time = fields.Str()
@@ -22,6 +23,26 @@ class TeamsLeagueOutput(Schema):
     team_name = fields.Str(attribute="name")
     logo = fields.Str()
     id = fields.Str(attribute="api_id")
+    sport_id = fields.Str()
+
+
+class TeamsLeagueOutputWithCount(Schema):
+    teams = fields.List(fields.Nested(TeamsLeagueOutput))
+    count = fields.Int()
+
+
+class PlayersOutput(Schema):
+    name = fields.Str(attribute="name")
+    id = fields.Str(attribute="api_id")
+    logo = fields.Str(attribute="logo")
+
+
+class StreamsOutput(Schema):
+    id = fields.Str(attribute="stream_id")
+    sport = fields.Int(attribute="sport_id")
+    title = fields.Str()
+    start_time = fields.DateTime()
+    stream_url = fields.List(fields.Str())
 
 
 class SportsOutput(Schema):
@@ -31,19 +52,40 @@ class SportsOutput(Schema):
 
 
 class SportsLeagueOutput(Schema):
-    id = fields.Int(attribute="league_id")
+    id = fields.Int(attribute="api_id")
     sport = fields.Int(attribute="sport_id")
     logo = fields.Str()
     name = fields.Str()
+
+
+class SportsLeagueOutputWithCount(Schema):
+    teams = fields.List(fields.Nested(SportsLeagueOutput))
+    count = fields.Int()
+
 
 class CountriesOutput(Schema):
     id = fields.Int(attribute="country_id")
     flag = fields.Str()
     name = fields.Str()
 
+
+class ListResponseDTO(Schema):
+    items = fields.List(fields.Raw(), missing=[])
+    count = fields.Int(missing=0)
+
+    def __init__(self, items=None, count=None, **kwargs):
+        super().__init__(**kwargs)
+        self.items = items if items is not None else []
+        self.count = count if count is not None else 0
+
+    def to_dict(self):
+        return {"items": self.items, "count": self.count}
+
+
 class OutputUser(Schema):
     username = fields.Str(required=True)
     email = fields.Str(required=True)
+
 
 class OutputSportPreferences(Schema):
     user_id = fields.Int(required=True)
@@ -51,19 +93,24 @@ class OutputSportPreferences(Schema):
     sport_name = fields.Str(required=True)
     sport_img = fields.Str(required=True)
 
+
 class OutputTeamPreferences(Schema):
     user_id = fields.Int(required=True)
     team_index_id = fields.Str(required=True)
     name = fields.Str(required=True)
     logo = fields.Str(required=True)
 
-class OutputLogin():
-    def __init__(self, email: str, id: int, token: str):
-        self.email = email
-        self.id = id
-        self.token = token
-        self.message = "You successfully logged in!"
 
+class OutputLogin():
+    def __init__(self, email: str, user_id: int, token: str, username: str, new_user:bool, access_token:str, refresh_token:str):
+        self.email = email
+        self.user_id = user_id
+        self.token = token
+        self.username = username
+        self.new_user = new_user
+        self.access_token = access_token
+        self.refresh_token = refresh_token
+        self.message = "You successfully logged in!"
 
 class OutputRecommendationList(Schema):
     news_id = fields.Int(required=True)
@@ -77,6 +124,21 @@ class OutputInteractions(Schema):
     views = fields.Int(required=True)
 
 
+class TempSubscriberDataDto(Schema):
+    team_ids: int
+    subscriber_emails: str
+    news_name: str
+    username: str
+
+    def __init__(self, team_ids, subscriber_emails, news_name, username):
+        super().__init__()
+
+        self.team_ids = team_ids
+        self.subscriber_emails = subscriber_emails
+        self.news_name = news_name
+        self.username = username
+
+
 def get_script_phrases():
     return {
         # Загальні
@@ -85,16 +147,16 @@ def get_script_phrases():
         "main_page":          _("Main page"),
         "about_us":           _("About us"),
         "faq":                _("FAQ"),
-        "certatum_nostrum":   _("Certatum Nostrum"),
+        "QSPORT":             _("QSPORT"),
         "since":              _("since 1990"),
+        "sign_up_to":         _("Sign up to"),
 
         # Контактна інформація
-        "contact_info":       _("Contact info"),
+        "contact_info":       _("Contacts"),
         "address":            _("Address"),
         "phone":              _("Phone"),
         "email":              _("Email"),
-        "our_social_media":   _("Follow Us on Social Media"),
-        "our_newsletter":     _("Subscribe to our newsletter"),
+        "our_social_media":   _("Socials"),
 
         # Авторизація
         "log_out":            _("Logout"),
@@ -104,13 +166,14 @@ def get_script_phrases():
         "delete_check":       _("Are you sure?"),
         "delete_check_text":  _("Once deleted, the account cannot be restored"),
         "cancel":             _("Cancel"),
+        "required_field":     _("This field is required"),
 
         "confirm":            _("Confirm"),
         "skip":               _("Skip >"),
         "what_interesting_in": _("What are you interested in?"),
         "choose_sports":      _("Choose your favourite sports:"),
 
-        "sign_in":            _("Sign In"),
+        "sign_up":            _("Sign Up"),
         "log_in":             _("Log In"),
         "password":           _("Password:"),
         "forget_password":    _("Forget password?"),
@@ -118,8 +181,9 @@ def get_script_phrases():
         "no_account":         _("Do not have an account?"),
         "have_account":       _("Already have an account?"),
         "create":             _("Create"),
-        "nickname":           _("Nickname:"),
+        "nickname":           _("Username:"),
         "repeat_password":    _("Repeat password:"),
+        "email_account":      _("Email:"),
 
         # Новини та спорт
         "news":               _("News"),
@@ -140,5 +204,14 @@ def get_script_phrases():
         "sort":               _("Sort by:"),
         "more":               _("more..."),
         "continue":           _("Continue?"),
+        "search":             _("Search"),
+        "all":                _("All"),
+        "recommend_pref":     _("Recommended news by your Preferences"),
+        "news_not_found":     _("No latest news were found"),
+        "recommend_watch":    _("Recommended by your Last Watch"),
+        "games_not_found":    _("Games not found"),
+        "select_country":     _("Select a country..."),
+        "apply_filters":      _("Apply Filters"),
+        "search_name":        _("Search by name..."),
     }
 

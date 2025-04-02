@@ -3,6 +3,8 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { FaRegHeart, FaHeart } from "react-icons/fa";
 import { VscEye } from "react-icons/vsc";
 import axios from "axios";
+import {toast} from "sonner";
+import globalVariables from "../../globalVariables";
 import apiEndpoints from "../../apiEndpoints";
 import { AuthContext } from "../registration/AuthContext"
 import { toast } from "sonner";
@@ -41,7 +43,7 @@ export default function InsideNewsPage() {
                 })
                 .catch((error) => {
                     toast.error(`:( Trouble loading news: ${error}`);
-                    navigate("/not-existing");
+                    navigate(globalVariables.routeLinks.nonExistingRoute);
                 });
         } else {
             setArticle(newsData?.article);
@@ -201,15 +203,15 @@ export default function InsideNewsPage() {
             <section className="content" ref={elementRef}>
 
                 {
-                    sections ?
+                    sections &&
                         sections.map((item, index) => (
-                            <React.Fragment key={index}>
+                            <section className={"article-section"} key={index}>
                                 {item?.subheadings.length > 0 ? <h3>{item?.subheadings[index]}</h3> : null}
                                 {index > 0 && article?.images[index] ? <img src={article?.images[index]}/> : null}
                                 <p>{item?.content}</p>
                                 <br/>
-                            </React.Fragment>
-                        )) : null
+                            </section>
+                        ))
                 }
             </section>
 
@@ -226,7 +228,9 @@ export default function InsideNewsPage() {
             </div>
 
             <section className="comments">
+            
                 <hr />
+               
             </section>
         </section>
     );

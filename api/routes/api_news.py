@@ -1,15 +1,16 @@
 from dependency_injector.wiring import Provide, inject
 from flask import Blueprint, request
+from flask_jwt_extended import get_jwt, jwt_required
 from api.routes.cache import cache
-from api.routes.scripts import get_cache_key, post_cache_key
+from api.routes.scripts import get_cache_key, get_recommendation_key
 from exept.handle_exeptions import get_custom_error_response, get_exception_error_response
 from api.container.container import Container
 from exept.exeptions import DatabaseConnectionError, CustomQSportException
 from logger.logger import Logger
+from dto.api_input import SearchDTO
 from exept.handle_exeptions import handle_exceptions
 from service.api_logic.managers.recommendation_menager import RecommendationManager
 from service.api_logic.news_logic import NewsService
-from dto.api_input import InputUserByEmailDTO
 
 logger = Logger("logger", "all.log")
 
@@ -79,17 +80,32 @@ def specific_article(service: NewsService = Provide[Container.news_service]):
         logger.error(f"Error in POST /: {str(e)}")
         get_custom_error_response(e)
 
+@news_app.route('/search', methods=['POST'])
+@inject
+@logger.log_function_call()
+def get_filtered_news_endpoint(news_service: NewsService = Provide[Container.news_service]):
+    try:
+        filters = request.get_json() or {}
+        dto = SearchDTO().load(filters)
+        filtered_news = news_service.get_filtered_news(dto)
+        return filtered_news
 
-@news_app.route("/recommendation", methods=["POST"])
-@cache.cached(key_prefix=post_cache_key, timeout=60*60*2)
+    except CustomQSportException as e:
+        logger.error(f"Error in POST /filtered: {str(e)}")
+
+        return get_custom_error_response(e)
+
+@news_app.route("/recommendation", methods=["GET"])
+@jwt_required()
+@cache.cached(key_prefix=get_recommendation_key, timeout=60*60*2)
 @inject
 @handle_exceptions
 @logger.log_function_call()
 async def recommendations_for_user(recommendation_manager: RecommendationManager = Provide[Container.recommendation_manager]):
     try:
-        data = request.get_json()
-        dto = InputUserByEmailDTO().load(data)
-        user_recommendations = recommendation_manager.get_recommended_news_for_user(dto.email)
+        decode_access_token = get_jwt()
+        user_recommendations = recommendation_manager.get_recommended_news_for_user(decode_access_token['email'])
+
         return user_recommendations
 
     except CustomQSportException as e:

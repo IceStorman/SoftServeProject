@@ -6,10 +6,10 @@ function Logo() {
     const { t } = useTranslations();
 
     return (
-        <NavLink to={"/"}className="nav-link logo-btn" activeClassName="active">
+        <NavLink to={"/"}className="nav-link" activeClassName="active">
         <div className="logo">
             <hr />
-            <p>{t("certatum_nostrum")}</p>
+            <h1>{t("QSPORT")}</h1>
             <section className="subtitle">
                 <hr/>
                     <p>{t("since")}</p>
