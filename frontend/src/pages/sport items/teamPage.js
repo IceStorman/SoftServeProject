@@ -121,7 +121,7 @@ function TeamPage() {
         }
     };
 
-    const getTeams = async (page) => {
+    const getTeams = async (page, retryCount = 0) => {
 
         setPrevInputValue(inputValue);
 
@@ -184,15 +184,26 @@ function TeamPage() {
                     setPageCount(0);
                     return;
                 }
-                return getTeams(0)
+
+                if (retryCount < 2) {
+                    return getTeams(0, retryCount + 1);
+                } else {
+                    setCurrentTeams([]);
+                    setPageCount(0);
+                    return;
+                }
             }
 
             setCurrentTeams(response.data.items);
             const totalPosts = response.data.count;
             setPageCount(Math.ceil(totalPosts / teamsPerPage));
         } catch (error) {
-            setPageCount(0);
-            toast.error(`:( Troubles With Leagues Loading: ${error}`);
+            if (retryCount < 2) {
+                return getTeams(page, retryCount + 1);
+            } else {
+                setPageCount(0);
+                toast.error(`:( Troubles With Leagues Loading: ${error}`);
+            }
         }
     };
 
