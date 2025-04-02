@@ -30,9 +30,9 @@ function MainPage() {
     const game_element_width = 400
 
     const cardSizes = {
-        large: { rows: 1, columns: 4, cardSize: { width: 320, height: 490 }, postsPerPage: 4 },
-        medium: { rows: 3, columns: 5, cardSize: { width: 250, height: 350 }, postsPerPage: 10 },
-        small: { rows: 5, columns: 2, cardSize: { width: 650, height: 100 }, postsPerPage: 8 }
+        large: { rows: 1, columns: 4, cardSize: { width: 20, height: 30.625 }, postsPerPage: 4 },
+        medium: { rows: 3, columns: 5, cardSize: { width: 15.625, height: 21.875 }, postsPerPage: 10 },
+        small: { rows: 5, columns: 2, cardSize: { width: 40.625, height: 6.25 }, postsPerPage: 8 }
     };
 
     const [gridSize, setGridSize] = useState(cardSizes.large);

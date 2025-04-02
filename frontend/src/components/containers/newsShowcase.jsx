@@ -32,10 +32,10 @@ function NewsShowcase({ newsData }) {
                     content={newsData[currentPage - 1]?.data?.article?.section_1?.content}
                     id={newsData[currentPage - 1]?.blob_id}
                     article={newsData[currentPage - 1]?.data}
-                    height={element_height}//Нахуя?
-                    width={element_width}//Нахуя?
                     isFoil={true}
+                    className="custom-size"
                 />
+            
             ) : !loading ? (
                 <NoItems key={1} text={"No latest news were found"} />
             ) : null}

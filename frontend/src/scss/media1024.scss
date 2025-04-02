@@ -58,17 +58,37 @@
 
   .showcase{
     max-width: 80%;
+    margin: 0 2rem;
+    
 
     .newsbox{
       max-width: 80%;
     }
 
     .games-column{
-      max-width: 70%;
+      max-width: 80%;
     }
   
     .game-card{
       max-width: 100%;
+    }
+    .newsbox{
+      max-width: 40%;
+
+
+
+      .horizontal{}
+      img{
+        position: absolute;   
+      }
+
+
+      .dot-pagination{
+        max-width: 100%;
+      }
+    }
+    .news-card{
+      max-width: 80%;
     }
   }
 }
