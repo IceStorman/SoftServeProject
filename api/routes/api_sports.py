@@ -1,13 +1,10 @@
-from flask import request, jsonify
+from flask import jsonify
 from flask_smorest import Blueprint
-
 from dto.api_output import SportsOutput, ListResponseDTO
 from exept.handle_exeptions import get_custom_error_response
-from api.routes.scripts import post_cache_key
 from api.routes.cache import cache
 from exept.exeptions import DatabaseConnectionError, CustomQSportException
-from dto.api_input import SportsLeagueDTO, SearchDTO
-from dto.pagination import Pagination
+from dto.api_input import SearchDTO
 from logger.logger import Logger
 from dependency_injector.wiring import Provide, inject
 from api.container.container import Container
