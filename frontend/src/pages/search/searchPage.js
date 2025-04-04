@@ -32,6 +32,7 @@ function SearchPage() {
     const [passedPosts, setPassedPosts] = useState(0);
     const [paginationKey, setPaginationKey] = useState(0);
     const [searchClicked, setSearchClicked] = useState(false);
+    const [draftFilters, setDraftFilters] = useState([]);
 
     const { menuIsOpen, menuIcon, handleOpenMenu, handleCloseMenu } = useBurgerMenuState({
         menuSelector: ".filters-container",
@@ -121,7 +122,7 @@ function SearchPage() {
             const response = await axios.post(
                 `${apiEndpoints.url}${endpointMap[model]}`,
                 {
-                    pagination: { page: page + 1, per_page: itemPerPage || 10 },
+                    pagination: { page: page + 1, per_page: itemPerPage},
                     filters: filtersData,
                 },
                 { headers: { "Content-Type": "application/json" } }
@@ -130,6 +131,7 @@ function SearchPage() {
             setCurrentItems(response.data.items || []);
             const totalPosts = response.data.count;
             setPageCount(Math.ceil(totalPosts / itemPerPage));
+            console.log(response.data.items)
         } catch (error) {
             setPageCount(0);
             toast.error(`Error loading ${model}: ${error.message}`);
@@ -243,8 +245,8 @@ function SearchPage() {
                         {openFilterModel === model && (
                         <div className="filter-wrapper">
                             <div className={`filters-container ${openFilterModel === selectedModel ? "show" : ""}`}>
-                                <FiltersRenderer model={selectedModel} onFilterChange={setFilters} />
-                                <button onClick={() => fetchData(selectedModel, 0)}>{t("apply_filters")}</button>
+                                <FiltersRenderer model={selectedModel} onFilterChange={setDraftFilters} />
+                                <button onClick={() => {setFilters(draftFilters); fetchData(selectedModel, 0); }}>{t("apply_filters")}</button>
                                 <button onClick={() => setOpenFilterModel(null)}>{t("close_filters")}</button>
                              </div>
                         </div>
