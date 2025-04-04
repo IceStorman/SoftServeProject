@@ -34,6 +34,7 @@ def handle_db_timeout_error(e):
 @logger.log_function_call()
 @news_app.response(200, OutputArrayOfArticles())
 def get_recent_news_endpoint(service: NewsService = Provide[Container.news_service]):
+    """Get all recent news information"""
     try:
         recent_news = service.get_news_by_count(COUNT_NEWS)
         return recent_news
@@ -49,6 +50,7 @@ def get_recent_news_endpoint(service: NewsService = Provide[Container.news_servi
 @logger.log_function_call()
 @news_app.response(200, OutputArrayOfArticles())
 def get_sport_news_endpoint(sport_type, service: NewsService = Provide[Container.news_service]):
+    """Get all sport_type news information"""
     try:
         sport_news = service.get_latest_sport_news(COUNT_NEWS, sport_type)
         return sport_news
@@ -63,6 +65,7 @@ def get_sport_news_endpoint(sport_type, service: NewsService = Provide[Container
 @logger.log_function_call()
 @news_app.response(200, OutputArticle())
 def specific_article(service: NewsService = Provide[Container.news_service]):
+    """Get all news information"""
     try:
         article = request.get_json()
         news_id=article['blob_id']
@@ -76,8 +79,6 @@ def specific_article(service: NewsService = Provide[Container.news_service]):
 @news_app.route('/search', methods=['POST'])
 @inject
 @logger.log_function_call()
-@news_app.arguments(SearchDTO)
-@news_app.response(200, ListResponseDTO(many=True))
 def get_filtered_news_endpoint(news_service: NewsService = Provide[Container.news_service]):
     try:
         filters = request.get_json() or {}
@@ -99,6 +100,7 @@ def get_filtered_news_endpoint(news_service: NewsService = Provide[Container.new
 @logger.log_function_call()
 @news_app.response(200, OutputRecommendationList(many=True))
 async def recommendations_for_user(recommendation_manager: RecommendationManager = Provide[Container.recommendation_manager]):
+    """Get all recommendation news information"""
     try:
         decode_access_token = get_jwt()
         user_recommendations = recommendation_manager.get_recommended_news_for_user(decode_access_token['email'])

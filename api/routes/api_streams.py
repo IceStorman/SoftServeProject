@@ -19,8 +19,6 @@ streams_app = Blueprint('streams_app', __name__, description="Streams informatio
 @inject
 @handle_exceptions
 @logger.log_function_call()
-@streams_app.arguments(SearchDTO)
-@streams_app.response(200, ListResponseDTO(many=True))
 def get_filtered_streams_endpoint(streams_service: StreamService = Provide[Container.stream_service]):
     try:
         data = request.get_json()

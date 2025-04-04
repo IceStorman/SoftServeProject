@@ -28,8 +28,6 @@ def handle_db_timeout_error(e):
 @cache.cached(CACHE_TIMEOUT_SECONDS, key_prefix=post_cache_key)
 @inject
 @logger.log_function_call()
-@games_app.arguments(SearchDTO)
-@games_app.response(200, ListResponseDTO(many=True))
 def get_games_info_with_filters_endpoint(games_service: GamesService = Provide[Container.games_service]):
     try:
         data = request.get_json()

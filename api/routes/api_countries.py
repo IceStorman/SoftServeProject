@@ -22,6 +22,7 @@ def handle_db_timeout_error(e):
 @logger.log_function_call()
 @countries_app.response(200, CountriesOutput(many=True))
 def get_countries_endpoint():
+    """Get all countries information"""
     try:
         countries = get_countries()
         return countries
