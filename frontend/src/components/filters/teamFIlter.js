@@ -7,7 +7,7 @@ import useTranslations from "../../translationsContext";
 
 
 export const TeamFilter= ({ onChange }) => {
-    const {countriesData, countriesInput } = useContext(FilterContext);
+    const {countriesData, countriesInput } = useState();
     const [countries, setCountries] = useState([])
 
     const [selected, setSelected] = useState(null);
@@ -19,17 +19,17 @@ export const TeamFilter= ({ onChange }) => {
 
     useEffect(() => {
 
-        if (countriesData) {
-            setFilteredCountries(countriesData);
-            setCountries(countriesData)
-            return;
-        }
-
-        axios.get(`${apiEndpoints.url}${apiEndpoints.teams.getTeamsAll}`)
+        axios.post(`${apiEndpoints.url}${apiEndpoints.teams.getTeamsSearch}`,  {
+    
+                filters: [{filter_name: "a"}]
+            },
+            {
+                headers: { 'Content-Type': 'application/json' },
+            })
             .then(res => {
 
-                const returnedCountries = res.data;
-
+                const returnedCountries = res.data.items;
+                console.log(returnedCountries)
                 setCountries(returnedCountries);
                 setFilteredCountries(returnedCountries);
                 countriesInput(returnedCountries)
@@ -37,6 +37,7 @@ export const TeamFilter= ({ onChange }) => {
             .catch(error => {
                 toast.error(`Troubles With Country Loading: ${error}`);
             });
+
     }, [countriesData, countriesInput]);
 
     const handleClick = (e) => {
@@ -89,7 +90,7 @@ export const TeamFilter= ({ onChange }) => {
                         className={`listItem ${selected == team.id ? "active" : ""}`}
                         onClick={handleClick}
                     >
-                        {team.name}
+                        {team.team_name}
                     </div>
                 ))}
             </div>

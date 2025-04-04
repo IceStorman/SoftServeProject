@@ -8,7 +8,7 @@ import useBurgerMenu from "../../customHooks/useBurgerMenu";
 import globalVariables from "../../globalVariables";
 import { FaFilter, FaTimes } from "react-icons/fa";
 import useBurgerMenuState from "../../customHooks/useBurgerMenuState";
-import SearchBlock from "../../components/containers/searchBlock";
+import SearchContainer from "../../components/containers/searchContainer";
 import StreamCard from "../../components/cards/streamCard";
 import LeagueCard from "../../components/cards/leagueCard";
 import TeamCard from "../../components/cards/teamCard";
@@ -89,7 +89,6 @@ function SearchPage() {
     const handlePageClick = (event) => {
         const selectedPage = event.selected;
         setCurrentPage(selectedPage);
-        fetchData(selectedModel, selectedPage);
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
@@ -110,7 +109,7 @@ function SearchPage() {
             const endpointMap = {
                 streams: apiEndpoints.stream.getStreamsSearch,
                 leagues: apiEndpoints.sports.getLeagueSearch,
-                teams: apiEndpoints.teams.getTeamsAll,
+                teams: apiEndpoints.teams.getTeamsSearch,
                 news: apiEndpoints.news.getPaginated,
                 games: apiEndpoints.games.getGames
             };
@@ -158,8 +157,8 @@ function SearchPage() {
     };
 
     const [gridSize, setGridSize] = useState({
-        ...globalVariables.cardLayouts.large,
-        columns: calculateColumns(window.innerWidth, globalVariables.cardLayouts.large, selectedModel)
+        ...globalVariables.cardLayouts.small,
+        columns: calculateColumns(window.innerWidth, globalVariables.cardLayouts.small, selectedModel)
     });
 
     const calculateItemPerPage = (layout) => {
@@ -167,7 +166,7 @@ function SearchPage() {
         return gridSize.baseRows * gridSize.alwaysColumns
     }
 
-    const [itemPerPage, setItemPerPage] = useState(calculateItemPerPage(globalVariables.cardLayouts.large));
+    const [itemPerPage, setItemPerPage] = useState(calculateItemPerPage(globalVariables.cardLayouts.small));
 
     useEffect(() => {
         setItemPerPage(gridSize.baseRows * gridSize.columns);
@@ -183,15 +182,6 @@ function SearchPage() {
             window.addEventListener("resize", handleResize);
             return () => window.removeEventListener("resize", handleResize);
         }, []);
-
-    const handleGridSizeChange = (size) => {
-        if (globalVariables.cardLayouts[size]) {
-            setGridSize({
-                ...globalVariables.cardLayouts[size],
-                columns: calculateColumns(window.innerWidth, globalVariables.cardLayouts[size], selectedModel)
-            });
-        }
-    };
 
     const toggleFilters = (model) => {
         setOpenFilterModel((prevModel) => {
@@ -224,27 +214,27 @@ function SearchPage() {
         }, [searchClicked]);
     
     useEffect(() => {
+        setCurrentItems([]);
         setCurrentPage(0);
-    }, [selectedModel, filters, itemPerPage]);
+        setLoading(true);
+    }, [selectedModel]);
         
     useEffect(() => {
         fetchData(selectedModel, currentPage);
     }, [selectedModel, filters, itemPerPage, currentPage]);
-    
     
 
     return (
         <div className="streams-page">
             <div className="model-selection">
                 {["streams", "leagues", "teams", "news", "games"].map((model) => (
-                    <div className="menu">
+                    <div className="menu" key={model}>
                         <button
-                        key={model}
                         className={selectedModel === model ? "active" : "menu-button"}
                         onClick={() => {
                             setSelectedModel(model);
                             toggleFilters(model); 
-                            setCurrentItems([]);
+
                         }}
                         >
                         {model.charAt(0).toUpperCase() + model.slice(1)}
@@ -263,10 +253,9 @@ function SearchPage() {
                 ))}
             </div>
            
-            <SearchBlock
+            <SearchContainer
                 cardSizes={globalVariables.cardLayouts}
                 gridSize={gridSize}
-                onGridSizeChange={handleGridSizeChange}
                 postsPerPage={itemPerPage}
                 pageCount={pageCount}
                 currentPage={currentPage}
@@ -274,7 +263,6 @@ function SearchPage() {
                 paginationKey={paginationKey}
                 count={currentItems.length}
                 loading={loading}
-            
                 children={currentItems.length > 0 ? (
                     currentItems.map((item) => {
                         return componentMap(selectedModel, item);
@@ -283,7 +271,7 @@ function SearchPage() {
                     <div>{t("no_results_found")}</div>
                 )}
             >
-            </SearchBlock>
+            </SearchContainer>
         </div>
     );
 }
