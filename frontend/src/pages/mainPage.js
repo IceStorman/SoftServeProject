@@ -100,8 +100,9 @@ function MainPage() {
                 },
                 { headers: { 'Content-Type': 'application/json' }, }
             );
+            const extractedArray = Object.values(response.data.items).map(item => ({ data: item }));
+            setNewsPaginated(extractedArray);
 
-            setNewsPaginated(response.data.items);
             setPageCount(response.data.count / postsPerPage)
         } catch (error) {
             setPageCount(0);
@@ -110,21 +111,12 @@ function MainPage() {
     };
 
     const [currentGames, setCurrentGames] = useState([]);
-    // const [slidesCount, setSlidesCount] = useState(0);
-    // const [currentSlide, setCurrentSlide] = useState(0);
     const [gamesPerSlide, setGamesPerSlide] = useState(5);
     const [recommendationNews, setRecommendationNews] = useState([]);
-
 
     useEffect(() => {
         getGames(0);
     }, []);
-    //
-    // const handleSliderClick = (event) => {
-    //     const selectedSlide = event.selected;
-    //     setCurrentSlide(selectedSlide);
-    //     getGames(selectedSlide);
-    // };
 
     const getGames = async (page) => {
 
@@ -153,8 +145,6 @@ function MainPage() {
             );
 
             setCurrentGames(response.data.items);
-            // const totalGames = response.data.count;
-            // setSlidesCount(Math.ceil(totalGames / gamesPerSlide));
         } catch (error) {
             setPageCount(0);
             toast.error(`Troubles With games Loading: ${error}`);
