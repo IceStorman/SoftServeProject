@@ -1,14 +1,16 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import axios from "axios";
 import apiEndpoints from "../../apiEndpoints";
 import CommentsArea from "./commentsArea";
 import CommentCard from "../cards/commentCard";
 import { useParams } from "react-router-dom";
+import { AuthContext } from "../../pages/registration/AuthContext";
 
 const CommentsBlock = ({ comments }) => {
     const [newComment, setNewComment] = useState("");
     const { articleId } = useParams();
+    const { user } = useContext(AuthContext)
 
     const handleChange = (e) => {
         if (e.target.value.length <= 80) {
@@ -20,7 +22,7 @@ const CommentsBlock = ({ comments }) => {
         try {
             await axios.post(
                 `${apiEndpoints.url}${apiEndpoints.comment.saveComment}`, {
-                user_id: 1,
+                user_id: user.user_id,
                 article_blob_id: articleId,
                 content: content
             }
@@ -55,6 +57,7 @@ const CommentsBlock = ({ comments }) => {
                     comments.map(comment => (
                         <CommentCard
                             comment_id={comment.comment_id}
+                            user_id={comment.user_id}
                             username={comment.username}
                             timestamp={comment.timestamp}
                             content={comment.content}

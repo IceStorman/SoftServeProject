@@ -1,11 +1,12 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { SlArrowDown, SlArrowUp } from "react-icons/sl";
 import apiEndpoints from "../../apiEndpoints";
 import CommentsArea from "../containers/commentsArea";
 import { useParams } from "react-router-dom";
+import { AuthContext } from "../../pages/registration/AuthContext";
 
-export default function CommentCard({ comment_id, username, timestamp, content, isReplied }) {
+export default function CommentCard({ comment_id, user_id, username, timestamp, content }) {
 
     const [showReplies, setShowReplies] = useState(false);
     const [replies, setReplies] = useState([]);
@@ -13,15 +14,17 @@ export default function CommentCard({ comment_id, username, timestamp, content, 
     const [showReplyInput, setShowReplyInput] = useState(false);
     const [replyContent, setReplyContent] = useState("");
     const { articleId } = useParams();
+    const { user } = useContext(AuthContext)
 
     const fetchReplies = async () => {
         try {
             const response = await axios.get(
                 `${apiEndpoints.url}${apiEndpoints.comment.getComments}`, {
                 params:
-                    { parent_comment_id: comment_id,
+                {
+                    parent_comment_id: comment_id,
                     article_blob_id: articleId
-                     },
+                },
             }
             );
             setReplies(response.data);
@@ -46,7 +49,7 @@ export default function CommentCard({ comment_id, username, timestamp, content, 
 
         try {
             await axios.post(`${apiEndpoints.url}${apiEndpoints.comment.saveComment}`, {
-                user_id: 1,
+                user_id: user.user_id,
                 article_blob_id: articleId,
                 parent_comment_id: comment_id,
                 content: replyContent,
@@ -83,7 +86,7 @@ export default function CommentCard({ comment_id, username, timestamp, content, 
         }
     };
 
-        const [isDeleted, setIsDeleted] = useState(false);
+    const [isDeleted, setIsDeleted] = useState(false);
 
     const deleteComment = async () => {
         const confirmDelete = window.confirm("Are you sure you want to delete this comment?");
@@ -133,8 +136,14 @@ export default function CommentCard({ comment_id, username, timestamp, content, 
                 </button>
 
                 <button onClick={handleToggleReplyInput}>Reply</button>
-                <button onClick={handleToggleEditInput}>Edit</button>
-                <button onClick={deleteComment}>Delete</button>
+
+                {user.user_id === user_id && (
+                    <>
+                        <button onClick={handleToggleEditInput}>Edit</button>
+                        <button onClick={deleteComment}>Delete</button>
+                    </>
+                )}
+
             </div>
 
             {showReplyInput && (
@@ -157,6 +166,7 @@ export default function CommentCard({ comment_id, username, timestamp, content, 
                             <CommentCard
                                 key={reply.id}
                                 comment_id={reply.comment_id}
+                                user_id={reply.user_id}
                                 username={reply.username}
                                 timestamp={reply.timestamp}
                                 content={reply.content}

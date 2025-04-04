@@ -134,6 +134,15 @@ class TempSubscriberDataDto(Schema):
         self.username = username
 
 
+class OutputComment(Schema):
+    comment_id = fields.Int(required=True)
+    user_id = fields.Int(required=True)
+    username = fields.Str(required=True)
+    content = fields.Str(required=True)
+    timestamp = fields.DateTime(required=True)
+    parent_comment_id = fields.Int(required=False)
+
+
 def get_script_phrases():
     return {
         # Загальні

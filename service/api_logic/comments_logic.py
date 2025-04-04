@@ -1,7 +1,6 @@
-from flask import jsonify
-from marshmallow.utils import timestamp
-
+from database.models import Comment, User
 from database.postgres.dto import CommentDTO
+from dto.api_output import OutputComment
 
 from logger.logger import Logger
 
@@ -28,16 +27,28 @@ class CommentsService:
 
         return db_dto
 
-
-
     def save_comment(self, input_comment_dto):
         comment_dto = self.__convert_dal(input_comment_dto)
         self._comment_dal.create_comment(comment_dto)
 
     def get_comments(self, input_comment_dto):
         comment_dto = self.__convert_dal(input_comment_dto)
-        comments = self._comment_dal.fetch_comments(comment_dto)
-        #return properly
+
+        query = (self._comment_dal.get_base_query(Comment).with_entities(
+            Comment.comment_id,
+            Comment.user_id,
+            User.username,
+            Comment.content,
+            Comment.timestamp,
+            Comment.parent_comment_id
+        )
+        .join(User, User.user_id == Comment.user_id)
+        .filter(Comment.news_id == comment_dto.news_id, Comment.parent_comment_id == comment_dto.parent_comment_id))
+
+        comments = self._comment_dal.query_output(query)
+        comment_output = OutputComment(many=True).dump(comments)
+
+        return comment_output
 
     def edit_comment(self, comment_dto):
         self._comment_dal.update_comment(comment_dto.comment_id, comment_dto)
