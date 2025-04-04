@@ -180,7 +180,7 @@ export default function InsideNewsPage() {
             const notify = () => toast('Sign in to like this post', {
                 action: {
                     label: 'sign in',
-                    onClick: () =>  navigate('/sign-in') ,
+                    onClick: () =>  navigate(globalVariables.routeLinks.signInRoute) ,
                 },
             });
             notify()
