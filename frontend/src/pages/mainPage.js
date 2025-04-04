@@ -231,6 +231,7 @@ function MainPage() {
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
     }, []);
+    
 
 
     const [selectedSport, setSelectedSport] = useState("all");

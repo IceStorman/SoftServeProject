@@ -6,6 +6,8 @@ import CustomSelect from './customSelect';
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
 import { TfiLayoutLineSolid } from "react-icons/tfi";
 import useTranslations from "../../translationsContext";
+import useBurgerMenu from '../../customHooks/useBurgerMenu';
+import globalVariables from '../../globalVariables';
 
 
 const GridContainer = ({
@@ -18,6 +20,7 @@ const GridContainer = ({
     onPageChange,
     setSortValue
 }) => {
+    const noThirdButton = useBurgerMenu(1024);
     const { t } = useTranslations();
     const [sortBy, setSortBy] = useState("popularity");
     const [sortOrder, setSortOrder] = useState("desc");
@@ -49,8 +52,12 @@ const GridContainer = ({
                         className={selectedGrid === 'large' ? 'selected' : ''}><RiFunctionFill /></button>
                     <button onClick={() => [onGridSizeChange('medium'), setSelectedGrid('medium')]}
                         className={selectedGrid === 'medium' ? 'selected' : ''}><RiGridFill /></button>
-                    <button onClick={() => [onGridSizeChange('small'), setSelectedGrid('small')]}
-                        className={selectedGrid === 'small' ? 'selected' : ''}><RiListCheck2 /></button>
+                    {!noThirdButton && (
+                        <button onClick={() => [onGridSizeChange('small'), setSelectedGrid('small')]}
+                            className={selectedGrid === 'small' ? 'selected' : ''}>
+                            <RiListCheck2 />
+                        </button>
+                    )}
                 </div>
             </div>
 
