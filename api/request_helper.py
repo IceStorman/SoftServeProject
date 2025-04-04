@@ -48,7 +48,7 @@ class RequestHelper():
         
         response = jsonify(result_data)
         response.set_cookie(
-            "access_token",
+            "access_token_cookie",
             user.access_token,
             httponly=False,
             secure=True,

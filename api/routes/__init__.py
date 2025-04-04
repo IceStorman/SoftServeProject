@@ -8,7 +8,9 @@ from api.routes import (
     api_teams,
     api_countries,
     api_login,
-    api_user_preferences, api_localization
+    api_user_preferences,
+    api_streams,
+    api_localization
 )
 from api.routes.api_login import login_app
 from api.routes.api_sports import sports_app
@@ -26,8 +28,6 @@ import os
 from dotenv import load_dotenv
 from pathlib import Path
 from api.routes.api_localization import babel, get_locale
-
-
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))  
@@ -60,6 +60,7 @@ def create_app():
     app.config['MAIL_USE_SSL'] = False
     app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
     app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+    app.config['FRONTEND_NEWS_URL'] = os.getenv('FRONTEND_NEWS_URL')
     mail.init_app(app)
     
     app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
@@ -93,6 +94,7 @@ def create_app():
     app.register_blueprint(api_games.games_app, url_prefix='/games')
     app.register_blueprint(api_teams.teams_app, url_prefix='/teams')
     app.register_blueprint(api_countries.countries_app, url_prefix='/countries')
+    app.register_blueprint(api_streams.streams_app, url_prefix='/streams')
     app.register_blueprint(api_localization.localization_app, url_prefix='/')
     app.register_blueprint(api_user_preferences.preferences_app, url_prefix='/preferences')
 

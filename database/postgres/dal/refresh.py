@@ -66,10 +66,11 @@ class RefreshTokenDAL:
             )
             .first()
         )
-
-        access_token = access_token_obj.token
-        refresh_token = refresh_token_obj.token
-        return access_token, refresh_token
+        if access_token_obj and refresh_token_obj:
+            access_token = access_token_obj.token 
+            refresh_token = refresh_token_obj.token
+            return access_token, refresh_token
+        return None, None
 
     
     def get_user_info_by_nonce(self, nonce) -> User | None:

@@ -1,6 +1,5 @@
 from sqlalchemy.orm import Query
 from database.models import TeamIndex, League
-from service.api_logic.scripts import get_sport_by_name
 from service.api_logic.filter_manager.base_filter_manager import BaseFilterManager
 
 class TeamsFilterManager(BaseFilterManager):

@@ -15,12 +15,34 @@ import {AuthContext} from "./registration/AuthContext";
 import GridRecommendationBlock from "../components/containers/gridRecommendationBlock";
 import globalVariables from "../globalVariables";
 
+
 function MainPage() {
     const { user } = useContext(AuthContext);
     const [loading, setLoading] = useState(false)
     const [sports, setSport] = useState([]);
     const { t } = useTranslations();
     const [news, setNews] = useState([])
+    const [newsPaginated, setNewsPaginated] = useState([])
+
+    const game_element_height = 85
+    const game_element_width = 400
+
+    const cardSizes = {
+        large: { rows: 1, columns: 4, cardSize: { width: 320, height: 490 }, postsPerPage: 4 },
+        medium: { rows: 3, columns: 5, cardSize: { width: 250, height: 300 }, postsPerPage: 10 },
+        small: { rows: 5, columns: 2, cardSize: { width: 650, height: 100 }, postsPerPage: 8 }
+    };
+
+    const [gridSize, setGridSize] = useState(cardSizes.large);
+
+    const [preferenceNewsGridSize, setPreferenceNewsGridSize] = useState(cardSizes.large);
+    const [newsGridSize, setNewsGridSize] = useState(cardSizes.large);
+    const [lastWatchNewsGridSize, setLastWatchNewsGridSize] = useState(cardSizes.large);
+
+    const [orderValue, setOrderValue] = useState("desc")
+    const [pageCount, setPageCount] = useState(0);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [postsPerPage, setPostsPerPage] = useState(cardSizes.large.postsPerPage);
 
     const newsRef = useRef(null);
 
@@ -50,22 +72,49 @@ function MainPage() {
             });
     }, []);
 
+    useEffect(() => {
+        getPaginatedNews(0)
+        setCurrentPage(0)
+    }, [newsGridSize, orderValue]);
+
+    const getPaginatedNews = async (page) => {
+
+        try {
+            setLoading(true);
+            const response = await axios.post(
+                `${apiEndpoints.url}${apiEndpoints.news.getPaginated}`,
+                {
+                    pagination: {
+                        page: page + 1,
+                        per_page: postsPerPage,
+                    },
+                    filters:[
+                        {
+                            filter_name: "news",
+                            order_field: "save_at",
+                            order_type: orderValue
+                        }
+                    ]
+                },
+                { headers: { 'Content-Type': 'application/json' }, }
+            );
+            const extractedArray = Object.values(response.data.items).map(item => ({ data: item }));
+            setNewsPaginated(extractedArray);
+
+            setPageCount(response.data.count / postsPerPage)
+        } catch (error) {
+            setPageCount(0);
+            toast.error(`Troubles With games Loading: ${error}`);
+        }
+    };
+
     const [currentGames, setCurrentGames] = useState([]);
-    // const [slidesCount, setSlidesCount] = useState(0);
-    // const [currentSlide, setCurrentSlide] = useState(0);
     const [gamesPerSlide, setGamesPerSlide] = useState(5);
     const [recommendationNews, setRecommendationNews] = useState([]);
-
 
     useEffect(() => {
         getGames(0);
     }, []);
-    //
-    // const handleSliderClick = (event) => {
-    //     const selectedSlide = event.selected;
-    //     setCurrentSlide(selectedSlide);
-    //     getGames(selectedSlide);
-    // };
 
     const getGames = async (page) => {
 
@@ -94,8 +143,6 @@ function MainPage() {
             );
 
             setCurrentGames(response.data.items);
-            // const totalGames = response.data.count;
-            // setSlidesCount(Math.ceil(totalGames / gamesPerSlide));
         } catch (error) {
             setPageCount(0);
             toast.error(`Troubles With games Loading: ${error}`);
@@ -106,16 +153,13 @@ function MainPage() {
         try {
             if (!user) return;
 
-            axios.post(`${apiEndpoints.url}${apiEndpoints.news.getRecommendations}`,
-                {
-                    email: user.email,
-                },
+            axios.get(`${apiEndpoints.url}${apiEndpoints.news.getRecommendations}`,
                 {
                     headers: { 'Content-Type': 'application/json' },
+                    withCredentials: true
                 })
                 .then(res => {
                     setRecommendationNews(res.data);
-
                 })
                 .catch(error => {
                     toast.error(`:( Troubles With Recommendation News Loading: ${error}`);
@@ -127,67 +171,21 @@ function MainPage() {
 
     }, [user]);
 
-    const game_element_height = 85
-    const game_element_width = 400
-
-    const cardSizes = {
-        large: { rows: 1, columns: 4, cardSize: { width: 320, height: 490 }, postsPerPage: 4 },
-        medium: { rows: 3, columns: 5, cardSize: { width: 250, height: 300 }, postsPerPage: 18 },
-        small: { rows: 5, columns: 2, cardSize: { width: 650, height: 100 }, postsPerPage: 10 }
-    };
-
-    const [gridSize, setGridSize] = useState(cardSizes.large);
-
-    const [preferenceNewsGridSize, setPreferenceNewsGridSize] = useState(cardSizes.large);
-    const [newsGridSize, setNewsGridSize] = useState(cardSizes.large);
-    const [lastWatchNewsGridSize, setLastWatchNewsGridSize] = useState(cardSizes.large);
-
-
-    const [currentNews, setCurrentNews] = useState([]);
-    const [pageCount, setPageCount] = useState(0);
-    const [paginationKey, setPaginationKey] = useState(0);
-    const [currentPage, setCurrentPage] = useState(0);
-    const [postsPerPage, setPostsPerPage] = useState(cardSizes.large.postsPerPage);
-    const [passedPosts, setPassedPosts] = useState(0);
-
-    useEffect(() => {
-        let page = Math.floor(passedPosts / postsPerPage);
-        setCurrentPage(page);
-        getNews(page);
-    }, [postsPerPage]);
-
-    const handleGridSizeChange = (setGridSize, size) => {
+    const handleGridSizeChange = (size) => {
         if (cardSizes[size]) {
-            setPassedPosts(gridSize.rows * gridSize.columns * currentPage);
             setPostsPerPage(cardSizes[size].postsPerPage);
-            setGridSize(cardSizes[size]);
+            setNewsGridSize(cardSizes[size]);
         } else {
-            setGridSize(cardSizes.large);
+            setNewsGridSize(cardSizes.large);
         }
     };
-
-    useEffect(() => {
-        getNews(0);
-    }, [news]);
 
     const handlePageClick = (event) => {
         const selectedPage = event.selected;
         setCurrentPage(selectedPage);
-        getNews(selectedPage);
+        getPaginatedNews(selectedPage);
     };
 
-    const getNews = (page) => {
-        try {
-            const slicedNews = news.slice(page * postsPerPage, (page + 1) * postsPerPage);
-            setCurrentNews(slicedNews);
-            const totalPosts = news.length;
-            setPageCount(Math.ceil(totalPosts / postsPerPage));
-
-        } catch (error) {
-            setPageCount(0);
-            toast.error(`:( Troubles With Leagues Loading: ${error}`);
-        }
-    };
     const [selectedSport, setSelectedSport] = useState("all");
     const element_height = 100
     const element_width = 350
@@ -235,8 +233,7 @@ function MainPage() {
                                         scoreHome={item.home_score}
                                         scoreAway={item.away_score}
                                         time={item.time}
-                                        height={game_element_height }
-                                        width={game_element_width}
+                                        isVertical={false}
                                     />
                                 ))
                             }
@@ -320,15 +317,15 @@ function MainPage() {
                     cardSizes={cardSizes}
                     gridSize={newsGridSize}
                     postsPerPage={postsPerPage}
-                    onGridSizeChange={(size) => handleGridSizeChange(setNewsGridSize, size)}
+                    onGridSizeChange={(size) => handleGridSizeChange(size)}
                     pageCount={pageCount}
                     currentPage={currentPage}
                     onPageChange={handlePageClick}
                     loading={loading}
-                    paginationKey={paginationKey}
-                    children={currentNews.map((item, index) => (
+                    setSortValue={setOrderValue}
+                    children={newsPaginated.map((item, index) => (
                         <NewsCard
-                            key={index}
+                            key={index?.blob_id}
                             title={item?.data?.title}
                             date={item?.data?.timestamp}
                             img={item?.data?.images[0] || null}

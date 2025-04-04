@@ -65,4 +65,17 @@
   .preferences{
     max-width: 70%;
   }
+
+  .streams-page{
+    margin: 0;
+    max-width: 100%;
+    width: auto;
+    font-size: 0.9rem;
+
+    .game{
+      p{
+        text-align: end;
+      }
+    }
+  }
 }
