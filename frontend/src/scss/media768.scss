@@ -80,9 +80,58 @@
   }
 
   .showcase{
+    max-width: 100%;
+    margin: 0 2rem;
     
+
+    .newsbox{
+      .nav-link{
+        max-width: 100%;
+        width: 100%;
+        div{
+          max-width: 100%;
+        }
+      }
+    }
+
+    .games-column{
+      max-width: 80%;
+    }
+  
+    .game-card{
+      max-width: 100%;
+    }
+    .newsbox{
+      max-width: 90%;
+
+
+
+      .horizontal{}
+
+
+
+      .dot-pagination{
+        max-width: 100%;
+      }
+    }
+    .news-card{
+      max-width: 80%;
+    }
   }
-  .news-card{
-    max-width: 80%;
+
+  .grid-container{
+    max-width: 90%;
+
+    .grid{
+      grid-template-columns: repeat(2, 1fr) !important;
+      margin:1rem auto;
+      padding: 0 1rem;
+      gap: 1rem;
+      .nav-link{
+        div{
+          max-width: 100%;
+        }
+      }
+    }
   }
 }

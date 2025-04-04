@@ -57,13 +57,18 @@
   }
 
   .showcase{
-    max-width: 80%;
+    max-width: 100%;
     margin: 0 2rem;
     
 
     .newsbox{
-      max-width: 80%;
-      //padding: 0 5rem 0 5rem;
+      .nav-link{
+        max-width: 100%;
+        width: 100%;
+        div{
+          max-width: 100%;
+        }
+      }
     }
 
     .games-column{
@@ -74,7 +79,7 @@
       max-width: 100%;
     }
     .newsbox{
-      max-width: 40%;
+      max-width: 90%;
 
 
 

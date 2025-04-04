@@ -22,7 +22,7 @@ function NewsShowcase({ newsData }) {
             } else if (width <= 768) {
                 newDimensions = { height: 33, width: 27 };
             } else if (width <= 1024) {
-                newDimensions = { height: 36, width: 30 };
+                newDimensions = { height: 41, width: 41 };
             } else {
                 newDimensions = { height: 37.5, width: 31.25 };
             }
@@ -32,7 +32,7 @@ function NewsShowcase({ newsData }) {
                 newDimensions.width !== dimensions.width
             ) {
                 setDimensions(newDimensions);
-            }
+            }   
         };
     
         window.addEventListener("resize", updateSize);

@@ -21,6 +21,7 @@ const GridContainer = ({
     setSortValue
 }) => {
     const noThirdButton = useBurgerMenu(1024);
+    const noSecondButton = useBurgerMenu(768);
     const { t } = useTranslations();
     const [sortBy, setSortBy] = useState("popularity");
     const [sortOrder, setSortOrder] = useState("desc");
@@ -50,8 +51,10 @@ const GridContainer = ({
                 <div className="controls">
                     <button onClick={() => [onGridSizeChange('large'), setSelectedGrid('large')]} 
                         className={selectedGrid === 'large' ? 'selected' : ''}><RiFunctionFill /></button>
+                    {!noSecondButton && (
                     <button onClick={() => [onGridSizeChange('medium'), setSelectedGrid('medium')]}
                         className={selectedGrid === 'medium' ? 'selected' : ''}><RiGridFill /></button>
+                    )}
                     {!noThirdButton && (
                         <button onClick={() => [onGridSizeChange('small'), setSelectedGrid('small')]}
                             className={selectedGrid === 'small' ? 'selected' : ''}>

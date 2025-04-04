@@ -51,7 +51,8 @@ const globalVariables= {
         filters: 1050,
         streams: 1000,
         navBar: 600,
-        latestNews: 1220
+        latestNews: 1220,
+        latestGames: 1024
     },
 
     routeLinks: {

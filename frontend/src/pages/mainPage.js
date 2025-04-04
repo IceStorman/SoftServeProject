@@ -25,6 +25,7 @@ function MainPage() {
     const [news, setNews] = useState([])
     const [newsPaginated, setNewsPaginated] = useState([])
     const noLatestNews = useBurgerMenu(`${globalVariables.windowSizeForBurger.latestNews}`);
+    const noLatestGames = useBurgerMenu(`${globalVariables.windowSizeForBurger.latestGames}`);
 
     const game_element_height = 85
     const game_element_width = 400
@@ -188,41 +189,6 @@ function MainPage() {
         getPaginatedNews(selectedPage);
         scrollToTarget();
     };
-    const calculateNewsColumns = (width, layout) => {
-        if (width > globalVariables.windowsSizesForCards.desktopLarge) return layout.baseColumns;
-        if (width > globalVariables.windowsSizesForCards.desktopMid) return Math.max(layout.baseColumns - 1, layout.minColumns);
-        if (width > globalVariables.windowsSizesForCards.tablet) return Math.max(layout.baseColumns - 2, layout.minColumns);
-        if (width > globalVariables.windowsSizesForCards.mobileLarge) {
-            return layout.baseColumns === 4
-                ? Math.max(layout.baseColumns - 2, layout.minColumns)
-                : Math.max(layout.baseColumns - 3, layout.minColumns);
-        }
-        if (width < globalVariables.windowsSizesForCards.mobileSmall) {
-            if (layout.baseColumns === 2) {
-                return layout.minColumns - 1;
-            }
-        }
-        return layout.minColumns;
-    };
-
-    const [filtergridSize, setfilterGridSize] = useState({
-        ...globalVariables.cardLayouts.large,
-        columns: calculateNewsColumns(window.innerWidth, globalVariables.newsLayouts.large)
-    });
-    
-    useEffect(() => {
-        const handleResize = () => {
-            setNewsGridSize(prev => ({
-                ...prev,
-                columns: calculateNewsColumns(window.innerWidth, globalVariables.newsLayouts.large)
-            }));
-        };
-        
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
-    }, []);
-    
-
 
     const [selectedSport, setSelectedSport] = useState("all");
     return (
@@ -251,7 +217,7 @@ function MainPage() {
                 ): null}
 
                 <NewsShowcase newsData={news} />
-
+                {!noLatestGames ? (
                 <section>
                     <p className="block-title">{t("latest_games")}</p>
                     <div className="games-column">
@@ -283,6 +249,7 @@ function MainPage() {
                     }
 
                 </section>
+                ) : null}
             </div>
 
             {
