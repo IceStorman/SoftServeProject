@@ -3,7 +3,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {format} from "date-fns";
 
-function DateFilter({ onChange }) {
+function DateFilter({ onChange, label }) {
     const [selectedDate, setSelectedDate] = useState(null);
 
     const handleChange = (date) => {
@@ -15,12 +15,15 @@ function DateFilter({ onChange }) {
 
     return (
         <>
-            <label>Select date of beginning</label>
-            <DatePicker
-                selected={selectedDate}
-                onChange={handleChange}
-                dateFormat="yyyy-MM-dd"
-            />
+            <div>
+                <label className="dateHeading">{label}</label>
+                <DatePicker
+                    selected={selectedDate}
+                    onChange={handleChange}
+                    dateFormat="yyyy-MM-dd"
+                    className="dateFilter"
+                />
+            </div>
         </>
     );
 }

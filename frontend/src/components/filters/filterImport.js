@@ -25,19 +25,19 @@ export const filtersImports = {
     streams: {
         name: (props) => <NameFilter {...props} />,
         sport_id: (props) => <SportFilter {...props} />,
-        date_from: (props) => <DateFilter {...props} />
+        date_from: (props) => <DateFilter {...props} label="Select date of beginning" />
     },
     news: {
         title_contains: (props) => <NameFilter {...props} />,
         sport_id: (props) => <SportFilter {...props} />,
-        date_from: (props) => <DateFilter {...props} />,
-        date_to: (props) => <DateFilter {...props} />,
+        date_from: (props) => <DateFilter {...props} label="Show news from:"/>,
+        date_to: (props) => <DateFilter {...props} label="Show news to:"/>,
     },
     games: {
         team_home: (props) => <NameFilter {...props} />,
         sport_id: (props) => <SportFilter {...props} />,
-        date_from: (props) => <DateFilter {...props} />,
-        date_to: (props) => <DateFilter {...props} />,
+        date_from: (props) => <DateFilter {...props} label="Show games from:"/>,
+        date_to: (props) => <DateFilter {...props} label="Show games to:"/>,
         country_id: (props) => <CountryFilter {...props} />,
     }
 };
