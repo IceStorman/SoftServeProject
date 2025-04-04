@@ -7,7 +7,6 @@ import {toast} from "sonner";
 import globalVariables from "../../globalVariables";
 import apiEndpoints from "../../apiEndpoints";
 import { AuthContext } from "../registration/AuthContext"
-import { toast } from "sonner";
 import useTranslations from "../../translationsContext";
 import { useInteractionTypes } from "../../interactionContext";
 
@@ -118,7 +117,7 @@ export default function InsideNewsPage() {
                 await axios.post(
                     `${apiEndpoints.url}${apiEndpoints.interactions.saveInteraction}`,
                     {
-                        user_id: user.id,
+                        user_id: user.user_id,
                         article_blob_id: articleId,
                         interaction_type: interactionType,
                     }
@@ -152,7 +151,7 @@ export default function InsideNewsPage() {
             try {
                 const { data } = await axios.get(`${apiEndpoints.url}${apiEndpoints.interactions.getInteractionStatus}`, {
                     params: {
-                        user_id: user.id,
+                        user_id: user.user_id,
                         article_blob_id: articleId,
                         interaction_type: interactionTypes.LIKE
                     },

@@ -10,8 +10,6 @@ from api.routes import (
     api_login,
     api_interactions,
     api_user_preferences,
-    api_localization,
-    api_user_preferences,
     api_streams,
     api_localization
 )
