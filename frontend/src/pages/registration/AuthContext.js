@@ -3,6 +3,7 @@ import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import apiEndpoints from "../../apiEndpoints";
+import {wait} from "@testing-library/user-event/dist/utils";
 
 
 export const AuthContext = createContext(null);
@@ -40,7 +41,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     const getRefresh = async () => {
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await wait(500);
         let token = Cookies.get("access_token_cookie");
 
         if (!token) {
