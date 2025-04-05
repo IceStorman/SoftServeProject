@@ -33,7 +33,7 @@ import globalVariables from "../globalVariables";
 function App() {
 
     return (
-        <Router basename="/SoftServeProject">
+        <Router>
 
             <Toaster
                 position="bottom-right"
