@@ -3,20 +3,20 @@ version: '3.9'
 services:
   api:
     image: iarynovskyi/qsport_image:latest
-    container_name: sporthuynia_api
+    container_name: flask
     env_file:
       - .env
     ports:
       - "5001:5001"
     volumes:
-      - .:/SportHUYnya
-    working_dir: /SportHUYnya
+      - .:/QSPORT
+    working_dir: /QSPORT
     command: ["python", "api/routes/app.py"]
     restart: unless-stopped
 
   nginx:
     image: nginx:latest
-    container_name: sporthuynia_nginx
+    container_name: nginx
     ports:
       - "80:80"
       - "443:443"

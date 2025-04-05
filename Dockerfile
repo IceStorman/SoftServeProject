@@ -1,21 +1,21 @@
 FROM python:3.12.6
 
-WORKDIR /SportHuinia
+WORKDIR /QSPORT
 
-COPY ./requirements.txt /SportHuinia
+COPY ./requirements.txt /QSPORT
 
 RUN pip install --no-cache-dir -r requirements.txt --verbose
 
-COPY ./api /SportHuinia/api
-COPY ./database /SportHuinia/database
-COPY ./dto /SportHuinia/dto
-COPY ./exept /SportHuinia/exept
-COPY ./logger /SportHuinia/logger
-COPY ./service /SportHuinia/service
-COPY .env /SportHuinia/.env
+COPY ./api /QSPORT/api
+COPY ./database /QSPORT/database
+COPY ./dto /QSPORT/dto
+COPY ./exept /QSPORT/exept
+COPY ./logger /QSPORT/logger
+COPY ./service /QSPORT/service
+COPY .env /QSPORT/.env
 
 
-ENV PYTHONPATH="/SportHUYnya:$PYTHONPATH"
+ENV PYTHONPATH="/QSPORT:$PYTHONPATH"
 
 
 EXPOSE 5001
