@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     const getRefresh = async () => {
-        await new Promise(resolve => setTimeout(resolve, 200));
+        await new Promise(resolve => setTimeout(resolve, 500));
         let token = Cookies.get("access_token_cookie");
 
         if (!token) {
