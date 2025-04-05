@@ -1,19 +1,23 @@
 FROM python:3.12.6
 
-WORKDIR /app
+WORKDIR /SportHuinia
 
-COPY ./requirments.txt /app
-RUN pip install --no-cache-dir -r requirments.txt
+COPY ./requirements.txt /SportHuinia
 
-COPY ./api /app/
-COPY ./database /app/
-COPY ./dto /app/
-COPY ./exept /app/
-COPY ./logger /app/
-COPY ./service /app/
+RUN pip install --no-cache-dir -r requirements.txt --verbose
 
+COPY ./api /SportHuinia/api
+COPY ./database /SportHuinia/database
+COPY ./dto /SportHuinia/dto
+COPY ./exept /SportHuinia/exept
+COPY ./logger /SportHuinia/logger
+COPY ./service /SportHuinia/service
+COPY .env /SportHuinia/.env
+
+
+ENV PYTHONPATH="/SportHuinia:$PYTHONPATH"
 
 
 EXPOSE 5001
 
-CMD ["python", "api/routes/__init__.py"]
+CMD ["python", "api/routes/app.py"]
