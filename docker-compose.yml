@@ -1,10 +1,8 @@
-version: "3.9"
+version: '3.9'
 
 services:
   api:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: iarynovskyi/qsport_image:latest
     container_name: sporthuynia_api
     env_file:
       - .env
@@ -12,7 +10,9 @@ services:
       - "5001:5001"
     volumes:
       - .:/SportHUYnya
-    restart: always
+    working_dir: /SportHUYnya
+    command: ["python", "api/routes/app.py"]
+    restart: unless-stopped
 
   nginx:
     image: nginx:latest
@@ -21,9 +21,11 @@ services:
       - "80:80"
       - "443:443"
     volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
       - ./api/routes/localhost.pem:/etc/ssl/certs/localhost.pem:ro
       - ./api/routes/localhost-key.pem:/etc/ssl/certs/localhost-key.pem:ro
-      - ./api/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+
     depends_on:
       - api
-    restart: always
+    restart: unless-stopped
