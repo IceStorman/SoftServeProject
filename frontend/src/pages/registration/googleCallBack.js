@@ -13,10 +13,8 @@ function GoogleAuthCallback() {
     const { login } = authContext;
 
     useEffect(() => {
-        const hash = window.location.hash;
-        const queryString = hash.includes('?') ? hash.split('?')[1] : '';
-        const params = new URLSearchParams(queryString);
-        const code = params.get("code");
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get("code");
 
 
         if (code) {
