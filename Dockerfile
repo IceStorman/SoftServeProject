@@ -15,7 +15,7 @@ COPY ./service /SportHuinia/service
 COPY .env /SportHuinia/.env
 
 
-ENV PYTHONPATH="/SportHuinia:$PYTHONPATH"
+ENV PYTHONPATH="/SportHUYnya:$PYTHONPATH"
 
 
 EXPOSE 5001
