@@ -1,5 +1,5 @@
 const apiEndpoints = {
-    url: 'https://localhost:5001/',
+    url: 'https://localhost/',
 
     news: {
         getRecent: 'news/recent',
