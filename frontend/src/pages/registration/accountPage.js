@@ -22,24 +22,19 @@ function AccountPage() {
         setIsOpen(false);
     
         if (!user?.email) {
-            toast.error("Не вдалося отримати email користувача");
+            toast.error("bajojajo bajojajo");
             return;
         }
     
         try {
-            const response = await axios.delete(apiEndpoints.deleteAccount, {
-                data: { email: user.email }
+            const response = await axios.delete(`${apiEndpoints.url}${apiEndpoints.user.deleteAccount}`, {
+                data: { email:user.email }
             });
-    
-            if (response.status === 200) {
                 toast.success("さようなら");
                 handleLogOut();
-            } else {
-                toast.error("Помилка видалення акаунту");
-            }
+
         } catch (error) {
-            console.error("Помилка при видаленні акаунту:", error);
-            toast.error("Сталася помилка. Спробуйте ще раз.");
+            toast.error("Error occurred. Please try again :)");
         }
     };
 

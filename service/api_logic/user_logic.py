@@ -97,13 +97,18 @@ class UserService:
         
         return user
     
-    async def delete_user(self, dto):
+    async def delete_user(self, email):
+        user = self.get_user_by_email_or_username(email = email)
+        if not user:
+            raise UserDoesNotExistError(email)
+        
         team_type_dto = self.dto_for_type_of_preference(TEAM_TYPE)
-        self._preferences_dal.delete_all_user_preferences(team_type_dto, dto)
+        self._preferences_dal.delete_all_user_preferences(team_type_dto, user)
         sport_type_dto = self.dto_for_type_of_preference(SPORT_TYPE)
-        self._preferences_dal.delete_all_user_preferences(sport_type_dto, dto)
-        self._refresh_dal.delete_all_refresh_and_access_tokens(dto.user_id)
-        self._user_dal.delete_user(dto.user_id)
+        self._preferences_dal.delete_all_user_preferences(sport_type_dto, user)
+        self._refresh_dal.delete_all_refresh_and_access_tokens(user.user_id)
+        self._user_dal.delete_user(user.user_id)
+        
         return "さようなら"
 
         
