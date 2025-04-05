@@ -31,7 +31,7 @@ class CommentsService:
         comment_dto = self.__convert_dal(input_comment_dto)
         self._comment_dal.create_comment(comment_dto)
 
-    def get_comments(self, input_comment_dto):
+    def get_comments(self, input_comment_dto, page: int = 1, per_page: int = 10):
         comment_dto = self.__convert_dal(input_comment_dto)
 
         query = (self._comment_dal.get_base_query(Comment).with_entities(
@@ -42,13 +42,22 @@ class CommentsService:
             Comment.timestamp,
             Comment.parent_comment_id
         )
-        .join(User, User.user_id == Comment.user_id)
-        .filter(Comment.news_id == comment_dto.news_id, Comment.parent_comment_id == comment_dto.parent_comment_id))
+                 .join(User, User.user_id == Comment.user_id)
+                 .filter(
+            Comment.news_id == comment_dto.news_id,
+            Comment.parent_comment_id == comment_dto.parent_comment_id
+        )
+                 .order_by(Comment.timestamp.desc())
+                 .limit(per_page)
+                 .offset((page - 1) * per_page))
 
         comments = self._comment_dal.query_output(query)
         comment_output = OutputComment(many=True).dump(comments)
 
-        return comment_output
+        return {
+            "comments": comment_output,
+            "has_more": len(comments) == per_page
+        }
 
     def edit_comment(self, comment_dto):
         self._comment_dal.update_comment(comment_dto.comment_id, comment_dto)

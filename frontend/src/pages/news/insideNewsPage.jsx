@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from "react";
-import {useLocation, useNavigate, useParams} from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { FaRegHeart } from "react-icons/fa";
 import useTranslations from "../../translationsContext";
 import apiEndpoints from "../../apiEndpoints";
 import axios from "axios";
-import {toast} from "sonner";
+import { toast } from "sonner";
 import globalVariables from "../../globalVariables";
 import CommentsBlock from "../../components/containers/commentsBlock";
 
@@ -12,7 +12,7 @@ import CommentsBlock from "../../components/containers/commentsBlock";
 export default function InsideNewsPage() {
     const { t } = useTranslations();
     const navigate = useNavigate();
-    const {articleId} = useParams();
+    const { articleId } = useParams();
     const location = useLocation();
     const newsData = location.state?.newsData;
     const [article, setArticle] = useState()
@@ -41,27 +41,45 @@ export default function InsideNewsPage() {
     }, []);
 
     useEffect(() => {
-        if(article) setSections(Object.values(article?.article))
+        if (article) setSections(Object.values(article?.article))
     }, [article]);
 
-    const [comments, setComments] = useState([])
+    const [comments, setComments] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
 
-    const fetchComments = async () => {
+
+    const fetchComments = async (page = 1, perPage = 10) => {
         try {
             const response = await axios.get(
-                `${apiEndpoints.url}${apiEndpoints.comment.getComments}`, {
-                params:
-                    { article_blob_id: articleId },
-            }
+                `${apiEndpoints.url}${apiEndpoints.comment.getComments}`,
+                {
+                    params: {
+                        article_blob_id: articleId,
+                        page: page,
+                        per_page: perPage,
+                    },
+                }
             );
-            console.log("comments:", {response})
-            setComments(response.data);
+    
+            const { comments, has_more } = response.data;
+
+            setComments(prev => [...prev, ...comments]); 
+            setCurrentPage(page);                         
+            setHasMore(has_more);                         
         } catch (error) {
-            console.error("Error fetching replies:", error);
+            console.error("Error fetching comments:", error);
         }
     };
+    
+    const loadMore = () => {
+        if (hasMore) {
+            fetchComments(currentPage + 1);
+        }
+    };
+    
 
-    useEffect(()=>{
+    useEffect(() => {
         fetchComments()
     }, []);
 
@@ -75,36 +93,37 @@ export default function InsideNewsPage() {
                 <span className="tag">{article?.S_P_O_R_T}</span>
             </div>
 
-            {article?.images[0] ? <img src={article?.images[0]}/> : null}
+            {article?.images[0] ? <img src={article?.images[0]} /> : null}
 
             <section className="content">
 
                 {
                     sections &&
-                        sections.map((item, index) => (
-                            <section className={"article-section"} key={index}>
-                                {item?.subheadings.length > 0 ? <h3>{item?.subheadings[index]}</h3> : null}
-                                {index > 0 && article?.images[index] ? <img src={article?.images[index]}/> : null}
-                                <p>{item?.content}</p>
-                                <br/>
-                            </section>
-                        ))
+                    sections.map((item, index) => (
+                        <section className={"article-section"} key={index}>
+                            {item?.subheadings.length > 0 ? <h3>{item?.subheadings[index]}</h3> : null}
+                            {index > 0 && article?.images[index] ? <img src={article?.images[index]} /> : null}
+                            <p>{item?.content}</p>
+                            <br />
+                        </section>
+                    ))
                 }
             </section>
 
             <div className="details">
-            <div className="date">{article?.timestamp}</div>
+                <div className="date">{article?.timestamp}</div>
                 <button className="like-vrapper">
                     <div className="like-content">
-                    <FaRegHeart /> {likes}
+                        <FaRegHeart /> {likes}
                     </div>
                 </button>
             </div>
 
             <section className="comments">
-            
+
                 <CommentsBlock comments={comments} />
-               
+                {hasMore && <button onClick={loadMore}>More</button>}
+
             </section>
         </section>
     );

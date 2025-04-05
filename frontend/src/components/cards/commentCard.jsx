@@ -16,18 +16,33 @@ export default function CommentCard({ comment_id, user_id, username, timestamp, 
     const { articleId } = useParams();
     const { user } = useContext(AuthContext)
 
-    const fetchReplies = async () => {
+    const loadMore = () => {
+        if (hasMore) {
+            fetchReplies(currentPage + 1);
+        }
+    };
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+
+    const fetchReplies = async (page = 1, perPage = 10) => {
         try {
             const response = await axios.get(
                 `${apiEndpoints.url}${apiEndpoints.comment.getComments}`, {
                 params:
                 {
                     parent_comment_id: comment_id,
-                    article_blob_id: articleId
+                    article_blob_id: articleId,
+                    page: page,
+                    per_page: perPage,
                 },
             }
             );
-            setReplies(response.data);
+            const { comments, has_more } = response.data;
+
+            setReplies(prev => [...prev, ...comments]);
+            setCurrentPage(page);
+            setHasMore(has_more);
         } catch (error) {
             console.error("Error fetching replies:", error);
         }
@@ -35,11 +50,13 @@ export default function CommentCard({ comment_id, user_id, username, timestamp, 
 
     const handleToggleReplies = () => {
         if (!showReplies) {
-            fetchReplies();
+            setReplies([]);        
+            fetchReplies(1);          
+            setCurrentPage(1);       
         }
         setShowReplies(!showReplies);
     };
-
+    
     const handleToggleReplyInput = () => {
         setShowReplyInput(!showReplyInput);
     };
@@ -57,7 +74,6 @@ export default function CommentCard({ comment_id, user_id, username, timestamp, 
 
             setReplyContent("");
             setShowReplyInput(false);
-            fetchReplies();
         } catch (error) {
             console.error("Error saving reply:", error);
         }
@@ -105,12 +121,18 @@ export default function CommentCard({ comment_id, user_id, username, timestamp, 
 
     if (isDeleted) return null;
 
+    const date = new Date(timestamp);
+
+    const time = date.toLocaleString('uk', { hour: '2-digit', minute: '2-digit', hour12: false });
+    const formattedDate = date.toLocaleString('uk', { day: '2-digit', month: '2-digit', year: '2-digit' });
+  
+    const formattedTimestamp = `${time}, ${formattedDate}`;
 
     return (
         <div className="comment-card">
             <div className="comment-info">
                 <h1>{username}</h1>
-                <h3>{timestamp}</h3>
+                <h3>{formattedTimestamp}</h3>
             </div>
 
             {isEditing ? (
@@ -176,7 +198,9 @@ export default function CommentCard({ comment_id, user_id, username, timestamp, 
                     ) : (
                         <p>No replies yet.</p>
                     )}
+                    {hasMore && <button onClick={loadMore}>More</button>}
                 </CommentsArea>
+                
             )}
         </div>
     );
