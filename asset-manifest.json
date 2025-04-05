@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/SoftServeProject/static/css/main.085df02f.css",
-    "main.js": "/SoftServeProject/static/js/main.8b6b2e38.js",
+    "main.js": "/SoftServeProject/static/js/main.62400f8f.js",
     "static/media/GrenzeGotisch-Regular.ttf": "/SoftServeProject/static/media/GrenzeGotisch-Regular.7cfa30170810a4139f9b.ttf",
     "static/media/CyrillicGoth.ttf": "/SoftServeProject/static/media/CyrillicGoth.205a5464967ff4c8aa4d.ttf",
     "static/media/UnifrakturMaguntia-Regular.ttf": "/SoftServeProject/static/media/UnifrakturMaguntia-Regular.521503440d0fe1ab466f.ttf",
     "static/media/PirataOne-Regular.ttf": "/SoftServeProject/static/media/PirataOne-Regular.269bd2986eb6f1940505.ttf",
     "index.html": "/SoftServeProject/index.html",
     "main.085df02f.css.map": "/SoftServeProject/static/css/main.085df02f.css.map",
-    "main.8b6b2e38.js.map": "/SoftServeProject/static/js/main.8b6b2e38.js.map"
+    "main.62400f8f.js.map": "/SoftServeProject/static/js/main.62400f8f.js.map"
   },
   "entrypoints": [
     "static/css/main.085df02f.css",
-    "static/js/main.8b6b2e38.js"
+    "static/js/main.62400f8f.js"
   ]
 }
