@@ -30,7 +30,7 @@ function AccountPage() {
             const response = await axios.delete(`${apiEndpoints.url}${apiEndpoints.user.deleteAccount}`, {
                 data: { email:user.email }
             });
-                toast.success("さようなら");
+                toast.success("Account deleted successfully.");
                 handleLogOut();
 
         } catch (error) {
