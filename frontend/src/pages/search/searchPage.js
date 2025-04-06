@@ -22,7 +22,7 @@ function SearchPage() {
     const [currentItems, setCurrentItems] = useState([]);
     const [pageCount, setPageCount] = useState(0);
     const [currentPage, setCurrentPage] = useState(0);
-    const burgerMenu = useBurgerMenu(globalVariables.windowSizeForBurger.streams);
+    const burgerMenu = useBurgerMenu(globalVariables.windowSizeForBurger.filters);
     const [sportId, setSportId] = useState(null);
     const [leagueId, setLeagueId] = useState(null);
     const [inputValue, setInputValue] = useState(""); 
@@ -41,6 +41,7 @@ function SearchPage() {
         closeIcon: <FaTimes size={28} color="black" />,
     });
 
+    
     const componentMap = (type, item) => {
         const componentsCard = {
             streams: <StreamCard key={`${type}-${item.id}`} stream={item}/>,
@@ -50,7 +51,7 @@ function SearchPage() {
                     leagueName={item.name}
                     img={item.logo}
                     id={item.id}
-                    sportId={sportId}
+                    sportId={item.sport}
                     size={gridSize.baseColumns === 2 ? "small" : gridSize.baseColumns === 5 ? "medium" : "large"}
                     />,
 
@@ -68,7 +69,7 @@ function SearchPage() {
                     date={item?.data?.timestamp}
                     content={item?.data?.article?.section_1?.content}
                     id={item?.blob_id}
-                    article={item?.data?.article}
+                    article={item?.data}
                     />,
 
             games: <GameCard
@@ -94,9 +95,10 @@ function SearchPage() {
     };
 
     const fetchData = async (model, page) => {
-        
         setPrevInputValue(inputValue);
-    
+
+        setLoading(true); 
+
         let filtersData = [...filters];
     
         if (sportId) {
@@ -127,11 +129,12 @@ function SearchPage() {
                 },
                 { headers: { "Content-Type": "application/json" } }
             );
-    
+
             setCurrentItems(response.data.items || []);
             const totalPosts = response.data.count;
             setPageCount(Math.ceil(totalPosts / itemPerPage));
-            console.log(response.data.items)
+            setLoading(false); 
+
         } catch (error) {
             setPageCount(0);
             toast.error(`Error loading ${model}: ${error.message}`);
@@ -217,15 +220,17 @@ function SearchPage() {
     
     useEffect(() => {
         setCurrentItems([]);
-        setCurrentPage(0);
         setLoading(true);
-    }, [selectedModel]);
+        setPageCount(0);
+        setCurrentPage(0);
+    }, [selectedModel, filters]);
         
     useEffect(() => {
-        fetchData(selectedModel, currentPage);
+        if (!loading) {
+            fetchData(selectedModel, currentPage);
+        }
     }, [selectedModel, filters, itemPerPage, currentPage]);
     
-
     return (
         <div className="streams-page">
             <div className="model-selection">
@@ -241,12 +246,12 @@ function SearchPage() {
                         >
                         {model.charAt(0).toUpperCase() + model.slice(1)}
                         </button>
-
+                        
                         {openFilterModel === model && (
                         <div className="filter-wrapper">
                             <div className={`filters-container ${openFilterModel === selectedModel ? "show" : ""}`}>
                                 <FiltersRenderer model={selectedModel} onFilterChange={setDraftFilters} />
-                                <button onClick={() => {setFilters(draftFilters); fetchData(selectedModel, 0); }}>{t("apply_filters")}</button>
+                                <button onClick={() => {setFilters(draftFilters); setCurrentPage(0); }}>{t("apply_filters")}</button>
                                 <button onClick={() => setOpenFilterModel(null)}>{t("close_filters")}</button>
                              </div>
                         </div>

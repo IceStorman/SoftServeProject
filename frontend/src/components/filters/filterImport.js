@@ -41,6 +41,7 @@ export const filtersImports = {
         time_to: (props) => <TimeFilter {...props} label="Show game time starts to:" />,
         time_from: (props) => <TimeFilter {...props} label="Show game time starts to:" />,
         country_id: (props) => <CountryFilter {...props} />,
-       // team_away: (props) => <TeamFilter {...props} />,
+        team_home: (props) => <TeamFilter {...props} placeholder="Select a home team"/>,
+        team_away: (props) => <TeamFilter {...props} placeholder="Select an away team"/>,
     }
 };

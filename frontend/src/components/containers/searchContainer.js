@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import { RiFunctionFill, RiGridFill, RiListCheck2 } from "react-icons/ri";
 import ReactPaginate from "react-paginate";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
 import { TfiLayoutLineSolid } from "react-icons/tfi";

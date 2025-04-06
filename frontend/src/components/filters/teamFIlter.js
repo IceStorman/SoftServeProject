@@ -6,18 +6,24 @@ import {FilterContext} from "./filterContext";
 import useTranslations from "../../translationsContext";
 
 
-export const TeamFilter= ({ onChange }) => {
-    const {countriesData, countriesInput } = useState();
-    const [countries, setCountries] = useState([])
+export const TeamFilter = ({ onChange, placeholder}) => {
+    const {teamsData, teamsInput } = useContext(FilterContext);
+    const [teams, setTeams] = useState([])
 
     const [selected, setSelected] = useState(null);
     const [searchQuery, setSearchQuery] = useState("");
-    const [filteredCountries, setFilteredCountries] = useState([]);
+    const [filteredTeams, setFilteredTeams] = useState([]);
     const [isActiveAll, setIsActiveAll] = useState(false);
 
     const { t } = useTranslations();
 
     useEffect(() => {
+
+        if (teamsData) {
+            setFilteredTeams(teamsData);
+            setTeams(teamsData)
+            return;
+        }
 
         axios.post(`${apiEndpoints.url}${apiEndpoints.teams.getTeamsSearch}`,  {
     
@@ -28,44 +34,44 @@ export const TeamFilter= ({ onChange }) => {
             })
             .then(res => {
 
-                const returnedCountries = res.data.items;
-                console.log(returnedCountries)
-                setCountries(returnedCountries);
-                setFilteredCountries(returnedCountries);
-                countriesInput(returnedCountries)
+                const returnedTeams = res.data.items;
+               
+                setTeams(returnedTeams);
+                setFilteredTeams(returnedTeams);
+                teamsInput(returnedTeams)
             })
             .catch(error => {
                 toast.error(`Troubles With Country Loading: ${error}`);
             });
 
-    }, [countriesData, countriesInput]);
+    }, [teamsData, teamsInput]);
 
     const handleClick = (e) => {
-        const countryId = e.target.id;
-        setSelected(countryId);
+        const teamId = e.target.id;
+        setSelected(teamId);
         setSearchQuery("");
         if (isActiveAll) {
             setIsActiveAll(!isActiveAll);
         }
 
-        onChange({ target: { value: countryId } });
+        onChange({ target: { value: teamId } });
     };
 
     const handleSearch = (event) => {
         const query = event.target.value.toLowerCase();
         setSearchQuery(query);
 
-        const filtered = countries.filter((country) =>
-            country.name.toLowerCase().includes(query)
+        const filtered = teams.filter((team) =>
+            team?.team_name.toLowerCase().includes(query)
         );
-        setFilteredCountries(filtered);
+        setFilteredTeams(filtered);
     };
 
     const handleReset = () => {
         setIsActiveAll(!isActiveAll);
         setSelected(null);
         setSearchQuery("");
-        setFilteredCountries(countries);
+        setFilteredTeams(teams);
         onChange({ target: { value: "" } });
     };
 
@@ -75,7 +81,7 @@ export const TeamFilter= ({ onChange }) => {
             <div className="filterSearch">
                 <input
                     type="text"
-                    placeholder={t("select_country")}
+                    placeholder={placeholder}
                     value={searchQuery}
                     onChange={handleSearch}
                 />
@@ -83,9 +89,9 @@ export const TeamFilter= ({ onChange }) => {
             </div>
 
             <div className="list">
-                {filteredCountries.map((team) => (
+                {filteredTeams.map((team, index) => (
                     <div
-                        key={team.id}
+                        key={`${team.id}-${index}`}
                         id={team.id}
                         className={`listItem ${selected == team.id ? "active" : ""}`}
                         onClick={handleClick}
