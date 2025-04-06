@@ -98,7 +98,6 @@ def get_filtered_news_endpoint(news_service: NewsService = Provide[Container.new
 @inject
 @handle_exceptions
 @logger.log_function_call()
-@news_app.response(200, OutputRecommendationList(many=True))
 async def recommendations_for_user(recommendation_manager: RecommendationManager = Provide[Container.recommendation_manager]):
     """Get all recommendation news information"""
     try:

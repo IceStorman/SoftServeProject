@@ -1,7 +1,8 @@
 from functools import lru_cache
-from database.models import UserPreference, Sport, User, UserClubPreferences
+from database.models import UserPreference, Sport, User, UserClubPreferences, TeamIndex
 import database.models
 from dto.api_input import TablesAndColumnsForUserPreferencesDTO
+from service.api_logic.user_logic import PREFERENCES
 
 
 class PreferencesDAL:
@@ -36,24 +37,28 @@ class PreferencesDAL:
         user_prefs = (
             self.session.query(
                 tables_and_cols_dto.user_id_field,
+                TeamIndex.api_id,
                 tables_and_cols_dto.type_id_field,
                 tables_and_cols_dto.related_name,
                 tables_and_cols_dto.related_logo
             )
             .join(tables_and_cols_dto.related_table, tables_and_cols_dto.type_id_field == tables_and_cols_dto.related_id)
             .filter(tables_and_cols_dto.user_id_field == dto.user_id)
-            .all()
         )
-        return user_prefs
+        return user_prefs.all()
 
-    def delete_user_preferences(self, type_dto, dto):
+    def delete_user_preferences(self, type_dto, dto, team_ids_by_api_id):
         tables_and_cols_dto = self.getattr_tables_and_columns_by_type(type_dto)
 
-        self.session.query(tables_and_cols_dto.main_table).filter(
-            tables_and_cols_dto.type_id_field.in_(dto.preferences),
-            tables_and_cols_dto.user_id_field == dto.user_id
-        ).delete(synchronize_session=False)
-        self.session.commit()
+        team_index_ids = [t[0] for t in team_ids_by_api_id]
+
+        if team_index_ids:
+            self.session.query(tables_and_cols_dto.main_table).filter(
+                tables_and_cols_dto.type_id_field.in_(team_index_ids),
+                tables_and_cols_dto.user_id_field == dto.user_id
+            ).delete(synchronize_session=False)
+
+            self.session.commit()
 
     def delete_all_user_preferences(self, type_dto, dto):
         tables_and_cols_dto = self.getattr_tables_and_columns_by_type(type_dto)
@@ -70,10 +75,19 @@ class PreferencesDAL:
         ]
 
 
-    def get_existing_preferences(self, user_id, tables_and_cols_dto):
-        return set(self.session.query(tables_and_cols_dto.type_id_field)
+    def get_existing_preferences(self, user_id, tables_and_cols_dto, type_dto):
+        existing_api_ids = set(self.session.query(tables_and_cols_dto.type_id_field)
                    .filter(tables_and_cols_dto.user_id_field == user_id)
                    .all())
+
+        if type_dto.type_id_field == PREFERENCES:
+            existing_indices = set(self.session.query(TeamIndex.team_index_id)
+                                    .filter(TeamIndex.api_id.in_([api_id[0] for api_id in existing_api_ids]))
+                                    .all())
+
+            return {idx[0] for idx in existing_indices}
+
+        return {api_id[0] for api_id in existing_api_ids}
 
 
     def insert_new_preferences(self, new_prefs):

@@ -98,7 +98,7 @@ class OutputSportPreferences(Schema):
 
 class OutputTeamPreferences(Schema):
     user_id = fields.Int(required=True)
-    team_index_id = fields.Str(required=True)
+    team_index_id = fields.Int(attribute="api_id")
     name = fields.Str(required=True)
     logo = fields.Str(required=True)
 
