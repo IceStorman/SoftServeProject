@@ -94,50 +94,52 @@
     gap: 10px;
     margin-top: 1rem;
     margin-bottom: 1rem;
-
-    .page-dot {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        background-color: #ccc;
-        border: none;
-        cursor: pointer;
-        transition: background 0.3s ease;
-        align-self: center;
-        justify-self: center;
-        color: transparent;
-    }
-
-    .page-dot.active {
-        background-color: #333;
-    }
-
-    .arrow {
-        display: inline-flex;
-        background: none;
-        border: none;
-        font-size: 1.5rem;
-        align-self: center;
-        justify-self: center;
-        cursor: pointer;
-        padding: 0;
-        margin: 0;
-        align-items: center;
-        justify-content: center;
-
-        .line {
-            transform: rotate(90deg);
-        }
-    }
-
+    list-style: none;
+    padding: 0;
     .line {
         transform: rotate(90deg);
     }
+}
 
-    li {
-        display: inline-flex;
-    }
+.line {
+    transform: rotate(90deg);
+}
 
+.dot-pagination .page-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #ccc;
+    border: none;
     cursor: pointer;
+    transition: background 0.3s ease;
+    align-self: center;
+    justify-self: center;
     list-style: none;
+    text-indent: -9999px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.dot-pagination .page-dot.active {
+    background-color: #333;
+}
+
+.dot-pagination .arrow {
+    display: inline-flex;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    align-self: center;
+    justify-self: center;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    align-items: center;
+    justify-content: center;
+}
+
+.dot-pagination li {
+    display: inline-flex;
+    list-style: none; 
 }
