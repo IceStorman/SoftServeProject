@@ -17,27 +17,18 @@ const SearchContainer = ({
                          onPageChange,
                          paginationKey,
                          burgerMenu,
-                         
-                         handleFiltersChange,
-                         sportId,
-                         handleApplyFilters,
-                         count
+                         count,
+                         selectedModel,
+                         draftFilters,
+                         openFilterModel,
+                         toggleFilters,
+                         setDraftFilters,
+                         setSelectedModel,
+                         setFilters,
+                         setOpenFilterModel
                      }) => {
     const { t } = useTranslations();
     const filterRef = useRef(null);
-
-    const [draftFilters, setDraftFilters] = useState([]);
-    const [openFilterModel, setOpenFilterModel] = useState(null);
-    const [filters, setFilters] = useState([]);
-    const [selectedModel, setSelectedModel] = useState("leagues");
-    
-
-    const toggleFilters = (model) => {
-        setOpenFilterModel((prevModel) => {
-            const newModel = prevModel === model ? null : model;
-            return newModel;
-        });
-    };
 
     const { menuIsOpen, menuIcon, handleOpenMenu, handleCloseMenu } = useBurgerMenuState({
         initialIcon: <FaFilter size={28} />,

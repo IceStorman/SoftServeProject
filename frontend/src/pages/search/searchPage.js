@@ -271,6 +271,14 @@ function SearchPage() {
                 burgerMenu={burgerMenu}
                 count={currentItems.length}
                 loading={loading}
+                selectedModel={selectedModel}
+                draftFilters={draftFilters}
+                openFilterModel={openFilterModel}
+                toggleFilters={toggleFilters}
+                setDraftFilters={setDraftFilters}
+                setSelectedModel={setSelectedModel}
+                setFilters={setFilters}
+                setOpenFilterModel={setOpenFilterModel}
                 children={currentItems.length > 0 ? (
                     currentItems.map((item) => {
                         return componentMap(selectedModel, item);
