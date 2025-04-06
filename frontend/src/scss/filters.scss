@@ -159,5 +159,22 @@ $font-size: 14px;
       outline-offset: -4px;
       background-color: $background-light;
     }
+    .timeFilter{
+      outline: 2px solid $main-shadow;
+      border: 0;
+      background-color: $background-light;
+      outline-offset: 3px;
+      padding: 0.3rem 0.8rem;
+      transition: all 0.2s ease;
+      width: 10.4rem;
+      margin-top: 1rem;
+    }
+    .timeFilter:hover {
+      background-color: #fff;
+    }
+    .timeFilter:focus {
+      outline-offset: -4px;
+      background-color: $background-light;
+    }
   }
 }

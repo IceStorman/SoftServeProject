@@ -254,7 +254,7 @@ function SearchPage() {
                     </div>
                 ))}
             </div>
-           
+
             <SearchContainer
                 cardSizes={globalVariables.cardLayouts}
                 gridSize={gridSize}

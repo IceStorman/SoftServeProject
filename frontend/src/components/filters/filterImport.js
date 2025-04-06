@@ -4,6 +4,7 @@ import {NameFilter} from "./nameFilter";
 import {CountryFilter} from "./countryFilter";
 import DateFilter from "./dateFilter";
 import {TeamFilter} from "./teamFIlter";
+import TimeFilter from "./timeFilter"
 
 
 export const filtersImports = {
@@ -35,8 +36,10 @@ export const filtersImports = {
     },
     games: {
         sport_id: (props) => <SportFilter {...props} />,
-        date_from: (props) => <DateFilter {...props} label="Show games from:"/>,
         date_to: (props) => <DateFilter {...props} label="Show games to:"/>,
+        date_from: (props) => <DateFilter {...props} label="Show games from:"/>,
+        time_to: (props) => <TimeFilter {...props} label="Show game time starts to:" />,
+        time_from: (props) => <TimeFilter {...props} label="Show game time starts to:" />,
         country_id: (props) => <CountryFilter {...props} />,
        // team_away: (props) => <TeamFilter {...props} />,
     }
