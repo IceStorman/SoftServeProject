@@ -3,9 +3,10 @@ version: '3.9'
 services:
   api:
     #image: iarynovskyi/qsport_image:latest
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: iarynovskyi/qsport_image:multiarch
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
     container_name: flask
     env_file:
       - .env

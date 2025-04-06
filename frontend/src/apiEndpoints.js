@@ -1,6 +1,7 @@
 const apiEndpoints = {
-    url: 'https://localhost/',
-
+    url: 'https://20.50.198.29/',
+    // url: 'https://localhost/',
+    
     news: {
         getRecent: 'news/recent',
         getSport: 'news/',
