@@ -30,6 +30,22 @@ export default function InsideNewsPage() {
     const interactionTypes = useInteractionTypes();
 
     useEffect(() => {
+        handleLikeStatus();
+    }, [location]); 
+
+    const [user_id, setUserId] = useState(() => {
+        const savedUserId = localStorage.getItem('user_id');
+        return savedUserId ? savedUserId : user?.user_id; 
+    });
+
+    useEffect(() => {
+        if (user && user.user_id) {
+            localStorage.setItem('user_id', user.user_id);
+            setUserId(user.user_id); 
+        }
+    }, [user]); 
+
+    useEffect(() => {
         if (!newsData) {
             axios
                 .post(
@@ -76,7 +92,9 @@ export default function InsideNewsPage() {
     }, [hasRead]);
 
     useEffect(() => {
-        const handleEvent = () => {
+        const handleEvent = (e) => {
+            e.preventDefault();
+            e.returnValue = ''; 
             handleLikeStatus();
         };
 
@@ -112,12 +130,12 @@ export default function InsideNewsPage() {
     }, []);
 
     const saveInteraction = async (interactionType) => {
-        if (user) {
+        if (user_id) {
             try {
                 await axios.post(
                     `${apiEndpoints.url}${apiEndpoints.interactions.saveInteraction}`,
                     {
-                        user_id: user.user_id,
+                        user_id: user_id,
                         article_blob_id: articleId,
                         interaction_type: interactionType,
                     }
