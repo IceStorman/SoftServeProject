@@ -64,7 +64,7 @@ class TestUserService:
 
 
     @pytest.mark.asyncio
-    async def test_sign_up_existing_user(self):
+    async def test_sign_up_existing_user_raises_error(self):
         with self.app.app_context():
             with pytest.raises(UserAlreadyExistError, match="User .* already exist"):
                 await self.user_service.sign_up_user(email="andriy.kozovyi@gmail.com", username="Andrew",
@@ -72,7 +72,7 @@ class TestUserService:
 
 
     @pytest.mark.asyncio
-    async def test_sign_up_new_user(self):
+    async def test_sign_up_new_user_create_account(self):
         self.user_service.get_existing_user = MagicMock(return_value=None)
         self.user_service.create_tokens = AsyncMock(return_value=("mocked_access_token", "mocked_refresh_token"))
         self.user_service.create_user = MagicMock()
@@ -85,20 +85,20 @@ class TestUserService:
             assert result.user_id is not None
 
 
-    def test_create_user(self):
+    def test_create_user_create_account(self):
         result = self.user_service.create_user(User(email="taras228@gmail.com", username="taras228", password_hash="someHash"))
 
         assert result.user_id is not None
 
 
-    def test_get_user(self):
+    def test_get_user_return_existing_user(self):
         result = self.user_service.get_user_by_email_or_username(email="andriy.kozovyi@gmail.com")
 
         assert result.user_id is not None
 
 
     @pytest.mark.asyncio
-    async def test_log_in_simple(self):
+    async def test_simple_log_in_existing_user_logs_in(self):
         mock_user = MagicMock()
         mock_user.password_hash = bcrypt.hashpw("noPassword228".encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
         mock_user.email = "andriy.kozovyi@gmail.com"
@@ -121,7 +121,7 @@ class TestUserService:
 
 
     @pytest.mark.asyncio
-    async def test_user_does_not_exist_simple(self):
+    async def test_simple_log_in_user_does_not_exist_raises_error(self):
         self.user_service.get_user_by_email_or_username = MagicMock(return_value=None)
 
         with self.app.app_context():
@@ -130,7 +130,7 @@ class TestUserService:
 
 
     @pytest.mark.asyncio
-    async def test_user_wrong_data_simple(self):
+    async def test_simple_log_in_user_wrong_data_raises_error(self):
         mock_user = MagicMock()
         mock_user.password_hash = bcrypt.hashpw("Wrong".encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
@@ -142,7 +142,7 @@ class TestUserService:
 
 
     @pytest.mark.asyncio
-    async def test_strategy_wrong_data_simple(self):
+    async def test_strategy_wrong_data_raises_error(self):
         wrong_auth_strategy = {
             "auth_provider": "Taras"
         }
@@ -157,7 +157,7 @@ class TestUserService:
     @patch('requests.post')
     @patch('requests.get')
     @patch('oauthlib.oauth2.rfc6749.clients.WebApplicationClient.prepare_token_request')
-    async def test_log_in_google(self, mock_prepare_token_request, mock_requests_get, mock_requests_post):
+    async def test_google_log_in_existing_user_logs_in(self, mock_prepare_token_request, mock_requests_get, mock_requests_post):
         with self.app.test_request_context():
             mock_prepare_token_request.return_value = ('test_token_url', {}, '')
 
@@ -188,7 +188,7 @@ class TestUserService:
     @patch('requests.post')
     @patch('requests.get')
     @patch('oauthlib.oauth2.rfc6749.clients.WebApplicationClient.prepare_token_request')
-    async def test_log_in_google_exceptions(self, mock_prepare_token_request, mock_requests_get, mock_requests_post):
+    async def test_google_log_in_exceptions_raises_errors(self, mock_prepare_token_request, mock_requests_get, mock_requests_post):
         with self.app.test_request_context():
             mock_prepare_token_request.return_value = ('test_token_url', {}, '')
 
