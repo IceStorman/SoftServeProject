@@ -8,11 +8,11 @@ import {TranslationsProvider} from "./translationsContext";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <TranslationsProvider>
-        <FilterProvider>
-            <AuthProvider>
-                <App />
-            </AuthProvider>
-        </FilterProvider>
-    </TranslationsProvider>
+    <AuthProvider>
+        <TranslationsProvider>
+            <FilterProvider>
+                    <App />
+            </FilterProvider>
+        </TranslationsProvider>
+    </AuthProvider>
 );

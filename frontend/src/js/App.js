@@ -9,7 +9,6 @@ import { Toaster } from "sonner";
 
 import Header from "../components/basic/header";
 import Footer from "../components/basic/footer";
-
 import SignUpPage from "../pages/registration/signUpPage";
 import SignInPage from "../pages/registration/logInPage";
 import MainPage from "../pages/mainPage";
@@ -34,73 +33,67 @@ import globalVariables from "../globalVariables";
 
 function App() {
 
-
     return (
-        <>
-            <Router
-                future={{
-                    v7_startTransition: true,
-                    v7_relativeSplatPath: true,
-                }}>
+        <Router>
 
-                <Toaster
-                    position="bottom-right"
-                    richColors
-                    expand={true}
-                    duration={5000}
-                    visibleToasts={globalVariables.windowsSizes.find(ws => window.innerWidth <= ws.maxWidth).limit || 0}
-                    closeButton
-                />
+            <Toaster
+                position="bottom-right"
+                richColors
+                expand={true}
+                duration={5000}
+                visibleToasts={globalVariables.windowsSizes.find(ws => window.innerWidth <= ws.maxWidth).limit || 0}
+                closeButton
+            />
 
-                <Header />
-                <NavBar />
+            <Header />
+            <NavBar />
 
-                <Routes>
-                    <Route path={globalVariables.routeLinks.defaultRoute} element={<MainPage />} />
+            <Routes>
+                <Route path={globalVariables.routeLinks.defaultRoute} element={<MainPage />} />
 
-                    <Route path={globalVariables.routeLinks.signInRoute} element={<SignInPage />} />
+                <Route path={globalVariables.routeLinks.signInRoute} element={<SignInPage />} />
 
-                    <Route path={globalVariables.routeLinks.signUpRoute} element={<SignUpPage />} />
+                <Route path={globalVariables.routeLinks.signUpRoute} element={<SignUpPage />} />
 
-                    <Route path={globalVariables.routeLinks.preferenceRoute} element={<PreferencesPage />} />
+                <Route path={globalVariables.routeLinks.preferenceRoute} element={<PreferencesPage />} />
 
-                    <Route path={globalVariables.routeLinks.accountRoute} element={<AccountPage />} />
+                <Route path={globalVariables.routeLinks.accountRoute} element={<AccountPage />} />
 
-                    <Route path={globalVariables.routeLinks.signInGoogleRoute} element={<GoogleAuthCallback />} />
+                <Route path={globalVariables.routeLinks.signInGoogleRoute} element={<GoogleAuthCallback />} />
 
-                    <Route path={globalVariables.routeLinks.forgotPasswordRoute} element={<ForgotPasswordPage />} />
+                <Route path={globalVariables.routeLinks.forgotPasswordRoute} element={<ForgotPasswordPage />} />
 
-                    <Route path={globalVariables.routeLinks.resetPasswordTokenRoute} element={<ResetPasswordPage />} />
+                <Route path={globalVariables.routeLinks.resetPasswordTokenRoute} element={<ResetPasswordPage />} />
 
-                    <Route path={globalVariables.routeLinks.checkEmailRoute} element={<CheckEmailPage />} />
+                <Route path={globalVariables.routeLinks.checkEmailRoute} element={<CheckEmailPage />} />
 
-                    <Route path={globalVariables.routeLinks.sportPageRoute} element={<SportPage />} />
+                <Route path={globalVariables.routeLinks.sportPageRoute} element={<SportPage />} />
 
-                    <Route path={globalVariables.routeLinks.leaguePageRoute} element={<LeaguePage />} />
+                <Route path={globalVariables.routeLinks.leaguePageRoute} element={<LeaguePage />} />
 
-                    <Route path={globalVariables.routeLinks.teamPageRoute} element={<TeamPage />} />
+                <Route path={globalVariables.routeLinks.teamPageRoute} element={<TeamPage />} />
 
-                    <Route path={globalVariables.routeLinks.streamRoute} element={<StreamsPage />} />
+                <Route path={globalVariables.routeLinks.streamRoute} element={<StreamsPage />} />
 
-                    <Route path={globalVariables.routeLinks.streamPageRoute} element={<InsideStreamPage />} />
+                <Route path={globalVariables.routeLinks.streamPageRoute} element={<InsideStreamPage />} />
 
-                    <Route path={globalVariables.routeLinks.newsPageRoute} element={<InsideNewsPage />} />
+                <Route path={globalVariables.routeLinks.newsPageRoute} element={<InsideNewsPage />} />
 
-                    <Route path={globalVariables.routeLinks.nonExistingRoute} element={<NotExistingPage />} />
+                <Route path={globalVariables.routeLinks.nonExistingRoute} element={<NotExistingPage />} />
 
-                    <Route path={globalVariables.routeLinks.FAQRoute} element={<FAQpage />} />
+                <Route path={globalVariables.routeLinks.FAQRoute} element={<FAQpage />} />
 
-                    <Route path={globalVariables.routeLinks.aboutUsRoute} element={<AboutUsPage />} />
+                <Route path={globalVariables.routeLinks.aboutUsRoute} element={<AboutUsPage />} />
 
-                    <Route path={globalVariables.routeLinks.searchPageRoute} element={<SearchPage />} />
+                <Route path={globalVariables.routeLinks.searchPageRoute} element={<SearchPage />} />
 
-                    <Route path={globalVariables.routeLinks.nonExistingPath} element={<Navigate to={globalVariables.routeLinks.nonExistingRoute} replace />} />
-                </Routes>
+                <Route path={globalVariables.routeLinks.nonExistingPath} element={<Navigate to={globalVariables.routeLinks.nonExistingRoute} replace />} />
+                
 
-                {<Footer />}
+            </Routes>
 
-            </Router>
-        </>
+            <Footer />
+        </Router>
     );
 }
 

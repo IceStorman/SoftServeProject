@@ -14,11 +14,15 @@ from api.routes import (
 )
 from api.routes.api_login import login_app
 from api.routes.api_sports import sports_app
+from api.routes.api_news import news_app
+from api.routes.api_streams import streams_app
+from api.routes.api_games import games_app
+from api.routes.api_countries import countries_app
 from api.routes.cache import cache
 from api.routes.api_localization import babel, get_locale
 from api.routes.localization_compilling import LocalizationCompiler
 from flask_swagger_ui import get_swaggerui_blueprint
-from flask_smorest import Api, Blueprint
+from flask_smorest import Api
 from flask_sqlalchemy import SQLAlchemy
 from database.session import DATABASE_URL
 from flask_mail import Mail
@@ -60,6 +64,7 @@ def create_app():
     app.config['MAIL_USE_SSL'] = False
     app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
     app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+    app.config['FRONTEND_NEWS_URL'] = os.getenv('FRONTEND_NEWS_URL')
     mail.init_app(app)
     
     app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
@@ -89,11 +94,7 @@ def create_app():
     app.config["API_VERSION"] = "1.0"
     app.config["OPENAPI_VERSION"] = "3.0.2"
 
-    app.register_blueprint(api_news.news_app, url_prefix='/news')
-    app.register_blueprint(api_games.games_app, url_prefix='/games')
     app.register_blueprint(api_teams.teams_app, url_prefix='/teams')
-    app.register_blueprint(api_countries.countries_app, url_prefix='/countries')
-    app.register_blueprint(api_streams.streams_app, url_prefix='/streams')
     app.register_blueprint(api_localization.localization_app, url_prefix='/')
     app.register_blueprint(api_user_preferences.preferences_app, url_prefix='/preferences')
 
@@ -120,6 +121,10 @@ def create_swagger_documentation():
     app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
     api.register_blueprint(login_app)
     api.register_blueprint(sports_app)
+    api.register_blueprint(news_app)
+    api.register_blueprint(streams_app)
+    api.register_blueprint(games_app)
+    api.register_blueprint(countries_app)
 
 
     @app.route('/openapi.json')

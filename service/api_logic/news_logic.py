@@ -4,7 +4,7 @@ import pandas as pd
 from flask import Response
 from sqlalchemy import desc
 from database.models import News
-from database.azure_blob_storage.save_get_blob import blob_get_news
+from database.azure_blob_storage.save_get_blob import blob_get_news, blob_get_news_bulk
 from dto.api_output import ListResponseDTO
 from service.api_logic.scripts import get_sport_by_name
 from logger.logger import Logger
@@ -71,7 +71,9 @@ class NewsService:
         filtered_query, count = FilterManagerStrategy.apply_filters(News, query, filters)
 
         news = self._news_dal.query_output(filtered_query)
-        news_output = self.json_news(news).json
+        news_list = [ n.blob_id for n in news ]
+        news_output = blob_get_news_bulk(news_list)
+        
         response_dto = ListResponseDTO(items = news_output, count = count)
 
         return response_dto.to_dict()

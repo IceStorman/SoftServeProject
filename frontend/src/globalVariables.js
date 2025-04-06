@@ -27,6 +27,12 @@ const globalVariables= {
         { maxWidth: Infinity, limit: 3 }
     ],
 
+    screenSizes: {
+        large: 1024,
+        medium: 768,
+        small: 480,
+    },
+
     windowsSizesForCards: {
         desktopLarge: 1400,
         desktopMid: 1200,
@@ -41,10 +47,18 @@ const globalVariables= {
         small: { baseRows: 8, baseColumns: 2, minColumns: 2, alwaysColumns: 2}
     },
 
+    newsLayouts: {
+        large: { baseRows: 4, baseColumns: 4, minColumns: 1, alwaysColumns: 4},
+        medium: { baseRows: 5, baseColumns: 5, minColumns: 2, alwaysColumns: 4},
+        small: { baseRows: 8, baseColumns: 2, minColumns: 2, alwaysColumns: 2}
+    },
+
     windowSizeForBurger: {
         filters: 1050,
         streams: 1000,
-        navBar: 600
+        navBar: 600,
+        latestNews: 1220,
+        latestGames: 1024
     },
 
     routeLinks: {

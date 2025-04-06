@@ -114,12 +114,12 @@ class GoogleAuthHandler(AuthHandler[T]):
             output_login.username = new_user.username
             await self._user_service.create_tokens(user=output_login)
         else:
-            output_login.new_user = False   
+            output_login.new_user = False
+            output_login.user_id = user.user_id
+            output_login.username = user.username
         
         token = await self._user_service.get_generate_auth_token(user)
         
         output_login.token = token
-        output_login.user_id = user.user_id
-        output_login.username = user.username
 
         return output_login

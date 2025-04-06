@@ -1,5 +1,7 @@
 from marshmallow import Schema, fields
 from flask_babel import _
+from marshmallow.fields import Nested
+
 
 class GameOutput(Schema):
     id = fields.Int()
@@ -96,7 +98,7 @@ class OutputSportPreferences(Schema):
 
 class OutputTeamPreferences(Schema):
     user_id = fields.Int(required=True)
-    team_index_id = fields.Str(required=True)
+    team_index_id = fields.Int(attribute="api_id")
     name = fields.Str(required=True)
     logo = fields.Str(required=True)
 
@@ -117,6 +119,45 @@ class OutputRecommendationList(Schema):
     score = fields.Float(required=True)
     user_id = fields.Int(required=True)
     rating = fields.Int(required=True)
+
+
+class OutputSectionOfArticle(Schema):
+    content = fields.List(fields.Str())
+    heading = fields.Str()
+    subheadings = fields.List(fields.Str())
+
+
+class OutputArticleData(Schema):
+    title = fields.Str(required=True)
+    timestamp = fields.Str(required=True)
+    S_P_O_R_T = fields.Str(required=True)
+    team_names = fields.List(fields.Str())
+    images = fields.List(fields.Str())
+    section_1 = fields.Nested(OutputSectionOfArticle)
+
+
+class OutputArticle(Schema):
+    blob_id = fields.Str(required=True)
+    data = fields.Nested(OutputArticleData)
+
+
+class OutputArrayOfArticles(Schema):
+    news = fields.Nested(OutputArticle)
+
+
+class TempSubscriberDataDto(Schema):
+    team_ids: int
+    subscriber_emails: str
+    news_name: str
+    username: str
+
+    def __init__(self, team_ids, subscriber_emails, news_name, username):
+        super().__init__()
+
+        self.team_ids = team_ids
+        self.subscriber_emails = subscriber_emails
+        self.news_name = news_name
+        self.username = username
 
 
 def get_script_phrases():
