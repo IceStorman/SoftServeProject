@@ -17,7 +17,7 @@ const SearchContainer = ({
                          onPageChange,
                          paginationKey,
                          burgerMenu,
-                         selectedModel,
+                         
                          handleFiltersChange,
                          sportId,
                          handleApplyFilters,
@@ -26,10 +26,23 @@ const SearchContainer = ({
     const { t } = useTranslations();
     const filterRef = useRef(null);
 
+    const [draftFilters, setDraftFilters] = useState([]);
+    const [openFilterModel, setOpenFilterModel] = useState(null);
+    const [filters, setFilters] = useState([]);
+    const [selectedModel, setSelectedModel] = useState("leagues");
+    
+
+    const toggleFilters = (model) => {
+        setOpenFilterModel((prevModel) => {
+            const newModel = prevModel === model ? null : model;
+            return newModel;
+        });
+    };
+
     const { menuIsOpen, menuIcon, handleOpenMenu, handleCloseMenu } = useBurgerMenuState({
         initialIcon: <FaFilter size={28} />,
         closeIcon: <FaTimes size={28} color="black" />,
-        menuSelector: ".burger-filter",
+        menuSelector: ".model-selection",
         buttonSelector: ".menu-btn"
     });
 
@@ -37,20 +50,38 @@ const SearchContainer = ({
         <div className="search-container">
             <section className="header">
                 {burgerMenu  && (
-                    <div className="filter-wrapper" ref={filterRef}>
+                    <div className="filter-burger" ref={filterRef}>
                         <button className="menu-btn" onClick={handleOpenMenu}>
                             {menuIcon}
                         </button>
                         { menuIsOpen && (
-                            <div className={` burger-filter ${menuIsOpen ? "show" : ""}`}>
-                                <div className="filters-container">
-                                    <FiltersRenderer model={selectedModel} onFilterChange={handleFiltersChange}
-                                                     sportId={sportId}/>
-                                    <button onClick={() => { handleApplyFilters(); handleCloseMenu(); }}>
-                                        {t("apply_filters")}
-                                    </button>
-                                </div>
-                            </div>
+                            <div className="model-selection">
+                            {["streams", "leagues", "teams", "news", "games"].map((model) => (
+                                 <div className="menu" key={model}>
+                                     <button
+                                     className={selectedModel === model ? "active" : "menu-button"}
+                                     onClick={() => {
+                                         setSelectedModel(model);
+                                         toggleFilters(model); 
+                                         setDraftFilters([])
+             
+                                     }}
+                                     >
+                                     {model.charAt(0).toUpperCase() + model.slice(1)}
+                                     </button>
+                                     
+                                     {(openFilterModel === model && (
+                                     <div className="filter-wrapper">
+                                         <div className={`filters-container ${openFilterModel === selectedModel ? "show" : ""}`}>
+                                             <FiltersRenderer model={selectedModel} onFilterChange={setDraftFilters} />
+                                             <button onClick={() => {setFilters(draftFilters); handleCloseMenu();}}>{t("apply_filters")}</button>
+                                             <button onClick={() => setOpenFilterModel(null)}>{t("close_filters")}</button>
+                                          </div>
+                                     </div>
+                                     ))}
+                                 </div>
+                             ))}
+                         </div>
                         )}
                     </div>
                 )}

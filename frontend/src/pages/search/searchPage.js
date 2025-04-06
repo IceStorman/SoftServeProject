@@ -35,8 +35,7 @@ function SearchPage() {
     const [draftFilters, setDraftFilters] = useState([]);
 
     const { menuIsOpen, menuIcon, handleOpenMenu, handleCloseMenu } = useBurgerMenuState({
-        menuSelector: ".filters-container",
-        buttonSelector: ".menu-btn",
+        menuSelector: ".model-selection",
         initialIcon: <FaFilter size={28} />, 
         closeIcon: <FaTimes size={28} color="black" />,
     });
@@ -233,21 +232,22 @@ function SearchPage() {
     
     return (
         <div className="streams-page">
-            <div className="model-selection">
-                {["streams", "leagues", "teams", "news", "games"].map((model) => (
+        {!burgerMenu && (<div className="model-selection">
+               {["streams", "leagues", "teams", "news", "games"].map((model) => (
                     <div className="menu" key={model}>
                         <button
                         className={selectedModel === model ? "active" : "menu-button"}
                         onClick={() => {
                             setSelectedModel(model);
                             toggleFilters(model); 
+                            setDraftFilters([])
 
                         }}
                         >
                         {model.charAt(0).toUpperCase() + model.slice(1)}
                         </button>
                         
-                        {openFilterModel === model && (
+                        {(openFilterModel === model && (
                         <div className="filter-wrapper">
                             <div className={`filters-container ${openFilterModel === selectedModel ? "show" : ""}`}>
                                 <FiltersRenderer model={selectedModel} onFilterChange={setDraftFilters} />
@@ -255,10 +255,10 @@ function SearchPage() {
                                 <button onClick={() => setOpenFilterModel(null)}>{t("close_filters")}</button>
                              </div>
                         </div>
-                        )}
+                        ))}
                     </div>
                 ))}
-            </div>
+            </div>)}
 
             <SearchContainer
                 cardSizes={globalVariables.cardLayouts}
@@ -268,6 +268,7 @@ function SearchPage() {
                 currentPage={currentPage}
                 onPageChange={handlePageClick}
                 paginationKey={paginationKey}
+                burgerMenu={burgerMenu}
                 count={currentItems.length}
                 loading={loading}
                 children={currentItems.length > 0 ? (
