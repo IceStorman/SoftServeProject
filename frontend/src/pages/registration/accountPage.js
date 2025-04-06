@@ -22,7 +22,7 @@ function AccountPage() {
         setIsOpen(false);
     
         if (!user?.email) {
-            toast.error("bajojajo bajojajo");
+            toast.error("User email not found.");
             return;
         }
     
