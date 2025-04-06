@@ -92,7 +92,7 @@ function TeamCard({
         }
     };
 
-    const getPlayers = async () => {
+    const getPlayers = async (retryCount = 0) => {
         try {
             const filtersData = [
                 { 'filter_name': 'sport_id', 'filter_value': sportId },
@@ -120,12 +120,23 @@ function TeamCard({
                     setPlayers([]);
                     return;
                 }
-                return getPlayers()
+
+                if (retryCount < 2) {
+                    return getPlayers(retryCount + 1);
+                } else {
+                    setPlayers([]);
+                    return;
+                }
             }
+
             setPlayers(response.data.items);
 
         } catch (error) {
-            toast.error(`Troubles With Leagues Loading: ${error}`);
+            if (retryCount < 2) {
+                return getPlayers(retryCount + 1);
+            } else {
+                toast.error(`:( Troubles With Leagues Loading: ${error}`);
+            }
         }
     };
 

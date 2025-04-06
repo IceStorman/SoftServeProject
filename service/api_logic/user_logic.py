@@ -91,9 +91,9 @@ class UserService:
 
         new_user = User(email = email, username = username, password_hash = hashed_password.decode('utf-8'))
         
-        self.create_user(new_user)
+        new_user = self.create_user(new_user)
         
-        user = OutputLogin(email = new_user.email, token = new_user, user_id = new_user.user_id, username = new_user.username, new_user = True, access_token=None, refresh_token=None)
+        user = OutputLogin(email = new_user.email, token = None, user_id = new_user.user_id, username = new_user.username, new_user = True, access_token=None, refresh_token=None)
         access_token, refresh_token = await self.create_tokens(user)
         user.access_token = access_token
         user.refresh_token = refresh_token
@@ -182,13 +182,13 @@ class UserService:
         if existing_access_token and existing_refresh_token:
             user.access_token = existing_access_token
             user.refresh_token = existing_refresh_token
-            return user
-            
+
         else:
             access_token, refresh_token=await self.create_tokens(user=user)
             user.access_token = access_token
             user.refresh_token = refresh_token
-            return user
+
+        return user
 
 
     async def __generate_auth_token(self, user, salt):
