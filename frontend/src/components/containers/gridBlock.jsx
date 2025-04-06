@@ -20,8 +20,8 @@ const GridContainer = ({
     onPageChange,
     setSortValue
 }) => {
-    const noThirdButton = useBurgerMenu(1024);
-    const noSecondButton = useBurgerMenu(768);
+    const noThirdButton = useBurgerMenu(globalVariables.screenSizes.large);
+    const noSecondButton = useBurgerMenu(globalVariables.screenSizes.medium);
     const { t } = useTranslations();
     const [sortBy, setSortBy] = useState("popularity");
     const [sortOrder, setSortOrder] = useState("desc");

@@ -24,8 +24,8 @@ function MainPage() {
     const { t } = useTranslations();
     const [news, setNews] = useState([])
     const [newsPaginated, setNewsPaginated] = useState([])
-    const noLatestNews = useBurgerMenu(`${globalVariables.windowSizeForBurger.latestNews}`);
-    const noLatestGames = useBurgerMenu(`${globalVariables.windowSizeForBurger.latestGames}`);
+    const LatestNews = useBurgerMenu(`${globalVariables.windowSizeForBurger.latestNews}`);
+    const LatestGames = useBurgerMenu(`${globalVariables.windowSizeForBurger.latestGames}`);
 
     const game_element_height = 85
     const game_element_width = 400
@@ -194,7 +194,7 @@ function MainPage() {
     return (
         <>
             <div className="showcase">
-                {!noLatestNews ? (
+                {!LatestNews ? (
                 <section class="news-column-section">
                     <p className="block-title">Latest news</p>
                     <div className="news-column">
@@ -217,7 +217,7 @@ function MainPage() {
                 ): null}
 
                 <NewsShowcase newsData={news} />
-                {!noLatestGames ? (
+                {!LatestGames ? (
                 <section>
                     <p className="block-title">{t("latest_games")}</p>
                     <div className="games-column">
