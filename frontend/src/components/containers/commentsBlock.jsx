@@ -38,7 +38,6 @@ const CommentsBlock = ({ comments }) => {
         <section className="comments-block">
             <section className="comments-header">
                 <h1>Comments</h1>
-                <h1>Sort by</h1>
             </section>
             <hr />
             <div className="comment-input">
@@ -49,8 +48,8 @@ const CommentsBlock = ({ comments }) => {
                     placeholder="Add comment..."
                     maxLength={80}
                 />
-                <button onClick={() => saveComment(newComment)}>Add</button>
                 <p>{newComment.length}/80</p>
+                <button className="filled" onClick={() => saveComment(newComment)}>Add</button>
             </div>
             <CommentsArea>
                 {comments.length > 0 ? (
@@ -65,7 +64,7 @@ const CommentsBlock = ({ comments }) => {
                         />
                     ))
                 ) : (
-                    <p>No children yet.</p>
+                    <p>No comments yet.</p>
                 )}
             </CommentsArea>
         </section>

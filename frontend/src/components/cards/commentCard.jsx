@@ -136,15 +136,16 @@ export default function CommentCard({ comment_id, user_id, username, timestamp, 
             </div>
 
             {isEditing ? (
-                <div className="edit-input">
+                <div className="reply-input">
                     <input
                         type="text"
                         value={editedContent}
                         onChange={(e) => setEditedContent(e.target.value)}
-                        maxLength={200}
+                        maxLength={80}
                     />
-                    <button onClick={saveEditedComment}>Save</button>
-                    <button onClick={handleToggleEditInput}>Cancel</button>
+                    <p>{editedContent.length}/80</p>
+                    <button className="filled" onClick={saveEditedComment}>Save</button>
+                    <button className="filled" onClick={handleToggleEditInput}>Cancel</button>
                 </div>
             ) : (
                 <p>{content}</p>
@@ -153,16 +154,16 @@ export default function CommentCard({ comment_id, user_id, username, timestamp, 
 
             <div className="comment-actions">
 
-                <button onClick={handleToggleReplies}>
-                    replies {showReplies ? <SlArrowUp /> : <SlArrowDown />}
+                <button className="filled" onClick={handleToggleReplies}>
+                    Replies {showReplies ? <SlArrowUp /> : <SlArrowDown />}
                 </button>
 
-                <button onClick={handleToggleReplyInput}>Reply</button>
+                <button className="filled" onClick={handleToggleReplyInput}>Reply</button>
 
-                {user.user_id === user_id && (
+                { user && user.user_id === user_id && (
                     <>
-                        <button onClick={handleToggleEditInput}>Edit</button>
-                        <button onClick={deleteComment}>Delete</button>
+                        <button className="filled" onClick={handleToggleEditInput}>Edit</button>
+                        <button className="filled" onClick={deleteComment}>Delete</button>
                     </>
                 )}
 
@@ -177,7 +178,8 @@ export default function CommentCard({ comment_id, user_id, username, timestamp, 
                         placeholder="Write a reply..."
                         maxLength={80}
                     />
-                    <button onClick={saveReply}>Send</button>
+                    <p>{replyContent.length}/80</p>
+                    <button className="filled" onClick={saveReply}>Send</button>
                 </div>
             )}
 
@@ -198,7 +200,7 @@ export default function CommentCard({ comment_id, user_id, username, timestamp, 
                     ) : (
                         <p>No replies yet.</p>
                     )}
-                    {hasMore && <button onClick={loadMore}>More</button>}
+                    {hasMore && <button className="boxed" onClick={loadMore}>More</button>}
                 </CommentsArea>
                 
             )}

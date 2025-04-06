@@ -1,135 +1,26 @@
-.comments-block{
+.comments-block {
     display: flex;
     flex-direction: column;
 
-    h1{
+    h1 {
         font-size: 1.5rem;
         margin: 0;
     }
 
-    hr{
-        margin: 0.5rem 0rem;
-    }
-
-    .comments-header{
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .comment-input{
-        display: flex;
-        flex-direction: row;
-        padding-bottom: 0.5rem;
-    }
-
-}
-
-.comments {
-    margin-top: 10px;
-
-    .comment-card {
-        background: white;
-        border-radius: 8px;
-        padding: 12px;
-        margin-bottom: 10px;
-        transition: transform 0.2s;
-
-        &:hover {
-            transform: translateY(-2px);
-        }
-
-        .comment-info {
-            display: flex;
-            align-items: center;
-            font-size: 14px;
-            font-weight: bold;
-            color: #555;
-
-            h1 {
-                font-size: 16px;
-                margin: 0;
-            }
-
-            h3 {
-                font-size: 12px;
-                color: #888;
-            }
-        }
-
-        p {
-            font-size: 14px;
-            color: #333;
-            margin: 8px 0;
-        }
-
-        .reply-button {
-            display: flex;
-            justify-content: flex-start;
-            gap: 8px;
-            margin-top: 5px;
-        }
-    }
-
-    .comment-replies {
-        margin-left: 20px;
-        //border-left: 2px solid #ddd;
-        padding-left: 10px;
-    }
-}
-
-.reply-input {
-    display: flex;
-    gap: 8px;
-    margin-top: 5px;
-    align-items: center;
-
-    input {
-        flex-grow: 1;
-        padding: 8px;
-        border-radius: 6px;
-        border: 1px solid #ccc;
-        font-size: 14px;
-
-        &:focus {
-            border-color: #007bff;
-            outline: none;
-        }
-    }
-}
-
-.comments-block {
-    width: 100%;
-    margin: 20px auto;
-    padding: 15px;
-
-    .comments-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 18px;
-        font-weight: bold;
-        padding-bottom: 10px;
-    }
-
     hr {
-        border: none;
-        border-top: 2px solid #ddd;
-        margin: 10px 0;
+        margin: 0.5rem 0rem;
     }
 
     .comment-input {
         display: flex;
-        gap: 10px;
+        gap: 0.5rem;
         align-items: center;
+        border-radius: 0rem;
 
         input {
             flex-grow: 1;
             padding: 10px;
-            border-radius: 8px;
             border: 1px solid #ccc;
-            font-size: 14px;
             transition: border-color 0.3s;
 
             &:focus {
@@ -139,3 +30,91 @@
         }
     }
 }
+
+.comments {
+
+    button{
+        &.boxed{
+            font-size: 1rem;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            transform: rotate(0);
+        }
+    }
+
+    .comment-card {
+        padding: 0.5rem;
+        transition: transform 0.2s;
+
+        &:hover {
+            transform: translateY(-2px);
+        }
+
+        .comment-actions {
+            gap: 0.3rem;
+            display: flex;
+            button {
+                margin-right: 0.5rem;
+                padding: 0.2rem;
+                align-items: end;
+                justify-content: end;
+                display: flex;
+                align-items: center;
+                gap: 0.2rem
+            }
+        }
+
+        .comment-info {
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            color: #555;
+
+            h1 {
+                font-size: 1rem;
+                margin: 0;
+            }
+
+            h3 {
+                font-size: 0.8rem;
+                color: #888;
+                margin-left: 1rem;
+            }
+        }
+
+        p {
+            font-size: 14px;
+            margin: 8px 0;
+        }
+    }
+}
+
+.reply-input {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    border-radius: 0rem;
+    margin-top: 0.5rem;
+
+    input {
+        flex-grow: 1;
+        padding: 10px;
+        border: 1px solid #ccc;
+        transition: border-color 0.3s;
+
+        &:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+    }
+}
+
+button {
+    color: white;
+}
+.reply-button {
+    display: flex;
+    align-items: center;
+    gap: 4px; /* Відстань між текстом і іконкою */
+  }
+  

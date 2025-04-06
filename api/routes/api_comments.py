@@ -60,7 +60,10 @@ def edit_comment(service: CommentsService = Provide[Container.comments_service])
 def get_comments(service: CommentsService = Provide[Container.comments_service]):
     try:
         dto = InputCommentDTO().load(request.args.to_dict())
-        comments = service.get_comments(dto)
+        page = int(request.args.get("page", 1))
+        per_page = int(request.args.get("per_page", 10))
+
+        comments = service.get_comments(dto, page=page, per_page=per_page)
 
         return comments
 

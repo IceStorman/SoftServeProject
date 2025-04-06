@@ -122,7 +122,7 @@ export default function InsideNewsPage() {
             <section className="comments">
 
                 <CommentsBlock comments={comments} />
-                {hasMore && <button onClick={loadMore}>More</button>}
+                {hasMore && <button className="boxed" onClick={loadMore}>More</button>}
 
             </section>
         </section>
