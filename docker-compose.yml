@@ -25,10 +25,10 @@ services:
       - "80:80"
       - "443:443"
     volumes:
+      - /etc/letsencrypt/live:/etc/letsencrypt/live:ro
+      - /etc/letsencrypt/archive:/etc/letsencrypt/archive:ro
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
-      - ./api/routes/localhost.pem:/etc/ssl/certs/localhost.pem:ro
-      - ./api/routes/localhost-key.pem:/etc/ssl/certs/localhost-key.pem:ro
 
     depends_on:
       - api

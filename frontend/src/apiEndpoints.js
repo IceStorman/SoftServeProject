@@ -1,5 +1,5 @@
 const apiEndpoints = {
-    url: 'https://20.50.198.29/',
+    url: 'https://qsport.space/api/',
     // url: 'https://localhost/',
     
     news: {
