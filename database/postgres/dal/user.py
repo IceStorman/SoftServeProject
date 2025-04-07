@@ -1,5 +1,6 @@
 from sqlalchemy import or_
-from database.models import User, UserClubPreferences, UserPreference
+from database.models import User, UserClubPreferences, UserPreference, TokenBlocklist, RefreshTokenTracking
+from sqlalchemy.exc import SQLAlchemyError
 
 
 class UserDAL:
@@ -28,6 +29,18 @@ class UserDAL:
     def delete_user(self, user_id: int):
         self.session.query(User).filter(User.user_id == user_id).delete()
         self.session.commit()
+    
+    def delete_all_user_data(self, user_id: int):
+        try:
+            self.session.query(UserPreference).filter(UserPreference.users_id == user_id).delete()
+            self.session.query(UserClubPreferences).filter(UserClubPreferences.users_id == user_id).delete()
+            self.session.query(RefreshTokenTracking).filter(RefreshTokenTracking.user_id == user_id).delete()
+            self.session.query(TokenBlocklist).filter(TokenBlocklist.user_id == user_id).delete()
+            self.session.query(User).filter(User.user_id == user_id).delete()
+            self.session.commit()
+            
+        except SQLAlchemyError:
+            self.session.rollback()
 
     def get_user_by_id(self, user_id: int) -> User:
         return self.session.query(User).filter(User.user_id == user_id).first()

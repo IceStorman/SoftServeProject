@@ -133,9 +133,9 @@ async def delete_account(service: UserService = Provide[Container.user_service])
     try:
         data = request.get_json()
         email = InputUserByEmailDTO().load(data)
-        result = await service.delete_user(email)
+        await service.delete_user(email)
 
-        return jsonify(result)
+        return "さようなら"
 
     except CustomQSportException as e:
         logger.error(f"Error in DELETE /: {str(e)}")
