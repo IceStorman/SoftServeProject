@@ -148,4 +148,10 @@ class RefreshTokenDAL:
             
         return revoked_count
     
+    def delete_all_refresh_and_access_tokens(self, user_id: int):
+        self.db_session.query(RefreshTokenTracking).filter(RefreshTokenTracking.user_id == user_id).delete()
+        self.db_session.query(TokenBlocklist).filter(TokenBlocklist.user_id == user_id).delete()
+        self.db_session.commit()
+         
+    
     

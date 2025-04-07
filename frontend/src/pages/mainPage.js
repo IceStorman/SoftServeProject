@@ -101,8 +101,8 @@ function MainPage() {
                 },
                 { headers: { 'Content-Type': 'application/json' }, }
             );
-            const extractedArray = Object.values(response.data.items).map(item => ({ data: item }));
-            setNewsPaginated(extractedArray);
+             const extractedArray = Object.values(response.data.items).map(item => ({ data: item }));
+             setNewsPaginated(extractedArray);
 
             setPageCount(response.data.count / postsPerPage)
         } catch (error) {
@@ -264,13 +264,13 @@ function MainPage() {
                                 {recommendationNews.recommendations_list_by_user_preferences.map((item) => (
                                     <NewsCard
                                         key={item?.news_id}
-                                        title={item?.article?.title}
+                                        title={item?.article?.data?.title}
                                         id={item?.news_id}
-                                        date={item?.article?.timestamp}
-                                        img={item?.article?.images[0] || ''}
-                                        sport={item?.article?.S_P_O_R_T}
-                                        content={item?.article?.article?.section_1?.content}
-                                        article={item?.article}
+                                        date={item?.article?.data?.timestamp}
+                                        img={item?.article?.data?.images[0] || ''}
+                                        sport={item?.article?.data?.S_P_O_R_T}
+                                        content={item?.article?.data?.article?.section_1?.content}
+                                        article={item?.article.data}
                                     />
                                 ))}
                             </GridRecommendationBlock>
@@ -326,14 +326,14 @@ function MainPage() {
                     setSortValue={setOrderValue}
                     children={newsPaginated.map((item, index) => (
                         <NewsCard
-                            key={index?.blob_id}
+                            key={index?.data?.blob_id}
                             title={item?.data?.title}
-                            date={item?.data?.timestamp}
-                            img={item?.data?.images[0] || null}
-                            sport={item?.data?.S_P_O_R_T}
-                            content={item?.data?.article?.section_1?.content}
-                            id={item?.blob_id}
-                            article={item?.data}
+                            date={item?.data.data?.timestamp}
+                            img={item?.data.data?.images[0] || null}
+                            sport={item?.data.data?.S_P_O_R_T}
+                            content={item?.data.data?.article?.section_1?.content}
+                            id={item?.data.blob_id}
+                            article={item?.data.data}
                         />
                     ))}>
                 </GridContainer ></div>
@@ -350,13 +350,13 @@ function MainPage() {
                                 {recommendationNews.recommendations_list_by_user_last_watch.map((item) => (
                                     <NewsCard
                                         key={item?.news_id}
-                                        title={item?.article?.title}
+                                        title={item?.article?.data?.title}
                                         id={item?.news_id}
-                                        date={item?.timestamp}
-                                        img={item?.article?.images[0] || ''}
-                                        sport={item?.article?.S_P_O_R_T}
-                                        content={item?.article?.article?.section_1?.content}
-                                        article={item?.article}
+                                        date={item?.article?.data?.timestamp}
+                                        img={item?.article?.data?.images[0] || ''}
+                                        sport={item?.article?.data?.S_P_O_R_T}
+                                        content={item?.article?.data?.article?.section_1?.content}
+                                        article={item?.article.data}
                                     />
                                 ))}
                             </GridRecommendationBlock>

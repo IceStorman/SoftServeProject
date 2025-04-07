@@ -123,6 +123,23 @@ async def log_in(service: UserService = Provide[Container.user_service]):
     except CustomQSportException as e:
         logger.error(f"Error in POST /login: {str(e)}")
         return get_custom_error_response(e)
+    
+
+@login_app.route('/delete', methods=['DELETE'])
+@inject
+@handle_exceptions
+@logger.log_function_call()
+async def delete_account(service: UserService = Provide[Container.user_service]):
+    try:
+        data = request.get_json()
+        email = InputUserByEmailDTO().load(data)
+        await service.delete_user(email)
+
+        return "さようなら"
+
+    except CustomQSportException as e:
+        logger.error(f"Error in DELETE /: {str(e)}")
+        return get_custom_error_response(e)
 
 
 @login_app.route("/refresh", methods=['POST'])
