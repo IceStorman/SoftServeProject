@@ -448,6 +448,19 @@
             font-size: 1.3rem;
         }
 
+        .views{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: transparent;
+            border: none;
+            margin-left: auto;  
+
+            font-size: 1.3rem;
+            padding: 0.5rem;
+            gap: 0.5em;
+        }
+
         .like-vrapper {
             display: flex;
             align-items: center;
@@ -455,7 +468,6 @@
             background-color: transparent;
             border: none;
             color: $compl-clr;
-            margin-left: auto;
 
             .like-content {
                 font-size: 1.3rem;

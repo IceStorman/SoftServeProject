@@ -59,7 +59,15 @@ const apiEndpoints = {
     preference:{
         getUserPreferences: 'preferences/get',
         changeUserPreferences: 'preferences/'
+    },
+
+    interactions: {
+        save: 'interactions',                 
+        getStatus: 'interactions/status',      
+        getCounts: 'interactions/counts',        
+        getTypes: 'interactions/types'            
     }
+    
 };
 
 export default apiEndpoints;

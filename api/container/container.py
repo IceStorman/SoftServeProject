@@ -8,12 +8,14 @@ from database.postgres.dal.news import NewsDAL
 from database.postgres.dal.game import GameDAL
 from database.postgres.dal.team import TeamDAL
 from database.postgres.dal.access_token import AccessTokensDAL
-from database.postgres.dal.refresh import RefreshTokenDAL 
+from database.postgres.dal.refresh import RefreshTokenDAL
 from service.api_logic.managers.recommendation_menager import RecommendationManager
 from service.api_logic.player_logic import PlayerService
 from service.api_logic.sports_logic import SportService
 from service.api_logic.user_logic import UserService
 from service.api_logic.news_logic import NewsService
+from service.api_logic.interactions_logic import InteractionWithNewsService
+from database.postgres.dal import InteractionWithNewsDAL
 from service.implementation.email_sender.user_subscription_manager import UserSubscriptionManager
 from database.postgres.dal import StreamDAL
 from service.api_logic.streams_logic import StreamService
@@ -26,6 +28,8 @@ class Container(containers.DeclarativeContainer):
         modules=[
             "api.routes.api_login",
             "api.routes.api_news",
+            "api.routes.api_user_preferences",
+            "api.routes.api_interactions",
             "api.routes.api_user_preferences",
             "api.routes.api_streams",
             "api.routes.api_games",
@@ -40,6 +44,8 @@ class Container(containers.DeclarativeContainer):
     user_dal = providers.Factory(UserDAL, session=db_session)
     preferences_dal = providers.Factory(PreferencesDAL, session=db_session)
     news_dal = providers.Factory(NewsDAL, session = db_session)
+    sport_dal = providers.Factory(SportDAL, db_session=db_session)
+    interaction_with_news_dal = providers.Factory(InteractionWithNewsDAL, db_session=db_session)
     user_subscription_dal = providers.Factory(UserSubscriptionDAL, session=db_session)
     stream_dal = providers.Factory(StreamDAL, session = db_session)
     sport_dal = providers.Factory(SportDAL, session=db_session)
@@ -83,6 +89,11 @@ class Container(containers.DeclarativeContainer):
         user_dal=user_dal,
     )
 
+    interaction_with_news_service = providers.Factory(
+        InteractionWithNewsService,
+        interaction_with_news_dal=interaction_with_news_dal,
+        news_dal=news_dal,
+    )
     email_manager = providers.Factory(
         UserSubscriptionManager,
         user_subscription_dal,
