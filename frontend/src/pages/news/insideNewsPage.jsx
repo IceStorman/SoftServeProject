@@ -49,10 +49,10 @@ export default function InsideNewsPage() {
     const [hasMore, setHasMore] = useState(true);
 
 
-    const fetchComments = async (page = 1, perPage = 10) => {
+    const getComments = async (page = 1, perPage = 10) => {
         try {
             const response = await axios.get(
-                `${apiEndpoints.url}${apiEndpoints.comment.getComments}`,
+                `${apiEndpoints.url}${apiEndpoints.comment.getAll}`,
                 {
                     params: {
                         article_blob_id: articleId,
@@ -74,13 +74,13 @@ export default function InsideNewsPage() {
     
     const loadMore = () => {
         if (hasMore) {
-            fetchComments(currentPage + 1);
+            getComments(currentPage + 1);
         }
     };
     
 
     useEffect(() => {
-        fetchComments()
+        getComments()
     }, []);
 
     return (

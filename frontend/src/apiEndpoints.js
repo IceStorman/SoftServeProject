@@ -61,10 +61,10 @@ const apiEndpoints = {
     },
 
     comment:{
-        saveComment: 'comments/save',
-        editComment: 'comments/edit',
-        deleteComment: 'comments/delete',
-        getComments: 'comments/get'
+        save: 'comments',
+        update: (id) => `comments/${id}`,   
+        delete: (id) => `comments/${id}`,
+        getAll: 'comments'
     }
 };
 

@@ -18,17 +18,17 @@ export default function CommentCard({ comment_id, user_id, username, timestamp, 
 
     const loadMore = () => {
         if (hasMore) {
-            fetchReplies(currentPage + 1);
+            getReplies(currentPage + 1);
         }
     };
 
     const [currentPage, setCurrentPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
 
-    const fetchReplies = async (page = 1, perPage = 10) => {
+    const getReplies = async (page = 1, perPage = 10) => {
         try {
             const response = await axios.get(
-                `${apiEndpoints.url}${apiEndpoints.comment.getComments}`, {
+                `${apiEndpoints.url}${apiEndpoints.comment.getAll}`, {
                 params:
                 {
                     parent_comment_id: comment_id,
@@ -51,7 +51,7 @@ export default function CommentCard({ comment_id, user_id, username, timestamp, 
     const handleToggleReplies = () => {
         if (!showReplies) {
             setReplies([]);        
-            fetchReplies(1);          
+            getReplies(1);          
             setCurrentPage(1);       
         }
         setShowReplies(!showReplies);
@@ -65,7 +65,7 @@ export default function CommentCard({ comment_id, user_id, username, timestamp, 
         if (!replyContent.trim()) return;
 
         try {
-            await axios.post(`${apiEndpoints.url}${apiEndpoints.comment.saveComment}`, {
+            await axios.post(`${apiEndpoints.url}${apiEndpoints.comment.save}`, {
                 user_id: user.user_id,
                 article_blob_id: articleId,
                 parent_comment_id: comment_id,
@@ -91,8 +91,7 @@ export default function CommentCard({ comment_id, user_id, username, timestamp, 
         if (!editedContent.trim()) return;
 
         try {
-            await axios.post(`${apiEndpoints.url}${apiEndpoints.comment.editComment}`, {
-                comment_id: comment_id,
+            await axios.post(`${apiEndpoints.url}${apiEndpoints.comment.update(comment_id)}`, {
                 content: editedContent,
             });
 
@@ -109,10 +108,7 @@ export default function CommentCard({ comment_id, user_id, username, timestamp, 
         if (!confirmDelete) return;
 
         try {
-            await axios.delete(`${apiEndpoints.url}${apiEndpoints.comment.deleteComment}`, {
-                data: { comment_id: comment_id }
-            });
-
+            await axios.delete(`${apiEndpoints.url}${apiEndpoints.comment.delete(comment_id)}`);
             setIsDeleted(true);
         } catch (error) {
             console.error("Error deleting comment:", error);

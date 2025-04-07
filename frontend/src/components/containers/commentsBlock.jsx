@@ -21,7 +21,7 @@ const CommentsBlock = ({ comments }) => {
     const saveComment = async (content) => {
         try {
             await axios.post(
-                `${apiEndpoints.url}${apiEndpoints.comment.saveComment}`, {
+                `${apiEndpoints.url}${apiEndpoints.comment.save}`, {
                 user_id: user.user_id,
                 article_blob_id: articleId,
                 content: content
