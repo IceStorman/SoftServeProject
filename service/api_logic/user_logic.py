@@ -100,7 +100,15 @@ class UserService:
         
         return user
     
+    async def delete_user(self, email):
+        user = self.get_user_by_email_or_username(email = email)
+        if not user:
+            raise UserDoesNotExistError(email)
+        
+        self._user_dal.delete_all_user_data(user.user_id)
+        
 
+        
     def revoke_all_refresh_and_access_tokens(self, user_id: int) -> int:
         return self._refresh_dal.revoke_all_refresh_and_access_tokens_for_user(user_id)
     
@@ -348,7 +356,7 @@ class UserService:
 
 
     def get_user_preferences(self, dto: UpdateUserPreferencesDTO):
-        new_dto_by_type_of_preference = self.dto_for_type_of_preference(dto)
+        new_dto_by_type_of_preference = self.dto_for_type_of_preference(dto.type)
 
         prefs = self._preferences_dal.get_user_preferences(new_dto_by_type_of_preference, dto)
         if dto.type == SPORT_TYPE:
@@ -359,7 +367,7 @@ class UserService:
 
 
     def delete_preferences(self, dto: UpdateUserPreferencesDTO):
-        new_dto_by_type_of_preference = self.dto_for_type_of_preference(dto)
+        new_dto_by_type_of_preference = self.dto_for_type_of_preference(dto.type)
         if not dto.preferences:
             self._preferences_dal.delete_all_user_preferences(new_dto_by_type_of_preference, dto)
         else:
@@ -369,10 +377,10 @@ class UserService:
 
 
     @staticmethod
-    def dto_for_type_of_preference(dto):
-        if dto.type == SPORT_TYPE:
+    def dto_for_type_of_preference(choise_type):
+        if choise_type == SPORT_TYPE:
             return SportPreferenceFields()
-        elif dto.type == TEAM_TYPE:
+        elif choise_type == TEAM_TYPE:
             return TeamPreferenceFields()
         else:
             raise IncorrectTypeOfPreferencesError()

@@ -52,6 +52,7 @@ const apiEndpoints = {
         login: 'user/login',
         resetPasswordRequest: 'user/reset-password-request',
         resetPassword: 'user/reset-password',
+        deleteAccount: 'user/delete',
         refresh: 'user/refresh'
     },
 
