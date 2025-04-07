@@ -1,28 +1,29 @@
 from database.models import Comment, User
 from database.postgres.dto import CommentDTO
 from dto.api_output import OutputComment
-
+from exept.exeptions import ArticleNotFoundError
 from logger.logger import Logger
 
 
 class CommentsService:
     def __init__(self, comments_dal, news_dal):
-        self._logger = Logger("logger", "all.log").logger
         self._comment_dal = comments_dal
         self._news_dal = news_dal
 
-    def __convert_dal(self, input_dal):
-        news_entry = self._news_dal.get_news_by_id(input_dal.article_blob_id)
+        self._logger = Logger("logger", "all.log").logger
 
-        if not news_entry:
-            pass
+    def __convert_dal(self, input_dto):
+        news_entry = self._news_dal.get_news_by_id(input_dto.article_blob_id)
 
-        db_dto =  CommentDTO(
-            comment_id=input_dal.comment_id,
-            user_id=input_dal.user_id,
+        if not news_entry and input_dto.article_blob_id is not None:
+            raise ArticleNotFoundError(input_dto.article_blob_id)
+
+        db_dto = CommentDTO(
+            comment_id=input_dto.comment_id,
+            user_id=input_dto.user_id,
             news_id=news_entry.news_id,
-            content=input_dal.content,
-            parent_comment_id=input_dal.parent_comment_id
+            content=input_dto.content,
+            parent_comment_id=input_dto.parent_comment_id
         )
 
         return db_dto
@@ -42,14 +43,14 @@ class CommentsService:
             Comment.timestamp,
             Comment.parent_comment_id
         )
-                 .join(User, User.user_id == Comment.user_id)
-                 .filter(
+        .join(User, User.user_id == Comment.user_id)
+        .filter(
             Comment.news_id == comment_dto.news_id,
             Comment.parent_comment_id == comment_dto.parent_comment_id
         )
-                 .order_by(Comment.timestamp.desc())
-                 .limit(per_page)
-                 .offset((page - 1) * per_page))
+        .order_by(Comment.timestamp.desc())
+        .limit(per_page)
+        .offset((page - 1) * per_page))
 
         comments = self._comment_dal.query_output(query)
         comment_output = OutputComment(many=True).dump(comments)
