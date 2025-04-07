@@ -3,8 +3,10 @@ import React, { useState, useContext } from "react";
 import { SlArrowDown, SlArrowUp } from "react-icons/sl";
 import apiEndpoints from "../../apiEndpoints";
 import CommentsArea from "../containers/commentsArea";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../pages/registration/AuthContext";
+import { toast } from "sonner";
+import globalVariables from "../../globalVariables";
 
 export default function CommentCard({ comment_id, user_id, username, timestamp, content }) {
 
@@ -14,7 +16,8 @@ export default function CommentCard({ comment_id, user_id, username, timestamp, 
     const [showReplyInput, setShowReplyInput] = useState(false);
     const [replyContent, setReplyContent] = useState("");
     const { articleId } = useParams();
-    const { user } = useContext(AuthContext)
+    const { user } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     const loadMore = () => {
         if (hasMore) {
@@ -44,38 +47,49 @@ export default function CommentCard({ comment_id, user_id, username, timestamp, 
             setCurrentPage(page);
             setHasMore(has_more);
         } catch (error) {
-            console.error("Error fetching replies:", error);
+            toast.error(`Failed to get replies: ${error}`)
         }
     };
 
     const handleToggleReplies = () => {
         if (!showReplies) {
-            setReplies([]);        
-            getReplies(1);          
-            setCurrentPage(1);       
+            setReplies([]);
+            getReplies(1);
+            setCurrentPage(1);
         }
         setShowReplies(!showReplies);
     };
-    
+
     const handleToggleReplyInput = () => {
         setShowReplyInput(!showReplyInput);
     };
 
     const saveReply = async () => {
-        if (!replyContent.trim()) return;
+        if (user) {
+            if (!replyContent.trim()) return;
 
-        try {
-            await axios.post(`${apiEndpoints.url}${apiEndpoints.comment.save}`, {
-                user_id: user.user_id,
-                article_blob_id: articleId,
-                parent_comment_id: comment_id,
-                content: replyContent,
+            try {
+                await axios.post(`${apiEndpoints.url}${apiEndpoints.comment.save}`, {
+                    user_id: user.user_id,
+                    article_blob_id: articleId,
+                    parent_comment_id: comment_id,
+                    content: replyContent,
+                });
+
+                setReplyContent("");
+                setShowReplyInput(false);
+            } catch (error) {
+                toast.error(`Failed to save reply: ${error}`)
+            }
+        }
+        else {
+            const notify = () => toast('Sign in to add reply', {
+                action: {
+                    label: 'sign in',
+                    onClick: () => navigate(globalVariables.routeLinks.signInRoute),
+                },
             });
-
-            setReplyContent("");
-            setShowReplyInput(false);
-        } catch (error) {
-            console.error("Error saving reply:", error);
+            notify()
         }
     };
 
@@ -97,7 +111,7 @@ export default function CommentCard({ comment_id, user_id, username, timestamp, 
 
             setIsEditing(false);
         } catch (error) {
-            console.error("Error updating comment:", error);
+            toast.error(`Failed to edit comment: ${error}`)
         }
     };
 
@@ -111,7 +125,7 @@ export default function CommentCard({ comment_id, user_id, username, timestamp, 
             await axios.delete(`${apiEndpoints.url}${apiEndpoints.comment.delete(comment_id)}`);
             setIsDeleted(true);
         } catch (error) {
-            console.error("Error deleting comment:", error);
+            toast.error(`Failed to delete comment: ${error}`)
         }
     };
 
@@ -121,7 +135,7 @@ export default function CommentCard({ comment_id, user_id, username, timestamp, 
 
     const time = date.toLocaleString('uk', { hour: '2-digit', minute: '2-digit', hour12: false });
     const formattedDate = date.toLocaleString('uk', { day: '2-digit', month: '2-digit', year: '2-digit' });
-  
+
     const formattedTimestamp = `${time}, ${formattedDate}`;
 
     return (
@@ -156,7 +170,7 @@ export default function CommentCard({ comment_id, user_id, username, timestamp, 
 
                 <button className="filled" onClick={handleToggleReplyInput}>Reply</button>
 
-                { user && user.user_id === user_id && (
+                {user && user.user_id === user_id && (
                     <>
                         <button className="filled" onClick={handleToggleEditInput}>Edit</button>
                         <button className="filled" onClick={deleteComment}>Delete</button>
@@ -198,7 +212,7 @@ export default function CommentCard({ comment_id, user_id, username, timestamp, 
                     )}
                     {hasMore && <button className="boxed" onClick={loadMore}>More</button>}
                 </CommentsArea>
-                
+
             )}
         </div>
     );

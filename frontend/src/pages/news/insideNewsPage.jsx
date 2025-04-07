@@ -68,7 +68,7 @@ export default function InsideNewsPage() {
             setCurrentPage(page);                         
             setHasMore(has_more);                         
         } catch (error) {
-            console.error("Error fetching comments:", error);
+            toast.error(`Failed to get comments: ${error}`)
         }
     };
     
