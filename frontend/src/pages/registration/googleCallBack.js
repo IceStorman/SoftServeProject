@@ -11,10 +11,11 @@ function GoogleAuthCallback() {
     const navigate = useNavigate();
 
     const { login } = authContext;
-    
+
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get("code");
+
 
         if (code) {
             axios.post(`${apiEndpoints.url}${apiEndpoints.user.login}?code=${code}`,
@@ -40,7 +41,7 @@ function GoogleAuthCallback() {
         }
     }, []);
 
-    return <></>;
+    return <>Authentication, wait a few seconds...</>;
 }
 
 export default GoogleAuthCallback;

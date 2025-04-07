@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import apiEndpoints from "../../apiEndpoints.js";
@@ -14,6 +14,7 @@ import FiltersRenderer from "../../components/filters/filterRender";
 import globalVariables from "../../globalVariables";
 import useBurgerMenu from "../../customHooks/useBurgerMenu";
 import useBurgerMenuState from "../../customHooks/useBurgerMenuState";
+import {AuthContext} from "../registration/AuthContext";
 
 function TeamPage() {
     const { leagueName } = useParams();
@@ -92,6 +93,10 @@ function TeamPage() {
     const [prevInputValue, setPrevInputValue] = useState('');
     const [searchClicked, setSearchClicked] = useState(false);
     const [passedPosts, setPassedPosts] = useState(0);
+
+    const { user } = useContext(AuthContext);
+    const [userTeamsPref, setUserTeamsPref] = useState([]);
+
     const { t } = useTranslations();
 
     useEffect(() => {
@@ -104,12 +109,17 @@ function TeamPage() {
         getTeams(0);
     }, []);
 
+    useEffect(() => {
+        fetchFavoriteTeams();
+    }, []);
+
     const handlePageClick = (event) => {
         const selectedPage = event.selected;
         setCurrentPage(selectedPage);
         getTeams(selectedPage);
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
+
 
     function handleSearchClick() {
         setSearchClicked((prev) => !prev);
@@ -121,8 +131,7 @@ function TeamPage() {
         }
     };
 
-    const getTeams = async (page) => {
-
+    const getTeams = async (page, retryCount = 0) => {
         setPrevInputValue(inputValue);
 
         try {
@@ -184,16 +193,56 @@ function TeamPage() {
                     setPageCount(0);
                     return;
                 }
-                return getTeams(0)
+
+                if (retryCount < 2) {
+                    return getTeams(0, retryCount + 1);
+                } else {
+                    setCurrentTeams([]);
+                    setPageCount(0);
+                    return;
+                }
             }
 
             setCurrentTeams(response.data.items);
             const totalPosts = response.data.count;
             setPageCount(Math.ceil(totalPosts / teamsPerPage));
         } catch (error) {
-            setPageCount(0);
-            toast.error(`:( Troubles With Leagues Loading: ${error}`);
+            if (retryCount < 2) {
+                return getTeams(page, retryCount + 1);
+            } else {
+                setPageCount(0);
+                toast.error(`:( Troubles With Leagues Loading: ${error}`);
+            }
         }
+    };
+
+    const fetchFavoriteTeams = async () => {
+        if (!user) return;
+
+        try {
+            console.log("get user prefs")
+            const response = await axios.post(
+                `${apiEndpoints.url}${apiEndpoints.preference.getUserPreferences}`,
+                {
+                    user_id: user?.user_id,
+                    type: 'team',
+                },
+                {
+                    headers: { 'Content-Type': 'application/json' },
+                }
+            );
+            const preferences = response.data || [];
+            const favoriteTeams = response.data.map(item => item.team_index_id);
+            console.log(preferences, "asas");
+
+            setUserTeamsPref(favoriteTeams)
+        } catch (err) {
+            toast.error("Error with user preferences");
+        }
+    };
+
+    const handleApplyFavoriteTeams = () => {
+        fetchFavoriteTeams();
     };
 
     useEffect(() => {
@@ -266,6 +315,8 @@ function TeamPage() {
                             id={item.id}
                             leagueId={leagueId}
                             page={currentPage}
+                            favoriteTeams={userTeamsPref}
+                            handleApplyFavoriteTeams={handleApplyFavoriteTeams}
                         />
                     ))}>
                 </SearchBlock>

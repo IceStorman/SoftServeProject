@@ -9,13 +9,13 @@ import { InteractionProvider } from './interactionContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <TranslationsProvider>
-        <FilterProvider>
-            <InteractionProvider>
-                <AuthProvider>
+    <AuthProvider>
+        <TranslationsProvider>
+            <FilterProvider>
+                <InteractionProvider>
                     <App />
-                </AuthProvider>
-            </InteractionProvider>
-        </FilterProvider>
-    </TranslationsProvider>
+                </InteractionProvider>
+            </FilterProvider>
+        </TranslationsProvider>
+    </AuthProvider>
 );

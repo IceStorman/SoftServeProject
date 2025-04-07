@@ -12,6 +12,7 @@ import GameCard from "../components/cards/gameCard.jsx"
 import GridContainer from "../components/containers/gridBlock.jsx";
 import useTranslations from "../translationsContext";
 import {AuthContext} from "./registration/AuthContext";
+import useBurgerMenu from "../customHooks/useBurgerMenu";
 import GridRecommendationBlock from "../components/containers/gridRecommendationBlock";
 import globalVariables from "../globalVariables";
 
@@ -23,14 +24,16 @@ function MainPage() {
     const { t } = useTranslations();
     const [news, setNews] = useState([])
     const [newsPaginated, setNewsPaginated] = useState([])
+    const LatestNews = useBurgerMenu(`${globalVariables.windowSizeForBurger.latestNews}`);
+    const LatestGames = useBurgerMenu(`${globalVariables.windowSizeForBurger.latestGames}`);
 
     const game_element_height = 85
     const game_element_width = 400
 
     const cardSizes = {
-        large: { rows: 1, columns: 4, cardSize: { width: 320, height: 490 }, postsPerPage: 4 },
-        medium: { rows: 3, columns: 5, cardSize: { width: 250, height: 300 }, postsPerPage: 10 },
-        small: { rows: 5, columns: 2, cardSize: { width: 650, height: 100 }, postsPerPage: 8 }
+        large: { rows: 1, columns: 4, cardSize: { width: 20, height: 30.625 }, postsPerPage: 4 },
+        medium: { rows: 3, columns: 5, cardSize: { width: 15.625, height: 21.875 }, postsPerPage: 10 },
+        small: { rows: 5, columns: 2, cardSize: { width: 40.625, height: 6.25 }, postsPerPage: 8 }
     };
 
     const [gridSize, setGridSize] = useState(cardSizes.large);
@@ -98,8 +101,9 @@ function MainPage() {
                 },
                 { headers: { 'Content-Type': 'application/json' }, }
             );
+            const extractedArray = Object.values(response.data.items).map(item => ({ data: item }));
+            setNewsPaginated(extractedArray);
 
-            setNewsPaginated(response.data.items);
             setPageCount(response.data.count / postsPerPage)
         } catch (error) {
             setPageCount(0);
@@ -108,21 +112,12 @@ function MainPage() {
     };
 
     const [currentGames, setCurrentGames] = useState([]);
-    // const [slidesCount, setSlidesCount] = useState(0);
-    // const [currentSlide, setCurrentSlide] = useState(0);
     const [gamesPerSlide, setGamesPerSlide] = useState(5);
     const [recommendationNews, setRecommendationNews] = useState([]);
-
 
     useEffect(() => {
         getGames(0);
     }, []);
-    //
-    // const handleSliderClick = (event) => {
-    //     const selectedSlide = event.selected;
-    //     setCurrentSlide(selectedSlide);
-    //     getGames(selectedSlide);
-    // };
 
     const getGames = async (page) => {
 
@@ -151,8 +146,6 @@ function MainPage() {
             );
 
             setCurrentGames(response.data.items);
-            // const totalGames = response.data.count;
-            // setSlidesCount(Math.ceil(totalGames / gamesPerSlide));
         } catch (error) {
             setPageCount(0);
             toast.error(`Troubles With games Loading: ${error}`);
@@ -194,15 +187,15 @@ function MainPage() {
         const selectedPage = event.selected;
         setCurrentPage(selectedPage);
         getPaginatedNews(selectedPage);
+        scrollToTarget();
     };
 
     const [selectedSport, setSelectedSport] = useState("all");
-    const element_height = 100
-    const element_width = 350
     return (
         <>
             <div className="showcase">
-                <section>
+                {!LatestNews ? (
+                <section class="news-column-section">
                     <p className="block-title">Latest news</p>
                     <div className="news-column">
                         <Column>
@@ -211,13 +204,9 @@ function MainPage() {
                                     key={index}
                                     title={item?.data?.title}
                                     date={item?.data?.timestamp}
-                                    img={item?.data?.images[0] || null}
                                     sport={item?.data?.S_P_O_R_T}
-                                    content={item?.data?.article?.section_1?.content}
                                     id={item?.blob_id}
                                     article={item?.data}
-                                    height={element_height}
-                                    width={element_width}
                                     className="news-card"
                                 />
                                 )
@@ -225,9 +214,10 @@ function MainPage() {
                         </Column></div>
                     <button onClick={scrollToTarget} className="boxed">{t("more")}</button>
                 </section>
+                ): null}
 
                 <NewsShowcase newsData={news} />
-
+                {!LatestGames ? (
                 <section>
                     <p className="block-title">{t("latest_games")}</p>
                     <div className="games-column">
@@ -259,6 +249,7 @@ function MainPage() {
                     }
 
                 </section>
+                ) : null}
             </div>
 
             {
