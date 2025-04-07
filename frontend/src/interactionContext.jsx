@@ -13,7 +13,7 @@ export const InteractionProvider = ({ children }) => {
     useEffect(() => {
         const getInteractionTypes = async () => {
             try {
-                const response = await axios.get(`${apiEndpoints.url}${apiEndpoints.interactions.getInteractionTypes}`);
+                const response = await axios.get(`${apiEndpoints.url}${apiEndpoints.interactions.getTypes}`);
                 const types = response.data;
                 localStorage.setItem('interactionTypes', JSON.stringify(types));
                 setInteractionTypes(types);

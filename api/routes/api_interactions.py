@@ -20,7 +20,7 @@ def handle_db_timeout_error(e):
     response = {"error in data base": str(e)}
     return response
 
-@interactions_app.route('/save', methods=['POST'])
+@interactions_app.route('', methods=['POST'])
 @logger.log_function_call()
 @inject
 @handle_exceptions
@@ -36,7 +36,7 @@ def save_interaction(service: InteractionWithNewsService = Provide[Container.int
         logger.error(f"Error in POST /: {str(e)}")
         return get_custom_error_response(e)
 
-@interactions_app.route('/getStatus', methods=['GET'])
+@interactions_app.route('/status', methods=['GET'])
 @logger.log_function_call()
 @inject
 @handle_exceptions
@@ -52,7 +52,7 @@ def get_interaction_status_by_user_id(service: InteractionWithNewsService = Prov
         return get_custom_error_response(e)
 
 
-@interactions_app.route('/getCounts', methods=['GET'])
+@interactions_app.route('/counts', methods=['GET'])
 @logger.log_function_call()
 @inject
 @handle_exceptions
@@ -68,7 +68,7 @@ def get_interactions_count_by_blob_id(service: InteractionWithNewsService = Prov
         return get_custom_error_response(e)
 
 
-@interactions_app.route('/getInteractionTypes', methods=['GET'])
+@interactions_app.route('/types', methods=['GET'])
 @logger.log_function_call()
 @cache.cached(timeout=60*60)
 @inject

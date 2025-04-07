@@ -133,7 +133,7 @@ export default function InsideNewsPage() {
         if (user_id) {
             try {
                 await axios.post(
-                    `${apiEndpoints.url}${apiEndpoints.interactions.saveInteraction}`,
+                    `${apiEndpoints.url}${apiEndpoints.interactions.save}`,
                     {
                         user_id: user_id,
                         article_blob_id: articleId,
@@ -149,7 +149,7 @@ export default function InsideNewsPage() {
     useEffect(() => {
         async function getInteractionsCounts() {
             try {
-                const { data } = await axios.get(`${apiEndpoints.url}${apiEndpoints.interactions.getInteractionsCounts}`, {
+                const { data } = await axios.get(`${apiEndpoints.url}${apiEndpoints.interactions.getCounts}`, {
                     params: {
                         article_blob_id: articleId,
                     },
@@ -167,7 +167,7 @@ export default function InsideNewsPage() {
     useEffect(() => {
         async function getLikeStatus() {
             try {
-                const { data } = await axios.get(`${apiEndpoints.url}${apiEndpoints.interactions.getInteractionStatus}`, {
+                const { data } = await axios.get(`${apiEndpoints.url}${apiEndpoints.interactions.getStatus}`, {
                     params: {
                         user_id: user.user_id,
                         article_blob_id: articleId,
