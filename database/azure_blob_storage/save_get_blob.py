@@ -190,7 +190,10 @@ def blob_get_news_bulk(news_indices: list) -> dict:
         for news_index in news_indices:
             blob_client = container_client.get_blob_client(news_index)
             blob_data = blob_client.download_blob().readall()
-            results[news_index] = json.loads(blob_data)
+            results[news_index] = {
+                "blob_id": news_index,
+                "data": json.loads(blob_data)
+            }
 
         return results
     except Exception as e:
