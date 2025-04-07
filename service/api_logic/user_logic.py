@@ -104,6 +104,7 @@ class UserService:
         user = self.get_user_by_email_or_username(email = email)
         if not user:
             raise UserDoesNotExistError(email)
+        
         self._user_dal.delete_all_user_data(user.user_id)
         
 
