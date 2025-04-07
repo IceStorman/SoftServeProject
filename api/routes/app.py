@@ -45,7 +45,7 @@ jwt = JWTManager()
 
 def create_app():
     app = Flask(__name__, static_folder='static')
-    CORS(app, supports_credentials=True)
+    CORS(app, supports_credentials=True, origins=["http://qsport.today", "https://qsport.today"])
 
     app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

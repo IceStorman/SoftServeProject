@@ -2,11 +2,7 @@ version: '3.9'
 
 services:
   api:
-    #image: iarynovskyi/qsport_image:latest
     image: iarynovskyi/qsport_image:multiarch
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
     container_name: flask
     env_file:
       - .env
@@ -16,20 +12,38 @@ services:
       - .:/QSPORT
     working_dir: /QSPORT
     command: ["python", "api/routes/app.py"]
-    restart: unless-stopped
+    restart: always
+    networks:
+      - webnet
+
 
   nginx:
-    image: nginx:latest
+    image: nginx
     container_name: nginx
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - /usr/share/nginx/html/SoftServeProject:/usr/share/nginx/html
     ports:
       - "80:80"
       - "443:443"
-    volumes:
-      - /etc/letsencrypt/live:/etc/letsencrypt/live:ro
-      - /etc/letsencrypt/archive:/etc/letsencrypt/archive:ro
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - webnet
 
-    depends_on:
-      - api
-    restart: unless-stopped
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - ./nginx/certbot:/etc/letsencrypt/live
+    entrypoint: >
+      sh -c "trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;"
+    restart: always
+    networks:
+      - webnet
+
+
+networks:
+  webnet:
+    driver: bridge
