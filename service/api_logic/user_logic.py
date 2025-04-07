@@ -338,7 +338,7 @@ class UserService:
 
    
     def add_preferences(self, dto: UpdateUserPreferencesDTO):
-        new_dto_by_type_of_preference = self.dto_for_type_of_preference(dto)
+        new_dto_by_type_of_preference = self.dto_for_type_of_preference(dto.type)
 
         existing_sports = self._preferences_dal.get_all_sport_preference_indexes()
         if dto.type == SPORT_TYPE:
