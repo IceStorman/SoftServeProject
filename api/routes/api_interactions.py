@@ -42,7 +42,7 @@ def save_interaction(service: InteractionWithNewsService = Provide[Container.int
 @handle_exceptions
 def get_interaction_status_by_user_id(service: InteractionWithNewsService = Provide[Container.interaction_with_news_service]):
     try:
-        dto = InteractionsDTO().load(request.args.to_dict())
+        dto = InteractionsDTO().load(request.args)
         interaction_status = service.has_interaction_occurred(dto)
 
         return jsonify(interaction_status)
@@ -58,7 +58,7 @@ def get_interaction_status_by_user_id(service: InteractionWithNewsService = Prov
 @handle_exceptions
 def get_interactions_count_by_blob_id(service: InteractionWithNewsService = Provide[Container.interaction_with_news_service]):
     try:
-        dto = InteractionsDTO().load(request.args.to_dict())
+        dto = InteractionsDTO().load(request.args)
         interactions_counts = service.get_interactions_counts(dto)
 
         return interactions_counts
