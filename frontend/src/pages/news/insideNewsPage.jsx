@@ -30,8 +30,10 @@ export default function InsideNewsPage() {
     const interactionTypes = useInteractionTypes();
 
     useEffect(() => {
-        handleLikeStatus();
-    }, [location]); 
+        return () => {
+          handleLikeStatus();
+        };
+      }, []);
 
     const [user_id, setUserId] = useState(() => {
         const savedUserId = localStorage.getItem('user_id');
@@ -99,11 +101,9 @@ export default function InsideNewsPage() {
         };
 
         window.addEventListener("beforeunload", handleEvent);
-        window.addEventListener("popstate", handleEvent);
 
         return () => {
             window.removeEventListener("beforeunload", handleEvent);
-            window.removeEventListener("popstate", handleEvent);
         };
     }, []);
 
