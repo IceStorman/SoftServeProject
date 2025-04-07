@@ -1,14 +1,38 @@
-import React, {useEffect} from "react";
+import React, {useContext, useEffect} from "react";
 import { useState } from "react";
 import axios from "axios";
 import apiEndpoints from "../../apiEndpoints";
 import {toast} from "sonner";
+import {AuthContext} from "../../pages/registration/AuthContext";
 
 
-function TeamCard({ leagueName: teamName, img, id, size, sportId, sportName, leagueId, page}) {
+function TeamCard({
+        leagueName: teamName,
+        img,
+        id,
+        size,
+        sportId,
+        sportName,
+        leagueId,
+        page,
+        favoriteTeams,
+        handleApplyFavoriteTeams
+    }) {
     const [isFlipped, setIsFlipped] = useState(false);
+    const [isFavorite, setIsFavorite] = useState(false);
+    const isSportValid = (sportName) => sportsArray.includes(sportName);
     const hideText = size === "medium" || size === "large";
     const [players, setPlayers] = useState([]);
+    const {user} = useContext(AuthContext);
+
+    useEffect(() => {
+        for (let i = 0; i < favoriteTeams.length; i++) {
+            if (favoriteTeams[i] == id) {
+                setIsFavorite(true);
+                break;
+            }
+        }
+    }, [favoriteTeams, id]);
 
     const sportsArray = [
         'nfl',
@@ -17,13 +41,9 @@ function TeamCard({ leagueName: teamName, img, id, size, sportId, sportName, lea
         'basketball',
     ];
 
-    const isSportValid = (sportName) => sportsArray.includes(sportName);
-
     const handleFlip = () => {
-        if (!isFlipped) {
-            if (isSportValid(sportName)) {
-                getPlayers()
-            }
+        if (!isFlipped && isSportValid(sportName)) {
+            getPlayers();
         }
         setIsFlipped(!isFlipped);
     };
@@ -33,6 +53,44 @@ function TeamCard({ leagueName: teamName, img, id, size, sportId, sportName, lea
             setIsFlipped(!isFlipped);
         }
     }, [page])
+
+
+    const toggleFavorite = async (e) => {
+        e.stopPropagation();
+        setIsFavorite((prev) => !prev);
+
+        try {
+            if (!isFavorite) {
+                await axios.post(
+                    `${apiEndpoints.url}${apiEndpoints.preference.changeUserPreferences}`,
+                    {
+                        preferences: [...favoriteTeams, id],
+                        user_id: user?.user_id,
+                        type: 'team',
+                    },
+                    {
+                        headers: { 'Content-Type': 'application/json' },
+                    }
+                );
+            } else {
+                await axios.delete(
+                    `${apiEndpoints.url}${apiEndpoints.preference.changeUserPreferences}`,
+                    {
+                        data: {
+                            preferences: [id],
+                            user_id: user?.user_id,
+                            type: 'team',
+                        },
+                        headers: { 'Content-Type': 'application/json' },
+                    }
+                );
+            }
+            handleApplyFavoriteTeams()
+        } catch (error) {
+            handleApplyFavoriteTeams()
+            // toast.error(`Error updating favorites: ${error}`);
+        }
+    };
 
     const getPlayers = async (retryCount = 0) => {
         try {
@@ -88,24 +146,33 @@ function TeamCard({ leagueName: teamName, img, id, size, sportId, sportName, lea
             onClick={handleFlip}
         >
             <div className="team-card-front">
-                {img && (
+                {img &&
                     <div className={`image horizontal ${size}`}>
                         <img src={img} alt={teamName} className="img-content"/>
                     </div>
-                )}
-                {!hideText && (
+                }
+                {!hideText &&
                     <div className={`content ${size}`}>
                         <h1>{teamName}</h1>
                     </div>
-                )}
+                }
+                {user &&
+                    <button className={`favorite-btn ${isFavorite ? "active" : ""}`}
+                            onClick={toggleFavorite}
+                            aria-label="Add to favorites">
+                        <div className="star"></div>
+                    </button>
+                }
+
+
             </div>
 
             <div className="team-card-back">
                 <h1>{teamName}</h1>
                 {players && players.length > 0 ? (
                     <div className="players-list">
-                        {players.map((player, index) => (
-                            <div key={index} className="player-item">
+                        {players.map((player) => (
+                            <div key={player.id} className="player-item">
                                 <img className="player-photo" alt={player.name} src={player.logo} />
                                 <p className="player-name">{player.name}</p>
                             </div>
