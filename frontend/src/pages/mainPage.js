@@ -12,6 +12,7 @@ import GameCard from "../components/cards/gameCard.jsx"
 import GridContainer from "../components/containers/gridBlock.jsx";
 import useTranslations from "../translationsContext";
 import {AuthContext} from "./registration/AuthContext";
+import useBurgerMenu from "../customHooks/useBurgerMenu";
 import GridRecommendationBlock from "../components/containers/gridRecommendationBlock";
 import globalVariables from "../globalVariables";
 
@@ -23,14 +24,16 @@ function MainPage() {
     const { t } = useTranslations();
     const [news, setNews] = useState([])
     const [newsPaginated, setNewsPaginated] = useState([])
+    const LatestNews = useBurgerMenu(`${globalVariables.windowSizeForBurger.latestNews}`);
+    const LatestGames = useBurgerMenu(`${globalVariables.windowSizeForBurger.latestGames}`);
 
     const game_element_height = 85
     const game_element_width = 400
 
     const cardSizes = {
-        large: { rows: 1, columns: 4, cardSize: { width: 320, height: 490 }, postsPerPage: 4 },
-        medium: { rows: 3, columns: 5, cardSize: { width: 250, height: 300 }, postsPerPage: 10 },
-        small: { rows: 5, columns: 2, cardSize: { width: 650, height: 100 }, postsPerPage: 8 }
+        large: { rows: 1, columns: 4, cardSize: { width: 20, height: 30.625 }, postsPerPage: 4 },
+        medium: { rows: 3, columns: 5, cardSize: { width: 15.625, height: 21.875 }, postsPerPage: 10 },
+        small: { rows: 5, columns: 2, cardSize: { width: 40.625, height: 6.25 }, postsPerPage: 8 }
     };
 
     const [gridSize, setGridSize] = useState(cardSizes.large);
@@ -98,8 +101,8 @@ function MainPage() {
                 },
                 { headers: { 'Content-Type': 'application/json' }, }
             );
-            const extractedArray = Object.values(response.data.items).map(item => ({ data: item }));
-            setNewsPaginated(extractedArray);
+             const extractedArray = Object.values(response.data.items).map(item => ({ data: item }));
+             setNewsPaginated(extractedArray);
 
             setPageCount(response.data.count / postsPerPage)
         } catch (error) {
@@ -184,15 +187,15 @@ function MainPage() {
         const selectedPage = event.selected;
         setCurrentPage(selectedPage);
         getPaginatedNews(selectedPage);
+        scrollToTarget();
     };
 
     const [selectedSport, setSelectedSport] = useState("all");
-    const element_height = 100
-    const element_width = 350
     return (
         <>
             <div className="showcase">
-                <section>
+                {!LatestNews ? (
+                <section class="news-column-section">
                     <p className="block-title">Latest news</p>
                     <div className="news-column">
                         <Column>
@@ -201,13 +204,9 @@ function MainPage() {
                                     key={index}
                                     title={item?.data?.title}
                                     date={item?.data?.timestamp}
-                                    img={item?.data?.images[0] || null}
                                     sport={item?.data?.S_P_O_R_T}
-                                    content={item?.data?.article?.section_1?.content}
                                     id={item?.blob_id}
                                     article={item?.data}
-                                    height={element_height}
-                                    width={element_width}
                                     className="news-card"
                                 />
                                 )
@@ -215,9 +214,10 @@ function MainPage() {
                         </Column></div>
                     <button onClick={scrollToTarget} className="boxed">{t("more")}</button>
                 </section>
+                ): null}
 
                 <NewsShowcase newsData={news} />
-
+                {!LatestGames ? (
                 <section>
                     <p className="block-title">{t("latest_games")}</p>
                     <div className="games-column">
@@ -249,6 +249,7 @@ function MainPage() {
                     }
 
                 </section>
+                ) : null}
             </div>
 
             {
@@ -263,13 +264,13 @@ function MainPage() {
                                 {recommendationNews.recommendations_list_by_user_preferences.map((item) => (
                                     <NewsCard
                                         key={item?.news_id}
-                                        title={item?.article?.title}
+                                        title={item?.article?.data?.title}
                                         id={item?.news_id}
-                                        date={item?.article?.timestamp}
-                                        img={item?.article?.images[0] || ''}
-                                        sport={item?.article?.S_P_O_R_T}
-                                        content={item?.article?.article?.section_1?.content}
-                                        article={item?.article}
+                                        date={item?.article?.data?.timestamp}
+                                        img={item?.article?.data?.images[0] || ''}
+                                        sport={item?.article?.data?.S_P_O_R_T}
+                                        content={item?.article?.data?.article?.section_1?.content}
+                                        article={item?.article.data}
                                     />
                                 ))}
                             </GridRecommendationBlock>
@@ -325,14 +326,14 @@ function MainPage() {
                     setSortValue={setOrderValue}
                     children={newsPaginated.map((item, index) => (
                         <NewsCard
-                            key={index?.blob_id}
+                            key={index?.data?.blob_id}
                             title={item?.data?.title}
-                            date={item?.data?.timestamp}
-                            img={item?.data?.images[0] || null}
-                            sport={item?.data?.S_P_O_R_T}
-                            content={item?.data?.article?.section_1?.content}
-                            id={item?.blob_id}
-                            article={item?.data}
+                            date={item?.data.data?.timestamp}
+                            img={item?.data.data?.images[0] || null}
+                            sport={item?.data.data?.S_P_O_R_T}
+                            content={item?.data.data?.article?.section_1?.content}
+                            id={item?.data.blob_id}
+                            article={item?.data.data}
                         />
                     ))}>
                 </GridContainer ></div>
@@ -349,13 +350,13 @@ function MainPage() {
                                 {recommendationNews.recommendations_list_by_user_last_watch.map((item) => (
                                     <NewsCard
                                         key={item?.news_id}
-                                        title={item?.article?.title}
+                                        title={item?.article?.data?.title}
                                         id={item?.news_id}
-                                        date={item?.timestamp}
-                                        img={item?.article?.images[0] || ''}
-                                        sport={item?.article?.S_P_O_R_T}
-                                        content={item?.article?.article?.section_1?.content}
-                                        article={item?.article}
+                                        date={item?.article?.data?.timestamp}
+                                        img={item?.article?.data?.images[0] || ''}
+                                        sport={item?.article?.data?.S_P_O_R_T}
+                                        content={item?.article?.data?.article?.section_1?.content}
+                                        article={item?.article.data}
                                     />
                                 ))}
                             </GridRecommendationBlock>

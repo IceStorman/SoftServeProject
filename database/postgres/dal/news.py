@@ -165,6 +165,8 @@ class NewsDAL(BaseDAL):
         del dataframe
 
 
+    def get_interaction_counts(self, blob_id: str):
+        return self.session.query(News.likes, News.views).filter(News.blob_id == blob_id).one_or_none()
 
 
 

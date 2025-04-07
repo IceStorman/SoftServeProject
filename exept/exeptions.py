@@ -168,10 +168,17 @@ class TokenSavingError(CustomQSportException):
     def __init__(self):
         message = "Cannot save token"
         super().__init__(message)
-    
+
 class InvalidRefreshTokenError(CustomQSportException):
     status_code = 400
 
     def __init__(self):
         message = "Invalid refresh token"
+        super().__init__(message)
+
+class ArticleNotFoundError(CustomQSportException):
+    status_code = 404
+
+    def __init__(self, blob_id):
+        message = f"Article with blob_id {blob_id} not found"
         super().__init__(message)

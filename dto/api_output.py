@@ -145,6 +145,11 @@ class OutputArrayOfArticles(Schema):
     news = fields.Nested(OutputArticle)
 
 
+class OutputInteractions(Schema):
+    likes = fields.Int(required=True)
+    views = fields.Int(required=True)
+
+
 class TempSubscriberDataDto(Schema):
     team_ids: int
     subscriber_emails: str

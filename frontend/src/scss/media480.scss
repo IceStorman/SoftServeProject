@@ -105,4 +105,58 @@
       }
     }
   }
+  .showcase{
+    width: 20%;
+    
+
+    .newsbox{
+      .nav-link{
+        max-width: 90%;
+        width: 90%;
+        div{
+          max-width: 100%;
+        }
+      }
+    }
+
+    .games-column{
+      max-width: 80%;
+    }
+  
+    .game-card{
+      max-width: 100%;
+    }
+    .newsbox{
+      max-width: 90%;
+
+
+
+      .horizontal{}
+
+
+
+      .dot-pagination{
+        max-width: 100%;
+      }
+    }
+    .news-card{
+      max-width: 80%;
+    }
+  }
+
+  .grid-container{
+    max-width: 80%;
+
+    .grid{
+      grid-template-columns: repeat(1, 1fr) !important;
+      margin:1rem auto;
+      padding: 0 1rem;
+      gap: 1rem;
+      .nav-link{
+        div{
+          max-width: 100%;
+        }
+      }
+    }
+  }
 }

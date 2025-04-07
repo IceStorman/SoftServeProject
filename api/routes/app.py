@@ -8,6 +8,7 @@ from api.routes import (
     api_teams,
     api_countries,
     api_login,
+    api_interactions,
     api_user_preferences,
     api_streams,
     api_localization
@@ -94,6 +95,7 @@ def create_app():
     app.config["OPENAPI_VERSION"] = "3.0.2"
 
     app.register_blueprint(api_teams.teams_app, url_prefix='/teams')
+    app.register_blueprint(api_interactions.interactions_app, url_prefix='/interactions')
     app.register_blueprint(api_localization.localization_app, url_prefix='/')
     app.register_blueprint(api_user_preferences.preferences_app, url_prefix='/preferences')
 

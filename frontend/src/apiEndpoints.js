@@ -53,13 +53,22 @@ const apiEndpoints = {
         login: 'user/login',
         resetPasswordRequest: 'user/reset-password-request',
         resetPassword: 'user/reset-password',
+        deleteAccount: 'user/delete',
         refresh: 'user/refresh'
     },
 
     preference:{
         getUserPreferences: 'preferences/get',
         changeUserPreferences: 'preferences/'
+    },
+
+    interactions: {
+        save: 'interactions',                 
+        getStatus: 'interactions/status',      
+        getCounts: 'interactions/counts',        
+        getTypes: 'interactions/types'            
     }
+    
 };
 
 export default apiEndpoints;
