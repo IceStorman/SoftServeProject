@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   api:
-    image: iarynovskyi/qsport_image:multiarch
+    image: iarynovskyi/qsport_image2:multiarch
     container_name: flask
     env_file:
       - .env
@@ -25,7 +25,7 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
       - /usr/share/nginx/html/SoftServeProject:/usr/share/nginx/html
-      - ./build2:/usr/share/nginx/html/build2
+      - ./build3:/usr/share/nginx/html/build2
 
     ports:
       - "80:80"

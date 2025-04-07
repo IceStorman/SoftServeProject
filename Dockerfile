@@ -4,7 +4,7 @@ WORKDIR /QSPORT
 
 COPY ./requirements.txt /QSPORT
 
-RUN pip install --no-cache-dir -r requirements.txt --verbose
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY ./api /QSPORT/api
 COPY ./database /QSPORT/database
