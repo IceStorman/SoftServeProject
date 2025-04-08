@@ -1,18 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, useContext  } from "react";
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { FaRegHeart } from "react-icons/fa";
 import useTranslations from "../../translationsContext";
 import apiEndpoints from "../../apiEndpoints";
-import React, { useState, useEffect, useRef, useContext } from "react";
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { FaRegHeart, FaHeart } from "react-icons/fa";
 import { VscEye } from "react-icons/vsc";
 import axios from "axios";
 import { toast } from "sonner";
 import globalVariables from "../../globalVariables";
-import apiEndpoints from "../../apiEndpoints";
 import { AuthContext } from "../registration/AuthContext"
-import useTranslations from "../../translationsContext";
 import { useInteractionTypes } from "../../interactionContext";
 import CommentsBlock from "../../components/containers/commentsBlock";
 
@@ -279,14 +274,12 @@ export default function InsideNewsPage() {
 
             <div className="details">
                 <div className="date">{article?.timestamp}</div>
-                <button className="like-vrapper">
                 <div className="date">{article?.timestamp}</div>
                 <div className="views">
                     <VscEye />{views}
                 </div>
                 <button className="like-vrapper" onClick={toggleLike}>
                     <div className="like-content">
-                        <FaRegHeart /> {likes}
                         {likeStatus ? <FaHeart /> : <FaRegHeart />}{likes}
                     </div>
                 </button>
@@ -294,7 +287,7 @@ export default function InsideNewsPage() {
 
             <section className="comments">
 
-                <CommentsBlock comments={comments} />
+                <CommentsBlock comments={comments} setComments={setComments} />
                 {hasMore && <button className="boxed" onClick={loadMore}>More</button>}
 
             </section>

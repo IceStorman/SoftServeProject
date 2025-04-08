@@ -7,7 +7,7 @@ class CommentDAL(BaseDAL):
     def __init__(self, session: Session):
         self.session = session
 
-    def create_comment(self, comment_dto):
+    def create_comment(self, comment_dto) -> int:
         new_comment = Comment(
             user_id=comment_dto.user_id,
             news_id=comment_dto.news_id,
@@ -17,6 +17,7 @@ class CommentDAL(BaseDAL):
         )
         self.session.add(new_comment)
         self.session.commit()
+        return new_comment.comment_id
 
     def update_comment(self, comment_id, comment_dto):
         self.session.query(Comment).filter(Comment.comment_id == comment_id).update(

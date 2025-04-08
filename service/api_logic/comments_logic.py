@@ -30,7 +30,8 @@ class CommentsService:
 
     def save_comment(self, input_comment_dto):
         comment_dto = self.__convert_dal(input_comment_dto)
-        self._comment_dal.create_comment(comment_dto)
+        saved_comment_id = self._comment_dal.create_comment(comment_dto)
+        return {'comment_id':saved_comment_id}
 
     def get_comments(self, input_comment_dto, page: int = 1, per_page: int = 10):
         comment_dto = self.__convert_dal(input_comment_dto)

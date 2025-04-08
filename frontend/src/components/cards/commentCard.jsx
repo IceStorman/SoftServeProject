@@ -69,13 +69,21 @@ export default function CommentCard({ comment_id, user_id, username, timestamp, 
             if (!replyContent.trim()) return;
 
             try {
-                await axios.post(`${apiEndpoints.url}${apiEndpoints.comment.save}`, {
+                const response = await axios.post(`${apiEndpoints.url}${apiEndpoints.comment.save}`, {
                     user_id: user.user_id,
                     article_blob_id: articleId,
                     parent_comment_id: comment_id,
                     content: replyContent,
                 });
-
+                const createdComment = {
+                    comment_id: response.data.comment_id,
+                    user_id: user.user_id,
+                    username: user.username,
+                    timestamp: new Date().toISOString(),
+                    content: replyContent,
+                    isReplied: false
+                };
+                setReplies(prev => [createdComment, ...prev]);
                 setReplyContent("");
                 setShowReplyInput(false);
             } catch (error) {
@@ -95,6 +103,8 @@ export default function CommentCard({ comment_id, user_id, username, timestamp, 
 
     const [isEditing, setIsEditing] = useState(false);
     const [editedContent, setEditedContent] = useState(content);
+    const [currentContent, setCurrentContent] = useState(content);
+
 
     const handleToggleEditInput = () => {
         setIsEditing(!isEditing);
@@ -108,7 +118,7 @@ export default function CommentCard({ comment_id, user_id, username, timestamp, 
             await axios.post(`${apiEndpoints.url}${apiEndpoints.comment.update(comment_id)}`, {
                 content: editedContent,
             });
-
+            setCurrentContent(editedContent);
             setIsEditing(false);
         } catch (error) {
             toast.error(`Failed to edit comment: ${error}`)
@@ -158,7 +168,7 @@ export default function CommentCard({ comment_id, user_id, username, timestamp, 
                     <button className="filled" onClick={handleToggleEditInput}>Cancel</button>
                 </div>
             ) : (
-                <p>{content}</p>
+                <p>{currentContent}</p>
             )}
 
 
@@ -198,7 +208,7 @@ export default function CommentCard({ comment_id, user_id, username, timestamp, 
                     {replies.length > 0 ? (
                         replies.map(reply => (
                             <CommentCard
-                                key={reply.id}
+                                key={reply.comment_id}
                                 comment_id={reply.comment_id}
                                 user_id={reply.user_id}
                                 username={reply.username}

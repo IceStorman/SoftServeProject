@@ -29,9 +29,9 @@ def save_comment(service: CommentsService = Provide[Container.comments_service])
     try:
         data = request.get_json()
         dto = InputCommentDTO().load(data)
-        service.save_comment(dto)
+        saved_comment_id = service.save_comment(dto)
 
-        return CommonResponse().to_dict()
+        return saved_comment_id
 
     except CustomQSportException as e:
         logger.error(f"Error in POST /: {str(e)}")

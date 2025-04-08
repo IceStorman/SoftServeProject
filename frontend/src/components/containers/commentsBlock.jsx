@@ -9,7 +9,7 @@ import { AuthContext } from "../../pages/registration/AuthContext";
 import { toast } from "sonner";
 import globalVariables from "../../globalVariables";
 
-const CommentsBlock = ({ comments }) => {
+const CommentsBlock = ({ comments, setComments }) => {
     const [newComment, setNewComment] = useState("");
     const { articleId } = useParams();
     const { user } = useContext(AuthContext)
@@ -20,33 +20,44 @@ const CommentsBlock = ({ comments }) => {
             setNewComment(e.target.value);
         }
     };
-
     const saveComment = async (content) => {
         if (user) {
             try {
-                await axios.post(
-                    `${apiEndpoints.url}${apiEndpoints.comment.save}`, {
-                    user_id: user.user_id,
-                    article_blob_id: articleId,
-                    content: content
-                }
+                const response = await axios.post(
+                    `${apiEndpoints.url}${apiEndpoints.comment.save}`, 
+                    {
+                        user_id: user.user_id,
+                        article_blob_id: articleId,
+                        content: content
+                    }
                 );
+    
+                const createdComment = {
+                    comment_id: response.data.comment_id,
+                    user_id: user.user_id,
+                    username: user.username,
+                    timestamp: new Date().toISOString(),
+                    content: content,
+                    isReplied: false
+                };
+    
+                setComments(prev => [createdComment, ...prev]);
+    
                 setNewComment("");
+            } catch (error) {
+                toast.error(`Failed to save comment: ${error}`);
             }
-            catch (error) {
-                toast.error(`Failed to save comment: ${error}`)
-            }
-        }
-        else {
-            const notify = () => toast('Sign in to add comment', {
+        } else {
+            toast('Sign in to add comment', {
                 action: {
                     label: 'sign in',
-                    onClick: () =>  navigate(globalVariables.routeLinks.signInRoute) ,
+                    onClick: () => navigate(globalVariables.routeLinks.signInRoute),
                 },
             });
-            notify()
         }
     };
+    
+    
 
     return (
         <section className="comments-block">
