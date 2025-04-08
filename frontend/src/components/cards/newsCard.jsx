@@ -5,14 +5,13 @@ import { useNavigate } from "react-router-dom";
 import globalVariables from "../../globalVariables";
 
 
-function NewsCard({ title, date, img, sport, id = 1, content, likes = 10, width, height, isFoil, article}) {
+function NewsCard({ title, date, img, sport, id, content, width, height, isFoil, article}) {
   const isVertical = height >= width;
-  const isSmall = width < 301 || height < 301;
+  const isSmall = width < 18.8125 || height < 18.8125;
   const maxLines = isVertical ? 3 : 2;
 
   const newsData = {
     article,
-    likes,
   };
 
   return (
@@ -23,7 +22,7 @@ function NewsCard({ title, date, img, sport, id = 1, content, likes = 10, width,
       >
         <div
             className={`news-card ${isVertical ? "vertical" : "horizontal"} ${isSmall ? "small" : "big"} ${isFoil ? "foil" : ""}`}
-            style={{width: width, height: height}}
+            style={{ width: `${width}rem`, height: `${height}rem` }}
         >
           {img && (
               <div className={isVertical ? "image vertical" : "image horizontal"}>
@@ -46,11 +45,6 @@ function NewsCard({ title, date, img, sport, id = 1, content, likes = 10, width,
             </div>
             <div className="details">
               <div className="date">{date}</div>
-              <div className="like-vrapper">
-                <div className="like-content">
-                  <FaHeart className="like-icon"/> {likes}
-                </div>
-              </div>
             </div>
           </div>
         </div>

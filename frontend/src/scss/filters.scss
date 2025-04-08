@@ -37,7 +37,6 @@ $font-size: 14px;
     .filterSearch {
 
       input {
-        border-radius: 0.5rem;
         outline: 2px solid $main-shadow;
         border: 0;
         background-color: $background-light;
@@ -60,14 +59,14 @@ $font-size: 14px;
     .scrollContainer {
       background: $background-light;
       border: 2px solid $border-color;
-      border-radius: 8px;
+      //border-radius: 8px;
 
       .buttonAll {
         background-color: $background-light;
         color: black;
         width: 100%;
         border: none;
-        border-radius: 0;
+        //border-radius: 0;
         font-size: 1rem;
         text-align: left;
         padding: 0.5rem;
@@ -99,7 +98,7 @@ $font-size: 14px;
         padding: 0.3rem 0.7rem;
         outline-offset: 0;
         border-bottom: 2px solid black;
-        border-radius: 0.5rem;
+        //border-radius: 0.5rem;
         outline: none;
       }
 
@@ -123,6 +122,59 @@ $font-size: 14px;
           }
         }
       }
+    }
+    .sportFilter{
+      .sportInput{
+        outline: 2px solid $main-shadow;
+        border: 0;
+        background-color: $background-light;
+        outline-offset: 3px;
+        padding: 0.7rem 0.8rem;
+        transition: all 0.2s ease;
+        width: 12rem;
+      }
+      .sportInput:hover {
+        background-color: #fff;
+      }
+  
+      .sportInput:focus {
+        outline-offset: -2px;
+        background-color: $background-light;
+      }
+    }
+    .dateFilter{
+      outline: 2px solid $main-shadow;
+      border: 0;
+      background-color: $background-light;
+      outline-offset: 3px;
+      padding: 0.3rem 0.8rem;
+      transition: all 0.2s ease;
+      width: 10.4rem;
+      margin-top: 1rem;
+    }
+    .dateFilter:hover {
+      background-color: #fff;
+    }
+    .dateFilter:focus {
+      outline-offset: -4px;
+      background-color: $background-light;
+    }
+    .timeFilter{
+      outline: 2px solid $main-shadow;
+      border: 0;
+      background-color: $background-light;
+      outline-offset: 3px;
+      padding: 0.3rem 0.8rem;
+      transition: all 0.2s ease;
+      width: 10.4rem;
+      margin-top: 1rem;
+    }
+    .timeFilter:hover {
+      background-color: #fff;
+    }
+    .timeFilter:focus {
+      outline-offset: -4px;
+      background-color: $background-light;
     }
   }
 }

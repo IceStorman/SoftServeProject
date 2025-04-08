@@ -52,6 +52,7 @@ const apiEndpoints = {
         login: 'user/login',
         resetPasswordRequest: 'user/reset-password-request',
         resetPassword: 'user/reset-password',
+        deleteAccount: 'user/delete',
         refresh: 'user/refresh'
     },
 
@@ -60,12 +61,20 @@ const apiEndpoints = {
         changeUserPreferences: 'preferences/'
     },
 
+    interactions: {
+        save: 'interactions',
+        getStatus: 'interactions/status',
+        getCounts: 'interactions/counts',
+        getTypes: 'interactions/types'
+    },
+
     comment:{
         save: 'comments',
-        update: (id) => `comments/${id}`,   
+        update: (id) => `comments/${id}`,
         delete: (id) => `comments/${id}`,
         getAll: 'comments'
     }
+
 };
 
 export default apiEndpoints;

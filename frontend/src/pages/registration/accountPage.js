@@ -18,11 +18,24 @@ function AccountPage() {
     const { user, logout } = useContext(AuthContext);
 
     const [isOpen, setIsOpen] = useState(false);
-
-    const handleDeleteAccount = () => {
+    const handleDeleteAccount = async () => {
         setIsOpen(false);
-        console.log("Акаунт видалено");  //future logic for delete
-        handleLogOut()
+    
+        if (!user?.email) {
+            toast.error("User email not found.");
+            return;
+        }
+    
+        try {
+            const response = await axios.delete(`${apiEndpoints.url}${apiEndpoints.user.deleteAccount}`, {
+                data: { email:user.email }
+            });
+                toast.success("Account deleted successfully.");
+                handleLogOut();
+
+        } catch (error) {
+            toast.error("Error occurred. Please try again :)");
+        }
     };
 
     const handleLogOut = () => {

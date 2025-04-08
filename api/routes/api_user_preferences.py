@@ -10,6 +10,7 @@ from service.api_logic.user_logic import UserService
 from api.container.container import Container
 
 logger = Logger("api_routes_logger", "api_routes_logger.log")
+SPORT_TYPE = "sport"
 
 preferences_app = Blueprint('preferences_app', __name__)
 
@@ -33,7 +34,8 @@ def sport_preferences_endpoint(service: UserService = Provide[Container.user_ser
 
         if request.method == "POST":
             service.add_preferences(dto)
-            delete_recommendation_key(dto.user_id)
+            if dto.type == SPORT_TYPE:
+                delete_recommendation_key(dto.user_id)
 
             return  CommonResponse().to_dict()
 

@@ -59,3 +59,19 @@ class TeamDAL(BaseDAL):
         self.session.delete(team_index)
         self.session.commit()
         return True
+
+
+    def team_ids_by_user_preferences(self, preferences):
+        return {
+            team.api_id: team.team_index_id
+            for team in self.session.query(TeamIndex.api_id, TeamIndex.team_index_id)
+            .filter(TeamIndex.api_id.in_(preferences))
+        }
+
+
+    def team_ids_by_api_id(self, preferences):
+        return (
+            self.session.query(TeamIndex.team_index_id)
+            .filter(TeamIndex.api_id.in_(preferences))
+            .all()
+        )

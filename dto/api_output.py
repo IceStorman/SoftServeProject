@@ -1,5 +1,7 @@
 from marshmallow import Schema, fields
 from flask_babel import _
+from marshmallow.fields import Nested
+
 
 class GameOutput(Schema):
     id = fields.Int()
@@ -96,7 +98,7 @@ class OutputSportPreferences(Schema):
 
 class OutputTeamPreferences(Schema):
     user_id = fields.Int(required=True)
-    team_index_id = fields.Str(required=True)
+    team_index_id = fields.Int(attribute="api_id")
     name = fields.Str(required=True)
     logo = fields.Str(required=True)
 
@@ -117,6 +119,35 @@ class OutputRecommendationList(Schema):
     score = fields.Float(required=True)
     user_id = fields.Int(required=True)
     rating = fields.Int(required=True)
+
+
+class OutputSectionOfArticle(Schema):
+    content = fields.List(fields.Str())
+    heading = fields.Str()
+    subheadings = fields.List(fields.Str())
+
+
+class OutputArticleData(Schema):
+    title = fields.Str(required=True)
+    timestamp = fields.Str(required=True)
+    S_P_O_R_T = fields.Str(required=True)
+    team_names = fields.List(fields.Str())
+    images = fields.List(fields.Str())
+    section_1 = fields.Nested(OutputSectionOfArticle)
+
+
+class OutputArticle(Schema):
+    blob_id = fields.Str(required=True)
+    data = fields.Nested(OutputArticleData)
+
+
+class OutputArrayOfArticles(Schema):
+    news = fields.Nested(OutputArticle)
+
+
+class OutputInteractions(Schema):
+    likes = fields.Int(required=True)
+    views = fields.Int(required=True)
 
 
 class TempSubscriberDataDto(Schema):
@@ -200,6 +231,7 @@ def get_script_phrases():
         "tags":               _("Tags:"),
         "select_sport":       _("Select sport"),
         "teams":              _("teams"),
+        "search":             _("Search"),
 
         # Додаткові опції
         "first_option":       _("Option 1"),
@@ -208,7 +240,7 @@ def get_script_phrases():
         "sort":               _("Sort by:"),
         "more":               _("more..."),
         "continue":           _("Continue?"),
-        "search":             _("Search"),
+        "search_page":        _("SearchPage"),
         "all":                _("All"),
         "recommend_pref":     _("Recommended news by your Preferences"),
         "news_not_found":     _("No latest news were found"),
@@ -217,5 +249,6 @@ def get_script_phrases():
         "select_country":     _("Select a country..."),
         "apply_filters":      _("Apply Filters"),
         "search_name":        _("Search by name..."),
+        "close_filters":      _("Close Filters")
     }
 

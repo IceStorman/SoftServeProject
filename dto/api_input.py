@@ -177,6 +177,10 @@ class TablesAndColumnsForUserPreferencesDTO:
         self.related_logo = related_logo
         self.related_id = related_id
 
+class InteractionsDTO(BaseDTO):
+    user_id = fields.Int(required=False)
+    article_blob_id = fields.String(required=True)
+    interaction_type = fields.Int(required=False)
 
 class InputCommentDTO(BaseDTO):
     comment_id = fields.Int(required=False, missing=None)

@@ -37,15 +37,18 @@ from types import SimpleNamespace
 
 SPORT_TYPE = "sport"
 TEAM_TYPE = "team"
+PREFERENCES = "preferences"
+SPORTS = "sports_id"
 
 class UserService:
 
-    def __init__(self, user_dal, preferences_dal, sport_dal, access_tokens_dal, refresh_dal):
+    def __init__(self, user_dal, preferences_dal, sport_dal, access_tokens_dal, refresh_dal, teams_dal):
         self._user_dal = user_dal
         self._access_tokens_dal = access_tokens_dal
         self._refresh_dal = refresh_dal
         self._preferences_dal = preferences_dal
         self._sport_dal = sport_dal
+        self._teams_dal = teams_dal
         self._serializer = URLSafeTimedSerializer(current_app.secret_key)
         self._logger = Logger("logger", "all.log").logger
 
@@ -88,16 +91,24 @@ class UserService:
 
         new_user = User(email = email, username = username, password_hash = hashed_password.decode('utf-8'))
         
-        self.create_user(new_user)
+        new_user = self.create_user(new_user)
         
-        user = OutputLogin(email = new_user.email, token = new_user, user_id = new_user.user_id, username = new_user.username, new_user = True, access_token=None, refresh_token=None)
+        user = OutputLogin(email = new_user.email, token = None, user_id = new_user.user_id, username = new_user.username, new_user = True, access_token=None, refresh_token=None)
         access_token, refresh_token = await self.create_tokens(user)
         user.access_token = access_token
         user.refresh_token = refresh_token
         
         return user
     
+    async def delete_user(self, email):
+        user = self.get_user_by_email_or_username(email = email)
+        if not user:
+            raise UserDoesNotExistError(email)
+        
+        self._user_dal.delete_all_user_data(user.user_id)
+        
 
+        
     def revoke_all_refresh_and_access_tokens(self, user_id: int) -> int:
         return self._refresh_dal.revoke_all_refresh_and_access_tokens_for_user(user_id)
     
@@ -179,13 +190,13 @@ class UserService:
         if existing_access_token and existing_refresh_token:
             user.access_token = existing_access_token
             user.refresh_token = existing_refresh_token
-            return user
-            
+
         else:
             access_token, refresh_token=await self.create_tokens(user=user)
             user.access_token = access_token
             user.refresh_token = refresh_token
-            return user
+
+        return user
 
 
     async def __generate_auth_token(self, user, salt):
@@ -327,7 +338,7 @@ class UserService:
 
    
     def add_preferences(self, dto: UpdateUserPreferencesDTO):
-        new_dto_by_type_of_preference = self.dto_for_type_of_preference(dto)
+        new_dto_by_type_of_preference = self.dto_for_type_of_preference(dto.type)
 
         existing_sports = self._preferences_dal.get_all_sport_preference_indexes()
         if dto.type == SPORT_TYPE:
@@ -345,7 +356,7 @@ class UserService:
 
 
     def get_user_preferences(self, dto: UpdateUserPreferencesDTO):
-        new_dto_by_type_of_preference = self.dto_for_type_of_preference(dto)
+        new_dto_by_type_of_preference = self.dto_for_type_of_preference(dto.type)
 
         prefs = self._preferences_dal.get_user_preferences(new_dto_by_type_of_preference, dto)
         if dto.type == SPORT_TYPE:
@@ -356,18 +367,20 @@ class UserService:
 
 
     def delete_preferences(self, dto: UpdateUserPreferencesDTO):
-        new_dto_by_type_of_preference = self.dto_for_type_of_preference(dto)
+        new_dto_by_type_of_preference = self.dto_for_type_of_preference(dto.type)
         if not dto.preferences:
             self._preferences_dal.delete_all_user_preferences(new_dto_by_type_of_preference, dto)
         else:
-            self._preferences_dal.delete_user_preferences(new_dto_by_type_of_preference, dto)
+            team_ids_by_api_id = self._teams_dal.team_ids_by_api_id(dto.preferences)
+            self._preferences_dal.delete_user_preferences(new_dto_by_type_of_preference, dto, team_ids_by_api_id)
+
 
 
     @staticmethod
-    def dto_for_type_of_preference(dto):
-        if dto.type == SPORT_TYPE:
+    def dto_for_type_of_preference(choise_type):
+        if choise_type == SPORT_TYPE:
             return SportPreferenceFields()
-        elif dto.type == TEAM_TYPE:
+        elif choise_type == TEAM_TYPE:
             return TeamPreferenceFields()
         else:
             raise IncorrectTypeOfPreferencesError()
@@ -384,20 +397,32 @@ class UserService:
 
         return user_preferred_teams, user_preferred_sports
 
+
     def add_valid_user_preferences(self, type_dto, dto, valid_preferences):
         tables_and_cols_dto = self._preferences_dal.getattr_tables_and_columns_by_type(type_dto)
 
-        existing_prefs = [
-            pref[0] for pref in self._preferences_dal.get_existing_preferences(dto.user_id, tables_and_cols_dto)
-        ]
+        existing_prefs = self._preferences_dal.get_existing_preferences(dto.user_id, tables_and_cols_dto, type_dto)
 
-        new_prefs = [
-            tables_and_cols_dto.main_table(**{
-                type_dto.user_id_field: dto.user_id,
-                type_dto.type_id_field: pref
-            })
-            for pref in valid_preferences if pref not in existing_prefs
-        ]
+        if type_dto.type_id_field == PREFERENCES:
+            team_indices = self._teams_dal.team_ids_by_user_preferences(valid_preferences)
+
+            new_prefs = [
+                tables_and_cols_dto.main_table(**{
+                    type_dto.user_id_field: dto.user_id,
+                    type_dto.type_id_field: team_indices[pref]
+                })
+                for pref in valid_preferences
+                if pref in team_indices and team_indices[pref] not in existing_prefs
+            ]
+
+        if type_dto.type_id_field == SPORTS:
+            new_prefs = [
+                tables_and_cols_dto.main_table(**{
+                    type_dto.user_id_field: dto.user_id,
+                    type_dto.type_id_field: pref
+                })
+                for pref in valid_preferences if pref not in existing_prefs
+            ]
 
         if new_prefs:
             self._preferences_dal.insert_new_preferences(new_prefs)
