@@ -26,7 +26,7 @@ function TeamCard({
     const {user} = useContext(AuthContext);
 
     useEffect(() => {
-        for (let i = 0; i < favoriteTeams.length; i++) {
+        for (let i = 0; i < favoriteTeams?.length; i++) {
             if (favoriteTeams[i] == id) {
                 setIsFavorite(true);
                 break;
@@ -169,7 +169,7 @@ function TeamCard({
 
             <div className="team-card-back">
                 <h1>{teamName}</h1>
-                {players && players.length > 0 ? (
+                {players && players?.length > 0 ? (
                     <div className="players-list">
                         {players.map((player) => (
                             <div key={player.id} className="player-item">

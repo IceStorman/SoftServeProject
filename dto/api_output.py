@@ -222,6 +222,7 @@ def get_script_phrases():
         "tags":               _("Tags:"),
         "select_sport":       _("Select sport"),
         "teams":              _("teams"),
+        "search":             _("Search"),
 
         # Додаткові опції
         "first_option":       _("Option 1"),
@@ -230,7 +231,7 @@ def get_script_phrases():
         "sort":               _("Sort by:"),
         "more":               _("more..."),
         "continue":           _("Continue?"),
-        "search":             _("Search"),
+        "search_page":        _("SearchPage"),
         "all":                _("All"),
         "recommend_pref":     _("Recommended news by your Preferences"),
         "news_not_found":     _("No latest news were found"),
@@ -239,5 +240,6 @@ def get_script_phrases():
         "select_country":     _("Select a country..."),
         "apply_filters":      _("Apply Filters"),
         "search_name":        _("Search by name..."),
+        "close_filters":      _("Close Filters")
     }
 

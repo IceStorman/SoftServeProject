@@ -205,3 +205,11 @@ msgstr "Apply Filters"
 
 msgid "Search by name..."
 msgstr "Search by name..."
+
+msgid "SearchPage"
+msgstr "Search"
+
+msgid "Close Filters"
+msgstr "Close Filters"
+
+

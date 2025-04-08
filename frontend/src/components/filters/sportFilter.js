@@ -21,15 +21,16 @@ export const SportFilter = ({ onChange }) => {
 
     return (
         <>
-            <label>Sport</label>
-            <select onChange={onChange}>
-                <option value="">Choose sport:</option>
-                {sports.map((sport) => (
-                    <option key={sport.id} value={sport.id}>
-                        {sport.sport}
-                    </option>
-                ))}
-            </select>
+            <div className="sportFilter">
+                <select onChange={onChange} className="sportInput">
+                    <option value="">Choose sport:</option>
+                    {sports.map((sport) => (
+                        <option key={sport.id} value={sport.id}>
+                            {sport.sport}
+                        </option>
+                    ))}
+                </select>
+            </div>
         </>
 
     );

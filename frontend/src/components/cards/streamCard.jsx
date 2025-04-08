@@ -12,7 +12,7 @@ function StreamCard(
     return(
         <section className={"game"} onClick={() => navigate(`${globalVariables.routeLinks.streamPagePath}${stream?.id}`, { state: stream })}>
             <h2>{stream?.title}</h2>
-            <p>{stream?.start_time.split('T')[0]}</p>
+            <p>{stream?.start_time}</p>
         </section>
     )
 }

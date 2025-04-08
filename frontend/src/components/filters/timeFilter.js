@@ -1,27 +1,27 @@
 import React, { useState } from "react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import {format} from "date-fns";
 
-function TimeFilter({ onChange }) {
-    const [selectedDate, setSelectedDate] = useState(null);
+function TimeFilter({ onChange, label }) {
+    const [selectedTime, setSelectedTime] = useState("");
 
-    const handleChange = (date) => {
-        setSelectedDate(date);
+    const handleChange = (e) => {
+        const time = e.target.value;
+        setSelectedTime(time);
         if (onChange) {
-            onChange({ target: { value: date ? format(date, "yyyy-MM-dd") : null } });
+            onChange({ target: { value: time } });
         }
     };
 
     return (
-        <>
-            <label>Select date of beginning</label>
-            <DatePicker
-                selected={selectedDate}
+        <div>
+            <label className="timeHeading">{label}</label>
+            <input
+                type="time"
+                value={selectedTime}
                 onChange={handleChange}
-                dateFormat="yyyy-MM-dd"
+                className="timeFilter"
+                step="60"
             />
-        </>
+        </div>
     );
 }
 

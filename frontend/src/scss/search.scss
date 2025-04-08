@@ -1,0 +1,29 @@
+.model-selection{
+    .menu{
+        .menu-button{
+            background-color: $main-clr; 
+            width: 14.2rem;
+            padding: 1rem;
+        }
+        .menu-button:hover{
+            background-color: $main-clr-shadow;
+        }
+
+        .active{
+            background-color: $main-shadow; 
+            width: 14.2rem;
+            padding: 1rem;
+        }
+    }
+    z-index: 1;
+}
+.streams-page{
+    .game-card{
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .game{
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+}
+
+
