@@ -28,6 +28,7 @@ import CheckEmailPage from "../components/passwordReset/checkEmailPage";
 import GoogleAuthCallback from "../pages/registration/googleCallBack";
 import PreferencesPage from "../pages/registration/PreferencesPage";
 import AccountPage from "../pages/registration/accountPage";
+import SearchPage from "../pages/search/searchPage";
 import globalVariables from "../globalVariables";
 
 function App() {
@@ -84,7 +85,10 @@ function App() {
 
                 <Route path={globalVariables.routeLinks.aboutUsRoute} element={<AboutUsPage />} />
 
+                <Route path={globalVariables.routeLinks.searchPageRoute} element={<SearchPage />} />
+
                 <Route path={globalVariables.routeLinks.nonExistingPath} element={<Navigate to={globalVariables.routeLinks.nonExistingRoute} replace />} />
+                
 
             </Routes>
 
