@@ -131,7 +131,6 @@ function SearchPage() {
             );
             if (model === "news"){
                 const extractedArray = Object.values(response.data.items).map(item => ({ data: item }));
-                console.log(response.data.items);
                 setCurrentItems(extractedArray || []);
             }
             else{
@@ -229,13 +228,14 @@ function SearchPage() {
         setLoading(true);
         setPageCount(0);
         setCurrentPage(0);
+        fetchData(selectedModel, 0);
     }, [selectedModel, filters]);
         
     useEffect(() => {
         if (!loading) {
             fetchData(selectedModel, currentPage);
         }
-    }, [selectedModel, filters, itemPerPage, currentPage]);
+    }, [filters, itemPerPage, currentPage]);
     
     return (
         <div className="streams-page">
