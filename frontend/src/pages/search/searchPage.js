@@ -41,7 +41,7 @@ function SearchPage() {
     });
 
     
-    const componentMap = (type, item) => {
+    const componentMap = (type, item, index) => {
         const componentsCard = {
             streams: <StreamCard key={`${type}-${item.id}`} stream={item}/>,
 
@@ -60,17 +60,18 @@ function SearchPage() {
                     img={item.logo}
                     sportId={item.sport_id}
                     id={item.id}
+                    leagueId={leagueId}
                     />,
 
             news:   <NewsCard
-                    key={`${type}-${item.id}`}
+                    key={index?.data?.blob_id}
                     title={item?.data?.title}
-                    date={item?.data?.timestamp}
-                    content={item?.data?.article?.section_1?.content}
-                    id={item?.blob_id}
-                    article={item?.data}
+                    date={item?.data?.data?.timestamp}
+                    sport={item?.data?.data?.S_P_O_R_T}
+                    content={item?.data?.data?.article?.section_1?.content}
+                    id={item?.data?.blob_id}
+                    article={item?.data?.data}
                     />,
-
             games: <GameCard
                     key={`${type}-${item.id}`}
                     nameHome={item.home_team_name}
@@ -128,8 +129,14 @@ function SearchPage() {
                 },
                 { headers: { "Content-Type": "application/json" } }
             );
-
-            setCurrentItems(response.data.items || []);
+            if (model === "news"){
+                const extractedArray = Object.values(response.data.items).map(item => ({ data: item }));
+                console.log(response.data.items);
+                setCurrentItems(extractedArray || []);
+            }
+            else{
+                setCurrentItems(response.data.items || []);
+            }
             const totalPosts = response.data.count;
             setPageCount(Math.ceil(totalPosts / itemPerPage));
             setLoading(false); 
@@ -203,7 +210,7 @@ function SearchPage() {
     useEffect(() => {
             (loading === false) ? setLoading(false) :
                 (
-                    (currentItems.length > 0) ? setLoading(false)
+                    (currentItems?.length > 0) ? setLoading(false)
                         : setTimeout(() => {
                             setLoading(false);
                         }, 2000)
@@ -269,7 +276,7 @@ function SearchPage() {
                 onPageChange={handlePageClick}
                 paginationKey={paginationKey}
                 burgerMenu={burgerMenu}
-                count={currentItems.length}
+                count={currentItems?.length}
                 loading={loading}
                 selectedModel={selectedModel}
                 draftFilters={draftFilters}
@@ -279,9 +286,9 @@ function SearchPage() {
                 setSelectedModel={setSelectedModel}
                 setFilters={setFilters}
                 setOpenFilterModel={setOpenFilterModel}
-                children={currentItems.length > 0 ? (
-                    currentItems.map((item) => {
-                        return componentMap(selectedModel, item);
+                children={currentItems?.length > 0 ? (
+                    currentItems.map((item, index) => {
+                        return componentMap(selectedModel, item, index);
                     })
                 ) : (
                     <div>{t("no_results_found")}</div>
