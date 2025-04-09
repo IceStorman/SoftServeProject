@@ -145,7 +145,7 @@
   }
 
   .grid-container{
-    max-width: 80%;
+    margin: 0;
 
     .grid{
       grid-template-columns: repeat(1, 1fr) !important;
