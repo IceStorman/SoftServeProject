@@ -49,7 +49,7 @@ jwt = JWTManager()
 
 def create_app():
     app = Flask(__name__, static_folder='static')
-    CORS(app, supports_credentials=True)
+    CORS(app, supports_credentials=True, origins=["http://qsport.today", "https://qsport.today"])
 
     app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -57,7 +57,7 @@ def create_app():
 
     app.config['CACHE_TYPE'] = 'SimpleCache'
     app.config['JSON_AS_ASCII'] = False
-    app.config['CACHE_DEFAULT_TIMEOUT'] = 60*5
+    app.config['CACHE_DEFAULT_TIMEOUT'] = 60 * 5
     cache.init_app(app)
 
     app.secret_key = os.getenv('SECRET_KEY')
@@ -69,7 +69,7 @@ def create_app():
     app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
     app.config['FRONTEND_NEWS_URL'] = os.getenv('FRONTEND_NEWS_URL')
     mail.init_app(app)
-    
+
     app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
     app.config['JWT_TOKEN_LOCATION'] = ['cookies']
     app.config['JWT_COOKIE_SECURE'] = False
@@ -103,7 +103,6 @@ def create_app():
     app.register_blueprint(api_user_preferences.preferences_app, url_prefix='/preferences')
     app.register_blueprint(api_comments.comments_app, url_prefix='/comments')
 
-
     app.container = Container()
 
     return app
@@ -130,7 +129,6 @@ def create_swagger_documentation():
     api.register_blueprint(streams_app)
     api.register_blueprint(games_app)
     api.register_blueprint(countries_app)
-
 
     @app.route('/openapi.json')
     def openapi_spec():

@@ -1,6 +1,7 @@
 const apiEndpoints = {
-    url: 'https://localhost:5001/',
-
+    url: 'https://qsport.today/api/',
+    // url: 'https://localhost/',
+    
     news: {
         getRecent: 'news/recent',
         getSport: 'news/',

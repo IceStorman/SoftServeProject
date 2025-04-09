@@ -1,0 +1,51 @@
+version: '3.9'
+
+services:
+  api:
+    image: tw1s/qsport_2:multiarch
+    container_name: flask
+    env_file:
+      - .env
+    ports:
+      - "5001:5001"
+    volumes:
+      - .:/QSPORT
+    working_dir: /QSPORT
+    command: ["python", "api/routes/app.py"]
+    restart: always
+    networks:
+      - webnet
+
+
+  nginx:
+    image: nginx
+    container_name: nginx
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - /usr/share/nginx/html/SoftServeProject:/usr/share/nginx/html
+      - ./build3:/usr/share/nginx/html/build3
+
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - webnet
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - ./nginx/certbot:/etc/letsencrypt/live
+    entrypoint: >
+      sh -c "trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;"
+    restart: always
+    networks:
+      - webnet
+
+
+networks:
+  webnet:
+    driver: bridge
