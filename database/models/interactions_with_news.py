@@ -6,4 +6,4 @@ class InteractionWithNews(Base):
     news_id = Column(ForeignKey('News.news_id'))
     user_id = Column(ForeignKey('Users.user_id'))
     interaction_type = Column(ForeignKey('InteractionTypes.interaction_type_id'))
-    timestamp = Column(DateTime)
+    timestamp = Column(DateTime(timezone=True))

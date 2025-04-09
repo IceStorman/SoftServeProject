@@ -181,3 +181,10 @@ class InteractionsDTO(BaseDTO):
     user_id = fields.Int(required=False)
     article_blob_id = fields.String(required=True)
     interaction_type = fields.Int(required=False)
+
+class InputCommentDTO(BaseDTO):
+    comment_id = fields.Int(required=False, missing=None)
+    user_id = fields.Int(required=False, missing=None)
+    article_blob_id = fields.Str(required=False, missing=None)
+    content = fields.Str(required=False, missing=None)
+    parent_comment_id = fields.Int(required=False, missing=None)
