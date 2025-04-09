@@ -9,6 +9,8 @@ from database.postgres.dal.game import GameDAL
 from database.postgres.dal.team import TeamDAL
 from database.postgres.dal.access_token import AccessTokensDAL
 from database.postgres.dal.refresh import RefreshTokenDAL
+from database.postgres.dal.comment import CommentDAL
+from database.postgres.dal.refresh import RefreshTokenDAL
 from service.api_logic.managers.recommendation_menager import RecommendationManager
 from service.api_logic.player_logic import PlayerService
 from service.api_logic.sports_logic import SportService
@@ -21,6 +23,7 @@ from database.postgres.dal import StreamDAL
 from service.api_logic.streams_logic import StreamService
 from service.api_logic.games_logic import GamesService
 from service.api_logic.teams_logic import TeamsService
+from service.api_logic.comments_logic import CommentsService
 
 
 class Container(containers.DeclarativeContainer):
@@ -36,6 +39,7 @@ class Container(containers.DeclarativeContainer):
             "api.routes.api_teams",
             "api.routes.api_sports",
             "service.implementation.email_sender.user_subscription_manager",
+            "api.routes.api_comments",
         ]
     )
 
@@ -55,6 +59,7 @@ class Container(containers.DeclarativeContainer):
     access_tokens_dal = providers.Factory(AccessTokensDAL, db_session = db_session)
     refresh_dal = providers.Factory(RefreshTokenDAL, db_session = db_session)
     players_dal = providers.Factory(PlayerDal, session = db_session)
+    comments_dal = providers.Factory(CommentDAL, session=db_session)
 
     games_service = providers.Factory(GamesService, games_dal=games_dal)
     teams_service = providers.Factory(TeamsService, teams_dal=teams_dal)
@@ -102,4 +107,10 @@ class Container(containers.DeclarativeContainer):
     players_service = providers.Factory(
         PlayerService,
         players_dal=players_dal
+    )
+
+    comments_service = providers.Factory(
+        CommentsService,
+        comments_dal=comments_dal,
+        news_dal=news_dal
     )

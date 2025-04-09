@@ -11,7 +11,9 @@ from api.routes import (
     api_interactions,
     api_user_preferences,
     api_streams,
-    api_localization
+    api_localization,
+    api_user_preferences,
+    api_comments
 )
 from api.routes.api_login import login_app
 from api.routes.api_sports import sports_app
@@ -35,7 +37,7 @@ from pathlib import Path
 from api.routes.api_localization import babel, get_locale
 
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))  
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 cert_file = os.path.join(BASE_DIR, "localhost.pem")
 key_file = os.path.join(BASE_DIR, "localhost-key.pem")
 
@@ -99,6 +101,7 @@ def create_app():
     app.register_blueprint(api_interactions.interactions_app, url_prefix='/interactions')
     app.register_blueprint(api_localization.localization_app, url_prefix='/')
     app.register_blueprint(api_user_preferences.preferences_app, url_prefix='/preferences')
+    app.register_blueprint(api_comments.comments_app, url_prefix='/comments')
 
 
     app.container = Container()

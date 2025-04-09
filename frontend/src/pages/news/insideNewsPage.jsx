@@ -1,14 +1,16 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useEffect, useState, useRef, useContext  } from "react";
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import useTranslations from "../../translationsContext";
+import apiEndpoints from "../../apiEndpoints";
 import { FaRegHeart, FaHeart } from "react-icons/fa";
 import { VscEye } from "react-icons/vsc";
 import axios from "axios";
-import {toast} from "sonner";
+import { toast } from "sonner";
 import globalVariables from "../../globalVariables";
-import apiEndpoints from "../../apiEndpoints";
 import { AuthContext } from "../registration/AuthContext"
-import useTranslations from "../../translationsContext";
 import { useInteractionTypes } from "../../interactionContext";
+import CommentsBlock from "../../components/containers/commentsBlock";
+
 
 export default function InsideNewsPage() {
     const { t } = useTranslations();
@@ -37,15 +39,15 @@ export default function InsideNewsPage() {
 
     const [user_id, setUserId] = useState(() => {
         const savedUserId = localStorage.getItem('user_id');
-        return savedUserId ? savedUserId : user?.user_id; 
+        return savedUserId ? savedUserId : user?.user_id;
     });
 
     useEffect(() => {
         if (user && user.user_id) {
             localStorage.setItem('user_id', user.user_id);
-            setUserId(user.user_id); 
+            setUserId(user.user_id);
         }
-    }, [user]); 
+    }, [user]);
 
     useEffect(() => {
         if (!newsData) {
@@ -68,7 +70,7 @@ export default function InsideNewsPage() {
     }, []);
 
     useEffect(() => {
-        if(article) setSections(Object.values(article?.article))
+        if (article) setSections(Object.values(article?.article))
     }, [article]);
 
     useEffect(() => {
@@ -96,7 +98,7 @@ export default function InsideNewsPage() {
     useEffect(() => {
         const handleEvent = (e) => {
             e.preventDefault();
-            e.returnValue = ''; 
+            e.returnValue = '';
             handleLikeStatus();
         };
 
@@ -204,6 +206,44 @@ export default function InsideNewsPage() {
             notify()
         }
     };
+    const [comments, setComments] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+
+
+    const getComments = async (page = 1, perPage = 10) => {
+        try {
+            const response = await axios.get(
+                `${apiEndpoints.url}${apiEndpoints.comment.getAll}`,
+                {
+                    params: {
+                        article_blob_id: articleId,
+                        page: page,
+                        per_page: perPage,
+                    },
+                }
+            );
+
+            const { comments, has_more } = response.data;
+
+            setComments(prev => [...prev, ...comments]);
+            setCurrentPage(page);
+            setHasMore(has_more);
+        } catch (error) {
+            toast.error(`Failed to get comments: ${error}`)
+        }
+    };
+
+    const loadMore = () => {
+        if (hasMore) {
+            getComments(currentPage + 1);
+        }
+    };
+
+
+    useEffect(() => {
+        getComments()
+    }, []);
 
     return (
         <section className="news-block">
@@ -215,24 +255,25 @@ export default function InsideNewsPage() {
                 <span className="tag">{article?.S_P_O_R_T}</span>
             </div>
 
-            {article?.images[0] ? <img src={article?.images[0]}/> : null}
+            {article?.images[0] ? <img src={article?.images[0]} /> : null}
 
             <section className="content" ref={elementRef}>
 
                 {
                     sections &&
-                        sections.map((item, index) => (
-                            <section className={"article-section"} key={index}>
-                                {item?.subheadings.length > 0 ? <h3>{item?.subheadings[index]}</h3> : null}
-                                {index > 0 && article?.images[index] ? <img src={article?.images[index]}/> : null}
-                                <p>{item?.content}</p>
-                                <br/>
-                            </section>
-                        ))
+                    sections.map((item, index) => (
+                        <section className={"article-section"} key={index}>
+                            {item?.subheadings.length > 0 ? <h3>{item?.subheadings[index]}</h3> : null}
+                            {index > 0 && article?.images[index] ? <img src={article?.images[index]} /> : null}
+                            <p>{item?.content}</p>
+                            <br />
+                        </section>
+                    ))
                 }
             </section>
 
             <div className="details">
+                <div className="date">{article?.timestamp}</div>
                 <div className="date">{article?.timestamp}</div>
                 <div className="views">
                     <VscEye />{views}
@@ -245,9 +286,10 @@ export default function InsideNewsPage() {
             </div>
 
             <section className="comments">
-            
-                <hr />
-               
+
+                <CommentsBlock comments={comments} setComments={setComments} />
+                {hasMore && <button className="boxed" onClick={loadMore}>More</button>}
+
             </section>
         </section>
     );
