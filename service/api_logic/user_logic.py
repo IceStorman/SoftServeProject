@@ -107,6 +107,13 @@ class UserService:
         
         self._user_dal.delete_all_user_data(user.user_id)
         
+    async def change_username(self, user, new_username: str):
+        user = self.get_user_by_email_or_username(email=user.email)
+        if not user:
+            raise UserDoesNotExistError(user.email)
+        
+        self._user_dal.change_username(user, new_username)
+        
 
         
     def revoke_all_refresh_and_access_tokens(self, user_id: int) -> int:

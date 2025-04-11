@@ -41,6 +41,14 @@ class UserDAL:
             
         except SQLAlchemyError:
             self.session.rollback()
+            
+    def change_username(self, user, new_username: str):
+        user_db = self.session.query(User).filter(User.user_id == user.user_id).first()
+        if user_db:
+            user_db.username = new_username
+            self.session.commit()
+            return True
+        return False
 
     def get_user_by_id(self, user_id: int) -> User:
         return self.session.query(User).filter(User.user_id == user_id).first()

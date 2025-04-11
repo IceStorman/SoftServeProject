@@ -140,6 +140,22 @@ async def delete_account(service: UserService = Provide[Container.user_service])
     except CustomQSportException as e:
         logger.error(f"Error in DELETE /: {str(e)}")
         return get_custom_error_response(e)
+    
+@login_app.route("/change-username", methods=['PATCH'])
+@inject
+@handle_exceptions
+@logger.log_function_call()
+async def change_username(service: UserService = Provide[Container.user_service]):
+    try:
+        data = request.get_json()
+        dto = InputUserDTO().load(data)
+        await service.change_username(dto.username)
+
+        return "Username changed successfully"
+
+    except CustomQSportException as e:
+        logger.error(f"Error in PATCH /change-username: {str(e)}")
+        return get_custom_error_response(e)
 
 
 @login_app.route("/refresh", methods=['POST'])
