@@ -1,72 +1,157 @@
 import json
+from enum import Enum
+import pandas as pd
 from flask import Response
+from sqlalchemy import desc
 from database.models import News
 from database.azure_blob_storage.save_get_blob import blob_get_news
-from sqlalchemy.sql.expression import ClauseElement
-from exept.handle_exeptions import handle_exceptions
+from dto.api_output import ListResponseDTO
 from service.api_logic.scripts import get_sport_by_name
-from database.session import SessionLocal
 from logger.logger import Logger
-
-api_logic_logger = Logger("api_logic_logger", "api_logic_logger.log")
-
-session = SessionLocal()
-
-@api_logic_logger.log_function_call()
-def fetch_news(session, order_by: ClauseElement = None, limit: int = None, filters=None):
-    query = session.query(News)
-    if filters:
-        query = query.filter(*filters)
-    if order_by is not None:
-        query = query.order_by(order_by)
-    if limit is not None:
-        query = query.limit(limit)
-    return query.all()
+from service.api_logic.filter_manager.filter_manager_strategy import FilterManagerStrategy
+from dto.pagination import Pagination
+from dto.api_input import NewsDTO
+from service.api_logic.helpers.calculating_helper import CalculatingRecommendationHelper
 
 
-@handle_exceptions
-@api_logic_logger.log_function_call()
-def get_news_by_count(count: int):
-    news = fetch_news(session, order_by=News.save_at.desc(), limit=count)
-    return json_news(news)
+class LimitsConsts(Enum):
+    BASE_LIMIT_OF_NEWS_FOR_RECS = 4
+    PERIOD_OF_TIME = 21
 
 
-@handle_exceptions
-@api_logic_logger.log_function_call()
-def get_latest_sport_news(count: int, sport_name: str):
-    sport = get_sport_by_name(session, sport_name)
+class NewsService:
 
-    filters = [News.sport_id == sport.sport_id]
-    news = fetch_news(session, order_by=News.save_at.desc(), limit=count, filters=filters)
-    return json_news(news)
-
-
-@handle_exceptions
-@api_logic_logger.log_function_call()
-def get_popular_news(count: int):
-    news = fetch_news(session, order_by=News.interest_rate.desc(), limit=count)
-    return json_news(news)
-
-@handle_exceptions
-@api_logic_logger.log_function_call()
-def get_news_by_id(blob_id: str):
-    news = fetch_news(session, filters=[News.blob_id == blob_id], limit=1)
-    if news:
-        api_logic_logger.warning(f"News ware`t empty: {news}")
-        return json_news(news)
+    def __init__(self, news_dal, sport_dal, user_dal):
+        self._news_dal = news_dal
+        self._sport_dal = sport_dal
+        self._user_dal = user_dal
+        self._logger = Logger("logger", "all.log").logger
+        self._recommendations_list = []
 
 
+    def get_news_by_count(self, COUNT: int):
+        news = self._news_dal.fetch_news(order_by=desc(News.save_at), limit=COUNT)
+        return self.json_news(news)
 
-@api_logic_logger.log_function_call()
-def json_news(news_records):
-    all_results = []
-    for news_record in news_records:
-        data = blob_get_news(news_record.blob_id)
-        all_results.append({
-            "blob_id": news_record.blob_id,
-            "data": data
-        })
-    return Response(
-        json.dumps(all_results, ensure_ascii=False),
-        content_type='application/json; charset=utf-8',
-    )
+
+    def get_latest_sport_news(self, COUNT: int, sport_name: str):
+        sport = self._sport_dal.get_sport_by_name(sport_name)
+        filters = [News.sport_id == sport.sport_id]
+        news = self._news_dal.fetch_news(order_by=desc(News.save_at), limit=COUNT, filters=filters)
+        return self.json_news(news)
+
+    def get_popular_news(self, COUNT: int):
+        news = self._news_dal.fetch_news(order_by=desc(News.interest_rate), limit=COUNT)
+        return self.json_news(news)
+
+
+    def get_news_by_id(self, blob_id: str):
+        news = self._news_dal.get_news_by_id(blob_id)
+        if news:
+            self._logger.warning(f"News were found: {news}")
+            return self.json_news([news])
+
+
+    def json_news(self, news_records):
+        all_results = []
+        for news_record in news_records:
+            data = blob_get_news(news_record.blob_id)
+            all_results.append({
+                "blob_id": news_record.blob_id,
+                "data": data
+            })
+        return Response(
+            json.dumps(all_results, ensure_ascii=False),
+            content_type='application/json; charset=utf-8',
+        )
+
+    def get_filtered_news(self, filters: NewsDTO):
+        query = self._news_dal.get_base_query(News)
+
+        filtered_query, count = FilterManagerStrategy.apply_filters(News, query, filters)
+
+        news = self._news_dal.query_output(filtered_query)
+        news_output = self.json_news(news).json
+        response_dto = ListResponseDTO(items = news_output, count = count)
+
+        return response_dto.to_dict()
+
+    def user_recommendations_based_on_preferences_and_last_watch(
+            self,
+            user_id: int,
+            user_preferred_teams,
+            user_preferred_sports,
+            calculating_helper: CalculatingRecommendationHelper,
+            top_n: int = LimitsConsts.BASE_LIMIT_OF_NEWS_FOR_RECS.value
+    ):
+
+        user_interact_with_this_news_mask, user_not_interact_with_this_news_mask, user_and_news_details_df = (
+            self._news_dal.data_frame_to_work_with_user_and_news_data(
+                self._news_dal.get_user_interactions_with_news_by_period_of_time(
+                        user_id,
+                        period_of_time=LimitsConsts.PERIOD_OF_TIME.value
+                )
+            )
+        )
+
+        news_recommendation_coefficients_base_on_parametrs_insideDF = calculating_helper.calculate_news_coefficients_by_parameters_from_df_and_user_preferences(
+            user_and_news_details_df,
+            user_preferred_teams,
+            user_preferred_sports,
+            user_interact_with_this_news_mask,
+        )
+
+        news_with_adjusted_score_df = calculating_helper.calculate_adjusted_score_by_coefficients_inside_df(
+            self._news_dal.clean_duplicate_news_where_is_more_than_one_club(
+                news_recommendation_coefficients_base_on_parametrs_insideDF
+            )
+        )
+
+        user_saw_this_news_df, user_not_saw_this_news_df = self._news_dal.assign_adjusted_scores_for_masks(
+            news_with_adjusted_score_df,
+            user_interact_with_this_news_mask,
+            self._news_dal.clean_duplicates_news(
+                user_not_interact_with_this_news_mask
+            )
+        )
+
+        recs_by_user_preferences = self.__get_recommendations_by_user_preferences(user_not_saw_this_news_df, top_n)
+
+        recs_by_user_last_watch = self.__get_recommendations_by_last_watch_type(
+            user_not_saw_this_news_df,
+            user_saw_this_news_df,
+            calculating_helper,
+            top_n
+        )
+
+        return (
+            user_not_saw_this_news_df,
+            recs_by_user_preferences,
+            recs_by_user_last_watch
+        )
+
+
+    def __get_recommendations_by_user_preferences(self, not_interacted_df: pd.DataFrame, top_n: int) -> list[int]:
+        return not_interacted_df['adjusted_score'].sort_values(ascending=False).head(top_n).index.tolist()
+
+
+    def __get_recommendations_by_last_watch_type(
+            self,
+            user_not_saw_this_news_df: pd.DataFrame,
+            user_saw_this_news_df: pd.DataFrame,
+            calculating_helper: CalculatingRecommendationHelper,
+            top_n: int
+    ) -> pd.DataFrame | None:
+
+        if len(user_not_saw_this_news_df) >= 0:
+            average_adjusted_score_by_last_watch_news = calculating_helper.calculate_user_average_adjusted_score_by_last_watch_news(
+                user_saw_this_news_df,
+                user_not_saw_this_news_df
+            )
+
+            if average_adjusted_score_by_last_watch_news == -1:
+                return None
+
+        return user_not_saw_this_news_df.iloc[
+            (user_not_saw_this_news_df['adjusted_score'] - average_adjusted_score_by_last_watch_news).abs().argsort()[:top_n]
+        ].index.tolist()

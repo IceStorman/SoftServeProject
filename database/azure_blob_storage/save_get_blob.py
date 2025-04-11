@@ -4,12 +4,11 @@ from typing import Dict
 import os
 from dotenv import load_dotenv
 from datetime import datetime, timezone
-from database.models import BlobIndex, News, Sport, SportIndex, TeamIndex
+
+from database.models import BlobIndex, News, Sport, SportIndex, TeamIndex, TeamInNews
 from database.session import SessionLocal
 from exept.colors_text import print_error_message, print_good_message
 import re
-
-from service.implementation.email_sender.email_sender import try_send_email_to_users
 
 load_dotenv()
 account_url = os.getenv("BLOBURL")
@@ -179,7 +178,25 @@ def blob_get_news(news_index: str) -> dict:
         return json_data
     except Exception as e:
         return {"error": str(e)}
-    
+
+
+def blob_get_news_bulk(news_indices: list) -> dict:
+    try:
+        key = sastokens_dict["news"]
+        blob_service_client = BlobServiceClient(account_url=account_url, credential=key)
+        container_client = blob_service_client.get_container_client("news")
+
+        results = {}
+        for news_index in news_indices:
+            blob_client = container_client.get_blob_client(news_index)
+            blob_data = blob_client.download_blob().readall()
+            results[news_index] = json.loads(blob_data)
+
+        return results
+    except Exception as e:
+        return {"error": str(e)}
+
+
 def blob_get_specific_article(session, index_id: int) -> dict:
     try:
     
@@ -242,6 +259,10 @@ def get_specific_blob_index_from_db(session, index_id:int):
     index = session.query(BlobIndex).filter(BlobIndex.blob_id == index_id).first()
     return index
 
+def get_specific_blob_filename_from_db(session, index: str, sport_id: int):
+    index = session.query(BlobIndex).filter(BlobIndex.filename == f"{index}.json", BlobIndex.sports_index_id == sport_id).first()
+    return index
+
 def get_blob_data_for_all_sports(session, blob_indexes):
     all_results = []
     for blob_index in blob_indexes:
@@ -273,6 +294,7 @@ def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
         if existing_news:
             print_error_message(f"News '{blob_name}' already exists in the database.")
             return
+        print(json_data["team_names"])
         sport = session.query(Sport).filter_by(sport_name=json_data["S_P_O_R_T"]).first()
         if not sport:
             return
@@ -284,19 +306,37 @@ def save_news_index_to_db(blob_name: str, json_data,  session) -> None:
         session.add(news_index)
         print_good_message(f"The news item '{blob_name}' is saved in the database.")
         session.commit()
-
-        for team_name in json_data["team_names"]:
-            team_index = TeamIndex(
-                news_id=news_index.news_id,
-                name=team_name
-            )
-            session.add(team_index)
-            try_send_email_to_users(team_index.name)
+        teams = session.query(TeamIndex).all()
+        team_dict = {team.name: team.team_index_id for team in teams}
+        teams = json_data["team_names"]
+        print(teams)
+        for team_name in teams:
+            if isinstance(team_name, list):
+                for name in team_name:
+                    __add_team_index_to_db(team_dict, name, news_index, blob_name, session)
+            else:
+                __add_team_index_to_db(team_dict, team_name, news_index, blob_name, session)
 
         session.commit()
     except Exception as e:
         session.rollback()
         print_error_message(f"Error when saving the news index in the database: {e}")
+
+
+def __add_team_index_to_db(team_dict, team_name, news_index, blob_name, session):
+    from api.container.container import Container
+    subscription_manager = Container.email_manager()
+
+    team_index_id = team_dict.get(team_name, None)
+    if team_index_id is not None:
+        team_index = TeamInNews(
+            news_id=news_index.news_id,
+            name=team_name,
+            team_index_id=team_index_id
+        )
+        session.add(team_index)
+
+        subscription_manager.try_add_subscribers_to_temp_table(team_index.team_index_id, blob_name)
 
 
 def get_news_by_index(blob_name: str, session) -> Dict:

@@ -1,64 +1,75 @@
 .sportPage {
+    margin: 2rem;
+    margin-top: 3rem;
     display: flex;
     flex-direction: column;
     align-items: center;
-    overflow: hidden;
+    justify-content: center;
+    background-color: $bg-white;
+    justify-self: center;
+    align-self: center;
+    padding: 2rem;
+    padding-bottom: 2.2rem;
+    border: 2px solid black;
+    box-shadow: 10px 10px #000;
+    transition: all 0.5s ease;
 
-    .sportTitle {
-        margin: 1rem 0;
-        text-transform: capitalize;
-        font-size: 3rem;
-        letter-spacing: 0.5rem;
+    h1 {
+        margin-bottom: 1rem;
     }
 
-    .news {
-        width: 80%;
-        background-color: $special-light-purple;
-        border-radius: 0.5rem;
-        margin-top: 0;
+    .sport-selection-grid {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(5.55rem, 1fr));
+        box-sizing: border-box;
+        gap: 1rem;
 
-        .newsBox {
-            flex-direction: row;
-            justify-content: space-evenly;
-            width: 120rem;
-            max-width: 95%;
-            margin: 1rem auto 0;
-            color: $special-dark-purple;
-            overflow: visible;
+        .button-link {
+            display: flex;
+            justify-content: center;
+            align-items: center;
 
-            .newsInsight {
-                width: 55%;
-            }
+            button {
+                background-color: $main-clr;
+                border: 0 solid #E5E7EB;
+                box-sizing: border-box;
+                color: #000000;
+                justify-content: center;
+                padding: 0.75rem;
+                white-space: nowrap;
+                position: relative;
+                text-align: center;
+                text-decoration: none #000000 solid;
+                text-decoration-thickness: auto;
+                position: relative;
+                cursor: pointer;
+                user-select: none;
+                -webkit-user-select: none;
+                touch-action: manipulation;
+                font-size: 1.3rem;
+                width: 100%;
+                display: flex;
+                align-items: center;
 
-            h4, h1 {
-                margin: 0 0.5rem 0 2rem;
-                align-self: end;
-            }
+                &:after {
+                    content: '';
+                    position: absolute;
+                    border: 1px solid #000000;
+                    bottom: 4px;
+                    left: -6px;
+                    width: calc(100% - 1px);
+                    height: calc(100% - 1px);
+                }
 
-            h4{
-                color: $scroll-hover;
-            }
+                &:hover::after {
+                    bottom: 2px;
+                    left: -4px;
+                }
 
-            img {
-                width: 50rem;
-                max-width: 45%;
-            }
-
-            .leftPlaceData {
-                align-self: start;
-            }
-        }
-
-        hr {
-            margin: 0 auto 1rem;
-            border: 0.1vh solid white;
-            width: 95%;
-        }
-
-        .newsBox:hover{
-
-            img{
-                transform: scale(1.02);
+                &:active {
+                    background-color: $main-clr-shadow;
+                }
             }
         }
     }

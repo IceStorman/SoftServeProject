@@ -1,0 +1,58 @@
+@media (max-width: 1024px) {
+
+  .navbar-outer{
+
+    .navbar{
+      margin-left: 3rem;
+    }
+  }
+
+  .news-block{
+    max-width: 70%;
+
+    .content{
+
+      .article-section{
+        display: flex;
+        flex-direction: column;
+
+        img{
+          margin: auto 0;
+          float: none;
+        }
+      }
+    }
+  }
+
+  .preferences{
+    max-width: 45%;
+  }
+
+  .account-container{
+    max-width: 75%;
+  }
+
+  .language-button {
+    font-size: 1rem;
+  }
+
+  .game-slider-showcase {
+    .sport-options {
+      button {
+        font-size: 1.35rem;
+        padding: 0.45rem 1.3rem;
+
+      }
+    }
+  }
+
+  .game-card {
+    height: 1rem;
+    width: 1rem;
+  }
+
+
+  .streams-page{
+    max-width: 80%;
+  }
+}

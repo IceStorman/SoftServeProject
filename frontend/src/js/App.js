@@ -5,70 +5,98 @@ import {
     Route,
     Navigate
 } from "react-router-dom";
-import {Toaster} from "sonner";
+import { Toaster } from "sonner";
 
-import Header from "../components/header";
-import Footer from "../components/footer";
+import Header from "../components/basic/header";
+import Footer from "../components/basic/footer";
 
-import SignUpPage from "../pages/signUpPage";
-import SignInPage from "../pages/signInPage";
+import SignUpPage from "../pages/registration/signUpPage";
+import SignInPage from "../pages/registration/logInPage";
 import MainPage from "../pages/mainPage";
-import ForgotPasswordPage from "../pages/forgotPasswordPage";
-import SportPage from "../pages/sportPage";
-import LeaguePage from "../pages/leaguePage";
-import StreamPage from "../pages/streamPage";
-import NewsPage from "../pages/newsPage";
+import ForgotPasswordPage from "../pages/registration/forgotPasswordPage";
+import SportPage from "../pages/sport items/sportPage";
+import LeaguePage from "../pages/sport items/leaguePage";
+import TeamPage from "../pages/sport items/teamPage";
+import StreamsPage from "../pages/games/streamsPage";
+import FAQpage from "../pages/misc/FAQ";
 import NotExistingPage from "../pages/notExistingPage";
-import ScrollToTop from "../components/scrollToTop";
+import InsideStreamPage from "../pages/games/insideStreamPage";
+import NavBar from "../components/basic/nav";
+import InsideNewsPage from "../pages/news/insideNewsPage";
+import AboutUsPage from "../pages/misc/aboutAs";
+import ResetPasswordPage from "../components/passwordReset/resetPasswordPage";
+import CheckEmailPage from "../components/passwordReset/checkEmailPage";
+import GoogleAuthCallback from "../pages/registration/googleCallBack";
+import PreferencesPage from "../pages/registration/PreferencesPage";
+import AccountPage from "../pages/registration/accountPage";
+import globalVariables from "../globalVariables";
 
-function App(){
+function App() {
+
 
     return (
         <>
-
             <Router
                 future={{
-                v7_startTransition: true,
-                v7_relativeSplatPath: true,
-                }}
-            >
-                <ScrollToTop />
+                    v7_startTransition: true,
+                    v7_relativeSplatPath: true,
+                }}>
 
-                <Toaster  position="top-center" expand={true} richColors  />
+                <Toaster
+                    position="bottom-right"
+                    richColors
+                    expand={true}
+                    duration={5000}
+                    visibleToasts={globalVariables.windowsSizes.find(ws => window.innerWidth <= ws.maxWidth).limit || 0}
+                    closeButton
+                />
 
-                {<Header />}
+                <Header />
+                <NavBar />
 
                 <Routes>
+                    <Route path={globalVariables.routeLinks.defaultRoute} element={<MainPage />} />
 
-                    <Route exact path="/" element={<MainPage />} />
+                    <Route path={globalVariables.routeLinks.signInRoute} element={<SignInPage />} />
 
-                    <Route path="/sign-in" element={<SignInPage />} />
+                    <Route path={globalVariables.routeLinks.signUpRoute} element={<SignUpPage />} />
 
-                    <Route path="/sign-up" element={<SignUpPage />} />
+                    <Route path={globalVariables.routeLinks.preferenceRoute} element={<PreferencesPage />} />
 
-                    <Route path="/reset-password" element={<ForgotPasswordPage />} />
+                    <Route path={globalVariables.routeLinks.accountRoute} element={<AccountPage />} />
 
-                    <Route path="/sport/:sportName" element={<SportPage />} />
+                    <Route path={globalVariables.routeLinks.signInGoogleRoute} element={<GoogleAuthCallback />} />
 
-                    <Route path="/sport/:sportName/league/:leagueName" element={<LeaguePage />} />
+                    <Route path={globalVariables.routeLinks.forgotPasswordRoute} element={<ForgotPasswordPage />} />
 
-                    <Route path="/sport/:sportName/news/:id" element={<NewsPage />} />
+                    <Route path={globalVariables.routeLinks.resetPasswordTokenRoute} element={<ResetPasswordPage />} />
 
-                    <Route path="/stream" element={<StreamPage />} />
+                    <Route path={globalVariables.routeLinks.checkEmailRoute} element={<CheckEmailPage />} />
 
-                    <Route path="/news/:id" element={<NewsPage />} />
+                    <Route path={globalVariables.routeLinks.sportPageRoute} element={<SportPage />} />
 
+                    <Route path={globalVariables.routeLinks.leaguePageRoute} element={<LeaguePage />} />
 
-                    <Route path="/not-existing" element={<NotExistingPage />} />
+                    <Route path={globalVariables.routeLinks.teamPageRoute} element={<TeamPage />} />
 
-                    <Route path="*" element={<Navigate to="/not-existing" replace />} />
+                    <Route path={globalVariables.routeLinks.streamRoute} element={<StreamsPage />} />
 
+                    <Route path={globalVariables.routeLinks.streamPageRoute} element={<InsideStreamPage />} />
+
+                    <Route path={globalVariables.routeLinks.newsPageRoute} element={<InsideNewsPage />} />
+
+                    <Route path={globalVariables.routeLinks.nonExistingRoute} element={<NotExistingPage />} />
+
+                    <Route path={globalVariables.routeLinks.FAQRoute} element={<FAQpage />} />
+
+                    <Route path={globalVariables.routeLinks.aboutUsRoute} element={<AboutUsPage />} />
+
+                    <Route path={globalVariables.routeLinks.nonExistingPath} element={<Navigate to={globalVariables.routeLinks.nonExistingRoute} replace />} />
                 </Routes>
 
                 {<Footer />}
 
             </Router>
-
         </>
     );
 }

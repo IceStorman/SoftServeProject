@@ -534,3 +534,14 @@ pyrightconfig.json
 # End of https://www.toptal.com/developers/gitignore/api/python,node,visualstudiocode,pycharm,flask
 
 apiEndpoints.js
+
+credentials.json
+token.json
+
+package-lock.json
+
+
+myapp.local.pem
+myapp.local-key.pem
+localhost.pem
+localhost-key.pem

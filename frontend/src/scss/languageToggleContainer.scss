@@ -1,0 +1,82 @@
+.languageSwitcher {
+  margin-right: 1rem;
+
+  .switch {
+    $switch-bg-clr: $main-clr-shadow;
+    $switch-padding: 4px;
+    $slider-bg-clr: $main-shadow;
+    $slider-bg-clr-on: $main-shadow;
+    $label-padding: 0.3rem 0.7rem;
+    $switch-easing: cubic-bezier(0.47, 1.64, 0.41, 0.8);
+
+    color: white;
+    font-weight: 1000;
+    width: fit-content;
+    border-radius: 5rem;
+    cursor: pointer;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    position: relative;
+    isolation: isolate;
+
+    input[type="checkbox"] {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+
+    > span {
+      display: grid;
+      place-content: center;
+      padding: $label-padding;
+    }
+
+    &::before,
+    &::after {
+      content: "";
+      position: absolute;
+      border-radius: inherit;
+      transition: inset 150ms ease-in-out;
+    }
+
+    &::before {
+      background-color: $slider-bg-clr;
+      inset: $switch-padding 50% $switch-padding $switch-padding;
+      transition: inset 500ms $switch-easing, background-color 500ms ease-in-out;
+      z-index: -1;
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.3),
+      0 1px rgba(255, 255, 255, 0.3);
+    }
+
+    &::after {
+      background-color: $switch-bg-clr;
+      inset: 0;
+      z-index: -2;
+    }
+
+    &:has(input:checked):hover > span:first-of-type,
+    &:has(input:not(:checked)):hover > span:last-of-type {
+      transition-delay: 0ms;
+      transition-duration: 100ms;
+    }
+
+    &:has(input:checked):hover::before {
+      inset: $switch-padding $switch-padding $switch-padding 45%;
+    }
+
+    &:has(input:not(:checked)):hover::before {
+      inset: $switch-padding 45% $switch-padding $switch-padding;
+    }
+
+    &:has(input:checked)::before {
+      background-color: $slider-bg-clr-on;
+      inset: $switch-padding $switch-padding $switch-padding 50%;
+    }
+  }
+}

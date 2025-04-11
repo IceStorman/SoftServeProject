@@ -1,117 +1,106 @@
-.signPage {
+.registration {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    margin: 2rem 0;
+    padding: 1rem;
+    height: fit-content;
+    width: fit-content;
+    border: 2px solid #000;
+    box-shadow: 10px 10px #000;
+    align-self: center;
+    margin: 2rem;
+    background-color: $bg-white;
+    justify-self: center;
+    font-size: 1.2rem;
 
-    .signContainer {
+    form {
         display: flex;
         flex-direction: column;
+        justify-content: center;
         align-items: center;
-        width: 45rem;
-        padding: 2vh;
-        background-color: $special-light-purple;
-        border-radius: 1rem;
-        font-weight: bold;
 
-        .signBox {
-            width: 37rem;
+        .title {
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            flex-direction: row;
+        }
 
-            //.inputBox {
-            //    margin: 0;
-            //    box-sizing: border-box;
-            //
-            //    .nameInput, .emailInput, .passwordInput, .codeInput {
-            //        box-sizing: inherit;
-            //        width: 100%;
-            //        height: 2rem;
-            //        font-size: 1rem;
-            //        margin: 1vh 0 0;
-            //        border-radius: 0.5rem;
-            //        padding: 0.2rem;
-            //    }
-            //}
+        h2 {
+            font-size: 2rem;
+        }
 
-            .inputBox{
-                display: flex;
-                flex-direction: column;
-                gap: 1rem;
+        p {
+            margin-left: auto;
+            padding: 1rem;
+        }
 
-                .inputBoxField{
-                    position: relative;
-                    width: 37rem;
-                    height: 2rem;
+        input {
+            padding: 0.3rem;
+        }
 
-                    @include custom-form(input, label, 100%, $scroll-hover, $special-light-purple, $scroll-thumb);
-                }
-            }
-
-            h1 {
-                color: $special-dark-purple;
-                font-size: 3rem;
-                margin: 1vh auto;
-            }
-
-            .signError {
-                margin: 0;
-                color: red;
-            }
-
-            a {
-                margin: 1rem 0 0;
-                align-self: end;
-                font-size: 1.1rem;
-                cursor: pointer;
-                color: $special-dark-purple;
-                transition: all 0.3s ease;
-            }
-
-            .signBtn {
-                all: unset;
-                margin: 1rem auto 0;
-                font-size: 1.5rem;
-                background-color: $special-dark-purple;
-                border-radius: 0.5rem;
-                color: $main-text-color;
-                padding: 1vh;
-                cursor: pointer;
-                transition: all 0.3s ease;
-            }
-
-            a:hover, .signBtn:hover{
-                transform: scale(1.03);
-            }
+        button {
+            margin-top: .6rem;
+            margin-bottom: 1rem;
         }
     }
 
-    .signRedirect {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
+    a {
+        color: $main-clr-shadow;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    .reset-passwrd {
+        align-self: end;
+        margin: 1rem;
+    }
+
+    .redirect {
+        align-self: center;
+        margin: 1rem;
+
+        .authBtn{
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+
+        .space{
+            margin-bottom: 0.5rem;
+        }
+    }
+
+    button {
+        color: $bg-white;
+        font-size: 1.2rem;
+        display: inline-flex;
+
+        &.arrow {
+            margin-right: .5rem;
+        }
+    }
+
+    .input-field:focus {
+        border-color: $main-clr-shadow;
+    }
+
+    input {
+        margin-left: .5rem;
+        width: fit-content;
+        border: 1px solid black;
         font-size: 1.1rem;
-        color: $special-dark-purple;
+        outline: none;
+        transition: border-color 0.3s ease-in-out;
+        overflow: scroll;
 
-        a {
-            margin: 1rem 0.2rem;
-            text-decoration: none;
-            cursor: pointer;
-            color: $purple-btn-color;
-            transition: all 0.3s ease;
-        }
-
-        a:hover{
-            transform: scale(1.03);
-            text-decoration: underline;
+        &.input-error {
+            border-color: #dc3545;
+            background-color: rgba(220, 53, 69, 0.05);
         }
     }
-}
 
-input,
-select {
-    -webkit-background-clip: text !important;
-    background-clip: text !important;
+    input:focus {
+        border-color: $main-clr-shadow;
+    }
+
 }

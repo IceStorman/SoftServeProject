@@ -1,0 +1,196 @@
+.videoContainer {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  width: 100%;
+  max-width: 80rem;
+  border: 0.1rem solid #000;
+  box-shadow: 0.6rem 0.5rem #000;
+  align-self: center;
+  margin: 2rem;
+  background-color: $bg-white;
+  justify-self: center;
+  font-size: 1.2rem;
+  transition: width 0.3s ease, max-width 0.3s ease;
+
+  .videoPlayer {
+    max-height: 39rem;
+    width: 100%;
+    display: flex;
+    max-width: 80rem;
+    padding: 1rem;
+    font-family: Arial, sans-serif;
+
+    .youtubePlayer {
+      position: relative;
+      width: 100%;
+      background-color: #000;
+      transition: transform 0.4s ease-in-out, margin 0.4s ease-in-out;
+
+      p {
+        font-family: $main-font;
+        max-width: 50rem;
+        color: #fff;
+        text-align: center;
+        justify-content: center;
+        font-size: 3rem;
+      }
+
+      iframe {
+        min-width: 50rem;
+        width: 100%;
+        height: 34.5rem;
+        border: none;
+        transition: width 0.3s ease, max-width 0.3s ease;
+      }
+
+      .videoSwitcher {
+        display: flex;
+        justify-content: flex-start;
+        margin-top: 1rem;
+        gap: 1rem;
+        overflow-y: hidden;
+        overflow-x: auto;
+
+        .switchButton {
+          font-family: $main-font;
+          padding: 0.5rem 1.2rem;
+          border-radius: 0.5rem;
+          cursor: pointer;
+          background-color: $bg-main;
+          color: black;
+          font-weight: bold;
+          transition: all 0.3s;
+          margin-bottom: 0.2rem;
+
+          &:hover {
+            background-color: $main-clr-shadow;
+            color: white;
+          }
+
+          &.active {
+            background-color: $main-clr;
+            color: white;
+          }
+        }
+      }
+    }
+
+    .partnerLinks {
+      min-width: 10rem;
+      background-color: black;
+      padding: 1rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      overflow-y: auto;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+
+      h2 {
+        margin-bottom: 1rem;
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: white;
+      }
+
+      a {
+        text-decoration: none;
+      }
+
+      .linksContainer {
+        display: flex;
+        flex-direction: column;
+
+        .partnerLink {
+          font-family: $main-font;
+          text-align: center;
+          margin-bottom: 0.7rem;
+          color: white;
+          background-color: $main-clr;
+          padding: 0.6rem;
+          border-radius: 0.5rem;
+          text-decoration: none;
+          transition: all 0.3s;
+
+          &:hover {
+            background-color: $main-clr-shadow;
+            color: white;
+          }
+        }
+      }
+    }
+  }
+
+  @media (max-width: 1024px) {
+    width: 90%;
+    max-width: 70rem;
+    margin: 1.5rem;
+
+    .videoPlayer {
+      flex-direction: column;
+      max-height: 40.5rem;
+      max-width: 94%;
+    }
+
+    .videoPlayer .youtubePlayer iframe {
+      height: 28rem;
+      min-width: 20rem;
+    }
+
+    p {
+      font-size: 2.5rem;
+      min-width: 27rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    width: 90%;
+    max-width: 85%;
+    margin: 1rem;
+    padding: 0.5rem;
+
+
+    .videoPlayer .youtubePlayer iframe {
+      height: 23.5rem;
+      min-width: 18rem;
+    }
+
+    p {
+      font-size: 2rem;
+      min-width: 20rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    max-width: 100%;
+    width: 100%;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+
+    .videoPlayer .partnerLinks {
+      background-color: white;
+    }
+
+    .videoPlayer .partnerLinks h2 {
+      color: black;
+    }
+
+
+    .videoPlayer {
+      max-height: 30.5rem;
+    }
+
+    .videoPlayer .youtubePlayer iframe {
+      height: 14.5rem;
+      min-height: 10.5rem;
+      min-width: 15rem;
+      background-color: white;
+    }
+
+    p {
+      font-size: 1.5rem;
+      min-width: 16rem;
+    }
+  }
+}

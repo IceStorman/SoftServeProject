@@ -2,19 +2,28 @@ import logging
 import functools
 import os
 from logging.handlers import RotatingFileHandler
+import asyncio
+
+from sqlalchemy.util import await_only
 
 
 class Logger:
     TRACE_LEVEL = 5
+    _instance = None
 
-    def __init__(self, name, log_file, level=logging.INFO, max_size_mb=20, backup_count=1):
+    def __new__(cls, name, log_file, level=logging.INFO, max_size_mb=20, backup_count=1):
+        if cls._instance is None:
+            cls._instance = super(Logger, cls).__new__(cls)
+            cls._instance._init(name, log_file, level, max_size_mb, backup_count)
+        return cls._instance
+
+    def _init(self, name, log_file, level, max_size_mb, backup_count):
         self.name = name
         self.log_file = log_file
         self.level = level
         self.max_size = max_size_mb * 1024 * 1024
         self.backup_count = backup_count
 
-        logging.addLevelName(self.TRACE_LEVEL, 'TRACE')
         self.logger = self._create_logger()
 
     def _create_logger(self):
@@ -39,15 +48,29 @@ class Logger:
 
     def log_function_call(self):
         def decorator(func):
-            @functools.wraps(func)
-            def wrapper(*args, **kwargs):
-                try:
-                    self.trace(f"Call of {func.__name__}()  args={args}, kwargs={kwargs}")
-                    return func(*args, **kwargs)
-                except Exception as e:
-                    self.logger.error(f"Error in {func.__name__}(): {str(e)}")
-                    raise
-            return wrapper
+            if asyncio.iscoroutinefunction(func):
+                @functools.wraps(func)
+                async def async_wrapper(*args, **kwargs):
+                    try:
+                        self.trace(f"Call of {func.__name__}()  args={args}, kwargs={kwargs}")
+                        return await func(*args, **kwargs)
+                    except Exception as e:
+                        self.logger.error(f"Error in {func.__name__}(): {str(e)}")
+                        raise
+
+                return async_wrapper
+            else:
+                @functools.wraps(func)
+                def sync_wrapper(*args, **kwargs):
+                    try:
+                        self.trace(f"Call of {func.__name__}()  args={args}, kwargs={kwargs}")
+                        return func(*args, **kwargs)
+                    except Exception as e:
+                        self.logger.error(f"Error in {func.__name__}(): {str(e)}")
+                        raise
+
+                return sync_wrapper
+
         return decorator
 
     def debug(self, message):

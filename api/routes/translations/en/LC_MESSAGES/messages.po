@@ -1,0 +1,207 @@
+# English translations for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-02-13 09:18+0200\n"
+"PO-Revision-Date: 2025-02-13 09:20+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+
+
+msgid "Page not found"
+msgstr "Page not found"
+
+msgid "Navigation"
+msgstr "Navigation"
+
+msgid "Main page"
+msgstr "Main page"
+
+msgid "About us"
+msgstr "About us"
+
+msgid "FAQ"
+msgstr "FAQ"
+
+msgid "Contacts"
+msgstr "Contacts"
+
+msgid "Address"
+msgstr "Lviv, Kolomyiska 19"
+
+msgid "Phone"
+msgstr "+380 97 584 22 34"
+
+msgid "Email"
+msgstr "q.sport.news@gmail.com"
+
+msgid "Email:"
+msgstr "Email"
+
+msgid "Sign up to"
+msgstr "Sign up"
+
+msgid "Socials"
+msgstr "Socials"
+
+msgid "Sign Up"
+msgstr "Sign Up"
+
+msgid "QSPORT"
+msgstr "QSPORT"
+
+msgid "since 1990"
+msgstr "since 1990"
+
+msgid "News"
+msgstr "News"
+
+msgid "Leagues"
+msgstr "Leagues"
+
+msgid "Games"
+msgstr "Streams"
+
+msgid "Filters"
+msgstr "Filters"
+
+msgid "Option 1"
+msgstr "Option 1"
+
+msgid "Option 2"
+msgstr "Option 2"
+
+msgid "Option 3"
+msgstr "Option 3"
+
+msgid "Sort by:"
+msgstr "Sort by:"
+
+msgid "more..."
+msgstr "more..."
+
+msgid "Latest games"
+msgstr "Latest games"
+
+msgid "Recommendations"
+msgstr "Recommendations"
+
+msgid "to track performance of your favorite teams"
+msgstr "to track performance of your favorite teams"
+
+msgid "Tags:"
+msgstr "Tags:"
+
+msgid "Password reset"
+msgstr "Password reset"
+
+msgid "Continue?"
+msgstr "Continue?"
+
+msgid "Log In"
+msgstr "Log In"
+
+msgid "Password:"
+msgstr "Password:"
+
+msgid "Forget password?"
+msgstr "Forget password?"
+
+msgid "Do not have an account?"
+msgstr "Do not have an account?"
+
+msgid "Create"
+msgstr "Create"
+
+msgid "Username:"
+msgstr "Username:"
+
+msgid "This field is required"
+msgstr "This field is required"
+
+msgid "Repeat password:"
+msgstr "Repeat password:"
+
+msgid "Already have an account?"
+msgstr "Already have an account?"
+
+msgid "Select sport"
+msgstr "Select sport"
+
+msgid "teams"
+msgstr "teams"
+
+msgid "Search"
+msgstr "Search..."
+
+msgid "All"
+msgstr "All"
+
+msgid "Recommended news by your Preferences"
+msgstr "Recommended news by your Preferences"
+
+msgid "No latest news were found"
+msgstr "No latest news were found"
+
+msgid "Recommended by your Last Watch"
+msgstr "Recommended by your Last Watch"
+
+msgid "Account"
+msgstr "Account"
+
+msgid "Change preferences"
+msgstr "Change preferences"
+
+msgid "Logout"
+msgstr "Logout"
+
+msgid "Delete account"
+msgstr "Delete account"
+
+msgid "Are you sure?"
+msgstr "Are you sure?"
+
+msgid "Once deleted, the account cannot be restored"
+msgstr "Once deleted, the account cannot be restored"
+
+msgid "Cancel"
+msgstr "Cancel"
+
+msgid "Confirm"
+msgstr "Confirm"
+
+msgid "Skip >"
+msgstr "Skip >"
+
+msgid "What are you interested in?"
+msgstr "What are you interested in?"
+
+msgid "Choose your favourite sports:"
+msgstr "Choose your favourite sports:"
+
+msgid "Games not found"
+msgstr "Games not found"
+
+msgid "All"
+msgstr "All"
+
+msgid "Select a country..."
+msgstr "Select a country..."
+
+msgid "Apply Filters"
+msgstr "Apply Filters"
+
+msgid "Search by name..."
+msgstr "Search by name..."

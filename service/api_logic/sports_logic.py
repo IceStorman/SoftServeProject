@@ -1,85 +1,35 @@
 from sqlalchemy import func
 from database.models import Sport, League, Country
-from dto.api_output import SportsLeagueOutput, SportsOutput
+from dto.api_output import SportsLeagueOutput, SportsOutput, ListResponseDTO
 from dto.pagination import Pagination
 from exept.handle_exeptions import handle_exceptions
-from service.api_logic.scripts import apply_filters
-from database.session import SessionLocal
 from logger.logger import Logger
+from service.api_logic.filter_manager.filter_manager_strategy import FilterManagerStrategy
 
-api_logic_logger = Logger("api_logic_logger", "api_logic_logger.log")
+class SportService:
+    def __init__(self, sports_dal, leagues_dal):
+        self._sports_dal = sports_dal
+        self._leagues_dal = leagues_dal
+        self._logger = Logger("logger", "all.log").logger
 
-session = SessionLocal()
+    def get_all_sports(self):
+        sports_query = self._sports_dal.get_base_query(Sport)
+        execute_query = self._sports_dal.query_output(sports_query)
+        sport_output = SportsOutput(many=True)
+        return sport_output.dump(execute_query)
 
-@handle_exceptions
-@api_logic_logger.log_function_call()
-def get_all_sports():
-    sports = session.query(Sport).all()
-    schema = SportsOutput(many=True)
-    return schema.dump(sports)
+    def search_leagues(self, filters_dto):
 
+        query = self._leagues_dal.get_base_query(League)
 
-@handle_exceptions
-@api_logic_logger.log_function_call()
-def get_all_leagues_by_sport(filters_dto: dict, pagination: Pagination):
-    query = (
-        session.query(League)
-        .join(Sport, League.sport_id == Sport.sport_id)
-    )
+        filtered_query, count = FilterManagerStrategy.apply_filters(League, query, filters_dto)
 
-    model_aliases = {
-        "leagues": League,
-    }
+        execute_query = self._leagues_dal.query_output(filtered_query)
 
-    query = apply_filters(query, filters_dto, model_aliases)
+        leagues_output = SportsLeagueOutput(many=True).dump(execute_query)
+        response_dto = ListResponseDTO(items=leagues_output, count=count)
 
-    offset, limit = pagination.get_pagination()
-    if offset is not None and limit is not None:
-        query = query.offset(offset).limit(limit)
-
-    leagues = query.all()
-    count = len(leagues)
-    schema = SportsLeagueOutput(many=True)
-    leagues = schema.dump(leagues)
-    return  {
-        "count": count,
-        "leagues": leagues,
-    }
-
-
-@handle_exceptions
-@api_logic_logger.log_function_call()
-def search_leagues(filters_dto: dict, pagination: Pagination):
-    query = (
-        session.query(League)
-        .join(Sport, League.sport_id == Sport.sport_id)
-        .join(Country, League.country == Country.country_id)
-        .filter(
-            func.lower(League.name)
-            .like(f"{filters_dto.get('letter', '')}%")
-        )
-    )
-   
-    model_aliases = {
-        "leagues": League,
-        "countries": Country,
-    }
-
-    query = apply_filters(query, filters_dto, model_aliases)
-    count = query.count()
-
-    offset, limit = pagination.get_pagination()
-    if offset is not None and limit is not None:
-        query = query.offset(offset).limit(limit)
-
-    countries = query.all()
-
-    schema = SportsLeagueOutput(many=True)
-    leagues = schema.dump(countries)
-    return {
-        "count": count,
-        "leagues": leagues,
-    }
+        return response_dto.to_dict()
 
 
 
